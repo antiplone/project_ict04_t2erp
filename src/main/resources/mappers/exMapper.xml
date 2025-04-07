@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+	  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	  "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><!-- 만약에 이게 오류가나면, QuickFix(Problems탭에 Error중에 이걸 찾아서 오른쪽클릭) -->
+
+<mapper namespace="패키지경로.dao.????DAO">
+<!-- ResultMap은 이런구성(<id>, <result>)으로 결과를 넘겨주려고 만듭니다.
+<resultMap id="mybatis맵퍼의 CRUD(<select>, <update> 등)의 resultMap속성에서 참조함" type="패키지경로.dto.????DTO">
+
+	<id property="resultMap에서 type속성(DTO, Map)의 멤버 또는 키" column="SQL의 FROM절의 테이블 컬럼명" /> PK(Primary Key:기본키)
+	<result property="resultMap에서 type속성(DTO, Map)의 멤버 또는 키" column="SQL의 FROM절의 테이블 컬럼명" />
+	<result property="resultMap에서 type속성(DTO, Map)의 멤버 또는 키" column="SQL의 FROM절의 테이블 컬럼명" />
+</resultMap>
+ -->
+
+<!-- SELECT(R)빼고는 다 resultType은 int(쿼리문이 성공한 건수)로 돌려주기 때문에 resultType이 없습니다. -->
+
+<!-- C'R:SELECT'UD
+	<select id="@Mapper(DTO에서)의 메서드와 같아야합니다."
+			parameterType="패키지경로.dto.????DTO / map / int / String"
+			resultType="패키지경로.dto.????DTO / list / map / int" 아니면, resultMap="만들어진 resultMap의 id">
+		SELECT * FROM 테이블명 WHERE 컬럼명=#{parameterType의 멤버 또는 키, 매개변수명}, ...
+	</select>
+ -->
+<!-- 'C:INSERT'RUD
+	<insert id="@Mapper(DTO에서)의 메서드와 같아야합니다." parameterType="패키지경로.dto.????DTO / map / int / String">
+		INSERT INTO 테이블명(컬럼명, ...) VALUES(#{parameterType의 멤버 또는 키, 매개변수명}, ...)
+	</insert>
+ -->
+<!-- CR'U:UPDATE'D
+	<update id="@Mapper(DTO에서)의 메서드와 같아야합니다." parameterType="패키지경로.dto.????DTO / map / int / String">
+		UPDATE 테이블명 SET 컬럼명=#{parameterType의 멤버 또는 키, 매개변수명}, ... WHERE 컬럼명=#{parameterType의 멤버 또는 키, 매개변수명}, ...
+	</update>
+ -->
+<!-- CRU'D:DELETE'
+	<delete id="@Mapper(DTO에서)의 메서드와 같아야합니다." parameterType="패키지경로.dto.????DTO / map / int / String">
+		DELETE 테이블명 WHERE 컬럼명=#{parameterType의 멤버 또는 키, 매개변수명}, ...
+	</delete>
+ -->
+</mapper> 

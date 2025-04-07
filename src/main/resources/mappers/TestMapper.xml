@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+	  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	  "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><!-- 만약에 이게 오류가나면, QuickFix(Problems탭에 Error중에 이걸 찾아서 오른쪽클릭) -->
+
+<mapper namespace="com.spring.erp_ordit.dao.TestDAO">
+	<select id="getMem" resultType="String">
+		SELECT employee FROM TestMem WHERE id=1
+	</select>
+
+	<select id="getEmp" resultType="String">
+		SELECT employee FROM testmaria WHERE id=1
+	</select>
+
+<!-- 'C:INSERT'RUD
+		<insert id="@Mapper(DTO에서)의 메서드와 같아야합니다." parameterType="패키지경로.dto.????DTO / map / int / String">
+			INSERT INTO 테이블명(컬럼명, ...) VALUES(#{parameterType의 멤버 또는 키, 매개변수명}, ...)
+		</insert>
+ -->
+<!-- CR'U:UPDATE'D
+		<update id="@Mapper(DTO에서)의 메서드와 같아야합니다." parameterType="패키지경로.dto.????DTO / map / int / String">
+			UPDATE 테이블명 SET 컬럼명=#{parameterType의 멤버 또는 키, 매개변수명}, ... WHERE 컬럼명=#{parameterType의 멤버 또는 키, 매개변수명}, ...
+		</update>
+ -->
+<!-- CRU'D:DELETE'
+		<delete id="@Mapper(DTO에서)의 메서드와 같아야합니다." parameterType="패키지경로.dto.????DTO / map / int / String">
+			DELETE 테이블명 WHERE 컬럼명=#{parameterType의 멤버 또는 키, 매개변수명}, ...
+		</delete>
+ -->
+</mapper> 

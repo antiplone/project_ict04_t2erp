@@ -3,9 +3,9 @@ import React from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
 		 InputGroup, AutoComplete, HStack, Input, Table, InputPicker,
 		 IconButton, InputNumber, DateRangePicker} from "rsuite";
-import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
+//import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
 import { mockUsers } from './sell_mock4';
-import SearchIcon from '@rsuite/icons/Search';
+//import SearchIcon from '@rsuite/icons/Search';
 import "../components/common/Sell_maintitle.css";
 
 const styles = {
@@ -71,9 +71,9 @@ const SellResult = () => {
 								placeholder='담당자 입력'
 								// value={selectedIncharge ? selectedIncharge.em_name : ""}
 							/>
-							<InputGroup.Addon>
+							{/*<InputGroup.Addon>
 								<SearchIcon />
-							</InputGroup.Addon>
+							</InputGroup.Addon>*/}
 						</InputGroup>
 					</div>
 
@@ -83,9 +83,9 @@ const SellResult = () => {
 								거래처
 							</InputGroup.Addon>
 							<Input placeholder='거래처' />
-							<InputGroup.Addon>
+							{/*<InputGroup.Addon>
 								<SearchIcon />
-							</InputGroup.Addon>
+							</InputGroup.Addon>*/}
 						</InputGroup>
 					</div>
 				</div>
@@ -260,14 +260,14 @@ function toValueString(value, dataType) {
 	  <Cell {...props} style={{ padding: '6px', display: 'flex', gap: '4px' }}>
 		<IconButton
 		  appearance="subtle"
-		  icon={rowData.status === 'EDIT' ? <VscSave /> : <VscEdit />}
+		  /*icon={rowData.status === 'EDIT' ? <VscSave /> : <VscEdit />}*/
 		  onClick={() => {
 			onEdit(rowData.id);
 		  }}
 		/>
 		<IconButton
 		  appearance="subtle"
-		  icon={<VscRemove />}
+		  /*icon={<VscRemove />}*/
 		  onClick={() => {
 			onRemove(rowData.id);
 		  }}

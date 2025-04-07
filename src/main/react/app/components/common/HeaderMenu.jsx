@@ -70,9 +70,9 @@ const HeaderMenu = () => {
 					<Nav.Menu
 						title="물류"
 					>
-						<Nav.Item onSelect={() => { navigate("warehouseMain") }}>물류메인</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("orderIncomeList") }}>입고관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("/main/") }}>출고관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("/main/warehouse") }}>물류메인</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("/main/warehouse/orderIncomeList") }}>입고관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("/main/warehouse/outgoingList") }}>출고관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("warehouseManagement") }}>창고관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu

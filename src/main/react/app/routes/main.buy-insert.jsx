@@ -2,13 +2,12 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
 import React, { useState } from "react";
-import { Button, Container, DatePicker, Divider, Input, InputGroup, InputNumber, InputPicker, Message, Table } from "rsuite";
+import { Button, Container, DatePicker, Divider, Input, InputGroup, InputNumber, InputPicker, Message, Table, IconButton } from "rsuite";
 import SearchIcon from '@rsuite/icons/Search';
+import TrashIcon from '@rsuite/icons/Trash';
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import { useNavigate } from "@remix-run/react";
-import BuyOrderItemList from "#components/buy/BuyOrderItemList.jsx";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
-import BuyInsertOrderItem from "#components/buy/BuyInsertOrderItem.jsx";
 import "../styles/buy.css";
 import StorageSearchModal from "#components/buy/StorageSearchModal.jsx";
 
@@ -23,19 +22,15 @@ const { Column, HeaderCell, Cell } = Table;
 
 /* 거래유형 - 선택 데이터 */
 const buyType = ["부과세율 적용", "부가세율 미적용"].map(
-    (item) => ({ // 이렇게 하면, 둘다 같게 들어가서, 라벨따로 값따로 안넣어줘도 됩니다.
-        label: item, // Eugenia
-        value: item, // Eugenia
-    })
+    (item) => ({ label: item, value: item })
 );
 
-// 렌더링되는 테이블 => 문자열 (itemCode, itemName)
 const EditableCell = ({ rowData, dataKey, onChange, editable, ...props }) => (
     <Cell {...props}>
         {editable ? (
             <Input
                 size="xs"
-                value={rowData[dataKey]}
+                value={rowData[dataKey] || ''}
                 onChange={(value) => onChange(rowData.id, dataKey, value)}
             />
         ) : (
@@ -44,13 +39,12 @@ const EditableCell = ({ rowData, dataKey, onChange, editable, ...props }) => (
     </Cell>
 );
 
-// 렌더링되는 테이블 => 숫자 (quantity, price)
 const EditableNumberCell = ({ rowData, dataKey, onChange, editable, ...props }) => (
     <Cell {...props}>
         {editable ? (
             <InputNumber
                 size="xs"
-                value={rowData[dataKey]}
+                value={rowData[dataKey] || 0}
                 onChange={(value) => onChange(rowData.id, dataKey, value)}
             />
         ) : (
@@ -59,151 +53,104 @@ const EditableNumberCell = ({ rowData, dataKey, onChange, editable, ...props }) 
     </Cell>
 );
 
-const styles = {
-    backgroundColor: '#f8f9fa',
-};
-
 export default function BuyInsert() {
 
     const navigate = useNavigate();
 
-    // data는 테이블에 표시될 품목 배열 => 자동 계산되는 supply, vat, total은 후에 동적으로 추가됨
-    const [Order, setOrder] = useState([
-        {
-            order_id: '',
-            itemCode: '',
-            itemName: '',
-            quantity: null,
-            price: null,
-        },
+    const [orderItems, setOrderItems] = useState([
+        { id: 1, item_code: '', quantity: 0, price: 0, supply: 0, vat: 0, total: 0 },
     ]);
-
-    // // React Query를 이용한 API 연결
-    // const mutation = useMutation({ // useMutation을 통해 전표 등록 API와 연결됨
-    //     mutationFn: saveOrder,  // saveOrder는 POST 요청을 보내는 함수 (axios.post('/api/orders'))
-    //     onSuccess: () => {
-    //         toaster.push(<Message showIcon type="success">전표가 저장되었습니다.</Message>);
-    //     },
-    //     onError: () => {
-    //         toaster.push(<Message showIcon type="error">저장에 실패했습니다.</Message>);
-    //     }
-    // });
-
-    // 값 입력 시 데이터 업데이트 및 자동 계산 => 계산된 값은 state에 반영되어 UI에 즉시 표시됨
-    const handleChange = (id, key, value) => {
-        const nextData = data.map((row) => {
-            if (row.id === id) {
-                const updated = { ...row, [key]: value };
-                const qty = Number(updated.quantity) || 0;
-                const price = Number(updated.price) || 0;
-                const supply = qty * price;
-                const vat = Math.floor(supply * 0.1);
-                const total = supply + vat;
-                return { ...updated, supply, vat, total };
-            }
-            return row;
-        });
-
-        setData(nextData);
-    };
-
-    // 행 추가 기능
-    const handleAddRow = () => {
-        const newId = data.length > 0 ? Math.max(...data.map((d) => d.id)) + 1 : 1;
-        setData([...data, { order_id: newId, itemCode: '', itemName: '', quantity: 0, price: 0 }]);
-    };
-
-    // 전표 등록 (API 호출)
-    const handleSave = () => {
-        const orderData = {
-            orderDate: new Date().toISOString().slice(0, 10),
-            clientCode: 1001,   // 현재 하드코딩 (나중에 폼연결 예정)
-            storageCode: 10,    // 현재 하드코딩 (나중에 폼연결 예정)
-            items: data.map(({ order_id, ...item }) => item),
-        };
-        mutation.mutate(orderData);
-    };
-
-    // 합계 계산
-    const totalSum = data.reduce((acc, row) => acc + (row.total || 0), 0);
-
-    const submitBuyOrder = (e) => {
-        e.preventDefault();     // submit이 action을 안타고 자기 할일을 그만한다.
-        fetch("http://localhost:8081/buy/buyOrderItemInsert", {  // 스프링부트
-            method: "POST",
-            headers: {
-                "content-Type": "application/json;charset=utf-8"
-            },
-            body: JSON.stringify(data) //javascript 오브젝트를 json으로 변경해서 넘긴다. 저장한 데이터를 스프링부트에서 insert하고 201을 리턴
-        })
-            .then((res) => {
-                console.log(1, res);
-                if (res.status === 201) {
-                    return res.json();
-                } else {
-                    return null;
-                }
-            })
-            .then((res) => {    // catch는 여기서 오류가 발생해야 실행됨
-                console.log('정상', res);
-                if (res !== null) {
-                    console.log('navigate', navigate)
-                    navigate('/orderList')  // old버전 : props.history.push('/boardList');
-                } else {
-                    alert("주문 작성에 실패하였습니다.");
-
-                }
-            })
-            .catch((error) => {
-                console.log('실패', error);
-            })
-    };
-
-    // 거래처 모달 관리
+    
+    // 납기일자
+    const [deliveryDate, setDeliveryDate] = useState(null);
+    
+    // 거래유형
+    const [selectedType, setSelectedType] = useState('');
+    
+    // 거래처 모달관리
     const [selectedClient, setSelectedClient] = useState(null);
     const [selectedClientName, setSelectedClientName] = useState(null);
     const [isClientModalOpen, setClientModalOpen] = useState(false);
-
-    const handleClientSelect = (client_code, client_name) => {
-        setSelectedClient(client_code);
-        setSelectedClientName(client_name);
-        setClientModalOpen(false);
-    };
-
-    const handleOpenClientModal = () => {
-        setClientModalOpen(true);
-    };
-
-    // 담당자 모달 관리
+    
+    // 담당자 모달관리
     const [selectedIncharge, setSelectedIncharge] = useState(null);
     const [selectedInchargeName, setSelectedInchargeName] = useState(null);
     const [isInchargeModalOpen, setInchargeModalOpen] = useState(false);
-
-    const handleInchargeSelect = (e_id, e_name) => {
-        setSelectedIncharge(e_id);
-        setSelectedInchargeName(e_name);
-        setClientModalOpen(false);
-    };
-
-    const handleOpenInchargeModal = () => {
-        setInchargeModalOpen(true);
-    };
-
-    // 입고창고 모달관리
+    
+    // 입고 창고 모달 관리
     const [selectedStorage, setSelectedStorage] = useState(null);
     const [selectedStorageName, setSelectedStorageName] = useState(null);
     const [isStorageModalOpen, setStorageModalOpen] = useState(false);
-
-    const handleStorageSelect = (storage_code, storage_name) => {
-        setSelectedStorage(storage_code);
-        setSelectedStorageName(storage_name);
-        setClientModalOpen(false);
+    
+    const handleChange = (id, key, value) => {
+        const updated = orderItems.map(row => {
+            if (row.id === id) {
+                const newRow = { ...row, [key]: value };
+                const quantity = Number(newRow.quantity) || 0;
+                const price = Number(newRow.price) || 0;
+                const supply = quantity * price;
+                const vat = Math.floor(supply * 0.1);
+                const total = supply + vat;
+                return { ...newRow, supply, vat, total };
+            }
+            return row;
+        });
+        setOrderItems(updated);
     };
 
-    const handleOpenStorageModal = () => {
-        setStorageModalOpen(true);
+    const handleAddRow = () => {
+        const newId = orderItems.length > 0 ? Math.max(...orderItems.map(d => d.id)) + 1 : 1;
+        setOrderItems([...orderItems, { id: newId, item_code: '', quantity: 0, price: 0, supply: 0, vat: 0, total: 0 }]);
     };
 
+    const handleDeleteRow = (id) => {
+        const filtered = orderItems.filter(row => row.id !== id);
+        setOrderItems(filtered);
+    };
+
+    const totalSum = orderItems.reduce((acc, row) => acc + (row.total || 0), 0);
+
+    const handleSubmit = async () => {
+        if (!selectedClient || !selectedIncharge || !selectedStorage || !selectedType) {
+            alert("주문 정보를 모두 입력해주세요.");
+            return;
+        }
+        if (orderItems.length === 0) {
+            alert("물품을 1개 이상 입력해주세요.");
+            return;
+        }
+     
+        try {
+            const requestBody = {
+                order: {
+                    delivery_date: deliveryDate.toLocaleDateString('sv-SE'), // 브라우저 기준 날짜
+                    client_code: selectedClient,
+                    e_id: selectedIncharge,
+                    storage_code: selectedStorage,
+                    transaction_type: selectedType,
+                    order_type: 2, // 2는 구매팀 주문입력건
+                },
+                items: orderItems.map(({ id, ...item }) => item)
+            };
+
+            const response = await fetch("http://localhost:8081/buy/buyInsertAll", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                alert("주문 저장에 실패했습니다.");
+                return;
+            }
+
+            alert("주문이 정상 등록되었습니다.");
+            navigate("/main/buy-insert");
+        } catch (err) {
+            console.error(err);
+            alert("오류 발생");
+        }
+    };
 
     return (
         <Container>
@@ -212,175 +159,145 @@ export default function BuyInsert() {
             </Message>
             <br />
 
-            <div className="inputBox" >
+            <div className="inputBox">
                 <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>
-                        일자
-                    </InputGroup.Addon>
-                    <DatePicker/>
-                    <Input
-                        name="order_date"
-                        value={Order_date}
-                    />
+                    <InputGroup.Addon style={{ width: 80 }}>납기일자</InputGroup.Addon>
+                    <DatePicker value={deliveryDate} onChange={setDeliveryDate} />
                 </InputGroup>
 
                 <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>
-                        담당자
-                    </InputGroup.Addon>
-                    <Input
-                        placeholder='담당자 입력'
-                        value={selectedIncharge || ""} readOnly
-                    />
+                    <InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
+                    <Input value={selectedIncharge || ""} readOnly />
                     <InputGroup.Button tabIndex={-1}>
-                        {/* 모달 열기 버튼 */}
-                        <SearchIcon onClick={handleOpenInchargeModal} />
+                        <SearchIcon onClick={() => setInchargeModalOpen(true)} />
                     </InputGroup.Button>
                 </InputGroup>
-                <Input name="customer_1" type="text" autoComplete="off" style={{ width: 150, marginBottom: 5 }}
-                    value={selectedInchargeName || ""} readOnly />
+                <Input value={selectedInchargeName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
 
                 <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>
-                        거래처
-                    </InputGroup.Addon>
-                    <Input placeholder='거래처'
-                        value={selectedClient || ""} readOnly
-                    />
+                    <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
+                    <Input value={selectedClient || ""} readOnly />
                     <InputGroup.Addon>
-                        <SearchIcon onClick={handleOpenClientModal} />
+                        <SearchIcon onClick={() => setClientModalOpen(true)} />
                     </InputGroup.Addon>
                 </InputGroup>
-                <Input type="text" autoComplete="off" style={{ width: 150, marginBottom: 5 }}
-                    value={selectedClientName || ""} readOnly />
+                <Input value={selectedClientName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
             </div>
 
             <div className="inputBox">
                 <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>
-                        거래유형
-                    </InputGroup.Addon>
+                    <InputGroup.Addon style={{ width: 80 }}>거래유형</InputGroup.Addon>
                     <InputPicker
-                        placeholder='거래유형 선택'
-                        data={buyType}
-                        style={{ width: 224, border: 'none', height: 38 }}
-                    />
+                    placeholder="거래유형 선택"  
+                    data={buyType}
+                    style={{ width: 224 }} 
+                    value={selectedType} 
+                    onChange={setSelectedType} 
+                />
                 </InputGroup>
+
                 <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>
-                        입고창고
-                    </InputGroup.Addon>
-                    <Input placeholder='입고창고'
-                        value={selectedStorage || ""} readOnly
-                    />
+                    <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
+                    <Input value={selectedStorage || ""} readOnly />
                     <InputGroup.Addon>
-                        <SearchIcon onClick={handleOpenStorageModal}/>
+                        <SearchIcon onClick={() => setStorageModalOpen(true)} />
                     </InputGroup.Addon>
                 </InputGroup>
-                <Input type="text" autoComplete="off" style={{ width: 150, marginBottom: 5}}
-                    value={selectedStorageName || ""} readOnly />
+                <Input value={selectedStorageName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
         
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>
-                        품목코드
-                    </InputGroup.Addon>
-                    <Input placeholder='품목코드' />
-                </InputGroup>
             </div>
-            {/* <Uploader action="//jsonplaceholder.typicode.com/posts/">
-                    <Button style={{ width: 300, height: 40 }} color="green" appearance="ghost">전표등록</Button>
-                </Uploader>     */}
 
-            <InchargeSearchModal
-                title="담당자 선택"
-                confirm="확인"
-                cancel="취소"
-                onInchargeSelect={handleInchargeSelect}	// emid, Incharge 받기
-                handleOpen={isInchargeModalOpen}
-                handleColse={() => setInchargeModalOpen(false)}
-            />
-
+            {/* 거래처 모달 관리 */}
             <ClientSearchModal
-                title="거래처 선택"
-                confirm="확인"
-                cancel="취소"
-                onClientSelect={handleClientSelect}	// client_code, client_name 받기
                 handleOpen={isClientModalOpen}
                 handleColse={() => setClientModalOpen(false)}
+                onClientSelect={(code, name) => {
+                    setSelectedClient(code);
+                    setSelectedClientName(name);
+                }}
             />
 
-            <StorageSearchModal
-                title="입고창고 선택"
-                confirm="확인"
-                cancel="취소"
-                onStorageSelect={handleStorageSelect}	// client_code, client_name 받기
-                handleOpen={isStorageModalOpen}
-                handleColse={() => setStorageModalOpen(false)}
+            {/* 담당자 모달 관리 */}
+            <InchargeSearchModal 
+                handleOpen={isInchargeModalOpen} 
+                handleColse={() => setInchargeModalOpen(false)} 
+                onInchargeSelect={(id, name) => { 
+                    setSelectedIncharge(id); 
+                    setSelectedInchargeName(name); 
+                }} 
             />
-
+            
+            {/* 입고창고 모달관리 */}
+            <StorageSearchModal 
+            handleOpen={isStorageModalOpen} 
+            handleColse={() => setStorageModalOpen(false)} 
+            onStorageSelect={(code, name) => { 
+                setSelectedStorage(code); 
+                setSelectedStorageName(name); 
+                }} 
+            />
 
             <hr />
 
-            <div>
-                <Table height={300} data={data} style={{ maxWidth: 1500 }}>
-                    <Column width={100} align="center" fixed>
-                        <HeaderCell>물품코드</HeaderCell>
-                        <EditableCell dataKey="itemCode" onChange={handleChange} editable />
-                    </Column>
+            <Table height={300} data={orderItems} style={{ maxWidth: 1500 }}>
+                <Column width={120} align="center">
+                    <HeaderCell>물품코드</HeaderCell>
+                    <EditableCell dataKey="item_code" onChange={handleChange} editable />
+                </Column>
+                {/*             
+                <Column width={120} align="center">
+                    <HeaderCell>물품명</HeaderCell>
+                    <EditableCell dataKey="item_name" onChange={handleChange} editable />
+                </Column>
+              */}
+                <Column width={120} align="center">
+                    <HeaderCell>수량</HeaderCell>
+                    <EditableNumberCell dataKey="quantity" onChange={handleChange} editable />
+                </Column>
 
-                    <Column width={150} align="center">
-                        <HeaderCell>물품명</HeaderCell>
-                        <EditableCell dataKey="itemName" onChange={handleChange} editable />
-                    </Column>
+                <Column width={120} align="center">
+                    <HeaderCell>단가</HeaderCell>
+                    <EditableNumberCell dataKey="price" onChange={handleChange} editable />
+                </Column>
 
-                    <Column width={80} align="center">
-                        <HeaderCell>수량</HeaderCell>
-                        <EditableNumberCell dataKey="quantity" onChange={handleChange} editable />
-                    </Column>
+                <Column width={120} align="center">
+                    <HeaderCell>공급가액</HeaderCell>
+                    <Cell dataKey="supply" />
+                </Column>
 
-                    <Column width={100} align="center">
-                        <HeaderCell>단가</HeaderCell>
-                        <EditableNumberCell dataKey="price" onChange={handleChange} editable />
-                    </Column>
+                <Column width={120} align="center">
+                    <HeaderCell>부가세</HeaderCell>
+                    <Cell dataKey="vat" />
+                </Column>
 
-                    <Column width={100} align="center">
-                        <HeaderCell>공급가액</HeaderCell>
-                        <Cell dataKey="supply" />
-                    </Column>
+                <Column width={120} align="center">
+                    <HeaderCell>총액</HeaderCell>
+                    <Cell dataKey="total" />
+                </Column>
 
-                    <Column width={80} align="center">
-                        <HeaderCell>부가세</HeaderCell>
-                        <Cell dataKey="vat" />
-                    </Column>
+                <Column width={60} align="center">
+                    <HeaderCell>삭제</HeaderCell>
+                    <Cell>
+                        {rowData => (
+                            <IconButton 
+                            // icon={<TrashIcon />} 
+                            size="xs" 
+                            color="red" 
+                            onClick={() => handleDeleteRow(rowData.id)} />
+                        )}
+                    </Cell>
+                </Column>
+            </Table>
 
-                    <Column width={100} align="center">
-                        <HeaderCell>총액</HeaderCell>
-                        <Cell dataKey="total" />
-                    </Column>
-                </Table>
-
-                <Divider />
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: 1500 }}>
-                    <Button appearance="primary" onClick={handleAddRow}>
-                        행 추가
-                    </Button>
-                    <Button appearance="primary" type="submit" onClick={submitBuyOrder} style={{ width: 150, marginBottom: 10 }}>
-                        입력
-                    </Button>
-
-                    {/* <Button appearance="primary" color="green" onClick={handleSave} disabled={mutation.isLoading}>
-                        전표 등록
-                    </Button> */}
-                    <div style={{ fontWeight: 'bold' }}>총액 합계: {totalSum.toLocaleString()} 원</div>
-                </div>
+            <Divider />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: 1500 }}>
+                <Button appearance="primary" onClick={handleAddRow}>행 추가</Button>
+                <Button appearance="primary" onClick={handleSubmit} style={{ width: 150, marginBottom: 10 }}>입력</Button>
+                <div style={{ fontWeight: 'bold' }}>총액 합계: {totalSum.toLocaleString()} 원</div>
             </div>
-    
-            <hr />    
-            <BuyInsertOrderItem /> 
 
             <hr />
-            <BuyOrderItemList />
 
         </Container>
     );
-};
+}

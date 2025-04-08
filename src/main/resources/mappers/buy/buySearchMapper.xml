@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.erp_ordit.dao.buy.BuySearchMapper">
+<!-- 	
+	 <select id="buyList" resultType="com.spring.erp_ordit.dto.BuyDTO">
+	      select * 
+			from order_tbl
+			join order_detail_tbl 
+			on order_tbl.order_id = order_detail_tbl.order_id
+  	 </select>
+	  -->
+	 <select id="buyInchargeList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
+	      select e.e_id 
+		  	  , e.e_name 
+		   	  , d.d_name 
+		   from employee_tbl e
+		   join department_tbl d
+		 	 on e.d_code = d.d_code
+  	 </select>
+	
+	 <select id="buyClientList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
+	      select client_code 
+		  	   , client_name 
+		    from client_tbl
+  	 </select>
+  	 
+  	 <select id="buyStorageList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
+	      select storage_code 
+		  	   , storage_name 
+		    from warehouse_tbl
+  	 </select>
+  	 
+  	 <select id="buyItemList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
+	      select item_code 
+		  	   , item_name 
+		    from item_tbl
+  	 </select>
+<!-- 
+	 <update id="updateBoard" parameterType="com.boot.reactMapper.dto.BoardDTO">
+	       UPDATE mvc_board_tbl
+			 SET b_title = #{b_title} 
+			   , b_content = #{b_content}
+			   , b_writer = #{b_writer}
+			   , b_password = #{b_password}
+			WHERE b_num = #{b_num} 
+  	 </update>
+
+	 <delete id="deleteBoard" parameterType="int">
+	       DELETE FROM mvc_board_tbl
+ 		    WHERE b_num = #{b_num} 
+  	 </delete>
+  	 
+  	 <select id="findByNum" resultType="com.boot.reactMapper.dto.BoardDTO">
+	      SELECT * FROM mvc_board_tbl
+	        WHERE b_num = #{b_num}    
+  	 </select>
+  	 --> 
+</mapper>   

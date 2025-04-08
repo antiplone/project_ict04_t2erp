@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.erp_ordit.dao.buy.BuyOrderMapper">
+
+	<!-- 구매조회 탭 전체 목록 -->
+	<select id="buyOrderAllList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
+	      SELECT 
+			    ot.order_date,
+			 	ot.order_code,
+			    ct.client_name,
+			    it.item_name,
+			    oit.total,
+			    ot.transaction_type,
+			    wt.storage_name
+			FROM order_tbl ot
+			LEFT JOIN order_item_tbl oit ON oit.order_id = ot.order_id
+			LEFT JOIN item_tbl it ON oit.item_id = it.item_id
+			LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
+			LEFT JOIN warehouse_tbl wt ON ot.storage_code = wt.storage_code
+  	</select>
+	
+	<!-- 구매조회 탭 미확인 목록 -->
+	<select id="buyOrderYetList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
+	      SELECT 
+			    ot.order_date,
+			 	ot.order_code,
+			    ct.client_name,
+			    it.item_name,
+			    oit.total,
+			    ot.transaction_type,
+			    wt.storage_name
+			FROM order_tbl ot
+			LEFT JOIN order_item_tbl oit ON oit.order_id = ot.order_id
+			LEFT JOIN item_tbl it ON oit.item_id = it.item_id
+			LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
+			LEFT JOIN warehouse_tbl wt ON ot.storage_code = wt.storage_code
+			WHERE ot.order_type = 1
+			  AND ot.order_code is null
+  	</select>
+  	
+  	<!-- 구매조회 탭 미확인 "건수" 조회 -->
+	<select id="buyOrderUncheckedList" resultType="int">
+	      SELECT COUNT(*) AS uncheckedCount 
+	      	FROM order_tbl
+			WHERE order_code IS NULL
+  	</select>
+	
+	<insert id="buyOrderInsert" parameterType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
+        INSERT INTO order_tbl (
+		    order_type, order_code, order_date, e_id, client_code, storage_code,
+		    transaction_type, delivery_date, shipment_order_date
+		) VALUES
+		(#{order_type}, #{order_code}, #{order_date}, #{e_id}, #{client_code}, #{storage_code}, #{transaction_type}, #{delivery_date}, #{shipment_order_date})
+    </insert>
+	
+<!-- 
+	 1. 주문 등록 
+    <insert id="saveBuyOrder" useGeneratedKeys="true" keyProperty="order_id">
+        INSERT INTO order_tbl (order_date, emid, client_code, storage_code)
+        VALUES (#{orderDate}, #{emid}, #{clientCode}, #{storageCode})
+    </insert>
+
+    2. 마지막 order_id 조회
+    <select id="getLastInsertedOrderId" resultType="int">
+        SELECT LAST_INSERT_ID()
+    </select>
+
+    3. 주문 상세 등록
+    <insert id="saveOrderItem">
+        INSERT INTO order_item_tbl (
+            order_id, item_code, item_name, quantity, price, supply, vat, total
+        ) VALUES (
+            #{orderId},
+            #{item.itemCode},
+            #{item.itemName},
+            #{item.quantity},
+            #{item.price},
+            #{item.supply},
+            #{item.vat},
+            #{item.total}
+        )
+    </insert>
+
+ -->
+  	 <!-- <insert id="insertItem" parameterType="com.spring.erp_ordit.dto.ItemDTO">
+	    INSERT INTO order_item_tbl_hjy (order_id, item_code, item_name, quantity)
+	    VALUES (#{order_id}, #{item_code}, #{item_name}, #{quantity})
+	 </insert>
+  	 
+  	 <delete id="deleteOrder" parameterType="int">
+	       DELETE FROM order_item_tbl_hjy
+ 		    WHERE order_id = #{order_id} 
+  	 </delete>
+	 -->
+</mapper>   

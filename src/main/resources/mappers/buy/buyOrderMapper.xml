@@ -9,6 +9,7 @@
 	<select id="buyOrderAllList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
 	      SELECT 
 			    ot.order_date,
+			    ot.order_id,
 			 	ot.order_code,
 			    ct.client_name,
 			    it.item_name,
@@ -23,10 +24,10 @@
   	</select>
 	
 	<!-- 구매조회 탭 미확인 목록 -->
-	<select id="buyOrderYetList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
+	<select id="buyOrderUnchkList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
 	      SELECT 
 			    ot.order_date,
-			 	ot.order_code,
+			 	ot.order_id,
 			    ct.client_name,
 			    it.item_name,
 			    oit.total,
@@ -42,19 +43,68 @@
   	</select>
   	
   	<!-- 구매조회 탭 미확인 "건수" 조회 -->
-	<select id="buyOrderUncheckedList" resultType="int">
+	<select id="buyOrderUnchkCount" resultType="int">
 	      SELECT COUNT(*) AS uncheckedCount 
 	      	FROM order_tbl
 			WHERE order_code IS NULL
+				AND order_type=1
+  	</select>
+  	
+  	<!-- 구매조회 탭 확인 목록 -->
+	<select id="buyOrderCheckList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
+	      SELECT 
+			    ot.order_date,
+			 	ot.order_code,
+			    ct.client_name,
+			    it.item_name,
+			    oit.total,
+			    ot.transaction_type,
+			    wt.storage_name
+			FROM order_tbl ot
+			LEFT JOIN order_item_tbl oit ON oit.order_id = ot.order_id
+			LEFT JOIN item_tbl it ON oit.item_id = it.item_id
+			LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
+			LEFT JOIN warehouse_tbl wt ON ot.storage_code = wt.storage_code
+			WHERE ot.order_type = 2
+			  AND ot.order_code IS NOT NULL
   	</select>
 	
-	<insert id="buyOrderInsert" parameterType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
+	<!-- 구매 입력 (일자, 담당자, 거래처, 거래유형, 입고창고) -->
+	<insert id="buyOrderInsert" useGeneratedKeys="true" keyProperty="order_id">
         INSERT INTO order_tbl (
 		    order_type, order_code, order_date, e_id, client_code, storage_code,
 		    transaction_type, delivery_date, shipment_order_date
 		) VALUES
 		(#{order_type}, #{order_code}, #{order_date}, #{e_id}, #{client_code}, #{storage_code}, #{transaction_type}, #{delivery_date}, #{shipment_order_date})
     </insert>
+    
+    <!-- 구매현황조회 -->
+	<select id="buyStatusSearch" resultType="com.spring.erp_ordit.dto.buy.BuyStatusDTO">
+	      SELECT 
+		        ot.order_date AS order_date,
+		        ot.e_id AS e_id,
+		        ct.client_code AS client_code,
+		        ct.client_name AS client_name,
+		        it.item_code AS item_code,
+		        it.item_name AS item_name,
+		        oit.quantity,
+		        oit.price,
+		        oit.total AS total,
+		        ot.transaction_type AS transaction_type
+		    FROM order_tbl ot
+		    LEFT JOIN order_item_tbl oit ON ot.order_id = oit.order_id
+		    LEFT JOIN item_tbl it ON oit.item_id = it.item_id
+		    LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
+		    <where>
+		        ot.order_type = 2
+		        <if test="order_date != null and order_date != ''">AND ot.order_date = #{order_date}</if>
+		        <if test="client_code != null and client_code != ''">AND ot.client_code = #{client_code}</if>
+		        <if test="e_id != null and e_id != ''">AND ot.e_id = #{e_id}</if>
+		        <if test="storage_code != null and storage_code != ''">AND ot.storage_code = #{storage_code}</if>
+		        <if test="item_code != null and item_code != ''">AND it.item_code = #{item_code}</if>
+		        <if test="transaction_type != null and transaction_type != ''">AND ot.transaction_type = #{transaction_type}</if>
+		    </where>
+  	</select>
 	
 <!-- 
 	 1. 주문 등록 

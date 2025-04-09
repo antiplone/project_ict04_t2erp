@@ -6,47 +6,91 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.erp_ordit.dao.buy.BuyItemMapper;
+import com.spring.erp_ordit.dao.buy.BuyOrderItemMapper;
 import com.spring.erp_ordit.dao.buy.BuyOrderMapper;
 import com.spring.erp_ordit.dto.buy.BuyOrderDTO;
+import com.spring.erp_ordit.dto.buy.BuyOrderItemDTO;
+import com.spring.erp_ordit.dto.buy.BuyStatusDTO;
 
 @Service
 @Transactional  // 트랜잭션 적용
 public class BuyOrderServiceImpl {
 	
 	@Autowired
-	private BuyOrderMapper BuyOrderMapper;
+	private BuyOrderMapper buyOrderMapper;
+	
+	@Autowired
+	private BuyOrderItemMapper buyOrderItemMapper;
+	
+	@Autowired
+	private BuyItemMapper buyItemMapper;
 	
 	// 구매 조회 탭 전체 목록
 	@Transactional // 서비스 함수가 종료될 때 commit 할지 rollback 할지 트랜잭션 관리하겠다.
-	public List<BuyOrderDTO> buyOrderAllList() {
+	public List<BuyOrderDTO> getBuyOrderAllList() {
 		
 		System.out.println("<<< BuyOrderServiceImpl - buyOrderAllList >>>");
 		
-		return BuyOrderMapper.buyOrderAllList();
+		return buyOrderMapper.buyOrderAllList();
 	}
 	
 	// 구매 조회 탭 미확인 목록
 	@Transactional // 서비스 함수가 종료될 때 commit 할지 rollback 할지 트랜잭션 관리하겠다.
-	public List<BuyOrderDTO> buyOrderYetList() {
+	public List<BuyOrderDTO> getBuyOrderUnchkList() {
 		
-		System.out.println("<<< BuyOrderServiceImpl - buyOrderYetList >>>");
+		System.out.println("<<< BuyOrderServiceImpl - buyOrderUnchkList >>>");
 		
-		return BuyOrderMapper.buyOrderYetList();
+		return buyOrderMapper.buyOrderUnchkList();
 	}
 	
 	// 구매조회 탭 미확인 "건수" 조회
 	@Transactional // 서비스 함수가 종료될 때 commit 할지 rollback 할지 트랜잭션 관리하겠다.
-	public List<BuyOrderDTO> buyOrderUncheckedList() {
+	public List<BuyOrderDTO> getBuyOrderUnchkCount() {
 		
-		System.out.println("<<< BuyOrderServiceImpl - buyOrderUncheckedList >>>");
+		System.out.println("<<< BuyOrderServiceImpl - buyOrderUnchkCount >>>");
 		
-		return BuyOrderMapper.buyOrderUncheckedList();
+		return buyOrderMapper.buyOrderUnchkCount();
 	}
 	
-	// 구매 입력
+	// 구매 조회 탭 확인 목록
 	@Transactional // 서비스 함수가 종료될 때 commit 할지 rollback 할지 트랜잭션 관리하겠다.
-	public int buyOrderInsert(BuyOrderDTO dto) {
-		return BuyOrderMapper.buyOrderInsert(dto);	// mybatis에서는 I,U,D 리턴타입이 int(1:성공, 0:실패)
+	public List<BuyOrderDTO> getBuyOrderCheckList() {
+		
+		System.out.println("<<< BuyOrderServiceImpl - buyOrderCheckList >>>");
+		
+		return buyOrderMapper.buyOrderCheckList();
+	}
+	
+	// 구매입력 - 주문정보와 물품정보 
+	@Transactional
+	public void setBuyInsertAll(BuyOrderDTO order, List<BuyOrderItemDTO> items) {
+		buyOrderMapper.buyOrderInsert(order);	// 구매주문 입력 - order_id가 자동주입 
+		Long order_id = order.getOrder_id();
+		
+		for (BuyOrderItemDTO item : items) {
+			item.setOrder_id(order_id);
+			
+			// item_code로 item_id 조회하여 자동 설정
+			if (item.getItem_id() == null && item.getItem_code() != null) {
+				Long item_id = buyItemMapper.findItemIdByCode(item.getItem_code());
+				if (item_id == null) {
+					throw new RuntimeException("해당 item_code의 item_id를 찾을 수 없습니다: " + item.getItem_code());
+				}
+				item.setItem_id(item_id);
+			}
+			
+			buyOrderItemMapper.buyOrderItemInsert(item); // 구매주문에 해당하는 물품정보 입력
+		}
+	}
+	
+	// 구매 현황 조회 
+	@Transactional // 서비스 함수가 종료될 때 commit 할지 rollback 할지 트랜잭션 관리하겠다.
+	public List<BuyStatusDTO> getBuyStatusSearch(String order_date, String client_code, String e_id,
+            								 String storage_code, String item_code, String transaction_type) {
+		System.out.println("<<< BuyOrderServiceImpl - buyStatusSearch >>>");
+		
+		 return buyOrderMapper.buyStatusSearch(order_date, client_code, e_id, storage_code, item_code, transaction_type);
 	}
 	
 //	// 전표 등록

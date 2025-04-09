@@ -3,7 +3,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import React, { useState } from "react";
 import { Button, Container, DatePicker, Divider, Input, InputGroup, InputNumber, InputPicker, Message, Table } from "rsuite";
-import SearchIcon from '@rsuite/icons/Search';
+//import SearchIcon from '@rsuite/icons/Search';
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import { useNavigate } from "@remix-run/react";
 import BuyOrderItemList from "#components/buy/BuyOrderItemList.jsx";
@@ -232,10 +232,10 @@ export default function BuyInsert() {
                         placeholder='담당자 입력'
                         value={selectedIncharge || ""} readOnly
                     />
-                    <InputGroup.Button tabIndex={-1}>
-                        {/* 모달 열기 버튼 */}
+                    {/*<InputGroup.Button tabIndex={-1}>
+                         모달 열기 버튼
                         <SearchIcon onClick={handleOpenInchargeModal} />
-                    </InputGroup.Button>
+                    </InputGroup.Button>*/}
                 </InputGroup>
                 <Input name="customer_1" type="text" autoComplete="off" style={{ width: 150, marginBottom: 5 }}
                     value={selectedInchargeName || ""} readOnly />
@@ -247,9 +247,9 @@ export default function BuyInsert() {
                     <Input placeholder='거래처'
                         value={selectedClient || ""} readOnly
                     />
-                    <InputGroup.Addon>
+                    {/*<InputGroup.Addon>
                         <SearchIcon onClick={handleOpenClientModal} />
-                    </InputGroup.Addon>
+                    </InputGroup.Addon>*/}
                 </InputGroup>
                 <Input type="text" autoComplete="off" style={{ width: 150, marginBottom: 5 }}
                     value={selectedClientName || ""} readOnly />
@@ -273,9 +273,9 @@ export default function BuyInsert() {
                     <Input placeholder='입고창고'
                         value={selectedStorage || ""} readOnly
                     />
-                    <InputGroup.Addon>
+                    {/*<InputGroup.Addon>
                         <SearchIcon onClick={handleOpenStorageModal}/>
-                    </InputGroup.Addon>
+                    </InputGroup.Addon>*/}
                 </InputGroup>
                 <Input type="text" autoComplete="off" style={{ width: 150, marginBottom: 5}}
                     value={selectedStorageName || ""} readOnly />

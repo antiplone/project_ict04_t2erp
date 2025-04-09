@@ -1,7 +1,7 @@
 // 구매팀 - 구매현황 조회 페이지
 /* eslint-disable react/react-in-jsx-scope */
 import { Button, Container, DatePicker, DateRangePicker, Input, InputGroup, InputPicker, Message } from "rsuite"
-import SearchIcon from '@rsuite/icons/Search';
+//import SearchIcon from '@rsuite/icons/Search';
 import React, { useState } from "react";
 import BuyStatusSelectTbl from "#components/buy/BuyStatusSelectTbl";
 import "../styles/buy.css";
@@ -122,10 +122,10 @@ export default function BuyStatusSelect() {
                         placeholder='담당자 입력'
                         value={selectedIncharge || ""} readOnly
                     />
-                    <InputGroup.Button tabIndex={-1}>
-                        {/* 모달 열기 버튼 */}
+                    {/*<InputGroup.Button tabIndex={-1}>
+                        모달 열기 버튼
                         <SearchIcon onClick={handleOpenInchargeModal} />
-                    </InputGroup.Button>
+                    </InputGroup.Button>*/}
                 </InputGroup>
                 <Input name="customer_1" type="text" autoComplete="off" style={{ width: 150, marginBottom: 5 }}
                     value={selectedInchargeName || ""} readOnly />
@@ -137,9 +137,9 @@ export default function BuyStatusSelect() {
                     <Input placeholder='거래처'
                         value={selectedClient || ""} readOnly
                     />
-                    <InputGroup.Addon>
+                    {/*<InputGroup.Addon>
                         <SearchIcon onClick={handleOpenClientModal} />
-                    </InputGroup.Addon>
+                    </InputGroup.Addon>*/}
                 </InputGroup>
                 <Input type="text" autoComplete="off" style={{ width: 150, marginBottom: 5 }}
                     value={selectedClientName || ""} readOnly />
@@ -165,9 +165,9 @@ export default function BuyStatusSelect() {
                     <Input placeholder='입고창고'
                         value={selectedStorage || ""} readOnly
                     />
-                    <InputGroup.Addon>
+                    {/*<InputGroup.Addon>
                         <SearchIcon onClick={handleOpenStorageModal}/>
-                    </InputGroup.Addon>
+                    </InputGroup.Addon>*/}
                 </InputGroup>
                 <Input type="text" autoComplete="off" style={{ width: 150, marginBottom: 5}}
                     value={selectedStorageName || ""} readOnly />
@@ -179,9 +179,9 @@ export default function BuyStatusSelect() {
                     <Input placeholder='물품입력'
                         value={selectedItem || ""} readOnly
                     />
-                   <InputGroup.Addon>
+                   {/*<InputGroup.Addon>
                         <SearchIcon onClick={handleOpenItemModal}/>
-                    </InputGroup.Addon>
+                    </InputGroup.Addon>*/}
                 </InputGroup>
                 <Input type="text" autoComplete="off" style={{ width: 150, marginBottom: 5}}
                     value={selectedItemName || ""} readOnly />

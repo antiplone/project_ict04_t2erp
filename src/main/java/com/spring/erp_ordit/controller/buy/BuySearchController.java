@@ -13,7 +13,7 @@ import com.spring.erp_ordit.service.buy.BuySearchServiceImpl;
 @RestController // RestController는 리턴타입이 JSON
 @RequestMapping("/buy")
 @CrossOrigin	// 추가  
-public class BuySearchController { 	// 작성자: hjy - 모달 검색 담당자,거래처 목록 
+public class BuySearchController { 	// 작성자: hjy - 모달 검색 관련 controller => 담당자,거래처,입고창고,물품 
 	
 	@Autowired
 	private BuySearchServiceImpl searchService;

@@ -34,7 +34,7 @@
 	
     <!-- 판매_거래처 관리 - 삭제 요청 -->
     <delete id="deleteClient" parameterType="int">
-		DELETE FROM request_client_tbl_jsh
+		DELETE FROM request_client_tbl
 		WHERE sc_id = #{sc_id}
    </delete>
    

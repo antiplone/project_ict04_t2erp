@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+     
+<mapper namespace="com.spring.erp_ordit.dao.warehouse.LogisMapper">
+
+	<resultMap id="logisStockMap" type="com.spring.erp_ordit.dto.warehouse.LogisStockDTO">
+	    <result column="item_code" property="item_code" jdbcType="INTEGER"/>
+	    <result column="item_name" property="item_name" jdbcType="VARCHAR"/>
+	    <result column="stock_amount" property="stock_amount" jdbcType="INTEGER"/>
+	    <result column="safe_stock" property="safe_stock" jdbcType="INTEGER"/>
+	    <result column="last_date" property="last_date" jdbcType="DATE"/>
+	</resultMap>
+
+	<resultMap id="logisOrderMap" type="com.spring.erp_ordit.dto.warehouse.LogisOrderDTO">
+		<result column="order_id" property="order_id" jdbcType="INTEGER" />
+		<result column="order_code" property="order_code" jdbcType="INTEGER" />
+		<result column="order_date" property="order_date" jdbcType="DATE" />
+		<result column="delivery_date" property="delivery_date" jdbcType="DATE" />
+		<result column="order_type" property="order_type" jdbcType="VARCHAR" />
+		<result column="transaction_type" property="transaction_type" jdbcType="VARCHAR" />
+		<result column="storage_code" property="storage_code" jdbcType="INTEGER" />
+		<result column="storage_name" property="storage_name" jdbcType="VARCHAR" />
+		<result column="storage_location" property="storage_location" jdbcType="VARCHAR" />
+		<result column="item_code" property="item_code" jdbcType="INTEGER" />
+		<result column="quantity" property="quantity" jdbcType="INTEGER" />
+		<result column="item_name" property="item_name" jdbcType="VARCHAR" />
+		<result column="item_standard" property="item_standard" jdbcType="VARCHAR" />
+	    <result column="client_code" property="client_code" jdbcType="VARCHAR"/>
+	    <result column="client_name" property="client_name" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="logisOrderIdMap" type="com.spring.erp_ordit.dto.warehouse.LogisOrderDTO">
+	    <result property="order_id" column="order_id"/>
+	    <result property="order_code" column="order_code"/>
+	    <result property="order_type" column="order_type" jdbcType="INTEGER"/>
+	    <result property="order_date" column="order_date" jdbcType="DATE" />
+	    <result property="delivery_date" column="delivery_date" jdbcType="DATE"/>
+	    <result property="shipment_order_date" column="shipment_order_date"/>
+	    <result property="item_code" column="item_code"/>
+	    <result property="item_name" column="item_name"/>
+	    <result property="item_standard" column="item_standard"/>
+	    <result property="quantity" column="quantity"/>
+	</resultMap>
+
+   <select id="warehouseList" resultType="com.spring.erp_ordit.dto.warehouse.WarehouseDTO">
+		SELECT
+			it.item_code AS 'item_code',
+			it.item_name AS 'item_name',
+			it.item_standard AS 'item_standard',
+			st.stock_amount AS 'stock_amount',
+			st.safe_stock AS 'safe_stock',
+			st.last_date AS 'last_date',
+			ct.client_name AS 'client_name',
+			wt.storage_name AS 'storage_name'
+		FROM
+			item_tbl AS it
+		INNER JOIN
+			stock_tbl AS st ON it.item_code = st.item_code
+		INNER JOIN
+			client_tbl AS ct ON ct.client_code
+		INNER JOIN
+			warehouse_tbl AS wt ON wt.storage_code 
+		WHERE
+			it.item_code = st.item_code
+		group by item_code;
+	
+   </select>
+   
+    <select id="logisStockList" resultMap="logisStockMap">
+			SELECT 
+				stm.item_code,
+				itm.item_name,
+				stm.stock_amount,
+				stm.safe_stock,
+				stm.last_date
+			FROM 
+				stock_tbl_mhj stm
+			inner join
+				item_tbl itm on itm.item_code = stm.item_code
+			group by item_code, item_name
+	</select>
+    
+	<!-- 창고 관련 -->
+	<select id="storageList" resultType="com.spring.erp_ordit.dto.warehouse.LogisStorageDTO">
+		SELECT * FROM warehouse_tbl
+	</select>
+   
+	<!-- 창고 등록 -->
+	<insert id="storageInsert" parameterType="com.spring.erp_ordit.dto.warehouse.LogisStorageDTO">
+		INSERT INTO warehouse_tbl(storage_name, storage_location)
+		VALUES(#{storage_name}, #{storage_location})
+	</insert>
+
+	<!-- 창고 상세 -->
+	<select id="findByStoragecode" parameterType="int" resultType="com.spring.erp_ordit.dto.warehouse.LogisStorageDTO">
+		SELECT * FROM warehouse_tbl
+		WHERE storage_code = #{storage_code}
+	</select>
+
+	<!-- 창고 수정 -->
+	<update id="updateStorage" parameterType="com.spring.erp_ordit.dto.warehouse.LogisStorageDTO">
+		UPDATE warehouse_tbl
+			SET storage_name=#{storage_name}, storage_location=#{storage_location}
+		WHERE storage_code = #{storage_code}
+	</update>
+
+	<!-- 창고 삭제 -->
+	<delete id="deleteStoragecode" parameterType="int">
+		DELETE FROM warehouse_tbl
+		WHERE storage_code = #{storage_code}
+	</delete>
+	
+	<!-- 입출고 관리 -->
+	<!-- 입고 전체 목록 조회 -->
+	<select id="logisOrderList" resultMap="logisOrderMap">
+		SELECT
+				ot.order_id,
+				ot.order_code,
+				ot.order_date,
+				ot.delivery_date,
+				ot.order_type,
+				ot.transaction_type,
+				wt.storage_code,
+				wt.storage_name,
+				wt.storage_location,
+		 		it.item_code,
+				oit.quantity,
+				it.item_name,
+				it.item_standard,
+				ct.client_code,
+				ct.client_name
+		FROM
+				order_tbl as ot
+		INNER JOIN
+				warehouse_tbl AS wt ON ot.storage_code = wt.storage_code
+		INNER JOIN
+		 	    item_tbl AS it on it.item_code
+		INNER JOIN
+			    order_item_tbl AS oit ON oit.item_code 
+		INNER JOIN
+		    	client_tbl AS ct ON ct.client_code = ot.client_code
+		WHERE
+		    ot.delivery_date = DATE(NOW())
+		GROUP BY order_id
+	</select>
+	
+	<!-- 입고주문별 목록 상세조회 -->
+	<select id="findByLogisOrderId" resultMap="logisOrderIdMap">
+		 select
+	        ot.order_id as 'order_id',
+	        ot.order_code as 'order_code',
+	        ot.order_type as 'order_type',
+	        ot.order_date as 'order_date',
+	        ot.delivery_date as 'delivery_date',
+	        ot.shipment_order_date as 'shipment_order_date',
+	        oit.item_code as 'item_code',
+	        it.item_name as 'item_name',
+	        it.item_standard as 'item_standard',
+	        oit.quantity as 'quantity'
+	    from
+	        order_tbl as ot
+	    inner join
+	        order_item_tbl oit on oit.order_id = ot.order_id
+	    inner join
+	        item_tbl it on oit.item_id = it.item_id
+	    where
+	        ot.order_id = #{order_id}
+	    group BY
+	        oit.item_code
+
+	</select>
+	
+	<!-- 판매 전체 목록 조회 --> <!-- 나중에 바꿔야됨 -->
+	<select id="logisSalesList" resultType="com.spring.erp_ordit.dto.warehouse.LogisSalesDTO">
+		SELECT
+				ot.order_id,
+				ot.order_code,
+				ot.order_date,
+				ot.shipment_order_date,
+				ot.order_type,
+				ot.transaction_type,
+				wt.storage_code,
+				wt.storage_name,
+				wt.storage_location,
+		 		it.item_code,
+				oit.quantity,
+				it.item_name,
+				it.item_standard,
+				ct.client_code,
+				ct.client_name
+		FROM
+				order_tbl as ot
+		INNER JOIN
+				warehouse_tbl AS wt ON ot.storage_code = wt.storage_code
+		INNER JOIN
+		 	    item_tbl AS it on it.item_code
+		INNER JOIN
+			    order_item_tbl AS oit ON oit.item_code 
+		INNER JOIN
+		    	client_tbl AS ct ON ct.client_code = ot.client_code
+		WHERE
+		    ot.shipment_order_date = DATE(NOW())
+		GROUP BY order_id
+	</select>
+	
+	<!-- 판매주문별 목록 상세조회 -->
+	<select id="findBySalesId" resultType="com.spring.erp_ordit.dto.warehouse.LogisSalesDTO">
+		select
+			otm.order_id as 'order_id',
+			otm.order_date as 'order_date',
+			otm.order_code as 'order_code',
+			otm.order_type as 'order_status',
+			otm.shipment_order_date as 'shipment_order_date',
+			oitm.item_code as 'item_code',
+			oitm.item_name as 'item_name',
+			oitm.quantity as 'order_amount'
+		from
+			order_tbl as otm
+		inner join
+			order_item oitm on otm.order_id = oitm.order_id
+		where
+			otm.order_id = #{order_id}
+		group by otm.order_id ;
+	</select>
+	
+	<select id="findBySalesItem" parameterType="map" resultType="com.spring.erp_ordit.dto.warehouse.LogisSalesDTO">
+		SELECT * FROM order_item
+		WHERE order_id = #{order_id} AND item_code = #{item_code} group by item_code
+	</select>
+
+	<update id="updateStock" parameterType="com.spring.erp_ordit.dto.warehouse.LogisStockDTO">
+		UPDATE
+			stock_tbl_mhj
+		SET 
+			stock_amount= stock_amount + #{stock_amount}, last_date = DATE(NOW())
+		WHERE item_code = #{item_code}
+	</update>
+
+</mapper>

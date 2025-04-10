@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
 import { useEffect, useState } from "react";
+import { useNavigate } from "@remix-run/react";
 import {
   Button,
   Form,
@@ -26,7 +27,7 @@ const model = Schema.Model({
   a_note: StringType().maxLength(100, "100자 이내로 작성해주세요"),
 });
 
-const AttModal = ({ open, onClose, onReloading }) => {
+const VacaModal = ({ open, onClose, onReloading }) => {
   // const navigate = useNavigate();
 
   const [formError, setFormError] = useState({});
@@ -149,4 +150,4 @@ const AttModal = ({ open, onClose, onReloading }) => {
   );
 };
 
-export default AttModal;
+export default VacaModal;

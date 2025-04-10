@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.spring.erp_ordit.dto.attendance.AttItemsDTO;
 import com.spring.erp_ordit.dto.attendance.VacaItemsDTO;
 
-
 @Mapper		// DAOImpl을 만들지 않고 여기서 만들겠다는 의미
 @Repository
 public interface AttMapper {
@@ -26,9 +25,5 @@ public interface AttMapper {
 	// [ 기본사항등록 ]
 	// 휴가 항목 리스트
 	public List<VacaItemsDTO> regVacaList();
-
-	
-	// 기본사항등록 - 근태 항목 등록; 검색
-//	public AttItemsDTO attSearch(String a_keywords);
 
 }

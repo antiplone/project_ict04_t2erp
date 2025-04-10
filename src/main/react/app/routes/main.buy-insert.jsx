@@ -287,7 +287,11 @@ export default function BuyInsert() {
                     <HeaderCell>삭제</HeaderCell>
                     <Cell>
                         {rowData => (
-                            <IconButton icon={<TrashIcon />} size="xs" color="red" onClick={() => handleDeleteRow(rowData.id)} />
+                            <IconButton 
+                            // icon={<TrashIcon />} 
+                            size="xs" 
+                            color="red" 
+                            onClick={() => handleDeleteRow(rowData.id)} />
                         )}
                     </Cell>
                 </Column>

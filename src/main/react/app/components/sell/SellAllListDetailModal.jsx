@@ -4,7 +4,7 @@ import { Button, Table, Modal, Checkbox } from "rsuite";
 const { Column, HeaderCell, Cell } = Table;
 
 
-const RequestClientDetailModal = ({ title, confirm, cancel, onReqClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
+const SellRequestClientDetailModal = ({ title, confirm, cancel, onReqClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
 	
 	const [reqClientList, setReqClientList] = useState([]);
 
@@ -127,7 +127,7 @@ const RequestClientDetailModal = ({ title, confirm, cancel, onReqClientSelect, h
 	);
 };
 
-RequestClientDetailModal.defaultProps = {
+SellRequestClientDetailModal.defaultProps = {
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
 	title: "제목을 입력해주세요.",
 	confirm: "확인",
@@ -135,4 +135,4 @@ RequestClientDetailModal.defaultProps = {
 	
 };
 
-export default RequestClientDetailModal;
+export default SellRequestClientDetailModal;

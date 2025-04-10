@@ -1,6 +1,6 @@
 
 
-const SalesInvoice = () => {
+const SellSalesInvoice = () => {
 
     return(
         <div>
@@ -39,4 +39,4 @@ const SalesInvoice = () => {
     );
 };
 
-export default SalesInvoice;
+export default SellSalesInvoice;

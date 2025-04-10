@@ -4,14 +4,14 @@ import { Button, Table, Modal, Checkbox } from "rsuite";
 const { Column, HeaderCell, Cell } = Table;
 
 
-const ClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
+const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
 	
 	const [clientList, setClientList] = useState([]);
 	const [selectedClient, setSelectedClient] = useState(null);
 
 		// fetch()를 통해 톰캣서버에게 데이터를 요청
 		useEffect(() => {
-			fetch("http://localhost:8081/search/sellClient", {
+			fetch("http://localhost:8081/sell/searchClient", {
 				method: "GET"
 			})
 			.then(res => res.json())
@@ -35,6 +35,13 @@ const ClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen,
 				handleColse();
 			}
 		};
+
+		// 모달이 열릴 때 선택값 초기화
+		useEffect(() => {
+			if (handleOpen) {
+				setSelectedClient(null);
+			}
+		}, [handleOpen]);
 
 	return (
 		<Modal open={handleOpen} onClose={handleColse} size="xs">
@@ -83,7 +90,7 @@ const ClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen,
 	);
 };
 
-ClientSearchModal.defaultProps = {
+SellClientSearchModal.defaultProps = {
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
 	title: "제목을 입력해주세요.",
 	confirm: "확인",
@@ -91,4 +98,4 @@ ClientSearchModal.defaultProps = {
 	
 };
 
-export default ClientSearchModal;
+export default SellClientSearchModal;

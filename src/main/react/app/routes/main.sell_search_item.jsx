@@ -4,7 +4,7 @@ import SellSearchModal from '#components/sell/SellSearchModal';
 
 const { Column, HeaderCell, Cell } = Table;
 
-const SellSearch = () => {
+const sell_search_item = () => {
 	// 물품 검색 모달 관리
 
 	const [isSearchModalOpen, setSearchModalOpen] = useState(false);
@@ -16,7 +16,7 @@ const SellSearch = () => {
 	const [itemList, setItemList] = useState([]);
 
 	useEffect(()=> {
-		fetch("http://localhost:8081/search/sellItemList", {
+		fetch("http://localhost:8081/sell/searchItemList", {
 			method: "GET"
 		})
 		.then(res => res.json())
@@ -28,7 +28,7 @@ const SellSearch = () => {
 
 	return (
 		<div> 
-			 <Message type="warning" bordered showIcon className="main_title">
+			 <Message type="warning" className="main_title">
       			판매 물품 검색
     		</Message>
 
@@ -66,45 +66,45 @@ const SellSearch = () => {
 				</Cell>
 			</Column>
 
-			<Column width={200} className="search_text">
+			<Column width={300} className="search_text">
 				<HeaderCell>규격</HeaderCell>
 				<Cell>
 					{(rowData) => rowData.item_standard}
 				</Cell>
 			</Column>
-
+{/* 
 			<Column width={100} className="search_text">
 				<HeaderCell>단가</HeaderCell>
 				<Cell>
 					{(rowData) => rowData.price}
 				</Cell>
-			</Column>
+			</Column> */}
 
-			<Column width={100} className="search_text">
+			<Column width={150} className="search_text">
 				<HeaderCell>창고명</HeaderCell>
 				<Cell>
-					{(rowData) => rowData.storage}
+					{(rowData) => rowData.storage_name}
 				</Cell>
 			</Column>
 
 			<Column width={100} className="search_text">
 				<HeaderCell>창고수량</HeaderCell>
 				<Cell>
-					{(rowData) => rowData.quantity}
+					{(rowData) => rowData.stock_amount}
 				</Cell>
 			</Column>
 
-			<Column width={100} className="search_text">
+			{/* <Column width={100} className="search_text">
 				<HeaderCell>거래처명</HeaderCell>
 				<Cell>
 					{(rowData) => rowData.client_name}
 				</Cell>
-			</Column>
+			</Column> */}
 
 			<Column width={200} className="search_text">
 				<HeaderCell>등록일자</HeaderCell>
 				<Cell>
-					{(rowData) => rowData.date}
+					{(rowData) => rowData.item_reg_date}
 				</Cell>
 			</Column>
 			
@@ -170,4 +170,4 @@ const SellSearch = () => {
 };
 
 
-export default SellSearch;
+export default sell_search_item;

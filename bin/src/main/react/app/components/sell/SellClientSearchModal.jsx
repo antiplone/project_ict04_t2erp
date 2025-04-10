@@ -3,37 +3,45 @@ import { Button, Table, Modal, Checkbox } from "rsuite";
 
 const { Column, HeaderCell, Cell } = Table;
 
-const EmployeeSearchModal = ({ title, confirm, cancel, onInchargeSelect, handleOpen, handleColse } /* = props:속성 */) => {
+
+const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
 	
-	const [employeeList, setEmployeeList] = useState([]);
-	const [selectedIncharge, setSelectedIncharge] = useState(null);
+	const [clientList, setClientList] = useState([]);
+	const [selectedClient, setSelectedClient] = useState(null);
 
 		// fetch()를 통해 톰캣서버에게 데이터를 요청
 		useEffect(() => {
-			fetch("http://localhost:8081/search/sellEmployee", {
+			fetch("http://localhost:8081/sell/searchClient", {
 				method: "GET"
 			})
 			.then(res => res.json())
 			.then(res => {
-				setEmployeeList(res);
+				setClientList(res);
 			});
 		}, []);
-
-		const inchargeChkChange = (checked, incharge) => {
+	
+		const handleCheckboxChange = (checked, client) => {
 			if (checked) {
-				setSelectedIncharge(incharge); // 체크된 담당자 저장
+				setSelectedClient(client); // 체크된 클라이언트 저장
 			} else {
-				setSelectedIncharge(null); // 체크 해제 시 초기화
+				setSelectedClient(null); // 체크 해제 시 초기화
 			}
 		};
 		
 		// 선택 완료 처리
 		const handleSubmit = () => {
-			if (selectedIncharge) {
-				onInchargeSelect(selectedIncharge.e_id, selectedIncharge.e_name);
+			if (selectedClient) {
+				onClientSelect(selectedClient.client_code, selectedClient.client_name);
 				handleColse();
 			}
 		};
+
+		// 모달이 열릴 때 선택값 초기화
+		useEffect(() => {
+			if (handleOpen) {
+				setSelectedClient(null);
+			}
+		}, [handleOpen]);
 
 	return (
 		<Modal open={handleOpen} onClose={handleColse} size="xs">
@@ -43,40 +51,35 @@ const EmployeeSearchModal = ({ title, confirm, cancel, onInchargeSelect, handleO
 			<Modal.Body>
 			<Table
 				height={400}
-				data={employeeList}
+				data={clientList}
 			>
+
 				<Column width={100} align="center" fixed>
 					<HeaderCell>선택</HeaderCell>
 					
 					<Cell>{(rowData) => (
 						<Checkbox 
-						checked={selectedIncharge?.e_id === rowData.e_id} 
+						checked={selectedClient?.client_code === rowData.client_code} 
                         onChange={(_, checked) => 
-							inchargeChkChange(checked, rowData)}
+							handleCheckboxChange(checked, rowData)}
 						/>
 						)}
-			  		</Cell>
+					</Cell>
 				</Column>
 
 				<Column width={100} align="center" fixed>
-					<HeaderCell>사번</HeaderCell>
-					
-					<Cell>{(rowData) => rowData.e_id}</Cell>
+					<HeaderCell>거래처 코드</HeaderCell>
+					<Cell>{(rowData) => rowData.client_code}</Cell>
 				</Column>
 
-				<Column width={150}>
-					<HeaderCell>담당자명</HeaderCell>
-					<Cell>{(rowData) => rowData.e_name}</Cell>
+				<Column width={250}>
+					<HeaderCell>거래처명</HeaderCell>
+					<Cell>{(rowData) => rowData.client_name}</Cell>
 				</Column>
-
-				<Column width={150}>
-					<HeaderCell>부서</HeaderCell>
-					<Cell>{(rowData) => rowData.d_name}</Cell>
-				</Column>
-	  		</Table>
+			</Table>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button /* href="/" */ onClick={handleSubmit} appearance="primary">
+				<Button onClick={handleSubmit} appearance="primary">
 					{confirm}
 				</Button>
 				<Button onClick={handleColse} appearance="subtle">
@@ -87,11 +90,12 @@ const EmployeeSearchModal = ({ title, confirm, cancel, onInchargeSelect, handleO
 	);
 };
 
-EmployeeSearchModal.defaultProps = {
+SellClientSearchModal.defaultProps = {
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
 	title: "제목을 입력해주세요.",
 	confirm: "확인",
 	cancel: "취소",
+	
 };
 
-export default EmployeeSearchModal;
+export default SellClientSearchModal;

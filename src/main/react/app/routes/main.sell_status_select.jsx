@@ -5,7 +5,7 @@ import { Button, ButtonToolbar, Message, DatePicker, Form,
 		 IconButton, InputNumber, DateRangePicker} from "rsuite";
 import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
 import { mockUsers } from './sell_mock4';
-import SearchIcon from '@rsuite/icons/Search';
+//import SearchIcon from '@rsuite/icons/Search';
 import "../components/common/Sell_maintitle.css";
 
 const styles = {
@@ -16,7 +16,7 @@ const styles = {
 const { Column, HeaderCell, Cell } = Table;
 const defaultData = mockUsers(8);
 
-const SellResult = () => {
+const sell_status_select = () => {
 
 	const [data, setData] = React.useState(defaultData);
 
@@ -42,7 +42,7 @@ const SellResult = () => {
 	return (
 		<div>
 			
-			<Message type="success" bordered showIcon className="main_title">
+			<Message type="success" className="main_title">
 				판매 현황
 			</Message>
 			
@@ -72,7 +72,7 @@ const SellResult = () => {
 								// value={selectedIncharge ? selectedIncharge.em_name : ""}
 							/>
 							<InputGroup.Addon>
-								<SearchIcon />
+								{/* <SearchIcon /> */}
 							</InputGroup.Addon>
 						</InputGroup>
 					</div>
@@ -84,7 +84,7 @@ const SellResult = () => {
 							</InputGroup.Addon>
 							<Input placeholder='거래처' />
 							<InputGroup.Addon>
-								<SearchIcon />
+								{/* <SearchIcon /> */}
 							</InputGroup.Addon>
 						</InputGroup>
 					</div>
@@ -134,7 +134,7 @@ const SellResult = () => {
 						<Table height={400} data={data}>
 
 						<Column width={150}>
-							<HeaderCell>일자</HeaderCell>
+							<HeaderCell>일자-No.</HeaderCell>
 							<Cell
 							//dataKey="date"
 							dataType="date"
@@ -276,57 +276,4 @@ function toValueString(value, dataType) {
 	);
   };
 
-export default SellResult;
-
-					// <Form.Group controlId="day">
-					// 	<Form.ControlLabel style={{ marginRight: 25, fontSize: 17 }}>등록일자</Form.ControlLabel>
-					// 	<DatePicker style={{ width: 145 }} /> ~ <DatePicker style={{ width: 145, marginRight: 70 }} />
-					// </Form.Group> 
-
-					// <Form.Group controlId="customer_1">
-					// 	<HStack>
-					// 		<Form.ControlLabel style={{ marginRight: 30, fontSize: 17 }}>거래처</Form.ControlLabel>
-					// 		<InputGroup style={styles}>
-					// 			<AutoComplete />
-					// 				<InputGroup.Button tabIndex={-1}>
-					// 					<SearchIcon />
-					// 				</InputGroup.Button>
-					// 		</InputGroup>
-					// 		<Form.Control name="customer_1" type="text" autoComplete="off" style={{ width: 150,  marginBottom: 5 }} />
-					// 	</HStack>
-					// </Form.Group>
-					// </div>
-					// <div className="form_div">
-					// <Form.Group controlId="customer_2">
-					// 	<HStack>
-					// 		<Form.ControlLabel style={{ marginRight: 34, fontSize: 17 }}>담당자</Form.ControlLabel>
-					// 		<InputGroup style={styles}>
-					// 			<AutoComplete />
-					// 				<InputGroup.Button tabIndex={-1}>
-					// 					<SearchIcon />
-					// 				</InputGroup.Button>
-					// 		</InputGroup>
-					// 		<Form.Control name="customer_2" type="text" autoComplete="off" style={{ width: 150, marginBottom: 5, marginRight: 70 }} />
-					// 	</HStack>
-					// </Form.Group>
-					
-					// <Form.Group controlId="storage">
-					// 	<HStack>
-					// 		<Form.ControlLabel style={{ marginRight: 15, fontSize: 17 }}>출하창고</Form.ControlLabel>
-					// 		<InputGroup style={styles}>
-					// 			<AutoComplete />
-					// 				<InputGroup.Button tabIndex={-1}>
-					// 					<SearchIcon />
-					// 				</InputGroup.Button>
-					// 		</InputGroup>
-					// 		<Form.Control name="storage" type="text" autoComplete="off" style={{ width: 150, marginBottom: 5 }} />
-					// 	</HStack>
-					// </Form.Group>
-					// </div>
-					// <div className="form_div">
-					// <Form.Group controlId="surtax">
-					// 	<HStack>
-					// 		<Form.ControlLabel style={{ marginRight: 20, fontSize: 17 }}>거래유형</Form.ControlLabel>
-					// 		<Form.Control name="surtax" type="text" autoComplete="off" style={{ width: 305, marginRight: 70 }} />
-					// 	</HStack>
-					// </Form.Group>
+export default sell_status_select;

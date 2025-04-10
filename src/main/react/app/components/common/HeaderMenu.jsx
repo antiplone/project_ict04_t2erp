@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable react/prop-types */
 import mainIcon from "#images/common/main.png";
 import brand from "#images/common/brand.png";
@@ -53,26 +54,24 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("basic_att/att") }}>근태관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="구매관리">
-						<Nav.Item onSelect={() => { navigate("buy_search") }}>구매조회</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("buy_input") }}>구매입력</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("buy_list") }}>구매현황</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("buy_resume") }}>발주서관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("buy_resume_input") }}>발주서입력</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("buy-select") }}>구매조회</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("buy-insert") }}>구매입력</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("buy-status-select") }}>구매현황</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="판매관리">
-						<Nav.Item onSelect={() => { navigate("sell_search") }}>판매물품 검색</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_search_item") }}>판매물품 검색</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_request_item") }}>판매물품 관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_all") }}>판매조회</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_add") }}>판매입력</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_result") }}>판매현황</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_all_list") }}>판매조회</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_insert") }}>판매입력</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_status_select") }}>판매현황</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_request_client") }}>거래처 관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu
 						title="물류"
 					>
-						<Nav.Item onSelect={() => { navigate("warehouseMain") }}>물류메인</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("orderIncomeList") }}>입고관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("/main/") }}>출고관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("/main/warehouse") }}>물류메인</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("/main/warehouse/orderIncomeList") }}>입고관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("/main/warehouse/outgoingList") }}>출고관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("warehouseManagement") }}>창고관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu

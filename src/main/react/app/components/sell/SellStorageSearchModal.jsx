@@ -3,14 +3,14 @@ import { Button, Table, Modal, Checkbox } from "rsuite";
 
 const { Column, HeaderCell, Cell } = Table;
 
-const StorageSearchModal = ({ title, confirm, cancel, onStorageSelect, handleOpen, handleColse } /* = props:속성 */) => {
+const SellStorageSearchModal = ({ title, confirm, cancel, onStorageSelect, handleOpen, handleColse } /* = props:속성 */) => {
 	
 	const [storageList, setStorageList] = useState([]);
 	const [selectedStorage, setSelectedStorage] = useState(null);
 	
 	// fetch()를 통해 톰캣서버에게 데이터를 요청
 	useEffect(() => {
-		fetch("http://localhost:8081/search/sellStorage", {
+		fetch("http://localhost:8081/sell/searchStorage", {
 			method: "GET"
 		})
 		.then(res => res.json())
@@ -83,11 +83,11 @@ const StorageSearchModal = ({ title, confirm, cancel, onStorageSelect, handleOpe
 	);
 };
 
-StorageSearchModal.defaultProps = {
+SellStorageSearchModal.defaultProps = {
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
 	title: "제목을 입력해주세요.",
 	confirm: "확인",
 	cancel: "취소",
 };
 
-export default StorageSearchModal;
+export default SellStorageSearchModal;

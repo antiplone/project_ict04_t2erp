@@ -1,7 +1,9 @@
 /* eslint-disable react/react-in-jsx-scope */
 import AppConfig from "#config/AppConfig.json"
 import { Container } from "rsuite";
-import OrderIncomeList from "#components/logis/OrderIncomeList";
+import { Outlet } from "@remix-run/react";
+import OrderIncomeList from "#components/logis/order-income-list";
+import OutgoingList from "#components/logis/outgoing-list";
 
 // @Remix:모듈함수 - <html>의 <head>의 내용
 export function meta() {
@@ -18,7 +20,11 @@ export function meta() {
 export default function LogisMain() {
 	return (
 		<Container>
-			<OrderIncomeList />
+			<div>
+				<OrderIncomeList />
+				<Outlet />
+			</div>
+				<OutgoingList />
 		</Container> 
 	);
 }

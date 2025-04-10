@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { Card, Container, Table } from 'rsuite';
+import { Link, useParams } from 'react-router-dom';
+import { Card, Container } from 'rsuite';
 
 const OrderItemDetail = () => { 
-    const order_id = parseInt(useParams().order_id, 10);
-    const [searchParams] = useSearchParams();
-    const item_code = parseInt(searchParams.get("item_code"), 10);
-    
+    const { order_id, item_code, order_type } = useParams();
+
     console.log("OrderItemDetail order_id:", order_id);
     console.log("OrderItemDetail item_code:", item_code);
+    console.log("OrderItemDetail order_type:", order_type);
+
+    const query = new URLSearchParams({
+        order_id,
+        item_code,
+        order_type
+      }).toString();
 
     const [orderItemDetail, setOrderItemDetail] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -21,7 +26,7 @@ const OrderItemDetail = () => {
             return;
         }
 
-        fetch(`http://localhost:8081/warehouse/orderItemDetail/${order_id}?item_code=${item_code}`)
+        fetch(`http://localhost:8081/logisorder/orderItemDetail?${query}`)
         .then(res => {
             if (!res.ok) {
                 throw new Error('Error fetching item details');
@@ -51,7 +56,7 @@ const OrderItemDetail = () => {
                         {orderItemDetail ? (
                             <div className='padding_10px max_content_margin_10px_auto border_black_1px borderradius_10px'>
                                 <h2 className='padding_10px'>
-                                    주문번호 : {orderItemDetail.order_code}
+                                    주문번호 : {orderItemDetail.order_id}
                                 </h2>
                                 <h3 className='padding_10px'>
                                     품목코드 : {orderItemDetail.item_code}
@@ -60,7 +65,7 @@ const OrderItemDetail = () => {
                                     품목명 : {orderItemDetail.item_name}
                                 </div>
                                 <div className='padding_10px'>
-                                    입고수량 : {orderItemDetail.quantity}
+                                    입고수량 : {orderItemDetail.order_amount}
                                 </div>
                                 <div className='padding_10px'>
                                     규격 : {orderItemDetail.item_standard}
@@ -71,7 +76,7 @@ const OrderItemDetail = () => {
                         )}
                     </div>
                 </Card>
-                 <Link to={`/orderDetail/` + order_id} className="btn btn-primary area_fit wide_fit">주문 으로</Link>
+                 <Link to={`/main/logis-order-item-list/${order_id}`} className="btn btn-primary area_fit wide_fit">주문 으로</Link>
             </Container>
         </div>
     );

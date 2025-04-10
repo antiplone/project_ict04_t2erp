@@ -14,7 +14,6 @@ import lombok.ToString;
 public class LogisSalesDTO {
 
 	private int order_id;				// 품목번호
-	private int order_code;				// 품목코드
 	private Date order_date;			// 수주일
 	private Date shipment_order_date;	// 츨고예정일
 	private int order_type;				// 부서구분

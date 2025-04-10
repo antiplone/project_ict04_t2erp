@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from '@remix-run/react';
+import { Link } from "@remix-run/react";
 import { Container, /* Form, */ Table } from 'rsuite';
 import "#components/common/css/common.css";
-import { Outlet } from '@remix-run/react';
 
-export default function OrderIncomeList() {
+const OrderIncomeList = () => {
 
     const [orderList, setOrderList] = useState([]); // 초기값을 모르므로 빈배열로 Warehousingist에 대입
 
     // // fetch()를 통해 서버에게 데이터를 요청
     useEffect(() => { // 통신 시작 하겠다.
-        fetch("http://localhost:8081/warehouse/logisOrderList", { // 스프링부트에 요청한다.
+        fetch("http://localhost:8081/logisorder/logisOrderList", { // 스프링부트에 요청한다.
             method: "GET" // "GET" 방식으로
         }).then(
             res => res.json() // 응답이 오면 javascript object로 바꾸겠다.
@@ -21,7 +20,7 @@ export default function OrderIncomeList() {
                 setOrderList(resjson);
             }
         ).catch(error => {
-            console.error("orderList : ", error);
+            console.error("logisOrderList : ", error);
             setOrderList([]); // 오류 시 빈 배열 설정
         });
     }, []);
@@ -59,7 +58,7 @@ export default function OrderIncomeList() {
                         <Table.HeaderCell>아이템 비고</Table.HeaderCell>
                         <Table.Cell dataKey="item_name" style={{ padding: '6px' }}>
                             {orderList => (
-                                <Link to={`order-detail/${orderList.order_id}`} className="btn btn-primary area_fit wide_fit">주문상세보기</Link>
+                                <Link to={`/main/logis-order-item-list/${orderList.order_id}`} className="btn btn-primary area_fit wide_fit">주문상세보기</Link>
                             )}
                         </Table.Cell>
                     </Table.Column>
@@ -80,7 +79,8 @@ export default function OrderIncomeList() {
                     </Table.Column>
                 </Table>
             </Container>
-			<Outlet />
         </div>
     );
 }
+
+export default OrderIncomeList;

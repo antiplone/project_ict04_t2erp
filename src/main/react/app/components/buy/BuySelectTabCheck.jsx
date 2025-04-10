@@ -5,27 +5,27 @@ import { useNavigate } from 'react-router-dom';
 
 const { Column, HeaderCell, Cell } = Table;
 
-export default function BuySelectTabYet() {
+export default function BuySelectTabCheck() {
 
     const navigate = useNavigate();
 
-    const [buyOrderYetList, setBuyOrderYetList] = useState([]); // 초기값을 모르므로 빈배열로 buyList에 대입
+    const [buyOrderCheckList, setBuyOrderCheckList] = useState([]); // 초기값을 모르므로 빈배열로 buyList에 대입
 
     // fecth()를 통해 톰캣서버에세 데이터를 요청
     useEffect(() => {
-        fetch("http://localhost:8081/buy/buyOrderYetList", {
+        fetch("http://localhost:8081/buy/buyOrderCheckList", {
             method: "GET"
         })
             .then(res => res.json() // 응답이 오면 javascript object로 바꾸겠다.
             )
             .then(res => {
                 console.log(1, res);
-                setBuyOrderYetList(res || []); // 처음에는 비어있으므로 못가져온다. setBoardList(res);
+                setBuyOrderCheckList(res || []); // 처음에는 비어있으므로 못가져온다. setBoardList(res);
             }
             )
             .catch(error => {
                 console.error("데이터 가져오기 오류:", error);
-                setBuyOrderYetList([]); // 오류 발생 시 빈 배열 설정 
+                setBuyOrderCheckList([]); // 오류 발생 시 빈 배열 설정 
             });
     }, []); // []은 디펜던시인데, setState()로 렌더링될때 실행되면 안되고, 1번만 실행하도록 빈배열을 넣어둔다.
     // CORS 오류 : Controller 진입 직전에 적용된다. 외부에서 자바스크립트 요청이 오는 것을
@@ -50,7 +50,7 @@ export default function BuySelectTabYet() {
             .then((res) => {
                 if (res === "ok") {
                     alert('삭제 성공!');
-                    setBuyOrderYetList(buyOrderYetList.filter(order => order.order_id !== order_id)); // UI 업데이트
+                    setBuyOrderAllList(buyOrderAllList.filter(order => order.order_id !== order_id)); // UI 업데이트
                 } else {
                     alert('삭제 실패');
                 }
@@ -60,7 +60,7 @@ export default function BuySelectTabYet() {
 
     return (
         <>
-            <Table height={500} data={buyOrderYetList} style={{ maxWidth: 1500 }}>
+            <Table height={500} data={buyOrderCheckList} style={{ maxWidth: 1500 }}>
 
                 <Column width={40} align="center" fixed>
                     <HeaderCell style={styles}>
@@ -78,7 +78,7 @@ export default function BuySelectTabYet() {
 
                 <Column width={100}>
                     <HeaderCell style={styles}>주문번호</HeaderCell>
-                    <Cell dataKey="order_id" />
+                    <Cell dataKey="order_code" />
                 </Column>
 
                 <Column width={100}>
@@ -115,7 +115,8 @@ export default function BuySelectTabYet() {
                     <HeaderCell style={styles}>종결여부</HeaderCell>
                     <Cell dataKey="closing_status" />
                 </Column>
-                {/* 
+
+                {/*          
                 <Column width={80} fixed="right">
                     <HeaderCell style={styles}>불러온전표</HeaderCell>
                     <Cell style={{ padding: '6px' }}>
@@ -127,6 +128,7 @@ export default function BuySelectTabYet() {
                     </Cell>
                 </Column>
  */}
+
                 <Column width={60} fixed="right">
                     <HeaderCell style={styles}>조회</HeaderCell>
                     <Cell style={{ padding: '6px' }}>
@@ -137,7 +139,6 @@ export default function BuySelectTabYet() {
                         )}
                     </Cell>
                 </Column>
-
 
                 <Column width={60} fixed="right">
                     <HeaderCell style={styles}>수정</HeaderCell>

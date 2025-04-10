@@ -5,6 +5,12 @@
 
 <mapper namespace="com.spring.erp_ordit.dao.buy.BuyOrderItemMapper">
 
+	<!-- 구매 물품정보 입력 (발주번호, 물품코드, 물품명, 수량, 가격, 공급가, 부가세, 총액)-->
+	<insert id="buyOrderItemInsert" parameterType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
+	    INSERT INTO order_item_tbl (order_id, order_type, order_code, item_id, item_code, quantity, price, supply, vat, total)
+	    VALUES (#{order_id}, 2, #{order_code}, #{item_id, javaType=Long}, #{item_code, javaType=String},  #{quantity}, #{price}, #{supply}, #{vat}, #{total})
+	</insert>
+
 <!-- 
 	 <select id="buyOrderItemList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderItemDTO">
 	      SELECT * FROM order_item_tbl_hjy

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@remix-run/react';
 import { Container, /* Form, */ Table } from 'rsuite';
 import "#components/common/css/common.css";
+import { Outlet } from '@remix-run/react';
 
-const OrderIncomeList = () => {
+export default function OrderIncomeList() {
 
     const [orderList, setOrderList] = useState([]); // 초기값을 모르므로 빈배열로 Warehousingist에 대입
 
@@ -16,11 +17,11 @@ const OrderIncomeList = () => {
         ).then(
             res => {
                 console.log(1, res); // setWarehousingist를 통해서 뿌려준다.
-                // const list = Array.isArray(res) ? res : res?.OrderList || [];
-                setOrderList(res);
+                const resjson = Array.isArray(res) ? res : [];
+                setOrderList(resjson);
             }
         ).catch(error => {
-            console.error("logisOrderList : ", error);
+            console.error("orderList : ", error);
             setOrderList([]); // 오류 시 빈 배열 설정
         });
     }, []);
@@ -58,7 +59,7 @@ const OrderIncomeList = () => {
                         <Table.HeaderCell>아이템 비고</Table.HeaderCell>
                         <Table.Cell dataKey="item_name" style={{ padding: '6px' }}>
                             {orderList => (
-                                <Link to={`/main/warehouse/orderDetail/${orderList.order_id}`} className="btn btn-primary area_fit wide_fit">주문상세보기</Link>
+                                <Link to={`order-detail/${orderList.order_id}`} className="btn btn-primary area_fit wide_fit">주문상세보기</Link>
                             )}
                         </Table.Cell>
                     </Table.Column>
@@ -79,8 +80,7 @@ const OrderIncomeList = () => {
                     </Table.Column>
                 </Table>
             </Container>
+			<Outlet />
         </div>
     );
 }
-
-export default OrderIncomeList;

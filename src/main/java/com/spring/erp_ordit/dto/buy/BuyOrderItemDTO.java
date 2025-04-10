@@ -14,13 +14,18 @@ import lombok.ToString;
 public class BuyOrderItemDTO {
 	
 	// 물품정보
-	private int order_id ; 				// 주문번호
-	private int item_code; 				// 물품코드
+	private Long order_id ; 			// 주문번호
+	private int order_type ; 			// 주문타입 판매 1, 구매 2
+	private int order_code;				// 구매팀 발주번호
+	
+	private Long item_id;				// 물품고유 번호 FK
+	private String item_code; 				// 물품코드 item_id를 찾기 위한 코드
 	private String item_name; 			// 물품명
+	
 	private int quantity; 				// 수량
-    private int price;
-    private int supply;
-    private int vat;
-    private int total;
+    private int price;					// 단가	
+    private int supply;					// 공급가
+    private int vat;					// 부가세
+    private int total;					// 총액
 	
 }

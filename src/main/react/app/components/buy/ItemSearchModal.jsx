@@ -5,7 +5,7 @@ import { Button, Table, Modal, Checkbox } from "rsuite";
 
 const { Column, HeaderCell, Cell } = Table;
 
-const ItemModalForm = ({ title, confirm, cancel, onItemSelect, handleOpen, handleColse } /* = props:속성 */) => {
+const ItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen, handleColse } /* = props:속성 */) => {
 	
 	const [itemList, setItemList] = useState([]);
 	const [selectedItem, setSelectedItem] = useState(null);
@@ -85,11 +85,11 @@ const ItemModalForm = ({ title, confirm, cancel, onItemSelect, handleOpen, handl
 	);
 };
 
-ItemModalForm.defaultProps = {
+ItemSearchModal.defaultProps = {
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
 	title: "제목을 입력해주세요.",
 	confirm: "확인",
 	cancel: "취소",
 };
 
-export default ItemModalForm;
+export default ItemSearchModal;

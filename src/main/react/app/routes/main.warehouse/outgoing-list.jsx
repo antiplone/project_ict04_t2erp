@@ -16,8 +16,8 @@ const OutGoingList = () => {
         ).then(
             res => {
                 console.log(1, res); // setWarehousingist를 통해서 뿌려준다.
-                // const list = Array.isArray(res) ? res : res?.OrderList || [];
-                setSalesList(res);
+                const resjson = Array.isArray(res) ? res : [];
+                setSalesList(resjson);
             }
         ).catch(error => {
             console.error("logisSalesList : ", error);
@@ -51,7 +51,7 @@ const OutGoingList = () => {
 
                     <Table.Column width={120}>
                         <Table.HeaderCell>입고일자</Table.HeaderCell>
-                        <Table.Cell dataKey="delivery_date" />
+                        <Table.Cell dataKey="shipment_order_date" />
                     </Table.Column>
 
                     <Table.Column width={150}>
@@ -75,7 +75,7 @@ const OutGoingList = () => {
 
                     <Table.Column width={160}>
                         <Table.HeaderCell>입고창고</Table.HeaderCell>
-                        <Table.Cell dataKey="storage" />
+                        <Table.Cell dataKey="storage_name" />
                     </Table.Column>
                 </Table>
 

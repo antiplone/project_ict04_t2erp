@@ -1,0 +1,8 @@
+name: 'Send SMS'
+  uses: seven-io/github-action-sms@master
+  with:
+      from: '[project_ict04_t2erp]'
+      text: '새로운 PR요청이 왔어요!'
+      to: '+8201089084621,PR Testing'
+  env:
+      SEVEN_API_KEY: ${{ secrets.SEVEN_API_KEY }}

@@ -16,28 +16,24 @@ public class BuySearchServiceImpl { // 작성자: hjy - 모달 검색 담당자,
 	private BuySearchMapper BuySearchMapper;
 	
 	// 담당자 목록
-	@Transactional(readOnly=true)
 	public List<BuySearchDTO> buyInchargeList(){
 		
 		return BuySearchMapper.buyInchargeList();
 	}
 
 	// 거래처 목록
-	@Transactional(readOnly=true)
 	public List<BuySearchDTO> buyClientList(){
 		
 		return BuySearchMapper.buyClientList();
 	}
 
 	// 입고창고 목록
-	@Transactional(readOnly=true)
 	public List<BuySearchDTO> buyStorageList(){
 		
 		return BuySearchMapper.buyStorageList();
 	}
 
 	// 물품 목록
-	@Transactional(readOnly=true)
 	public List<BuySearchDTO> buyItemList(){
 		
 		return BuySearchMapper.buyItemList();

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 
 import React from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
@@ -274,14 +275,14 @@ const SellEdit = () => {
             <Cell {...props} style={{ padding: '6px', display: 'flex', gap: '4px' }}>
             <IconButton
             appearance="subtle"
-            icon={rowData.status === 'EDIT' ? <VscSave /> : <VscEdit />}
+            // icon={rowData.status === 'EDIT' ? <VscSave /> : <VscEdit />}
             onClick={() => {
             onEdit(rowData.id);
             }}
             />
             <IconButton
             appearance="subtle"
-            icon={<VscRemove />}
+            // icon={<VscRemove />}
             onClick={() => {
             onRemove(rowData.id);
             }}

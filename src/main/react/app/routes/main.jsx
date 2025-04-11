@@ -22,7 +22,7 @@ export default function Main() {
 	const location = useLocation();
 	const pathname = location.pathname;
 
-	// 경로가 /main/attendance 또는 그 하위 경로면 AttSideMenu 사용
+	// 경로가 /main/att 또는 그 하위 경로면 AttSideMenu 사용
 	const isAttPage = pathname.startsWith("/main/att");
 
 	return (

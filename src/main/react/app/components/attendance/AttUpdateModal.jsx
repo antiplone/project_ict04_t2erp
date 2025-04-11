@@ -2,6 +2,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useEffect, useState } from "react";
 import { Modal, Form, Radio, RadioGroup, Button, ButtonGroup, Schema } from "rsuite";
+import AppConfig from "#config/AppConfig.json";
 
 const { StringType } = Schema.Types;
 
@@ -13,6 +14,7 @@ const model = Schema.Model({
 });
 
 const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
+  const fetchURL = AppConfig.fetch['mytest'];
   const [att, setAtt] = useState({
     a_code: "",
     a_name: "",
@@ -48,7 +50,7 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
     }
 
     try {
-      const res = await fetch(`http://localhost:8081/attendance/updateAttItems/${att.a_code}`, {
+      const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/attendance/updateAttItems/${att.a_code}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json;charset=utf-8" },
         body: JSON.stringify(att),

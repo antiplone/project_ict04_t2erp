@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
 		 InputGroup, Input, Table, InputPicker,
 		 IconButton, InputNumber } from "rsuite";
-//import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
+import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
 import { mockUsers } from './sell_mock4';
 // import SearchIcon from '@rsuite/icons/Search';
 import "../components/common/Sell_maintitle.css";

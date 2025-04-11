@@ -3,7 +3,12 @@ import { Button, Table, Modal, Checkbox } from "rsuite";
 
 const { Column, HeaderCell, Cell } = Table;
 
+<<<<<<<< HEAD:src/main/react/app/components/sell/SellItemSearchModal.jsx
+
 const SellItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen, handleColse } /* = props:속성 */) => {
+========
+const ItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen, handleColse } /* = props:속성 */) => {
+>>>>>>>> origin/topic_hjy:src/main/react/app/components/buy/ItemSearchModal.jsx
 	
 	const [itemList, setItemList] = useState([]);
 	const [selectedItem, setSelectedItem] = useState(null);
@@ -95,11 +100,19 @@ const SellItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen,
 	);
 };
 
+<<<<<<<< HEAD:src/main/react/app/components/sell/SellItemSearchModal.jsx
 SellItemSearchModal.defaultProps = {
+========
+ItemSearchModal.defaultProps = {
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
+>>>>>>>> origin/topic_hjy:src/main/react/app/components/buy/ItemSearchModal.jsx
 	title: "제목을 입력해주세요.",
 	confirm: "확인",
 	cancel: "취소",
 };
 
+<<<<<<<< HEAD:src/main/react/app/components/sell/SellItemSearchModal.jsx
 export default SellItemSearchModal;
+========
+export default ItemSearchModal;
+>>>>>>>> origin/topic_hjy:src/main/react/app/components/buy/ItemSearchModal.jsx

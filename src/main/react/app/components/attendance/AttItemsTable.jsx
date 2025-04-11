@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "@remix-run/react";
 import { Button, Table } from "rsuite";
 import AttUpdateModal from "./AttUpdateModal";
+import AppConfig from "#config/AppConfig.json";
 
 const { Column, HeaderCell, Cell } = Table;
 
 const AttItemsTable = ({ data, columns, onReloading }) => {
+  const fetchURL = AppConfig.fetch['mytest'];
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRow, setEditingRow] = useState(null);
 
@@ -16,7 +19,7 @@ const AttItemsTable = ({ data, columns, onReloading }) => {
     // 만약 근태코드가 없다면 alert창을 반환.
     if (!a_code) return alert("삭제할 항목이 없습니다.");
 
-    const res = await fetch(`http://localhost:8081/attendance/deleteAttItems/${a_code}`, {
+    const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/attendance/deleteAttItems/${a_code}`, {
       method: "DELETE",
     });
     const result = await res.text();
@@ -24,8 +27,7 @@ const AttItemsTable = ({ data, columns, onReloading }) => {
       alert(`근태코드 ${a_code} 삭제되었습니다.`);
       // navigate("/main/att_regAttItems");
       window.location.reload(); // 추후 fetcher로 대체 가능. remix 에서는 사용x
-      onClose();
-      onReloading(); // <- 삭제 후 테이블 데이터를 다시 불러오기 위해 이 함수를 콜백한다.
+      // onReloading(); // <- 삭제 후 테이블 데이터를 다시 불러오기 위해 이 함수를 콜백한다.
     } else {
       alert("삭제 실패했습니다.");
     }

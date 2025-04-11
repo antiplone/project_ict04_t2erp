@@ -2,9 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { Button, ButtonGroup, Form, Modal, Radio, RadioGroup } from "rsuite";
 import { useNavigate } from "react-router-dom";
+import AppConfig from "#config/AppConfig.json";
 
 // 아직 정리가 안되었습니다.. 일단 돌아가는지 확인해보려고 넣었습니다.
 const VacaUpdateModal = ({ isOpen, onClose, editingRow }) => {
+  const fetchURL = AppConfig.fetch['mytest'];
   const navigate = useNavigate();
 
   // 입력한 값들을 submit 하려면 값을 상태로 보관한다.
@@ -43,7 +45,7 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow }) => {
       return;
     }
 
-    fetch(`http://localhost:8081/attendance/updateAttItems/${att.a_code}`, {
+    fetch(`${fetchURL.protocol}${fetchURL.url}/attendance/updateAttItems/${att.a_code}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json;charset=utf-8",

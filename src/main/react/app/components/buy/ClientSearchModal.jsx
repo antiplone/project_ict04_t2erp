@@ -1,17 +1,18 @@
+// 거래처 검색 모달
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
 import { Button, Table, Modal, Checkbox } from "rsuite";
 
 const { Column, HeaderCell, Cell } = Table;
 
-
-const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
+const ClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
 	
 	const [clientList, setClientList] = useState([]);
 	const [selectedClient, setSelectedClient] = useState(null);
 
 		// fetch()를 통해 톰캣서버에게 데이터를 요청
 		useEffect(() => {
-			fetch("http://localhost:8081/sell/searchClient", {
+			fetch("http://localhost:8081/buy/buyClientList", {
 				method: "GET"
 			})
 			.then(res => res.json())
@@ -36,13 +37,6 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 			}
 		};
 
-		// 모달이 열릴 때 선택값 초기화
-		useEffect(() => {
-			if (handleOpen) {
-				setSelectedClient(null);
-			}
-		}, [handleOpen]);
-
 	return (
 		<Modal open={handleOpen} onClose={handleColse} size="xs">
 			<Modal.Header>
@@ -51,17 +45,17 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 			<Modal.Body>
 			<Table
 				height={400}
-				data={clientList}
+				data={(clientList ?? []).filter(client => client !== null && client !== undefined)}
 			>
 
 				<Column width={100} align="center" fixed>
 					<HeaderCell>선택</HeaderCell>
 					
-					<Cell>{(rowData) => (
+					<Cell>{(clientData) => (
 						<Checkbox 
-						checked={selectedClient?.client_code === rowData.client_code} 
+						checked={selectedClient?.client_code === clientData.client_code} 
                         onChange={(_, checked) => 
-							handleCheckboxChange(checked, rowData)}
+							handleCheckboxChange(checked, clientData)}
 						/>
 						)}
 					</Cell>
@@ -69,12 +63,12 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 
 				<Column width={100} align="center" fixed>
 					<HeaderCell>거래처 코드</HeaderCell>
-					<Cell>{(rowData) => rowData.client_code}</Cell>
+					<Cell>{(clientData) => clientData.client_code}</Cell>
 				</Column>
 
 				<Column width={250}>
 					<HeaderCell>거래처명</HeaderCell>
-					<Cell>{(rowData) => rowData.client_name}</Cell>
+					<Cell>{(clientData) => clientData.client_name}</Cell>
 				</Column>
 			</Table>
 			</Modal.Body>
@@ -90,7 +84,7 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 	);
 };
 
-SellClientSearchModal.defaultProps = {
+ClientSearchModal.defaultProps = {
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
 	title: "제목을 입력해주세요.",
 	confirm: "확인",
@@ -98,4 +92,4 @@ SellClientSearchModal.defaultProps = {
 	
 };
 
-export default SellClientSearchModal;
+export default ClientSearchModal;

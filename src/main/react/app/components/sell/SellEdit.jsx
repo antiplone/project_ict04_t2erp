@@ -4,7 +4,7 @@ import React from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
 		 InputGroup, AutoComplete, HStack, Input, Table, 
 		 IconButton, InputNumber} from "rsuite";
-//import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
+////import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
 import { mockUsers } from '../routes/sell_mock4';
 // import SearchIcon from '@rsuite/icons/Search';
 import "../components/common/Sell_maintitle.css";

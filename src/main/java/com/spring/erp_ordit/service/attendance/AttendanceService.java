@@ -34,10 +34,14 @@ public class AttendanceService {
 	    return attMapper.updateAttItems(dto);
 	}
 
-	// 기본사항등록 - 휴가 항목 등록
+	// 기본사항등록 - 휴가 항목 리스트
 	public List<VacaItemsDTO> regVacaList() {
 	    System.out.println("▶ attService - 휴가 항목 리스트");
 		return attMapper.regVacaList();
 	}
-	
+	// 기본사항등록 - 휴가 항목 등록 
+	public List<String> vacaName() {
+	    System.out.println("▶ attService - 휴가 항목 리스트: 휴가명");
+		return attMapper.vacaName();
+	}
 }

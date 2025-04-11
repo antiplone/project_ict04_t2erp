@@ -50,7 +50,7 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("basic_hr") }}>인사등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("client") }}>거래처등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("item") }}>상품등록</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("basic_insa") }}>인사관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("per_retirement") }}>인사관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("att_regAttItems") }}>근태관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="구매관리">

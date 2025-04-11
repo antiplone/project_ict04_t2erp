@@ -32,7 +32,7 @@ const VacaItemsTable = ({ url, columns }) => {
   }, [url]);  // url이 변경될 때만 useEffect() 실행
 
   return (
-    <Table autoHeight width={750} cellBordered data={vacaList}>
+    <Table autoHeight width={870} cellBordered data={vacaList} style={{ margin: "10px 0 20px 0"}}>
       {columns && columns.map((column) => (
         <Column key={column.datakey} width={column.width} align="center">
           <HeaderCell>{column.label}</HeaderCell>

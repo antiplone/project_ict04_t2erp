@@ -62,10 +62,18 @@ public class AttendanceController {		// [ 기본사항등록 ]
 	}
     
 	// ------------------------------------------------------------------------------------------------------------------
-	// [ 기본사항등록 ] - 휴가 항목 등록 리스트 ⇒ http://localhost:8081/attendance/regVacaItems
+	// [ 기본사항등록 ] - 휴가 항목 리스트 ⇒ http://localhost:8081/attendance/regVacaItems
 	@GetMapping("/regVacaItems")
 	public ResponseEntity<List<VacaItemsDTO>> regVacaItems() {
 		System.out.println("▶ AttendanceController - 휴가 항목 리스트");
 		return new ResponseEntity<>(service.regVacaList(), HttpStatus.OK);		// 200 리턴(select)
 	}
+
+	// [ 기본사항등록 ] - 휴가 항목 리스트 ⇒ http://localhost:8081/attendance/vacaName
+	@GetMapping("/vacaName")
+	public ResponseEntity<List<String>> vacaName() {
+		System.out.println("▶ AttendanceController - 휴가 항목 리스트: 휴가명만");
+	    return new ResponseEntity<>(service.vacaName(), HttpStatus.OK);
+	}
+	
 }

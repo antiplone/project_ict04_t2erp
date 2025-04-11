@@ -1,11 +1,11 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
-		 InputGroup, AutoComplete, HStack, Input, Table, 
-		 IconButton, InputNumber, SelectPicker, VStack } from "rsuite";
-//import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
+		 InputGroup, AutoComplete, HStack, Input, Table, InputPicker,
+		 IconButton, InputNumber, DateRangePicker} from "rsuite";
+import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
 import { mockUsers } from './sell_mock4';
-// import SearchIcon from '@rsuite/icons/Search';
+//import SearchIcon from '@rsuite/icons/Search';
 import "../components/common/Sell_maintitle.css";
 
 const styles = {
@@ -16,25 +16,7 @@ const styles = {
 const { Column, HeaderCell, Cell } = Table;
 const defaultData = mockUsers(8);
 
-
-// const t_styles = `
-//   .table-cell-editing .rs-table-cell-content {
-// 	padding: 4px;
-//   }
-//   .table-cell-editing .rs-input {
-// 	width: 100%;
-//   }
-//   `;
-
-/* 거래유형 - 선택 데이터 */
-const sellType = ["부과세율 적용", "부가세율 미적용"].map(
-	(item) => ({ // 이렇게 하면, 둘다 같게 들어가서, 라벨따로 값따로 안넣어줘도 됩니다.
-		label: item, // Eugenia
-		value: item, // Eugenia
-	})
-);
-
-const SellRequestItem = () => {
+const sell_status_select = () => {
 
 	const [data, setData] = React.useState(defaultData);
 
@@ -56,124 +38,173 @@ const SellRequestItem = () => {
 		setData(data.filter(item => item.id !== id));
 	};
 
-
+	
 	return (
 		<div>
 			
-			<Message type="info" className="main_title">
-      			물품 구매 요청
-    		</Message>
+			<Message type="success" className="main_title">
+				판매 현황
+			</Message>
 			
 			{/* 입력 상위 칸 */}
 			
-			<div className="final">
+			<div className="result_final">
 			
 				<Form className="addForm" layout="inline">
 
-				
-					<div className="addPlus">
-					{/* <style>{t_styles}</style> */}
+				<div className="form_div">
+					<div className="result_div">
+						<InputGroup className="input">
+							<InputGroup.Addon style={{ width: 80 }}>
+								등록일자
+							</InputGroup.Addon>
+							<DateRangePicker />
+						</InputGroup>
+					</div>
+
+					<div className="result_div">
+						<InputGroup className="input">
+							<InputGroup.Addon style={{ width: 80 }}>
+								담당자
+							</InputGroup.Addon>
+							<Input
+								placeholder='담당자 입력'
+								// value={selectedIncharge ? selectedIncharge.em_name : ""}
+							/>
+							<InputGroup.Addon>
+								{/* <SearchIcon /> */}
+							</InputGroup.Addon>
+						</InputGroup>
+					</div>
+
+					<div className="result_div">
+						<InputGroup className="input">
+							<InputGroup.Addon style={{ width: 80 }}>
+								거래처
+							</InputGroup.Addon>
+							<Input placeholder='거래처' />
+							<InputGroup.Addon>
+								{/* <SearchIcon /> */}
+							</InputGroup.Addon>
+						</InputGroup>
+					</div>
+				</div>
+
+				<div className="form_div">
+					<div className="result_div">
+						<InputGroup className="input">
+							<InputGroup.Addon style={{ width: 80 }}>
+								거래유형
+							</InputGroup.Addon>
+							<InputPicker placeholder='거래유형 선택' 
+							// data={type} 
+							style={{ width: 224, border: 'none' }} />
+						</InputGroup>
+					</div>
+
+					<div className="result_div">
+						<InputGroup className="input">
+							<InputGroup.Addon style={{ width: 80 }}>
+								출하창고
+							</InputGroup.Addon>
+							<Input placeholder='입고창고' />
+						</InputGroup>
+					</div>
+
+					<div className="result_div">
+						<InputGroup className="input">
+							<InputGroup.Addon style={{ width: 80 }}>
+								품목코드
+							</InputGroup.Addon>
+							<Input placeholder='품목코드' />
+						</InputGroup>
+					</div>
+				</div>
+
+					<div className="form_div">
 					
-						<Button style={{ width: 830 }} 
-						onClick={() => {
-							setData([
-							{ id: data.length + 1, name: '', age: 0, birthdate: null, status: 'EDIT' },
-							...data
-							]);
-						}}
-						>
-						입력 추가하기
+						<Button appearance="primary" type="submit" style={{width: 100}}>
+							검색
 						</Button></div>
 						<hr />
+
 
 						{/* 입력 하위 칸 */}
 						<div className="addTabel">
 						<Table height={400} data={data}>
 
 						<Column width={150}>
-							<HeaderCell>품목코드</HeaderCell>
-							<EditableCell
-							//dataKey="name"
-							dataType="number"
-							onChange={handleChange}
-							onEdit={handleEdit}
+							<HeaderCell>일자-No.</HeaderCell>
+							<Cell
+							//dataKey="date"
+							dataType="date"
 							/>
 						</Column>
 
 						<Column width={150}>
 							<HeaderCell>품목명</HeaderCell>
-							<EditableCell
+							<Cell
 							//dataKey="age"
 							dataType="string"
-							onChange={handleChange}
-							onEdit={handleEdit}
-							/>
-						</Column>
-
-						<Column width={150}>
-							<HeaderCell>규격</HeaderCell>
-							<EditableCell
-							//dataKey="birthdate"
-							dataType="string"
-							onChange={handleChange}
-							onEdit={handleEdit}
 							/>
 						</Column>
 
 						<Column width={100}>
 							<HeaderCell>수량</HeaderCell>
-							<EditableCell
+							<Cell
 							//dataKey="birthdate"
 							dataType="number"
-							onChange={handleChange}
-							onEdit={handleEdit}
 							/>
 						</Column>
 
 						<Column width={150}>
 							<HeaderCell>단가</HeaderCell>
-							<EditableCell
+							<Cell
 							//dataKey="birthdate"
 							dataType="number"
-							onChange={handleChange}
-							onEdit={handleEdit}
 							/>
 						</Column>
 
 						<Column width={150}>
 							<HeaderCell>공급가액</HeaderCell>
-							<EditableCell
+							<Cell
 							//dataKey="birthdate"
 							dataType="number"
-							onChange={handleChange}
-							onEdit={handleEdit}
 							/>
 						</Column>
 
 						<Column width={150}>
 							<HeaderCell>부가세</HeaderCell>
-							<EditableCell
+							<Cell
 							//dataKey="birthdate"
 							dataType="number"
-							onChange={handleChange}
-							onEdit={handleEdit}
 							/>
 						</Column>
 
-
-						<Column width={100}>
-							<HeaderCell>Action</HeaderCell>
-							<ActionCell dataKey="id" onEdit={handleEdit} onRemove={handleRemove} />
+						<Column width={150}>
+							<HeaderCell>합계</HeaderCell>
+							<Cell
+							//dataKey="birthdate"
+							dataType="number"
+							/>
 						</Column>
+
+						<Column width={150}>
+							<HeaderCell>거래처명</HeaderCell>
+							<Cell
+							//dataKey="birthdate"
+							dataType="String"
+							/>
+						</Column>
+
 					</Table>
 					</div>
-					
+
+					<div className="resultBtn">
 					<ButtonToolbar >
-						<div className="itemAddBtn">
-						<Button appearance="primary" className="itemAddBtn_">저장</Button>
-						<Button type="reset" appearance="primary" className="itemAddBtn_">다시 작성</Button>
-						</div>
+						<Button appearance="primary" className="result_btn">인쇄</Button>
 					</ButtonToolbar>
+					</div>
 					<hr></hr>
 
 				</Form>
@@ -229,14 +260,14 @@ function toValueString(value, dataType) {
 	  <Cell {...props} style={{ padding: '6px', display: 'flex', gap: '4px' }}>
 		<IconButton
 		  appearance="subtle"
-		  //icon={rowData.status === 'EDIT' ? <VscSave /> : <VscEdit />}
+		  icon={rowData.status === 'EDIT' ? <VscSave /> : <VscEdit />}
 		  onClick={() => {
 			onEdit(rowData.id);
 		  }}
 		/>
 		<IconButton
 		  appearance="subtle"
-		  //icon={<VscRemove />}
+		  icon={<VscRemove />}
 		  onClick={() => {
 			onRemove(rowData.id);
 		  }}
@@ -245,4 +276,4 @@ function toValueString(value, dataType) {
 	);
   };
 
-export default SellRequestItem;
+export default sell_status_select;

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spring.erp_ordit.dto.warehouse.LogisStorageDTO;
+import com.spring.erp_ordit.dto.warehouse.LogisWarehouseDTO;
 import com.spring.erp_ordit.service.warehouse.StorageServiceImpl;
 
 @RestController
@@ -28,20 +28,20 @@ public class StorageController {
 	
 	// 창고 목록 GetMapping = > http://localhost:8081/main/storageList
 //	@GetMapping("/storageList") // 조회는 GetMapping
-//	public ResponseEntity<List<LogisStorageDTO>> findAll() {
+//	public ResponseEntity<List<LogisWarehouseDTO>> findAll() {
 //		System.out.println("<<< storageList >>>");
 //		return new ResponseEntity<>(service.storageList(), HttpStatus.OK);
 //	}
 //	
 //	@GetMapping("/storageManagement") // 조회는 GetMapping
-//	public ResponseEntity<List<LogisStorageDTO>> findAll2() {
+//	public ResponseEntity<List<LogisWarehouseDTO>> findAll2() {
 //		System.out.println("<<< storageList2 >>>");
 //		return new ResponseEntity<>(service.storageList(), HttpStatus.OK);
 //	}
 //	
 	// 창고 등록 PostMapping => http://localhost:8081/apil/saveStorage
 //	@PostMapping("/storageInsert")
-//	public ResponseEntity<Integer> storageInsert(@RequestBody LogisStorageDTO dto){
+//	public ResponseEntity<Integer> storageInsert(@RequestBody LogisWarehouseDTO dto){
 //		System.out.println("<<< storageInsert >>>");
 //		
 //		return new ResponseEntity<>(service.storageInsert(dto), HttpStatus.CREATED); // 201을 리턴해라
@@ -49,7 +49,7 @@ public class StorageController {
 	
 	// 창고 상세 GetMapping = > http://localhost:8081/apil/storage/{num}
 //	@GetMapping("/storageDetail/{storage_code}") // 조회는 GetMapping
-//	public ResponseEntity<LogisStorageDTO> findByStoragecode(@PathVariable int storage_code) {
+//	public ResponseEntity<LogisWarehouseDTO> findByStoragecode(@PathVariable int storage_code) {
 //		System.out.println("<<< /detail/{storage_code} - findByStoragecode >>>");
 //		return new ResponseEntity<>(service.findByStoragecode(storage_code), HttpStatus.OK); // 200을 리턴해라
 //	}
@@ -64,13 +64,13 @@ public class StorageController {
 //	
 //	// 창고 상세 GetMapping = > http://localhost:8081/apil/storage/{num}
 //	@GetMapping("/storage/{item_code}") // 조회는 GetMapping
-//	public ResponseEntity<LogisStorageDTO> findByStorageCode(@PathVariable int item_code) {
+//	public ResponseEntity<LogisWarehouseDTO> findByStorageCode(@PathVariable int item_code) {
 //		System.out.println("<<< /storage/{item_code} - findByStorageCode >>>");
 //		return new ResponseEntity<>(service.findByStorageCode(item_code), HttpStatus.OK); // 200을 리턴해라
 //	}
 	
 //	@PutMapping("/storageUpdate/{storage_code}")
-//	public ResponseEntity<?/*LogisStorageDTO*/> updateBoard(@PathVariable int storage_code, @RequestBody LogisStorageDTO dto){
+//	public ResponseEntity<?/*LogisWarehouseDTO*/> updateBoard(@PathVariable int storage_code, @RequestBody LogisWarehouseDTO dto){
 //		System.out.println("<<< storageUpdate >>>");
 //		
 //		return new ResponseEntity<>(service.updateStorage(storage_code, dto), HttpStatus.OK); // 200

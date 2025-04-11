@@ -61,8 +61,8 @@ export default function BuyInsert() {
         { id: 1, item_code: '', quantity: 0, price: 0, supply: 0, vat: 0, total: 0 },
     ]);
     
-    // 입력일자
-    const [orderDate, setOrderDate] = useState(new Date());
+    // 납기일자
+    const [deliveryDate, setDeliveryDate] = useState(null);
     
     // 거래유형
     const [selectedType, setSelectedType] = useState('');
@@ -82,9 +82,6 @@ export default function BuyInsert() {
     const [selectedStorageName, setSelectedStorageName] = useState(null);
     const [isStorageModalOpen, setStorageModalOpen] = useState(false);
     
-    // 발주번호
-    const [orderCode, setOrderCode] = useState("");
-
     const handleChange = (id, key, value) => {
         const updated = orderItems.map(row => {
             if (row.id === id) {
@@ -122,17 +119,16 @@ export default function BuyInsert() {
             alert("물품을 1개 이상 입력해주세요.");
             return;
         }
-
+     
         try {
             const requestBody = {
                 order: {
-                    order_date: orderDate.toISOString().slice(0, 10),
+                    delivery_date: deliveryDate.toLocaleDateString('sv-SE'), // 브라우저 기준 날짜
                     client_code: selectedClient,
                     e_id: selectedIncharge,
                     storage_code: selectedStorage,
                     transaction_type: selectedType,
-                    order_type: 2,
-                    order_code: orderCode
+                    order_type: 2, // 2는 구매팀 주문입력건
                 },
                 items: orderItems.map(({ id, ...item }) => item)
             };
@@ -165,8 +161,8 @@ export default function BuyInsert() {
 
             <div className="inputBox">
                 <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>일자</InputGroup.Addon>
-                    <DatePicker value={orderDate} onChange={setOrderDate} />
+                    <InputGroup.Addon style={{ width: 80 }}>납기일자</InputGroup.Addon>
+                    <DatePicker value={deliveryDate} onChange={setDeliveryDate} />
                 </InputGroup>
 
                 <InputGroup className="input">
@@ -208,11 +204,7 @@ export default function BuyInsert() {
                     </InputGroup.Addon>
                 </InputGroup>
                 <Input value={selectedStorageName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
-
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>주문번호</InputGroup.Addon>
-                    <Input value={orderCode} onChange={setOrderCode} />
-                </InputGroup>
+        
             </div>
 
             {/* 거래처 모달 관리 */}

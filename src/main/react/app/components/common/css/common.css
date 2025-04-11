@@ -160,3 +160,8 @@ main.rs-content {
     margin: 0px 26px 0px 0px;
 }
 
+
+/*input 크기 */
+.input_width{
+	width:50px;
+}

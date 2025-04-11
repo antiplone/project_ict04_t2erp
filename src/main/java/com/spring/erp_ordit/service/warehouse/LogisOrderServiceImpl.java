@@ -21,7 +21,7 @@ public class LogisOrderServiceImpl {
 	@Autowired
 	private LogisMapper logisMapper;
 		
-	// 입/출고 목록	
+	// 입고 목록	
 	@Transactional(readOnly=true)
 	public List<LogisOrderDTO> logisOrderList(){
 		System.out.println("LogisOrderServiceImpl - orderList");
@@ -30,14 +30,18 @@ public class LogisOrderServiceImpl {
 		return logisOrder;
 	}
 	
-	// 입출고 상세
+	// 입고 상세
 	@Transactional(readOnly=true)
 	public List<LogisOrderDTO> findByLogisOrderId(int order_id){
 		System.out.println("LogisOrderServiceImpl - findByLogisOrderId");
 		return logisMapper.findByLogisOrderId(order_id);
 	}
 	
+<<<<<<< Updated upstream
 	// 입출고 아이템 상세
+=======
+	// 입고 아이템 상세
+>>>>>>> Stashed changes
 	@Transactional(readOnly=true)
 	public LogisOrderItemDTO findByOrderItem(int order_id, int item_code, int order_type){
 		System.out.println("LogisOrderServiceImpl - findByOrderItem");

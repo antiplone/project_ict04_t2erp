@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from '@remix-run/react';
 import { Card, Container } from 'rsuite';
+import Appconfig from "#config/AppConfig.json";
 
 const OrderItemDetail = () => { 
+
     const { order_id, item_code, order_type } = useParams();
+    const fetchURL = Appconfig.fetch['mytest']
 
     console.log("OrderItemDetail order_id:", order_id);
     console.log("OrderItemDetail item_code:", item_code);
@@ -26,7 +29,8 @@ const OrderItemDetail = () => {
             return;
         }
 
-        fetch(`http://localhost:8081/logisorder/orderItemDetail?${query}`)
+        /*fetch(`http://localhost:8081/logisorder/orderItemDetail?${query}`)*/
+        fetch(`${fetchURL.protocol}${fetchURL.url}/logisorder/orderItemDetail?${query}`)
         .then(res => {
             if (!res.ok) {
                 throw new Error('Error fetching item details');
@@ -49,7 +53,7 @@ const OrderItemDetail = () => {
     return (
         <div>
             <Container>
-                <div className='header logiHeader'>입고관리</div>
+                <div className='header logiHeader'>입고 아이템 상세</div>
                 <br />
                 <Card className='no_border'>
                     <div className='text_center no_border'>
@@ -65,7 +69,7 @@ const OrderItemDetail = () => {
                                     품목명 : {orderItemDetail.item_name}
                                 </div>
                                 <div className='padding_10px'>
-                                    입고수량 : {orderItemDetail.order_amount}
+                                    입고수량 : {orderItemDetail.quantity}
                                 </div>
                                 <div className='padding_10px'>
                                     규격 : {orderItemDetail.item_standard}

@@ -11,27 +11,31 @@ import com.spring.erp_ordit.dto.buy.BuyStatusDTO;
 
 @Mapper 	// DAOImpl 만들지 않고 mapper랑 연결할때 쓴다.
 @Repository
-public interface BuyOrderMapper {
+public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 구매현황 조회 Mapper
 	
-	// 구매 조회 탭 전체 목록
+	// 구매 조회 탭 <전체> 목록
 	public List<BuyOrderDTO> buyOrderAllList();	
 	
-	// 구매 조회 탭 미확인 목록
+	// 구매조회 탭 <결재중> 목록
+	public List<BuyOrderDTO> buyOrderPaingList();	
+	
+	// 구매 조회 탭 <미확인> 목록
 	public List<BuyOrderDTO> buyOrderUnchkList();	
 	
-	// 구매조회 탭 미확인 "건수" 조회
+	// 구매조회 탭 <미확인 "건수"> 조회
 	public List<BuyOrderDTO> buyOrderUnchkCount();	
 	
-	// 구매 조회 탭 확인 목록
+	// 구매 조회 탭 <확인> 목록
 	public List<BuyOrderDTO> buyOrderCheckList();	
 	
-	//구매입력 - 주문정보 입력 => order.getOrder_id()로 insert 후 ID 자동 세팅
+	//구매입력 - <주문정보 입력> => order.getOrder_id()로 insert 후 ID 자동 세팅
 	public int buyOrderInsert(BuyOrderDTO order);  
 	
-	// 구매 현황 조회 
+	// 구매 <현황> 조회 
 	public List<BuyStatusDTO> buyStatusSearch(
 		
-		@Param("order_date") String order_date,
+		@Param("start_date") String start_date,
+		@Param("end_date") String end_date,
         @Param("client_code") String client_code,
         @Param("e_id") String e_id,
         @Param("storage_code") String storage_code,
@@ -39,10 +43,11 @@ public interface BuyOrderMapper {
         @Param("transaction_type") String transaction_type	
 	);
 	
+	// 구매 내역 삭제
+	public int buyOrderDelete(int order_id);	
+	
 //	public int updateOrder(ItemDTO dto); 	// 게시글 수정
-//
-//	public int deleteOrder(int order_id);	// 구매 물품 삭제
-//	
+	
 //	public ItemDTO findByOrderId(int order_id);	// 구매물품 1건 조회
 	
 }

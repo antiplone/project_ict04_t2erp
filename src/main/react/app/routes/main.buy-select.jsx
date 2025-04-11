@@ -7,6 +7,7 @@ import BuySelectTabAll from "#components/buy/BuySelectTabAll.jsx";
 import "../styles/buy.css";
 import BuySelectTabUnchk from "#components/buy/BuySelectTabUnchk.jsx";
 import BuySelectTabCheck from "#components/buy/BuySelectTabCheck.jsx";
+import BuySelectTabPaing from "#components/buy/BuySelectTabPaing.jsx";
 
 export function meta() {
     return [
@@ -21,17 +22,17 @@ const styles = {
 
 export default function BuySelect() {
 
-    const [uncheckedCount, setUnCheckedCount] = useState(0);
+    // const [uncheckedCount, setUnCheckedCount] = useState(0);
 
-    useEffect(() => {
-        fetch("http://localhost:8081/buy/buyOrderUnchkCount", {
-            method: "GET"
-        })
-        .then((res) => res.json())
-        .then(res => {
-            setUnCheckedCount(res);
-        });
-    },[]);
+    // useEffect(() => {
+    //     fetch("http://localhost:8081/buy/buyOrderUnchkCount", {
+    //         method: "GET"
+    //     })
+    //     .then((res) => res.json())
+    //     .then(res => {
+    //         setUnCheckedCount(res);
+    //     });
+    // },[]);
 
     return (
         <>
@@ -53,10 +54,12 @@ export default function BuySelect() {
                         </InputGroup>
                     </div>
 
-                    {/*  알림 */}
+{/* 
+                    // 미확인건 알림
                     <Badge content={uncheckedCount}>
                         <Button>미확인건</Button>
                     </Badge>
+ */}
 
                 </div>
 
@@ -70,7 +73,7 @@ export default function BuySelect() {
 
                     <Tabs.Tab eventKey="2" title="결재중">
                         <Container>
-
+                            <BuySelectTabPaing />
                         </Container>
                     </Tabs.Tab>
 

@@ -12,6 +12,7 @@ import lombok.ToString;
 @ToString
 @Builder
 public class LogisOrderDTO {
+	
 	private int order_id;				// 주문번호
 	private Date order_date;			// 발주일
 	private Date delivery_date;			// 입고 예정일

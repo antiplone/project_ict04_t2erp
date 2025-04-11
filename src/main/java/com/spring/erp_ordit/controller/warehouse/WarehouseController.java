@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spring.erp_ordit.dto.warehouse.WarehouseDTO;
+import com.spring.erp_ordit.dto.warehouse.LogisWarehouseDTO;
 import com.spring.erp_ordit.service.warehouse.WarehouseServiceImpl;
 
 @RestController
@@ -24,13 +24,13 @@ import com.spring.erp_ordit.service.warehouse.WarehouseServiceImpl;
 public class WarehouseController {
 	
 	@Autowired
-	private WarehouseServiceImpl service;
+	private WarehouseServiceImpl wservice;
 	
 	// 게시글 목록 GetMapping = > http://localhost:8081/main/WarehouseList
 	@GetMapping("/warehouseList") // 조회는 GetMapping
-	public ResponseEntity<List<WarehouseDTO>> findAll() {
+	public ResponseEntity<List<LogisWarehouseDTO>> findWarehouse() {
 		System.out.println("<<< WarehouseList >>>");
-		return new ResponseEntity<>(service.warehouseList(), HttpStatus.OK);
+		return new ResponseEntity<>(wservice.warehouseList(), HttpStatus.OK);
 	}
 //	
 //	@GetMapping("/warehouseManagement") // 조회는 GetMapping

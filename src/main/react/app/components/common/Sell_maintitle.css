@@ -10,17 +10,17 @@
 }
 
 
-/* SellSearch.js */
+/* sell_search_item.jsx */
 /* 표 헤더 폰트 설정 */
 .search_title {
-    margin: 30px 0px 5px 50px;
+    margin: 30px 0px 5px 10px;
     font-size: 15px;
     max-width: 1500px;
 }
 
 /* 테이블 설정 */
 .search_table {
-    margin-left: 60px;
+    margin-left: 5px;
     max-width: 1500px;
 }
 
@@ -51,18 +51,23 @@
 
 
 
-/* SellAll.js */
+/* sell_all_list.jsx */
 /* 표 헤더 폰트 설정 */
 .all_title {
-    margin: 30px 0px 5px 50px;
+    margin: 30px 0px 5px 10px;
     font-size: 15px;
     max-width: 1400px;
 }
 
 /* 테이블 설정 */
 .all_table {
-    margin-left: 60px;
+    margin-left: 10px;
     max-width: 1500px;
+}
+
+/* 검색바 */
+.status_search_bar {
+    width: 230px;
 }
 
 /* 리스트 체크박스 */
@@ -98,7 +103,7 @@
 }
 
 
-/* SellAdd.js */
+/* sell_insert.jsx */
 /* 폼 내용 */
 .add_final {
     max-width: 1500px;
@@ -140,15 +145,17 @@
     /* margin-left: 20px; */
 }
 
-/* SellResult.js */
+/* sell_status_select.jsx */
 /* 폼 내용 */
-.result_final {
+.status_final {
     max-width: 1500px;
 }
-.result_div {
+.status_div {
     display: flex;
     margin-right: 30px;
-    width: 70;
+}
+.status_input {
+    width: 300px;
 }
 
 /* SellEdit.js */

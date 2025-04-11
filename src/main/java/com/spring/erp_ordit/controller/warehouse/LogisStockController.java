@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.erp_ordit.dto.warehouse.LogisStockDTO;
@@ -29,13 +32,13 @@ public class LogisStockController {
 	}
 	
 	// 입고 확정
-//	@PutMapping("/stockUpdate/{item_code}")
-//	public ResponseEntity<?/*LogisStockDTO*/> updateStock(@PathVariable int item_code, @RequestParam int stock_amount){
-//		System.out.println("<<< updateStock >>>");
-////		System.out.println("item_code : " + item_code + ", order_id : " + stock_amount );
-//		
-//		return new ResponseEntity<>(logisstockService.updateStock(item_code, stock_amount), HttpStatus.OK); // 200
-//	}
+	@PutMapping("/stockUpdate/{item_code}")
+	public ResponseEntity<?/*LogisStockDTO*/> updateStock(@PathVariable int item_code, @RequestParam int quantity){
+		System.out.println("<<< updateStock >>>");
+//		System.out.println("item_code : " + item_code + ", order_id : " + stock_amount );
+		
+		return new ResponseEntity<>(logisstockService.updateStock(item_code, quantity), HttpStatus.OK); // 200
+	}
 	
 	// 재고 아이템 상세 GetMapping = > http://localhost:8081/api/Warehouse/{num}
 //	@GetMapping("/detail/{l_code}") // 조회는 GetMapping

@@ -3,14 +3,33 @@
      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.spring.erp_ordit.dao.buy.BuyOrderMapper">
+<mapper namespace="com.spring.erp_ordit.dao.buy.BuyOrderMapper"> <!-- 구매조회(전체,결재중,미확인,확인), 미확인'건수'조회, 구매 입력, 구매현황 조회 -->
 
 	<!-- 구매조회 탭 전체 목록 -->
 	<select id="buyOrderAllList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
 	      SELECT 
+				ot.order_id,
+			    ot.order_date,
+			    ct.client_name,
+			    it.item_name,
+			    oit.total,
+			    ot.transaction_type,
+			    wt.storage_name,
+			    ost.order_status
+			FROM order_tbl ot
+			LEFT JOIN order_item_tbl oit ON oit.order_id = ot.order_id
+			LEFT JOIN item_tbl it ON oit.item_id = it.item_id
+			LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
+			LEFT JOIN warehouse_tbl wt ON ot.storage_code = wt.storage_code
+			LEFT JOIN order_status_tbl ost ON ost.order_id = ot.order_id
+				WHERE order_show='Y'
+  	</select>
+  	
+  	<!-- 구매조회 탭 결재중 목록 -->
+	<select id="buyOrderPaingList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
+	      SELECT 
 			    ot.order_date,
 			    ot.order_id,
-			 	ot.order_code,
 			    ct.client_name,
 			    it.item_name,
 			    oit.total,
@@ -21,62 +40,70 @@
 			LEFT JOIN item_tbl it ON oit.item_id = it.item_id
 			LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
 			LEFT JOIN warehouse_tbl wt ON ot.storage_code = wt.storage_code
+			WHERE order_show='Y'
   	</select>
 	
 	<!-- 구매조회 탭 미확인 목록 -->
 	<select id="buyOrderUnchkList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
-	      SELECT 
+	      SELECT
+				ot.order_id, 
 			    ot.order_date,
-			 	ot.order_id,
 			    ct.client_name,
 			    it.item_name,
 			    oit.total,
 			    ot.transaction_type,
-			    wt.storage_name
+			    wt.storage_name,
+			    ost.order_status
 			FROM order_tbl ot
 			LEFT JOIN order_item_tbl oit ON oit.order_id = ot.order_id
 			LEFT JOIN item_tbl it ON oit.item_id = it.item_id
 			LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
 			LEFT JOIN warehouse_tbl wt ON ot.storage_code = wt.storage_code
+			LEFT JOIN order_status_tbl ost ON ost.order_id = ot.order_id
 			WHERE ot.order_type = 1
-			  AND ot.order_code is null
+			  AND order_show='Y'
   	</select>
-  	
-  	<!-- 구매조회 탭 미확인 "건수" 조회 -->
+ <!--  	
+  	구매조회 탭 미확인 "건수" 조회
 	<select id="buyOrderUnchkCount" resultType="int">
-	      SELECT COUNT(*) AS uncheckedCount 
-	      	FROM order_tbl
-			WHERE order_code IS NULL
-				AND order_type=1
+
   	</select>
-  	
+  	 -->
   	<!-- 구매조회 탭 확인 목록 -->
 	<select id="buyOrderCheckList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
 	      SELECT 
 			    ot.order_date,
-			 	ot.order_code,
 			    ct.client_name,
 			    it.item_name,
 			    oit.total,
 			    ot.transaction_type,
-			    wt.storage_name
+			    wt.storage_name,
+			    ost.order_status
 			FROM order_tbl ot
 			LEFT JOIN order_item_tbl oit ON oit.order_id = ot.order_id
 			LEFT JOIN item_tbl it ON oit.item_id = it.item_id
 			LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
 			LEFT JOIN warehouse_tbl wt ON ot.storage_code = wt.storage_code
-			WHERE ot.order_type = 2
-			  AND ot.order_code IS NOT NULL
+			LEFT JOIN order_status_tbl ost ON ost.order_id = ot.order_id
+				WHERE order_show='Y'
+				AND order_status='승인'
   	</select>
 	
 	<!-- 구매 입력 (일자, 담당자, 거래처, 거래유형, 입고창고) -->
 	<insert id="buyOrderInsert" useGeneratedKeys="true" keyProperty="order_id">
         INSERT INTO order_tbl (
-		    order_type, order_code, order_date, e_id, client_code, storage_code,
+		    order_type, e_id, client_code, storage_code,
 		    transaction_type, delivery_date, shipment_order_date
 		) VALUES
-		(#{order_type}, #{order_code}, #{order_date}, #{e_id}, #{client_code}, #{storage_code}, #{transaction_type}, #{delivery_date}, #{shipment_order_date})
+		(#{order_type}, #{e_id}, #{client_code}, #{storage_code}, #{transaction_type}, #{delivery_date}, #{shipment_order_date})
     </insert>
+    
+    <!-- 구매 내역 삭제 -->
+    <delete id="buyOrderDelete" parameterType="int">
+	       UPDATE order_tbl
+			  SET order_show = 'N'
+			WHERE order_id = #{order_id};
+  	 </delete>
     
     <!-- 구매현황조회 -->
 	<select id="buyStatusSearch" resultType="com.spring.erp_ordit.dto.buy.BuyStatusDTO">
@@ -96,14 +123,27 @@
 		    LEFT JOIN item_tbl it ON oit.item_id = it.item_id
 		    LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
 		    <where>
-		        ot.order_type = 2
-		        <if test="order_date != null and order_date != ''">AND ot.order_date = #{order_date}</if>
-		        <if test="client_code != null and client_code != ''">AND ot.client_code = #{client_code}</if>
-		        <if test="e_id != null and e_id != ''">AND ot.e_id = #{e_id}</if>
-		        <if test="storage_code != null and storage_code != ''">AND ot.storage_code = #{storage_code}</if>
-		        <if test="item_code != null and item_code != ''">AND it.item_code = #{item_code}</if>
-		        <if test="transaction_type != null and transaction_type != ''">AND ot.transaction_type = #{transaction_type}</if>
-		    </where>
+		    	ot.order_show = 'Y'
+		    	
+			    <if test="start_date != null and end_date != null">
+				    AND ot.order_date BETWEEN #{start_date} AND #{end_date}
+				</if>
+			    <if test="client_code != null and client_code != ''">
+			        AND ot.client_code = #{client_code}
+			    </if>
+			    <if test="e_id != null and e_id != ''">
+			        AND ot.e_id = #{e_id}
+			    </if>
+			    <if test="storage_code != null and storage_code != ''">
+			        AND ot.storage_code = #{storage_code}
+			    </if>
+			    <if test="item_code != null and item_code != ''">
+			        AND it.item_code = #{item_code}
+			    </if>
+			    <if test="transaction_type != null and transaction_type != ''">
+			        AND ot.transaction_type = #{transaction_type}
+			    </if>
+			</where>
   	</select>
 	
 <!-- 
@@ -140,9 +180,6 @@
 	    VALUES (#{order_id}, #{item_code}, #{item_name}, #{quantity})
 	 </insert>
   	 
-  	 <delete id="deleteOrder" parameterType="int">
-	       DELETE FROM order_item_tbl_hjy
- 		    WHERE order_id = #{order_id} 
-  	 </delete>
+  	 
 	 -->
 </mapper>   

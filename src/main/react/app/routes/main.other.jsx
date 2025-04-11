@@ -1,6 +1,5 @@
 import { Container } from "rsuite";
 
-// @Remix:모듈함수 - <html>의 <head>의 내용
 export function meta() {
 	return [
 		{ title: "다른페이지" },
@@ -8,7 +7,6 @@ export function meta() {
 	];
 };
 
-// @Remix:모듈함수 - <html>의 <head>의 내용 : 외부 - CSS, Font등.. 링크
 export const links = () => [
 	// { rel: "stylesheet", href: styles },
 ];

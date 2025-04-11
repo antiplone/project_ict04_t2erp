@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.spring.erp_ordit.dto.warehouse.WarehouseDTO;
+import com.spring.erp_ordit.dto.warehouse.LogisWarehouseDTO;
 import com.spring.erp_ordit.dao.warehouse.LogisMapper;
 
 @Service
@@ -17,9 +17,9 @@ public class WarehouseServiceImpl {
 	
 	// 게시글 목록	
 	@Transactional(readOnly=true)
-	public List<WarehouseDTO> warehouseList(){
+	public List<LogisWarehouseDTO> warehouseList(){
 		System.out.println("WarehouseServiceImpl - warehouseList");
-		List<WarehouseDTO> a = logisMapper.warehouseList();
+		List<LogisWarehouseDTO> a = logisMapper.warehouseList();
 		System.out.println("a : " + a);
 		return a;
 	}

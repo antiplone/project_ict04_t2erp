@@ -11,23 +11,23 @@ import com.spring.erp_ordit.dto.warehouse.*;
 @Repository
 public interface LogisMapper {
 
-		// 게시글 목록
-		public List<WarehouseDTO> warehouseList();
+		// 창고 목록
+		public List<LogisWarehouseDTO> warehouseList();
 
-//		// 게시글 등록
+//		// 창고 등록
 //		public int insertBoard(WarehouseDTO dto);
 //		
-//		// 게시글 수정
+//		// 창고 수정
 //		public int updateBoard(WarehouseDTO dto);
 //		
-//		// 게시글 삭제
+//		// 창고 삭제
 //		public int deleteBoard(int item_code);
 //		
-//		// 게시글 상세
+//		// 창고 상세
 //		public WarehouseDTO findByNum(int item_code);
 		
 		// 주문관련
-		// 주문 목록
+		// 입고 목록
 		public List<LogisOrderDTO> logisOrderList();
 		
 		public List<LogisOrderDTO> findByLogisOrderId(int order_id);
@@ -36,26 +36,33 @@ public interface LogisMapper {
 		
 //		public int updateStock(int item_code, int stock_amount);
 		
+		// 출고 목록
+		public List<LogisSalesDTO> logisSalesList();
+		
+		public List<LogisSalesDTO> findByLogisSalesId(int order_id);
+		
+		public LogisSalesItemDTO findBySalesItem(int order_id, int item_code, int order_type);
+		
+		public int updateStock(int item_code, int quantity);
+		
 		
 		// 창고관련
 		// 재고 목록
 		public List<LogisStockDTO> logisStockList();
 		
 		// 창고 목록
-//		public List<LogisStorageDTO> storageList();
+//		public List<LogisWarehouseDTO> storageList();
 		
 		// 창고 등록
-//		public int storageInsert(LogisStorageDTO dto);
+//		public int storageInsert(LogisWarehouseDTO dto);
 		
 		// 창고 상세
-//		public LogisStorageDTO findByStoragecode(int storage_code);
+//		public LogisWarehouseDTO findByStoragecode(int storage_code);
 		
 		// 창고 삭제
 //		public Integer deleteStoragecode(int storage_code);
 		
 		// 창고 수정
-//		public int updateStorage(LogisStorageDTO dto);
-		
-		public List<LogisSalesDTO> logisSalesList();
+//		public int updateStorage(LogisWarehouseDTO dto);
 		
 }

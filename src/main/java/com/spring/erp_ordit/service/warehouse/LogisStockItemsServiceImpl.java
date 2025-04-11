@@ -26,11 +26,11 @@ public class LogisStockItemsServiceImpl {
 	}
 	
 	// 입고 확정(stock_table 수정) 
-//	@Transactional  // 
-//	public int /*LogisStockDTO*/ updateStock(int item_code, int stock_amount){ // BoardDTO return : 상세페이지로 리턴하기 위해 
-//		System.out.println("LogisStockItemsServiceImpl - updateStock");
-//		return logisMapper.updateStock(item_code, stock_amount);
-//	}
+	@Transactional  // 
+	public int /*LogisStockDTO*/ updateStock(int item_code, int quantity){ // BoardDTO return : 상세페이지로 리턴하기 위해 
+		System.out.println("LogisStockItemsServiceImpl - updateStock");
+		return logisMapper.updateStock(item_code, quantity);
+	}
 	
 	// 재고 등록
 //		@Transactional  // 서비스 함수가 종료될 때 commit할지 rollback할지 트랜잭션 관리하겠다.

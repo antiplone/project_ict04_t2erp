@@ -49,7 +49,7 @@ const HeaderMenu = () => {
 					<Nav.Menu title="관리운영">
 						<Nav.Item onSelect={() => { navigate("basic_hr") }}>인사등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("client") }}>거래처등록</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("item") }}>상품등록</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("itemList") }}>상품등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_insa") }}>인사관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("att_regAttItems") }}>근태관리</Nav.Item>
 					</Nav.Menu>
@@ -59,11 +59,11 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("buy-status-select") }}>구매현황</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="판매관리">
-						<Nav.Item onSelect={() => { navigate("sell_search") }}>판매물품 검색</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_search_item") }}>판매물품 검색</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_request_item") }}>판매물품 관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_all") }}>판매조회</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_add") }}>판매입력</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_result") }}>판매현황</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_all_list") }}>판매조회</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_insert") }}>판매입력</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_status_select") }}>판매현황</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_request_client") }}>거래처 관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu
@@ -71,8 +71,9 @@ const HeaderMenu = () => {
 					>
 						<Nav.Item onSelect={() => { navigate("/main/warehouse") }}>물류메인</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("logis-income-list") }}>입고관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("management") }}>출고관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("warehouseManagement") }}>창고관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("logis-outgoing-list") }}>출고관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("logis-warehouse") }}>창고관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("logis-stock") }}>재고관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu
 						title="회계"

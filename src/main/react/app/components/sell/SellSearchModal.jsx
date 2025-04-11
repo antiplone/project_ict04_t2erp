@@ -72,7 +72,7 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 							<Form.ControlLabel style={{ marginRight: 45, fontSize: 17 }}>품목명</Form.ControlLabel>
 							<InputGroup style={searchBoxstyles}>
 							<Input
-								placeholder='물품'
+								placeholder='품목명'
 								value={selectedItem || ""} readOnly
 							/>
 								<AutoComplete />

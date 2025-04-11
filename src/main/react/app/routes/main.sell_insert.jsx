@@ -19,9 +19,9 @@ const defaultData = [];
 
 /* 거래유형 - 선택 데이터 */
 const sellType = ["부과세율 적용", "부가세율 미적용"].map(
-	(item) => ({ // 이렇게 하면, 둘다 같게 들어가서, 라벨따로 값따로 안넣어줘도 됩니다.
-		label: item, // Eugenia
-		value: item, // Eugenia
+	(item) => ({
+		label: item, 
+		value: item,
 	})
 );
 
@@ -310,7 +310,7 @@ const sell_insert = () => {
 							</InputGroup.Addon>
 						</InputGroup>
 						<Input type="text" autoComplete="off" style={{ width: 150, marginBottom: 5 }}
-						name="storage_name"
+							name="storage_name"
 							value={selectedStorageName || ""} readOnly />
 					</div>
 				</div>

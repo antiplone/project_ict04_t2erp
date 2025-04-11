@@ -147,13 +147,15 @@
 
 /* sell_status_select.jsx */
 /* 폼 내용 */
-.result_final {
+.status_final {
     max-width: 1500px;
 }
-.result_div {
+.status_div {
     display: flex;
     margin-right: 30px;
-    width: 70;
+}
+.status_input {
+    width: 300px;
 }
 
 /* SellEdit.js */

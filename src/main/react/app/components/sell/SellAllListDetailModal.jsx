@@ -4,9 +4,9 @@ import { Button, Table, Modal, Checkbox } from "rsuite";
 const { Column, HeaderCell, Cell } = Table;
 
 
-const SellRequestClientDetailModal = ({ title, confirm, cancel, onReqClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
+const SellAllListDetailModal = ({ title, confirm, cancel, onReqClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
 	
-	const [reqClientList, setReqClientList] = useState([]);
+	const [allDetail, setAllDetail] = useState([]);
 
 		// fetch()를 통해 톰캣서버에게 데이터를 요청
 		useEffect((sc_no) => {
@@ -127,7 +127,7 @@ const SellRequestClientDetailModal = ({ title, confirm, cancel, onReqClientSelec
 	);
 };
 
-SellRequestClientDetailModal.defaultProps = {
+SellAllListDetailModal.defaultProps = {
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
 	title: "제목을 입력해주세요.",
 	confirm: "확인",
@@ -135,4 +135,4 @@ SellRequestClientDetailModal.defaultProps = {
 	
 };
 
-export default SellRequestClientDetailModal;
+export default SellAllListDetailModal;

@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
 		 InputGroup, AutoComplete, HStack, Input, Table, InputPicker,
 		 IconButton, InputNumber, DateRangePicker} from "rsuite";
@@ -7,38 +7,89 @@ import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
 import { mockUsers } from './sell_mock4';
 //import SearchIcon from '@rsuite/icons/Search';
 import "../components/common/Sell_maintitle.css";
-
-const styles = {
-	width: 150,
-	marginBottom: 5
-  };
+import SellEmployeeSearchModal from "#components/sell/SellEmployeeSearchModal.jsx";
+import SellClientSearchModal from "#components/sell/SellClientSearchModal.jsx";
+import SellStorageSearchModal from "#components/sell/SellStorageSearchModal.jsx";
+import SellItemSearchModal from "#components/sell/SellItemSearchModal.jsx";
 
 const { Column, HeaderCell, Cell } = Table;
-const defaultData = mockUsers(8);
+
+/* 거래유형 - 선택 데이터 */
+const sellType = ["부과세율 적용", "부가세율 미적용"].map(
+	(item) => ({
+		label: item, 
+		value: item,
+	})
+);
 
 const sell_status_select = () => {
 
-	const [data, setData] = React.useState(defaultData);
+	const [data, setData] = useState([]);
 
-	const handleChange = (id, key, value) => {
-		const nextData = Object.assign([], data);
-		nextData.find(item => item.id === id)[key] = value;
-		setData(nextData);
-	};
-	const handleEdit = id => {
-		const nextData = Object.assign([], data);
-		const activeItem = nextData.find(item => item.id === id);
+	// 백엔드로 전달하기 위해 출하창고, 거래유형타입 저장
+	const [shipmentOrderDate, setShipmentOrderDate] = useState(null);
+	const [transactionType, setTransactionType] = useState(null);
 
-		activeItem.status = activeItem.status ? null : 'EDIT';
+	// 담당자 모달 관리
+	const [selectedIncharge, setSelectedIncharge] = useState(null);
+	const [selectedInchargeName, setSelectedInchargeName] = useState(null);
+	const [isInchargeModalOpen, setInchargeModalOpen] = useState(false);
 
-		setData(nextData);
-	};
-
-	const handleRemove = id => {
-		setData(data.filter(item => item.id !== id));
+	const handleInchargeSelect = (e_id, e_name) => {
+		setSelectedIncharge(e_id);
+		setSelectedInchargeName(e_name);
+		setClientModalOpen(false);
 	};
 
+	const handleOpenInchargeModal = () => {
+		setInchargeModalOpen(true);
+	};
+
+	// 거래처 모달 관리
+	const [selectedClient, setSelectedClient] = useState(null);
+	const [selectedClientName, setSelectedClientName] = useState(null);
+	const [isClientModalOpen, setClientModalOpen] = useState(false);
+
+	const handleClientSelect = (client_code, client_name) => {
+		setSelectedClient(client_code);
+		setSelectedClientName(client_name);
+		setClientModalOpen(false);
+	};
+
+	const handleOpenClientModal = () => {
+		setClientModalOpen(true);
+	};
+
+	// 창고 모달 관리
+	const [selectedStorage, setSelectedStorage] = useState(null);
+	const [selectedStorageName, setSelectedStorageName] = useState(null);
+	const [isStorageModalOpen, setStorageModalOpen] = useState(false);
+
+	const handleStorageSelect = (storage_code, storage_name) => {
+		setSelectedStorage(storage_code);
+		setSelectedStorageName(storage_name);
+		setStorageModalOpen(false);
+	};
 	
+	const handleOpenStorageModal = () => {
+		setStorageModalOpen(true);
+	};
+
+	// 물품 검색 모달 관리
+	const [selectedItem, setSelectedItem] = useState(null);
+	const [selectedItemName, setSelectedItemName] = useState(null);
+	const [isItemModalOpen, setItemModalOpen] = useState(false);
+
+	const handleItemSelect = (item_code, item_name) => {
+		setSelectedItem(item_code);
+		setSelectedItemName(item_name);
+		setItemModalOpen(false);
+	};
+
+	const handleOpenItemModal = () => {
+		setItemModalOpen(true);
+	};
+
 	return (
 		<div>
 			
@@ -53,8 +104,8 @@ const sell_status_select = () => {
 				<Form className="addForm" layout="inline">
 
 				<div className="form_div">
-					<div className="result_div">
-						<InputGroup className="input">
+					<div className="status_div">
+						<InputGroup className="status_input">
 							<InputGroup.Addon style={{ width: 80 }}>
 								등록일자
 							</InputGroup.Addon>
@@ -62,62 +113,101 @@ const sell_status_select = () => {
 						</InputGroup>
 					</div>
 
-					<div className="result_div">
-						<InputGroup className="input">
+					<div className="status_div">
+						<InputGroup className="status_input">
 							<InputGroup.Addon style={{ width: 80 }}>
 								담당자
 							</InputGroup.Addon>
 							<Input
 								placeholder='담당자 입력'
+								name="e_id"
+								value={selectedIncharge || ""} readOnly
 								// value={selectedIncharge ? selectedIncharge.em_name : ""}
 							/>
-							<InputGroup.Addon>
+							<InputGroup.Addon onClick={handleOpenInchargeModal}>
 								{/* <SearchIcon /> */}
 							</InputGroup.Addon>
 						</InputGroup>
+						<Input 
+							name="e_name" type="text" autoComplete="off" style={{ width: 150 }}
+							value={selectedInchargeName || ""} readOnly />
 					</div>
 
-					<div className="result_div">
-						<InputGroup className="input">
+					<div className="status_div">
+						<InputGroup className="status_input">
 							<InputGroup.Addon style={{ width: 80 }}>
 								거래처
 							</InputGroup.Addon>
-							<Input placeholder='거래처' />
-							<InputGroup.Addon>
+							<Input 
+								placeholder='거래처' 
+								name="client_code"
+								value={selectedClient || ""} readOnly
+							/>
+							<InputGroup.Addon onClick={handleOpenClientModal}>
 								{/* <SearchIcon /> */}
 							</InputGroup.Addon>
 						</InputGroup>
+						<Input type="text" autoComplete="off" style={{ width: 150 }}
+								name="client_name"
+								value={selectedClientName || ""} readOnly 
+						/>
 					</div>
 				</div>
 
 				<div className="form_div">
-					<div className="result_div">
-						<InputGroup className="input">
+					<div className="status_div">
+						<InputGroup className="status_input">
 							<InputGroup.Addon style={{ width: 80 }}>
 								거래유형
 							</InputGroup.Addon>
-							<InputPicker placeholder='거래유형 선택' 
-							// data={type} 
-							style={{ width: 224, border: 'none' }} />
+							<InputPicker
+								placeholder='거래유형 선택'
+								name="transaction_type"
+								data={sellType}
+								value={transactionType}
+								onChange={setTransactionType}
+								style={{ width: 224, border: 'none', height: 38}}
+							/>
 						</InputGroup>
 					</div>
 
-					<div className="result_div">
-						<InputGroup className="input">
+					<div className="status_div">
+						<InputGroup className="status_input">
 							<InputGroup.Addon style={{ width: 80 }}>
 								출하창고
 							</InputGroup.Addon>
-							<Input placeholder='입고창고' />
-						</InputGroup>
+							<Input 
+								placeholder='출하창고' 
+								name="storage_code"
+								value={selectedStorage || ""} readOnly
+								/>
+							<InputGroup.Addon onClick={handleOpenStorageModal}>
+									{/* <SearchIcon onClick={handleOpenStorageModal} /> */}
+								</InputGroup.Addon>
+							</InputGroup>
+							<Input type="text" autoComplete="off" style={{ width: 150 }}
+								name="storage_name"
+								value={selectedStorageName || ""} readOnly 
+							/>
 					</div>
 
-					<div className="result_div">
-						<InputGroup className="input">
+					<div className="status_div">
+						<InputGroup className="status_input">
 							<InputGroup.Addon style={{ width: 80 }}>
 								품목코드
 							</InputGroup.Addon>
-							<Input placeholder='품목코드' />
-						</InputGroup>
+							<Input 
+								placeholder='품목코드' 
+								name="item_code"
+								value={selectedItem || ""} readOnly
+							/>
+							<InputGroup.Addon tabIndex={-1} onClick={handleOpenItemModal}>
+								{/* <SearchIcon  /> */}
+							</InputGroup.Addon>
+							</InputGroup>
+							<Input name="customer_1" type="text" autoComplete="off" style={{ width: 150 }}
+								value={selectedItemName || ""} readOnly />
+						
 					</div>
 				</div>
 
@@ -128,15 +218,13 @@ const sell_status_select = () => {
 						</Button></div>
 						<hr />
 
-
-						{/* 입력 하위 칸 */}
 						<div className="addTabel">
 						<Table height={400} data={data}>
 
 						<Column width={150}>
 							<HeaderCell>일자-No.</HeaderCell>
 							<Cell
-							//dataKey="date"
+							dataKey="date"
 							dataType="date"
 							/>
 						</Column>
@@ -144,7 +232,7 @@ const sell_status_select = () => {
 						<Column width={150}>
 							<HeaderCell>품목명</HeaderCell>
 							<Cell
-							//dataKey="age"
+							dataKey="age"
 							dataType="string"
 							/>
 						</Column>
@@ -152,7 +240,7 @@ const sell_status_select = () => {
 						<Column width={100}>
 							<HeaderCell>수량</HeaderCell>
 							<Cell
-							//dataKey="birthdate"
+							dataKey="birthdate"
 							dataType="number"
 							/>
 						</Column>
@@ -160,7 +248,7 @@ const sell_status_select = () => {
 						<Column width={150}>
 							<HeaderCell>단가</HeaderCell>
 							<Cell
-							//dataKey="birthdate"
+							dataKey="birthdate"
 							dataType="number"
 							/>
 						</Column>
@@ -168,7 +256,7 @@ const sell_status_select = () => {
 						<Column width={150}>
 							<HeaderCell>공급가액</HeaderCell>
 							<Cell
-							//dataKey="birthdate"
+							dataKey="birthdate"
 							dataType="number"
 							/>
 						</Column>
@@ -176,7 +264,7 @@ const sell_status_select = () => {
 						<Column width={150}>
 							<HeaderCell>부가세</HeaderCell>
 							<Cell
-							//dataKey="birthdate"
+							dataKey="birthdate"
 							dataType="number"
 							/>
 						</Column>
@@ -184,7 +272,7 @@ const sell_status_select = () => {
 						<Column width={150}>
 							<HeaderCell>합계</HeaderCell>
 							<Cell
-							//dataKey="birthdate"
+							dataKey="birthdate"
 							dataType="number"
 							/>
 						</Column>
@@ -192,10 +280,12 @@ const sell_status_select = () => {
 						<Column width={150}>
 							<HeaderCell>거래처명</HeaderCell>
 							<Cell
-							//dataKey="birthdate"
+							dataKey="birthdate"
 							dataType="String"
 							/>
 						</Column>
+
+					
 
 					</Table>
 					</div>
@@ -206,7 +296,41 @@ const sell_status_select = () => {
 					</ButtonToolbar>
 					</div>
 					<hr></hr>
+					<SellEmployeeSearchModal
+						title="담당자 선택"
+						confirm="확인"
+						cancel="취소"
+						onInchargeSelect={handleInchargeSelect}	// e_id, e_name 받기
+						handleOpen={isInchargeModalOpen}
+						handleColse={() => setInchargeModalOpen(false)}
+					/>
 
+					<SellClientSearchModal
+						title="거래처 선택"
+						confirm="확인"
+						cancel="취소"
+						onClientSelect={handleClientSelect}	// client_code, client_name 받기
+						handleOpen={isClientModalOpen}
+						handleColse={() => setClientModalOpen(false)}
+					/>
+
+					<SellStorageSearchModal
+						title="창고 선택"
+						confirm="확인"
+						cancel="취소"
+						onStorageSelect={handleStorageSelect}	// storage_code, storage_name 받기
+						handleOpen={isStorageModalOpen}
+						handleColse={() => setStorageModalOpen(false)}
+					/>
+
+					<SellItemSearchModal
+						title="물품 선택"
+						confirm="확인"
+						cancel="취소"
+						onItemSelect={handleItemSelect}
+						handleOpen={isItemModalOpen}
+						handleColse={() => setItemModalOpen(false)}
+					/>
 				</Form>
 			</div>
 			{/* <hr></hr> */}
@@ -215,65 +339,5 @@ const sell_status_select = () => {
 		
 	);
 };
-
-function toValueString(value, dataType) {
-	return dataType === 'date' ? value?.toLocaleDateString() : value;
-  }
-  
-  const fieldMap = {
-	string: Input,
-	number: InputNumber,
-	date: DatePicker
-  };
-  
-  const EditableCell = ({ rowData, dataType, dataKey, onChange, onEdit, ...props }) => {
-	const editing = rowData.status === 'EDIT';
-  
-	const Field = fieldMap[dataType];
-	const value = rowData[dataKey];
-	const text = toValueString(value, dataType);
-  
-	return (
-	  <Cell
-		{...props}
-		className={editing ? 'table-cell-editing' : ''}
-		onDoubleClick={() => {
-		  onEdit?.(rowData.id);
-		}}
-	  >
-		{editing ? (
-		  <Field
-			defaultValue={value}
-			onChange={value => {
-			  onChange?.(rowData.id, dataKey, value);
-			}}
-		  />
-		) : (
-		  text
-		)}
-	  </Cell>
-	);
-  };
-  
-  const ActionCell = ({ rowData, dataKey, onEdit, onRemove, ...props }) => {
-	return (
-	  <Cell {...props} style={{ padding: '6px', display: 'flex', gap: '4px' }}>
-		<IconButton
-		  appearance="subtle"
-		  icon={rowData.status === 'EDIT' ? <VscSave /> : <VscEdit />}
-		  onClick={() => {
-			onEdit(rowData.id);
-		  }}
-		/>
-		<IconButton
-		  appearance="subtle"
-		  icon={<VscRemove />}
-		  onClick={() => {
-			onRemove(rowData.id);
-		  }}
-		/>
-	  </Cell>
-	);
-  };
 
 export default sell_status_select;

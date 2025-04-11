@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/react-in-jsx-scope */
 import "rsuite/Sidebar/styles/index.css";
 
 import { useState } from "react";

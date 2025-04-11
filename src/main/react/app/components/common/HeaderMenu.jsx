@@ -59,19 +59,19 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("buy-status-select") }}>구매현황</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="판매관리">
-						<Nav.Item onSelect={() => { navigate("sell_search") }}>판매물품 검색</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_search_item") }}>판매물품 검색</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_request_item") }}>판매물품 관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_all") }}>판매조회</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_add") }}>판매입력</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_result") }}>판매현황</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_all_list") }}>판매조회</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_insert") }}>판매입력</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_status_select") }}>판매현황</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_request_client") }}>거래처 관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu
 						title="물류"
 					>
 						<Nav.Item onSelect={() => { navigate("/main/warehouse") }}>물류메인</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("/main/warehouse/orderIncomeList") }}>입고관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("/main/warehouse/outgoingList") }}>출고관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("logis-income-list") }}>입고관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("management") }}>출고관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("warehouseManagement") }}>창고관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu
@@ -96,7 +96,7 @@ const HeaderMenu = () => {
 			</Navbar>
 
 			<Breadcrumb style={{margin: 8}} separator={arrow ? <Image width={12} height={12} src={arrow} /> : ">"}>
-				<Breadcrumb.Item href="/main" ><ToImage src={mainIcon} fbText="Main" width={16} height={16} /></Breadcrumb.Item>
+				<Breadcrumb.Item href="/main" ><ToImage src={mainIcon} fbtext="Main" width={16} height={16} /></Breadcrumb.Item>
 				{crumbs[0] != null && crumbs[0].length > 0 ? crumbs.map((value, index) =>
 					<Breadcrumb.Item key={index} href={value}>{value}</Breadcrumb.Item>
 				) : null}

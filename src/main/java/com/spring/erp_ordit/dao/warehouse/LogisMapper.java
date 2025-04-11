@@ -32,7 +32,7 @@ public interface LogisMapper {
 		
 		public List<LogisOrderDTO> findByLogisOrderId(int order_id);
 		
-//		public LogisOrderDTO findByOrderItem(int order_id, int item_code);
+		public LogisOrderItemDTO findByOrderItem(int order_id, int item_code, int order_type);
 		
 //		public int updateStock(int item_code, int stock_amount);
 		

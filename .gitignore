@@ -8,6 +8,8 @@ src/main/resources/application-*.yml
 
 ### Java ###
 # Compiled class file
+.classpath
+	### ↑ Added ###
 *.class
 
 # Log file
@@ -371,4 +373,3 @@ thumb
 sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/maven,java,react,node,python
-.classpath

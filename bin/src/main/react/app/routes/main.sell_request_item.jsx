@@ -229,14 +229,14 @@ function toValueString(value, dataType) {
 	  <Cell {...props} style={{ padding: '6px', display: 'flex', gap: '4px' }}>
 		<IconButton
 		  appearance="subtle"
-		  //icon={rowData.status === 'EDIT' ? <VscSave /> : <VscEdit />}
+		  icon={rowData.status === 'EDIT' ? <VscSave /> : <VscEdit />}
 		  onClick={() => {
 			onEdit(rowData.id);
 		  }}
 		/>
 		<IconButton
 		  appearance="subtle"
-		  //icon={<VscRemove />}
+		  icon={<VscRemove />}
 		  onClick={() => {
 			onRemove(rowData.id);
 		  }}

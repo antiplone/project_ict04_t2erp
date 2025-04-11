@@ -59,11 +59,11 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("buy-status-select") }}>구매현황</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="판매관리">
-						<Nav.Item onSelect={() => { navigate("sell_search") }}>판매물품 검색</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_search_item") }}>판매물품 검색</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_request_item") }}>판매물품 관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_all") }}>판매조회</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_add") }}>판매입력</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_result") }}>판매현황</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_all_list") }}>판매조회</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_insert") }}>판매입력</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_status_select") }}>판매현황</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_request_client") }}>거래처 관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu

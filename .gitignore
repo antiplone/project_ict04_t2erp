@@ -356,6 +356,8 @@ poetry.toml
 pyrightconfig.json
 
 ### react ###
+**/bin/
+	### ↑ Added ###
 .DS_*
 **/*.backup.*
 **/*.back.*

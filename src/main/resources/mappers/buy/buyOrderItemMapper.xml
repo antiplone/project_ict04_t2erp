@@ -3,7 +3,7 @@
      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.spring.erp_ordit.dao.buy.BuyOrderItemMapper">
+<mapper namespace="com.spring.erp_ordit.dao.buy.BuyOrderItemMapper"> <!-- 구매 물품정보 입력 -->
 
 	<!-- 구매 물품정보 입력 (발주번호, 물품코드, 물품명, 수량, 가격, 공급가, 부가세, 총액)-->
 	<insert id="buyOrderItemInsert" parameterType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
@@ -11,20 +11,4 @@
 	    VALUES (#{order_id}, 2, #{order_code}, #{item_id, javaType=Long}, #{item_code, javaType=String},  #{quantity}, #{price}, #{supply}, #{vat}, #{total})
 	</insert>
 
-<!-- 
-	 <select id="buyOrderItemList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderItemDTO">
-	      SELECT * FROM order_item_tbl_hjy
-  	 </select>
-	
-  	 <insert id="buyOrderItemInsert" parameterType="com.spring.erp_ordit.dto.buy.BuyOrderItemDTO">
-	    INSERT INTO order_item_tbl_hjy (order_id, item_code, item_name, quantity)
-	    VALUES (#{order_id}, #{item_code}, #{item_name}, #{quantity})
-	 </insert>
-  	 
-  	 <delete id="buyOrderItemDelete" parameterType="int">
-	       DELETE FROM order_item_tbl_hjy
- 		    WHERE order_id = #{order_id} 
-  	 </delete>
-	 -->
-	
 </mapper>   

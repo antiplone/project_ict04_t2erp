@@ -4,13 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.erp_ordit.dao.buy.BuySearchMapper;
 import com.spring.erp_ordit.dto.buy.BuySearchDTO;
 
 @Service
-public class BuySearchServiceImpl { // 작성자: hjy - 모달 검색 담당자,거래처 목록 
+public class BuySearchServiceImpl { // 작성자: hjy - 모달 검색 (담당자,거래처,입고창고,물품) service 
 	
 	@Autowired
 	private BuySearchMapper BuySearchMapper;

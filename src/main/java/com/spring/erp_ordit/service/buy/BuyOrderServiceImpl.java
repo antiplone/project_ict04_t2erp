@@ -15,7 +15,7 @@ import com.spring.erp_ordit.dto.buy.BuyStatusDTO;
 
 @Service
 @Transactional  // 트랜잭션 적용
-public class BuyOrderServiceImpl {
+public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결재중,미확인,확인), 구매 입력, 구매현황 조회 service
 	
 	@Autowired
 	private BuyOrderMapper buyOrderMapper;
@@ -26,8 +26,7 @@ public class BuyOrderServiceImpl {
 	@Autowired
 	private BuyItemMapper buyItemMapper;
 	
-	// 구매 조회 탭 전체 목록
-	@Transactional // 서비스 함수가 종료될 때 commit 할지 rollback 할지 트랜잭션 관리하겠다.
+	// 구매조회 탭 <전체> 목록
 	public List<BuyOrderDTO> getBuyOrderAllList() {
 		
 		System.out.println("<<< BuyOrderServiceImpl - buyOrderAllList >>>");
@@ -35,8 +34,15 @@ public class BuyOrderServiceImpl {
 		return buyOrderMapper.buyOrderAllList();
 	}
 	
-	// 구매 조회 탭 미확인 목록
-	@Transactional // 서비스 함수가 종료될 때 commit 할지 rollback 할지 트랜잭션 관리하겠다.
+	// 구매조회 탭 <결재중> 목록
+	public List<BuyOrderDTO> getBuyOrderPayingList() {
+		
+		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderPayingList >>>");
+		
+		return buyOrderMapper.buyOrderPaingList();
+	}
+	
+	// 구매조회 탭 <미확인> 목록
 	public List<BuyOrderDTO> getBuyOrderUnchkList() {
 		
 		System.out.println("<<< BuyOrderServiceImpl - buyOrderUnchkList >>>");
@@ -44,8 +50,7 @@ public class BuyOrderServiceImpl {
 		return buyOrderMapper.buyOrderUnchkList();
 	}
 	
-	// 구매조회 탭 미확인 "건수" 조회
-	@Transactional // 서비스 함수가 종료될 때 commit 할지 rollback 할지 트랜잭션 관리하겠다.
+	// 구매조회 탭 <미확인> "건수" 조회
 	public List<BuyOrderDTO> getBuyOrderUnchkCount() {
 		
 		System.out.println("<<< BuyOrderServiceImpl - buyOrderUnchkCount >>>");
@@ -53,8 +58,7 @@ public class BuyOrderServiceImpl {
 		return buyOrderMapper.buyOrderUnchkCount();
 	}
 	
-	// 구매 조회 탭 확인 목록
-	@Transactional // 서비스 함수가 종료될 때 commit 할지 rollback 할지 트랜잭션 관리하겠다.
+	// 구매조회 탭 <확인> 목록
 	public List<BuyOrderDTO> getBuyOrderCheckList() {
 		
 		System.out.println("<<< BuyOrderServiceImpl - buyOrderCheckList >>>");
@@ -62,16 +66,18 @@ public class BuyOrderServiceImpl {
 		return buyOrderMapper.buyOrderCheckList();
 	}
 	
-	// 구매입력 - 주문정보와 물품정보 
+	// 구매 입력 <한건의 주문정보 + 다건의 물품정보>
 	@Transactional
 	public void setBuyInsertAll(BuyOrderDTO order, List<BuyOrderItemDTO> items) {
-		buyOrderMapper.buyOrderInsert(order);	// 구매주문 입력 - order_id가 자동주입 
-		Long order_id = order.getOrder_id();
 		
+		buyOrderMapper.buyOrderInsert(order);	// 구매주문 입력 - order_id가 자동주입 => MyBatis에서 useGeneratedKeys="true" 설정해서 자동 주입됨.
+		Long order_id = order.getOrder_id();	// insert 후 자동 생성된 order_id 가져옴
+		
+		// 각 품목 객체에 order_id를 세팅
 		for (BuyOrderItemDTO item : items) {
-			item.setOrder_id(order_id);
+			item.setOrder_id(order_id); // → order_item_tbl에 insert할 때 FK로 사용
 			
-			// item_code로 item_id 조회하여 자동 설정
+			// item_code로 item_id 조회하여 자동 설정 => 못찾으면 예외 발생하고 @Transactional에 의해 롤백됨. => @Transactional으로 롤백 안하면 데이터가 부분만 저장되는 비정상 상태가 됨.
 			if (item.getItem_id() == null && item.getItem_code() != null) {
 				Long item_id = buyItemMapper.findItemIdByCode(item.getItem_code());
 				if (item_id == null) {
@@ -84,13 +90,18 @@ public class BuyOrderServiceImpl {
 		}
 	}
 	
+	// 구매내역 삭제
+	public String buyOrderDelete(int order_id) {	
+		buyOrderMapper.buyOrderDelete(order_id);
+		return "ok";
+	}
+
 	// 구매 현황 조회 
-	@Transactional // 서비스 함수가 종료될 때 commit 할지 rollback 할지 트랜잭션 관리하겠다.
-	public List<BuyStatusDTO> getBuyStatusSearch(String order_date, String client_code, String e_id,
+	public List<BuyStatusDTO> getBuyStatusSearch(String start_date, String end_date, String client_code, String e_id,
             								 String storage_code, String item_code, String transaction_type) {
 		System.out.println("<<< BuyOrderServiceImpl - buyStatusSearch >>>");
 		
-		 return buyOrderMapper.buyStatusSearch(order_date, client_code, e_id, storage_code, item_code, transaction_type);
+		 return buyOrderMapper.buyStatusSearch(start_date, end_date, client_code, e_id, storage_code, item_code, transaction_type);
 	}
 	
 //	// 전표 등록
@@ -109,30 +120,4 @@ public class BuyOrderServiceImpl {
 //        return buyOrderMapper.saveBuyOrder(dto);
 //    }
 	
-//	// 게시글 상세
-//	@Transactional(readOnly=true)
-//	public ItemDTO findByOrderId(int order_id) {
-//		return ItemMapper.findByOrderId(order_id);
-//				//.orElseThrow(() -> new IllegalArgumentException("게시글 번호를 확인해주세요.!!")); // ->는 람다식
-//	}
-//	
-//	// 구매 물품 등록
-//	@Transactional // 서비스 함수가 종료될 때 commit 할지 rollback 할지 트랜잭션 관리하겠다.
-//	public int saveItem(ItemDTO dto) {
-//		return ItemMapper.insertItem(dto);	// mybatis에서는 I,U,D 리턴타입이 int(1:성공, 0:실패)
-//	}
-//	
-//	// 게시글 삭제
-//	@Transactional
-//	public String deleteOrder(int order_id) {	
-//		ItemMapper.deleteOrder(order_id);
-//		return "ok";
-//	}
-//	
-//	// 게시글 수정
-//	@Transactional
-//	public int updateOrder(int order_id, ItemDTO dto) {	
-//	
-//		return ItemMapper.updateOrder(dto);
-//	}
 }

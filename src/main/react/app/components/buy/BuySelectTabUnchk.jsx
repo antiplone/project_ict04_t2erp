@@ -43,7 +43,7 @@ export default function BuySelectTabUnchk() {
     const deleteOrderItem = (order_id) => {
         console.log("삭제할 주문 ID:", order_id); // 디버깅용 로그
 
-        fetch("http://localhost:8081/buy/buyOrderItem/" + order_id, {
+        fetch("http://localhost:8081/buy/buyOrder/" + order_id, {
             method: 'DELETE',
         })
             .then((res) => res.text())
@@ -112,8 +112,8 @@ export default function BuySelectTabUnchk() {
                 </Column> */}
 
                 <Column width={100}>
-                    <HeaderCell style={styles}>종결여부</HeaderCell>
-                    <Cell dataKey="closing_status" />
+                    <HeaderCell style={styles}>진행상태</HeaderCell>
+                    <Cell dataKey="order_status" />
                 </Column>
                 {/* 
                 <Column width={80} fixed="right">
@@ -133,18 +133,6 @@ export default function BuySelectTabUnchk() {
                         {rowData => (
                             <Button color="blue" appearance='link' onClick={() => updateOrderItem(rowData.order_id)}>
                                 조회
-                            </Button>
-                        )}
-                    </Cell>
-                </Column>
-
-
-                <Column width={60} fixed="right">
-                    <HeaderCell style={styles}>수정</HeaderCell>
-                    <Cell style={{ padding: '6px' }}>
-                        {rowData => (
-                            <Button color="blue" appearance='link' onClick={() => updateOrderItem(rowData.order_id)}>
-                                수정
                             </Button>
                         )}
                     </Cell>

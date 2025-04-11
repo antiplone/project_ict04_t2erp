@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.spring.erp_ordit.dao.warehouse.*;
 import com.spring.erp_ordit.dto.warehouse.LogisOrderDTO;
 import com.spring.erp_ordit.dto.warehouse.LogisSalesDTO;
+import com.spring.erp_ordit.dto.warehouse.LogisOrderItemDTO;
 
 @Service
 public class LogisOrderServiceImpl {
@@ -37,19 +38,19 @@ public class LogisOrderServiceImpl {
 	}
 	
 	// 입출고 아이템 상세
-//	@Transactional(readOnly=true)
-//	public LogisOrderDTO findByOrderItem(int order_id, int item_code){
-//		System.out.println("LogisOrderServiceImpl - findByOrderItem");
-//		 // MyBatis를 통해 LogisOrderDTO 객체를 찾음
-//	    LogisOrderDTO orderDTO = logisMapper.findByOrderItem(order_id, item_code);
-//	    
-//	    // orderDTO가 null인 경우 예외 처리하거나 적절한 메시지를 반환할 수 있음
-//	    if (orderDTO == null) {
-//	        System.out.println("Order not found for order_id: " + order_id + " and item_code: " + item_code);
-//	        return null; // 혹은 예외 처리
-//	    }
-//		return orderDTO;
-//	}
+	@Transactional(readOnly=true)
+	public LogisOrderItemDTO findByOrderItem(int order_id, int item_code, int order_type){
+		System.out.println("LogisOrderServiceImpl - findByOrderItem");
+		 // MyBatis를 통해 LogisOrderDTO 객체를 찾음
+		LogisOrderItemDTO orderDTO = logisMapper.findByOrderItem(order_id, item_code, order_type);
+	    
+	    // orderDTO가 null인 경우 예외 처리하거나 적절한 메시지를 반환할 수 있음
+	    if (orderDTO == null) {
+	        System.out.println("Order not found for order_id: " + order_id + " and item_code: " + item_code+ " and order_type: " + order_type );
+	        return null; // 혹은 예외 처리
+	    }
+		return orderDTO;
+	}
 	
 
 

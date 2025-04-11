@@ -9,13 +9,17 @@ import com.spring.erp_ordit.dto.buy.BuySearchDTO;
 
 @Mapper 	// DAOImpl 만들지 않고 mapper랑 연결할때 쓴다.
 @Repository
-public interface BuySearchMapper {		// 작성자: hjy - 모달 검색 담당자,거래처 목록 
+public interface BuySearchMapper {		// 작성자: hjy - 모달 검색 담당자,거래처,창고,물품 Mapper
 	
-	public List<BuySearchDTO> buyInchargeList();	// 사원 목록
-
-	public List<BuySearchDTO> buyClientList();	// 거래처 목록
+	// 담당자 목록
+	public List<BuySearchDTO> buyInchargeList();	
 	
-	public List<BuySearchDTO> buyStorageList();	// 창고 목록
+	// 거래처 목록
+	public List<BuySearchDTO> buyClientList();	
 	
-	public List<BuySearchDTO> buyItemList();	// 물품 목록
+	// 창고 목록
+	public List<BuySearchDTO> buyStorageList();	
+	
+	// 물품 목록
+	public List<BuySearchDTO> buyItemList();	
 }

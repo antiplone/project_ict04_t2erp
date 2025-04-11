@@ -1,5 +1,6 @@
 // 구매팀 - 구매조회 페이지 
 /* eslint-disable react/react-in-jsx-scope */
+import AppConfig from "#config/AppConfig.json";
 import { Container, Tabs, Message, InputGroup, Input, Badge, Button } from "rsuite";
 import React, { useEffect, useState } from 'react';
 import SearchIcon from '@rsuite/icons/Search';
@@ -9,10 +10,11 @@ import BuySelectTabUnchk from "#components/buy/BuySelectTabUnchk.jsx";
 import BuySelectTabCheck from "#components/buy/BuySelectTabCheck.jsx";
 import BuySelectTabPaing from "#components/buy/BuySelectTabPaing.jsx";
 
+// @Remix:모듈함수 - <html>의 <head>의 내용
 export function meta() {
     return [
-        { title: "구매조회" },
-        { name: "description", content: "구매조회" },
+        { title: `${AppConfig.meta.title} : 구매조회` },
+        { name: "description", content: "구매내역을 조회합니다." },
     ];
 };
 
@@ -25,7 +27,7 @@ export default function BuySelect() {
     // const [uncheckedCount, setUnCheckedCount] = useState(0);
 
     // useEffect(() => {
-    //     fetch("http://localhost:8081/buy/buyOrderUnchkCount", {
+    //     fetch(`${AppConfig.fetch.mytest.protocol}${AppConfig.fetch.mytest.url}/buy/buyOrderUnchkCount`, {
     //         method: "GET"
     //     })
     //     .then((res) => res.json())

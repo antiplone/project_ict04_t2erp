@@ -1,5 +1,6 @@
 // 담당자 검색 모달
 /* eslint-disable react/prop-types */
+import AppConfig from "#config/AppConfig.json";
 import React, { useState, useEffect } from "react";
 import { Button, Table, Modal, Checkbox } from "rsuite";
 import "../../styles/buy.css";
@@ -11,9 +12,11 @@ const InchargeSearchModal = ({  confirm, cancel, onInchargeSelect, handleOpen, h
 	const [employeeList, setEmployeeList] = useState([]);
 	const [selectedIncharge, setSelectedIncharge] = useState(null);
 
+	const fetchURL = AppConfig.fetch["mytest"];
+
 		// fetch()를 통해 톰캣서버에게 데이터를 요청
 		useEffect(() => {
-			fetch("http://localhost:8081/buy/buyInchargeList", {
+			fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyInchargeList`, {
 				method: "GET"
 			})
 			.then(res => res.json())

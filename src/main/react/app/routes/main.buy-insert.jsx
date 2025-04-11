@@ -1,6 +1,7 @@
 // 구매팀 - 구매입력 페이지
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
+import AppConfig from "#config/AppConfig.json";
 import React, { useState } from "react";
 import { Button, Container, DatePicker, Divider, Input, InputGroup, InputNumber, InputPicker, Message, Table, IconButton } from "rsuite";
 import SearchIcon from '@rsuite/icons/Search';
@@ -13,7 +14,7 @@ import StorageSearchModal from "#components/buy/StorageSearchModal.jsx";
 
 export function meta() {
     return [
-        { title: "구매입력" },
+        { title: `${AppConfig.meta.title} : 구매입력` },
         { name: "description", content: "구매입력" },
     ];
 };
@@ -110,6 +111,8 @@ export default function BuyInsert() {
 
     const totalSum = orderItems.reduce((acc, row) => acc + (row.total || 0), 0);
 
+    const fetchURL = AppConfig.fetch["mytest"];
+
     const handleSubmit = async () => {
         if (!selectedClient || !selectedIncharge || !selectedStorage || !selectedType) {
             alert("주문 정보를 모두 입력해주세요.");
@@ -133,7 +136,7 @@ export default function BuyInsert() {
                 items: orderItems.map(({ id, ...item }) => item)
             };
 
-            const response = await fetch("http://localhost:8081/buy/buyInsertAll", {
+            const response = await fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyInsertAll`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(requestBody)
@@ -145,7 +148,7 @@ export default function BuyInsert() {
             }
 
             alert("주문이 정상 등록되었습니다.");
-            navigate("/main/buy-insert");
+            navigate("/main/buy-select");
         } catch (err) {
             console.error(err);
             alert("오류 발생");

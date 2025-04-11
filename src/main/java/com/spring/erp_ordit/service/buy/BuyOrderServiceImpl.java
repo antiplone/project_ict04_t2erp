@@ -10,6 +10,7 @@ import com.spring.erp_ordit.dao.buy.BuyItemMapper;
 import com.spring.erp_ordit.dao.buy.BuyOrderItemMapper;
 import com.spring.erp_ordit.dao.buy.BuyOrderMapper;
 import com.spring.erp_ordit.dto.buy.BuyOrderDTO;
+import com.spring.erp_ordit.dto.buy.BuyOrderDetailDTO;
 import com.spring.erp_ordit.dto.buy.BuyOrderItemDTO;
 import com.spring.erp_ordit.dto.buy.BuyStatusDTO;
 
@@ -39,7 +40,7 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 		
 		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderPayingList >>>");
 		
-		return buyOrderMapper.buyOrderPaingList();
+		return buyOrderMapper.buyOrderPayingList();
 	}
 	
 	// 구매조회 탭 <미확인> 목록
@@ -64,6 +65,14 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 		System.out.println("<<< BuyOrderServiceImpl - buyOrderCheckList >>>");
 		
 		return buyOrderMapper.buyOrderCheckList();
+	}
+	
+	// 구매 내역 <상세> 조회
+	public List<BuyOrderDetailDTO> getBuyOrderDetail(Long order_id) {
+			
+		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderDetail >>>");
+		
+		return buyOrderMapper.buyOrderDetail(order_id);
 	}
 	
 	// 구매 입력 <한건의 주문정보 + 다건의 물품정보>

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.erp_ordit.dto.buy.BuyOrderDTO;
+import com.spring.erp_ordit.dto.buy.BuyOrderDetailDTO;
 import com.spring.erp_ordit.dto.buy.BuyOrderItemDTO;
 import com.spring.erp_ordit.dto.buy.BuyOrderRequest;
 import com.spring.erp_ordit.dto.buy.BuyStatusDTO;
@@ -42,7 +43,7 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	public ResponseEntity<?> buyOrderPayingList() {	// ?를 주면 자동으로 적용된다. T 와 같은 의미, 데이터가 아직 결정되지 않았다는 뜻 => Integer 또는 ? 를 주면 된다. 
 		System.out.println("<<< buyOrderPayingList >>>");
 		
-		return new ResponseEntity<>(buyOrderService.getBuyOrderAllList(), HttpStatus.OK); //200
+		return new ResponseEntity<>(buyOrderService.getBuyOrderPayingList(), HttpStatus.OK); //200
 	}
 	
 	// 구매조회 탭 <미확인> 목록 GetMapping => http://localhost:8081/buy/buyOrderUnchkList
@@ -69,6 +70,17 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		return new ResponseEntity<>(buyOrderService.getBuyOrderCheckList(), HttpStatus.OK); //200
 	}
 	
+	// 구매 내역 <상세> 조회 GetMapping => http://localhost:8081/buy/buyOrderDetail/{order_id}
+	@GetMapping("/buyOrderDetail/{order_id}")
+	public ResponseEntity<?> buyOrderDetail(@PathVariable Long order_id) {	// ?를 주면 자동으로 적용된다. T 와 같은 의미, 데이터가 아직 결정되지 않았다는 뜻 => Integer 또는 ? 를 주면 된다. 
+		List<BuyOrderDetailDTO> orderList = buyOrderService.getBuyOrderDetail(order_id);
+		
+		System.out.println("<<< buyOrderDetail >>>");
+		System.out.println("orderList:" + orderList);
+		
+		return new ResponseEntity<>(buyOrderService.getBuyOrderDetail(order_id), HttpStatus.OK); //200
+	}
+	
 	// 구매 입력 <한건의 주문정보 + 다건의 물품정보> PostMapping => http://localhost:8081/buy/buyInsertAll
 	@PostMapping("/buyInsertAll")
     public ResponseEntity<?> buyInsertAll(@RequestBody BuyOrderRequest request) {	// @RequestBody BuyOrderRequest request => 화면에서 입력받은 JSON 데이터를 BuyOrderRequest 객체로 변환해서 받음
@@ -82,6 +94,21 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		
 		return new ResponseEntity<>("구매 입력 성공!", HttpStatus.CREATED);
     }
+	
+//	// 구매 입력 엑셀 전환 Aapache POI API PostMapping => http://localhost:8081/buy/api/export/excel
+//	@GetMapping("/export/excel")
+//	public void exportOrderListToExcel(HttpServletResponse response) throws Exception {
+//		
+//		// response 설정 (엑셀 파일로 다운로드됨)
+//	    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+//	    response.setHeader("Content-Disposition", "attachment; filename=buy_list.xlsx");
+//	    
+//	    // Workbook 생성
+////	    Workbook workbook = new XSSFWorkbook();
+////	    Sheet sheet = workbook.createSheet("구매내역");
+//
+//		
+//	}
 	
 	// 구매 현황 조회 GetMapping => http://localhost:8081/buy/buyStatusSearch
 	@GetMapping("/buyStatusSearch")

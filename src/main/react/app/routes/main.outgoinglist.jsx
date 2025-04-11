@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from "@remix-run/react";
 import { Container, /* Form, */ Table } from 'rsuite';
 import "#components/common/css/common.css";
 
@@ -58,7 +58,7 @@ const OrderIncomeList = () => {
                         <Table.HeaderCell>아이템 비고</Table.HeaderCell>
                         <Table.Cell dataKey="item_name" style={{ padding: '6px' }}>
                             {orderList => (
-                                <Link to={`/main/warehouse/orderDetail/${orderList.order_id}`} className="btn btn-primary area_fit wide_fit">주문상세보기</Link>
+                                <Link to={`order-detail/${orderList.order_id}`} className="btn btn-primary area_fit wide_fit">주문상세보기</Link>
                             )}
                         </Table.Cell>
                     </Table.Column>

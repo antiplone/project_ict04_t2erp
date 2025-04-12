@@ -169,7 +169,7 @@ export default function BuySelectTabAll() {
                     <Link to="/main/buy-insert">
                         <Button appearance="primary">구매 입력</Button>
                     </Link>
-                    <Button appearance="primary">선택 삭제</Button>
+                    {/* <Button appearance="primary">선택 삭제</Button> */}
                 </ButtonToolbar>
             </>
 

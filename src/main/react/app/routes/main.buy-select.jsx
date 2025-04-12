@@ -24,17 +24,19 @@ const styles = {
 
 export default function BuySelect() {
 
-    // const [uncheckedCount, setUnCheckedCount] = useState(0);
+    const [uncheckedCount, setUnCheckedCount] = useState(0);
 
-    // useEffect(() => {
-    //     fetch(`${AppConfig.fetch.mytest.protocol}${AppConfig.fetch.mytest.url}/buy/buyOrderUnchkCount`, {
-    //         method: "GET"
-    //     })
-    //     .then((res) => res.json())
-    //     .then(res => {
-    //         setUnCheckedCount(res);
-    //     });
-    // },[]);
+    const fetchURL = AppConfig.fetch["mytest"];
+
+    useEffect(() => {
+        fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrderUnchkCount`, {
+            method: "GET"
+        })
+        .then((res) => res.json())
+        .then(res => {
+            setUnCheckedCount(res);
+        });
+    },[]);
 
     return (
         <>
@@ -56,12 +58,9 @@ export default function BuySelect() {
                         </InputGroup>
                     </div>
 
-{/* 
-                    // 미확인건 알림
                     <Badge content={uncheckedCount}>
                         <Button>미확인건</Button>
                     </Badge>
- */}
 
                 </div>
 

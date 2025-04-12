@@ -11,7 +11,7 @@ export default function BuySelectTabPaing() {
 
     const navigate = useNavigate();
 
-    const [buyOrderAllList, setBuyOrderAllList] = useState([]); // 초기값을 모르므로 빈배열로 buyList에 대입
+    const [buyOrderPayingList, setBuyOrderPayingList] = useState([]); // 초기값을 모르므로 빈배열로 buyList에 대입
 
     const fetchURL = AppConfig.fetch["mytest"];
 
@@ -24,12 +24,12 @@ export default function BuySelectTabPaing() {
             )
             .then(res => {
                 console.log(1, res);
-                setBuyOrderAllList(res || []); // 처음에는 비어있으므로 못가져온다. setBoardList(res);
+                setBuyOrderPayingList(res || []); // 처음에는 비어있으므로 못가져온다. setBoardList(res);
             }
             )
             .catch(error => {
                 console.error("데이터 가져오기 오류:", error);
-                setBuyOrderAllList([]); // 오류 발생 시 빈 배열 설정 
+                setBuyOrderPayingList([]); // 오류 발생 시 빈 배열 설정 
             });
     }, []); // []은 디펜던시인데, setState()로 렌더링될때 실행되면 안되고, 1번만 실행하도록 빈배열을 넣어둔다.
     // CORS 오류 : Controller 진입 직전에 적용된다. 외부에서 자바스크립트 요청이 오는 것을
@@ -37,11 +37,6 @@ export default function BuySelectTabPaing() {
     const styles = {
         backgroundColor: '#f8f9fa',
     };
-
-    // 수정
-    const updateOrderItem = (order_id) => {
-        navigate('/updateForm/' + order_id);    // App.js의 Route에서 UpdateForm(수정페이지) 호출
-    }
 
     // 삭제
     const deleteOrderItem = (order_id) => {
@@ -54,7 +49,7 @@ export default function BuySelectTabPaing() {
             .then((res) => {
                 if (res === "ok") {
                     alert('삭제 성공!');
-                    setBuyOrderAllList(buyOrderAllList.filter(order => order.order_id !== order_id)); // UI 업데이트
+                    setBuyOrderPayingList(buyOrderPayingList.filter(order => order.order_id !== order_id)); // UI 업데이트
                 } else {
                     alert('삭제 실패');
                 }
@@ -64,7 +59,7 @@ export default function BuySelectTabPaing() {
 
     return (
         <>
-            <Table height={500} data={buyOrderAllList} style={{ maxWidth: 1500 }}>
+            <Table height={500} data={buyOrderPayingList} style={{ maxWidth: 1500 }}>
 
                 <Column width={40} align="center" fixed>
                     <HeaderCell style={styles}>
@@ -142,10 +137,12 @@ export default function BuySelectTabPaing() {
                 <Column width={60} fixed="right">
                     <HeaderCell style={styles}>조회</HeaderCell>
                     <Cell style={{ padding: '6px' }}>
-                        {rowData => (
-                            <Button color="blue" appearance='link' onClick={() => updateOrderItem(rowData.order_id)}>
-                                조회
-                            </Button>
+                        {buyOrderPayingList => (
+                            <Link to={`/main/buy-select-detail/${buyOrderPayingList.order_id}`}>
+                                <Button color="blue" appearance='link' onClick={() => detailOrder(buyOrderPayingList.order_id)}>
+                                    조회
+                                </Button>
+                            </Link>
                         )}
                     </Cell>
                 </Column>
@@ -163,12 +160,12 @@ export default function BuySelectTabPaing() {
             </Table>
 
             <>
-            <ButtonToolbar>
-                <Link to="/main/buy-insert">
-                    <Button appearance="primary">구매 입력</Button>
-                </Link>
-                <Button appearance="primary">선택 삭제</Button>
-            </ButtonToolbar>
+                <ButtonToolbar>
+                    <Link to="/main/buy-insert">
+                        <Button appearance="primary">구매 입력</Button>
+                    </Link>
+                    {/* <Button appearance="primary">선택 삭제</Button> */}
+                </ButtonToolbar>
             </>
 
         </>

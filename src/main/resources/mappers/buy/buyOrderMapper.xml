@@ -69,12 +69,14 @@
 			WHERE ot.order_type = 1
 			  AND order_show='Y'
   	</select>
- <!--  	
-  	구매조회 탭 미확인 "건수" 조회
+  	
+  	<!-- 구매조회 탭 미확인 "건수" 조회 -->
 	<select id="buyOrderUnchkCount" resultType="int">
-
+			SELECT COUNT(*) AS buyOrderUnchkCount 
+			  FROM order_status_tbl
+			 WHERE order_status = '미확인'
   	</select>
-  	 -->
+
   	<!-- 구매조회 탭 확인 목록 -->
 	<select id="buyOrderCheckList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
 	      SELECT 
@@ -97,7 +99,7 @@
 				AND order_status='승인'
   	</select>
   	
-  	<!-- 구매 상세 조회 -->
+  	<!-- 구매 상세 조회 매핑 -->
 		<resultMap id="BuyOrderDetailMap" type="com.spring.erp_ordit.dto.buy.BuyOrderDetailDTO">
 	    <result property="order_id" column="order_id"/>
 	    <result property="order_type" column="order_type"/>
@@ -125,6 +127,7 @@
 	    </collection>
 	</resultMap>
 	
+	<!-- 구매 상세 조회  -->
 	<select id="buyOrderDetail" resultMap="BuyOrderDetailMap">
 	     SELECT 
 		        ot.order_id,
@@ -157,6 +160,29 @@
 		    WHERE order_show = 'Y'
 		      AND ot.order_id = #{order_id}
 	 </select>
+	 
+	 <!-- 구매 정보 수정 -->
+	 <update id="buyUpdateOrder">
+		    UPDATE order_tbl
+		    SET transaction_type = #{transaction_type},
+		        storage_name = #{storage_name},
+		        order_status = #{order_status}
+		    WHERE order_id = #{order_id}
+		</update>
+		
+		<delete id="buyDeleteOrderItemsByOrderId">
+		    DELETE FROM order_item_tbl WHERE order_id = #{orderId}
+		</delete>
+		
+		<insert id="buyInsertOrderItem">
+		    INSERT INTO order_item_tbl (
+		        order_id, item_code, item_name, quantity,
+		        price, supply, vat, total
+		    ) VALUES (
+		        #{order_id}, #{item_code}, #{item_name}, #{quantity},
+		        #{price}, #{supply}, #{vat}, #{total}
+		    )
+		</insert>
 	
 	<!-- 구매 입력 (일자, 담당자, 거래처, 거래유형, 입고창고) -->
 	<insert id="buyOrderInsert" useGeneratedKeys="true" keyProperty="order_id">

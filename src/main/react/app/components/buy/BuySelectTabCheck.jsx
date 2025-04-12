@@ -54,7 +54,7 @@ export default function BuySelectTabCheck() {
             .then((res) => {
                 if (res === "ok") {
                     alert('삭제 성공!');
-                    setBuyOrderAllList(buyOrderAllList.filter(order => order.order_id !== order_id)); // UI 업데이트
+                    setBuyOrderCheckList(buyOrderCheckList.filter(order => order.order_id !== order_id)); // UI 업데이트
                 } else {
                     alert('삭제 실패');
                 }
@@ -141,14 +141,16 @@ export default function BuySelectTabCheck() {
                 <Column width={60} fixed="right">
                     <HeaderCell style={styles}>조회</HeaderCell>
                     <Cell style={{ padding: '6px' }}>
-                        {rowData => (
-                            <Button color="blue" appearance='link' onClick={() => updateOrderItem(rowData.order_id)}>
-                                조회
-                            </Button>
+                        {buyOrderCheckList => (
+                            <Link to={`/main/buy-select-detail/${buyOrderCheckList.order_id}`}>
+                                <Button color="blue" appearance='link' onClick={() => detailOrder(buyOrderCheckList.order_id)}>
+                                    조회
+                                </Button>
+                            </Link>
                         )}
                     </Cell>
                 </Column>
-     
+
                 <Column width={60} fixed="right">
                     <HeaderCell style={styles}>삭제</HeaderCell>
                     <Cell style={{ padding: '6px' }}>
@@ -162,12 +164,12 @@ export default function BuySelectTabCheck() {
             </Table>
 
             <>
-            <ButtonToolbar>
-                <Link to="/main/buy-insert">
-                    <Button appearance="primary">구매 입력</Button>
-                </Link>
-                <Button appearance="primary">선택 삭제</Button>
-            </ButtonToolbar>
+                <ButtonToolbar>
+                    <Link to="/main/buy-insert">
+                        <Button appearance="primary">구매 입력</Button>
+                    </Link>
+                    {/* <Button appearance="primary">선택 삭제</Button> */}
+                </ButtonToolbar>
             </>
 
         </>

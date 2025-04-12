@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,13 +55,13 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		return new ResponseEntity<>(buyOrderService.getBuyOrderUnchkList(), HttpStatus.OK); //200
 	}
 	
-//	// 구매조회 탭 <미확인> "건수" 조회 GetMapping => http://localhost:8081/buy/buyOrderUnchkCount
-//	@GetMapping("/buyOrderUnchkCount")
-//	public ResponseEntity<?> buyOrderUnchkCount() {	// ?를 주면 자동으로 적용된다. T 와 같은 의미, 데이터가 아직 결정되지 않았다는 뜻 => Integer 또는 ? 를 주면 된다. 
-//		System.out.println("<<< buyOrderUnchkCount >>>");
-//		
-//		return new ResponseEntity<>(buyOrderService.getBuyOrderUnchkCount(), HttpStatus.OK); //200
-//	}
+	// 구매조회 탭 <미확인> "건수" 조회 GetMapping => http://localhost:8081/buy/buyOrderUnchkCount
+	@GetMapping("/buyOrderUnchkCount")
+	public ResponseEntity<?> buyOrderUnchkCount() {	// ?를 주면 자동으로 적용된다. T 와 같은 의미, 데이터가 아직 결정되지 않았다는 뜻 => Integer 또는 ? 를 주면 된다. 
+		System.out.println("<<< buyOrderUnchkCount >>>");
+		
+		return new ResponseEntity<>(buyOrderService.getBuyOrderUnchkCount(), HttpStatus.OK); //200
+	}
 	
 	// 구매조회 탭 <확인> 목록 GetMapping => http://localhost:8081/buy/buyOrderCheckList
 	@GetMapping("/buyOrderCheckList")
@@ -81,6 +82,14 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		return new ResponseEntity<>(buyOrderService.getBuyOrderDetail(order_id), HttpStatus.OK); //200
 	}
 	
+//	// 구매내역 수정 PutMapping => http://localhost:8081/buyOrderUpdate/{order_id}
+//	@PutMapping("/buyOrderUpdate/{order_id}")
+//	public ResponseEntity<?> buyOrderUpdate(@PathVariable int order_id, @RequestBody BuyOrderRequest request){
+//		System.out.println("<<< boyOrderUpdate >>>");
+//		
+//		return new ResponseEntity<>(buyOrderService.buyOrderUpdate(order_id, request), HttpStatus.OK);	// 200
+//	}
+
 	// 구매 입력 <한건의 주문정보 + 다건의 물품정보> PostMapping => http://localhost:8081/buy/buyInsertAll
 	@PostMapping("/buyInsertAll")
     public ResponseEntity<?> buyInsertAll(@RequestBody BuyOrderRequest request) {	// @RequestBody BuyOrderRequest request => 화면에서 입력받은 JSON 데이터를 BuyOrderRequest 객체로 변환해서 받음

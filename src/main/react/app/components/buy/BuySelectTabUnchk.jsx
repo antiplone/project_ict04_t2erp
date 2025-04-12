@@ -14,7 +14,7 @@ export default function BuySelectTabUnchk() {
     const [buyOrderUnchkList, setBuyOrderUnchkList] = useState([]); // 초기값을 모르므로 빈배열로 buyList에 대입
 
     const fetchURL = AppConfig.fetch["mytest"];
-    
+
     // fecth()를 통해 톰캣서버에세 데이터를 요청
     useEffect(() => {
         fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrderUnchkList`, {
@@ -109,7 +109,7 @@ export default function BuySelectTabUnchk() {
                     <HeaderCell style={styles}>입고창고</HeaderCell>
                     <Cell dataKey="storage_name" />
                 </Column>
-                
+
                 <Column width={100}>
                     <HeaderCell style={styles}>납기일자</HeaderCell>
                     <Cell dataKey="delivery_date" />
@@ -139,10 +139,12 @@ export default function BuySelectTabUnchk() {
                 <Column width={60} fixed="right">
                     <HeaderCell style={styles}>조회</HeaderCell>
                     <Cell style={{ padding: '6px' }}>
-                        {rowData => (
-                            <Button color="blue" appearance='link' onClick={() => updateOrderItem(rowData.order_id)}>
-                                조회
-                            </Button>
+                        {buyOrderUnchkList => (
+                            <Link to={`/main/buy-select-detail/${buyOrderUnchkList.order_id}`}>
+                                <Button color="blue" appearance='link' onClick={() => detailOrder(buyOrderUnchkList.order_id)}>
+                                    조회
+                                </Button>
+                            </Link>
                         )}
                     </Cell>
                 </Column>
@@ -160,12 +162,12 @@ export default function BuySelectTabUnchk() {
             </Table>
 
             <>
-            <ButtonToolbar>
-                <Link to="/main/buy-insert">
-                    <Button appearance="primary">구매 입력</Button>
-                </Link>
-                <Button appearance="primary">선택 삭제</Button>
-            </ButtonToolbar>
+                <ButtonToolbar>
+                    <Link to="/main/buy-insert">
+                        <Button appearance="primary">구매 입력</Button>
+                    </Link>
+                    {/* <Button appearance="primary">선택 삭제</Button> */}
+                </ButtonToolbar>
             </>
 
 

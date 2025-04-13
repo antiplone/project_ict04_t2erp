@@ -37,11 +37,7 @@ public class LogisOrderServiceImpl {
 		return logisMapper.findByLogisOrderId(order_id);
 	}
 	
-<<<<<<< Updated upstream
-	// 입출고 아이템 상세
-=======
 	// 입고 아이템 상세
->>>>>>> Stashed changes
 	@Transactional(readOnly=true)
 	public LogisOrderItemDTO findByOrderItem(int order_id, int item_code, int order_type){
 		System.out.println("LogisOrderServiceImpl - findByOrderItem");

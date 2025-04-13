@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useSearchParams } from '@remix-run/react';
-import { Card, Container } from 'rsuite';
+import { Card, Container, Message } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
+import "#components/common/css/common.css";
 
 const OrderItemDetail = () => { 
 
@@ -53,7 +54,9 @@ const OrderItemDetail = () => {
     return (
         <div>
             <Container>
-                <div className='header logiHeader'>입고 아이템 상세</div>
+                <Message type="success" className="main_title">
+                	입고 아이템 상세
+				</Message>
                 <br />
                 <Card className='no_border'>
                     <div className='text_center no_border'>

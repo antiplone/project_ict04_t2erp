@@ -10,6 +10,7 @@ import {
   Schema,
   SelectPicker,
 } from "rsuite";
+import AppConfig from "#config/AppConfig.json";
 
 const { StringType } = Schema.Types;
 
@@ -27,7 +28,7 @@ const model = Schema.Model({
 });
 
 const AttModal = ({ open, onClose, onReloading }) => {
-  // const navigate = useNavigate();
+  const fetchURL = AppConfig.fetch['mytest'];
 
   const [formError, setFormError] = useState({});
   const [vacationList, setVacationList] = useState([]);
@@ -65,7 +66,7 @@ const AttModal = ({ open, onClose, onReloading }) => {
   };
 
   const insertAtt = async () => {
-    const response = await fetch("http://localhost:8081/attendance/addAttItems", {
+    const response = await fetch(`${fetchURL.protocol}${fetchURL.url}/attendance/addAttItems`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(att), // form 상태
@@ -74,7 +75,8 @@ const AttModal = ({ open, onClose, onReloading }) => {
     if (response.status === 201) {
       alert("등록 성공");
       onClose();
-      onReloading();    // 테이블 리로딩
+      // onReloading();    // 테이블 리로딩
+      window.location.reload();
     } else {
       alert("등록 실패");
     }
@@ -121,7 +123,7 @@ const AttModal = ({ open, onClose, onReloading }) => {
             </RadioGroup>
           </Form.Group>
 
-          {att.a_type === "휴가" && (
+          {/* {att.a_type === "휴가" && (
             <Form.Group controlId="v_name">
               <Form.ControlLabel>휴가명</Form.ControlLabel>
               <Form.Control
@@ -133,7 +135,7 @@ const AttModal = ({ open, onClose, onReloading }) => {
                 placeholder="휴가명을 선택하세요"
               />
             </Form.Group>
-          )}
+          )} */}
 
           <Form.Group controlId="a_note">
             <Form.ControlLabel>비고</Form.ControlLabel>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, /* Form, */ Table } from 'rsuite';
+import { Container, Message, /* Form, */ Table } from 'rsuite';
 import '#components/common/css/common.css'
 import Appconfig from "#config/AppConfig.json";
 
@@ -30,9 +30,9 @@ const WareHouseList = () => {
     return (
         <div>
             <Container>
-                <div className='header logiHeader'>
+                <Message type="error" className="main_title">
                     창고 목록
-                </div>
+                </Message>
                 <br />
                 <Table height={400} data={storageList}>
                     <Table.Column width={100} align="center" fixed>
@@ -42,7 +42,7 @@ const WareHouseList = () => {
 
                     <Table.Column width={200}>
                         <Table.HeaderCell>창고명</Table.HeaderCell>
-                        <Table.Cell dataKey="storage" />
+                        <Table.Cell dataKey="storage_name" />
                     </Table.Column>
 
                     <Table.Column width={150}>
@@ -54,12 +54,12 @@ const WareHouseList = () => {
                         <Table.HeaderCell>창고 상세보기</Table.HeaderCell>
                         <Table.Cell dataKey="storage_code">
                         {(storageList) => (
-                            <Link to={`/storageDetail/${storageList.storage_code}`} className="btn btn-primary area_fit wide_fit" >창고 상세</Link>
+                            <Link to={`/main/logis-warehouse-detail/${storageList.storage_code}`} className="btn btn-primary area_fit wide_fit" >창고 상세</Link>
                         )}
                         </Table.Cell>
                     </Table.Column>
                 </Table>
-                <Link to={'/storageInsert'} className="btn btn-primary area_fit wide_fit">창고 등록</Link>
+                <Link to={'/main/logis-warehouse-save'} className="btn btn-primary area_fit wide_fit">창고 등록</Link>
             </Container>
         </div>
     )

@@ -26,4 +26,5 @@ public class LogisSalesDTO {
 	private String item_standard;		// 규격
 	private int client_code;			// 고객코드
 	private String client_name;			// 거래처명
+	private String income_confirm;		// 출고 컨펌
 }

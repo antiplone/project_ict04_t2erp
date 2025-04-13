@@ -3,6 +3,7 @@ package com.spring.erp_ordit.dao.warehouse;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.spring.erp_ordit.dto.warehouse.*;
@@ -10,21 +11,23 @@ import com.spring.erp_ordit.dto.warehouse.*;
 @Mapper
 @Repository
 public interface LogisMapper {
-
+		
+		// 창고 관련
 		// 창고 목록
 		public List<LogisWarehouseDTO> warehouseList();
-
-//		// 창고 등록
-//		public int insertBoard(WarehouseDTO dto);
-//		
-//		// 창고 수정
-//		public int updateBoard(WarehouseDTO dto);
-//		
-//		// 창고 삭제
-//		public int deleteBoard(int item_code);
-//		
-//		// 창고 상세
-//		public WarehouseDTO findByNum(int item_code);
+		
+		// 창고 등록
+		public int warehouseInsert(LogisWarehouseDTO dto);
+		
+		// 창고 상세
+		public LogisWarehouseDTO findByStoragecode(int storage_code);
+		
+		// 창고 삭제
+		public Integer deleteWarehouse(int storage_code);
+		
+		// 창고 수정
+		public int updateWarehouse(LogisWarehouseDTO dto);
+		
 		
 		// 주문관련
 		// 입고 목록
@@ -34,7 +37,10 @@ public interface LogisMapper {
 		
 		public LogisOrderItemDTO findByOrderItem(int order_id, int item_code, int order_type);
 		
-//		public int updateStock(int item_code, int stock_amount);
+		// 입고 확정
+		public int updateStock(LogisStockDTO stockDTO);
+		
+		public int updateOrderStock(LogisOrderItemDTO orderDTO);
 		
 		// 출고 목록
 		public List<LogisSalesDTO> logisSalesList();
@@ -43,26 +49,21 @@ public interface LogisMapper {
 		
 		public LogisSalesItemDTO findBySalesItem(int order_id, int item_code, int order_type);
 		
-		public int updateStock(int item_code, int quantity);
+		public int updateSales(int item_code, int stock_amount, int order_id);
 		
 		
 		// 창고관련
 		// 재고 목록
 		public List<LogisStockDTO> logisStockList();
 		
-		// 창고 목록
-//		public List<LogisWarehouseDTO> storageList();
-		
-		// 창고 등록
-//		public int storageInsert(LogisWarehouseDTO dto);
-		
-		// 창고 상세
-//		public LogisWarehouseDTO findByStoragecode(int storage_code);
-		
-		// 창고 삭제
-//		public Integer deleteStoragecode(int storage_code);
-		
-		// 창고 수정
-//		public int updateStorage(LogisWarehouseDTO dto);
+//		// 창고 등록
+//		public int StockInsert(LogisWarehouseDTO dto);
+//		
+//		// 창고 상세
+//		public LogisWarehouseDTO findByStockcode(int storage_code);
+//		
+//		// 창고 삭제
+//		public Integer deleteStock(int storage_code);
+//		
 		
 }

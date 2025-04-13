@@ -35,17 +35,6 @@ public class LogisOrderlController {
 		System.out.println("<<< /orderDetail/{order_id} - findByOrderid >>>");
 		return new ResponseEntity<>(orderService.findByLogisOrderId(order_id), HttpStatus.OK); // 200을 리턴해라
 	}
-<<<<<<< Updated upstream
-	
-	@GetMapping("/orderItemDetail") // 조회는 GetMapping
-	public ResponseEntity<?> findByOrderItem( @RequestParam(required = false) Integer order_id, @RequestParam(required = false) Integer item_code, @RequestParam(required = false) Integer order_type) {
-		System.out.println("<<< /orderItemDetail/{order_id} - findByOrderItem >>>");
-		System.out.println("item_code : " + item_code + ", order_id : " + order_id + ", order_type : " + order_type);
-		
-		return new ResponseEntity<>(orderService.findByOrderItem(order_id, item_code, order_type), HttpStatus.OK); // 200을 리턴해라
-	}
-=======
->>>>>>> Stashed changes
 	
 	@GetMapping("/orderItemDetail") // 조회는 GetMapping
 	public ResponseEntity<?> findByOrderItem( @RequestParam(required = false) Integer order_id, @RequestParam(required = false) Integer item_code, @RequestParam(required = false) Integer order_type) {

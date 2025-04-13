@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from '@remix-run/react';
-import { Card, Container } from 'rsuite';
+import { Card, Container, Message } from 'rsuite';
+import Appconfig from "#config/AppConfig.json";
+import "#components/common/css/common.css";
 
 export default function SalesItemDetail (){ 
+	const fetchURL = Appconfig.fetch['mytest']
     const { order_id, item_code, order_type } = useParams();
 
     console.log("SalesItemDetail order_id:", order_id);
@@ -26,7 +29,7 @@ export default function SalesItemDetail (){
             return;
         }
 
-        fetch(`http://localhost:8081/logissales/salesItemDetail?${query}`)
+        fetch(`${fetchURL.protocol}${fetchURL.url}/logissales/salesItemDetail?${query}`)
         .then(res => {
             if (!res.ok) {
                 throw new Error('Error fetching item details');
@@ -49,7 +52,9 @@ export default function SalesItemDetail (){
     return (
         <div>
             <Container>
-                <div className='header logiHeader'>출고 아이템 상세</div>
+                <Message type="info" className="main_title">
+                	출고 아이템 상세
+                </Message>
                 <br />
                 <Card className='no_border'>
                     <div className='text_center no_border'>

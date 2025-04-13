@@ -1,6 +1,9 @@
 .text_center{
     text-align: center;
 }
+.text_left{
+    text-align: left;
+}
 
 .area_fit{
     padding: 6px;
@@ -133,7 +136,7 @@ main.rs-content {
     display: none;
 }
 
-
+/* 버튼 관련 */
 /* 버튼 크기 */
 .btn.wide_fit{
     min-width: 120px;
@@ -152,6 +155,27 @@ main.rs-content {
     margin: 0 auto;
 }
 
+/* 입고 상세 목록 */
+/* 입고완료/미완료 */
+.b_confirm {
+    background-color: #cce5ff;
+    color: #004085;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.b_no_confirm {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+}
+
+
 /* a 링크 크기 */
 .in_li{
     width: 100%;
@@ -160,8 +184,35 @@ main.rs-content {
     margin: 0px 26px 0px 0px;
 }
 
-
 /*input 크기 */
 .input_width{
-	width:50px;
+	width: 30px;
+}
+
+.div_input_save{
+	width:100%;
+	background-color: var(--rs-input-bg);
+	font-size: 14px;
+    line-height: 1.42857143;
+    padding: 7px 11px;
+	border: 1px solid var(--rs-border-primary);
+	border-radius: 5px ;
+    color: var(--rs-text-primary);
+    transition: border-color .15s ease-in-out;
+    box-sizing: border-box;
+    background-image: none;
+}
+
+
+/* 타이틀 스타일(title style) */
+.main_title {
+    margin: 10px 20px 15px 0px;
+    font-size: 17px;
+    font-weight: bold;
+    max-width: 1500px;
+}
+
+.rs-navbar-item, .rs-navbar-nav>.rs-dropdown .rs-dropdown-toggle{
+	color : var(--rs-text-primary);
+    font-weight: bold;
 }

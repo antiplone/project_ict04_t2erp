@@ -19,7 +19,7 @@ public class LogisOrderDTO {
 	private Date shipment_order_date;	// 출고 예정일
 	private int order_type;				// 주문부서
 	private String transaction_type;	// 거래유형
-	private int storage_code;			// 발주처 코드
+	private int storage_code;			// 창고 코드
 	private String storage_name;		// 주문창고명
 	private String storage_location;	// 주문위치
 	private int item_code;				// 주문상태
@@ -28,5 +28,6 @@ public class LogisOrderDTO {
 	private String item_standard;		// 규격
 	private String client_code;			// 거래처코드
 	private String client_name;			// 거래처명
+	private String income_confirm;		// 입고여부
 
 }

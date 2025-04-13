@@ -1,5 +1,6 @@
 // 입고 창고 검색 모달
 /* eslint-disable react/prop-types */
+import AppConfig from "#config/AppConfig.json";
 import React, { useState, useEffect } from "react";
 import { Button, Table, Modal, Checkbox } from "rsuite";
 
@@ -9,10 +10,12 @@ const StorageSearchModal = ({ title, confirm, cancel, onStorageSelect, handleOpe
 	
 	const [storageList, setStorageList] = useState([]);
 	const [selectedStorage, setSelectedStorage] = useState(null);
+
+	const fetchURL = AppConfig.fetch["mytest"];
 	
 	// fetch()를 통해 톰캣서버에게 데이터를 요청
 	useEffect(() => {
-		fetch("http://localhost:8081/buy/buyStorageList", {
+		fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyStorageList`, {
 			method: "GET"
 		})
 		.then(res => res.json())
@@ -87,7 +90,7 @@ const StorageSearchModal = ({ title, confirm, cancel, onStorageSelect, handleOpe
 
 StorageSearchModal.defaultProps = {
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
-	title: "제목을 입력해주세요.",
+	title: "입고창고 검색",
 	confirm: "확인",
 	cancel: "취소",
 };

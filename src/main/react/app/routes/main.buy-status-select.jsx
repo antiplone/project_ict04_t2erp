@@ -1,5 +1,6 @@
 // 구매팀 - 구매현황 조회 페이지
 /* eslint-disable react/react-in-jsx-scope */
+import AppConfig from "#config/AppConfig.json";
 import * as rs from 'rsuite';
 import Table from 'rsuite/Table';
 import SearchIcon from '@rsuite/icons/Search';
@@ -12,7 +13,7 @@ import ItemSearchModal from "#components/buy/ItemSearchModal.jsx";
 
 export function meta() {
     return [
-        { title: "구매현황조회" },
+        { title:  `${AppConfig.meta.title} : 구매현황조회` },
         { name: "description", content: "구매현황조회" },
     ];
 };
@@ -76,10 +77,11 @@ export default function BuyStatusSelect() {
         );
     
         const query = new URLSearchParams(cleanedParams).toString();
+
+        const fetchURL = AppConfig.fetch["mytest"];
     
         try {
-            console.log("요청 URL:", `http://localhost:8081/buy/buyStatusSearch?${query}`);
-            const res = await fetch(`http://localhost:8081/buy/buyStatusSearch?${query}`);
+            const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyStatusSearch?${query}`);
             const result = await res.json();
             console.log("result:", result);
 
@@ -96,7 +98,7 @@ export default function BuyStatusSelect() {
     return (
         <rs.Container>
             <>
-                <rs.Message type="info" style={{ width: 960 }}>
+                <rs.Message type="info" style={{ width: 1500 }}>
                     <strong>구매현황</strong>
                 </rs.Message>
                 <br />
@@ -164,7 +166,7 @@ export default function BuyStatusSelect() {
                 <rs.Button appearance="primary" onClick={handleSearch} style={searchStyle}>검색</rs.Button>
                 <hr />
 
-                <Table height={400} width={960} data={orderStatus} onRowClick={itemData => console.log(itemData)}>
+                <Table height={400} width={1500} data={orderStatus} onRowClick={itemData => console.log(itemData)}>
                     <Column width={160}><HeaderCell>발주일자</HeaderCell><Cell dataKey="order_date" /></Column>
                     <Column width={160}><HeaderCell>거래처명</HeaderCell><Cell dataKey="client_name" /></Column>
                     <Column width={160}><HeaderCell>품목명</HeaderCell><Cell dataKey="item_name" /></Column>

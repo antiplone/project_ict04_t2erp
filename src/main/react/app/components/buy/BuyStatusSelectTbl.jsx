@@ -1,3 +1,4 @@
+// 구매팀 구매현황 조회 테이블
 import { Table } from 'rsuite';
 //import { mockUsers } from './mock';
 import React from 'react';

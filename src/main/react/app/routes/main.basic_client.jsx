@@ -41,12 +41,13 @@ export default function Basic_client() {
 
       {/* 거래처 목록 테이블 렌더링 */}
       <HrTable
-        items={clients}
         columns={columns}
-        // 행 클릭 시 navigate를 사용하여 상세 페이지로 이동
-        onRowSelect={(rowData) => {
-          // client_code를 이용해 상세 페이지로 이동
-          navigate(`/main/client/${rowData.client_code}`);
+        items={clients}
+        onEditClick={(rowData) => {
+          console.log("수정:", rowData);
+        }}
+        onDeleteClick={(client_code) => {
+          console.log("삭제:", client_code);
         }}
       />
 

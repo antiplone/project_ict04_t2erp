@@ -11,14 +11,14 @@ import com.spring.erp_ordit.dto.hr.HrEmpCardDTO;
 @Repository
 public interface HrEmpCardMapper {
 	
-	public List<HrEmpCardDTO> hrEmpCardList();	// 물품 목록
+	public List<HrEmpCardDTO> hrEmpCardList();	// 인사카드 목록
 	
-//	public int basicInsertItem(BaiscItemDTO dto);	// 물품 등록
-//
-//	public int basicUpdateItem(BaiscItemDTO dto);	// 물품 수정
-//	
-//	public int basicDeleteItem(int item_code);	// 물품 삭제
-//	
-//	public BaiscItemDTO basicItemDetail(int item_code);	// 게시글 상세페이지
+	public int hrEmpCardInsert(HrEmpCardDTO dto);	// 인사카드 등록
+
+	public int hrEmpCardUpdate(HrEmpCardDTO dto);	// 인사카드 수정
+	
+	public int hrEmpCardDelete(int e_id);	// 인사카드 삭제
+	
+	public HrEmpCardDTO hrEmpCardDetail(int e_id);	// 인사카드 상세페이지
 	
 }

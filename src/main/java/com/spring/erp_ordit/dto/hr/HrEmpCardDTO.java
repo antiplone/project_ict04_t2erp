@@ -25,7 +25,7 @@ public class HrEmpCardDTO {
 	private Date e_birth;                     // 생년월일
 	private String e_entry;                   // 입사 구분(신입/경력)
 	private String e_address;                 // 주소
-	private String e_photo;                   // 사진(파일 경로나 base64)
+	private String e_photo;                   // 사진
 	private String e_salary_account_bank;     // 급여통장 - 은행
 	private String e_salary_account_num;      // 급여통장 - 계좌번호
 	private String e_salary_account_owner;    // 급여통장 - 예금주

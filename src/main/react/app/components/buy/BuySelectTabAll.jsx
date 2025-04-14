@@ -40,7 +40,7 @@ export default function BuySelectTabAll() {
 
     // 상세조회
     const detailOrder = (order_id) => {
-        navigate('/main/buy-select-detail/' + order_id);   
+        navigate('/main/buy-select-detail/' + order_id);
     }
 
     // 삭제
@@ -66,71 +66,61 @@ export default function BuySelectTabAll() {
         <>
             <Table height={500} data={buyOrderAllList} style={{ maxWidth: 1500 }}>
 
-                <Column width={40} align="center" fixed>
-                    <HeaderCell style={styles}>
-                        <Checkbox />  {/* 전체 선택 */}
-                    </HeaderCell>
-                    <Cell>
-                        {orderData => <Checkbox value={orderData.id} />}
-                    </Cell>
-                </Column>
-
-                <Column width={100}>
+                <Column width={120}>
                     <HeaderCell style={styles}>등록일자</HeaderCell>
                     <Cell dataKey="order_date" />
                 </Column>
 
-                <Column width={100}>
+                <Column width={120}>
                     <HeaderCell style={styles}>발주번호</HeaderCell>
                     <Cell dataKey="order_id" />
                 </Column>
 
-                <Column width={100}>
+                <Column width={150}>
                     <HeaderCell style={styles}>거래처명</HeaderCell>
                     <Cell dataKey="client_name" />
                 </Column>
 
-                <Column width={100}>
+                <Column width={250}>
                     <HeaderCell style={styles}>품목명</HeaderCell>
                     <Cell dataKey="item_name" />
                 </Column>
 
-                <Column width={100}>
+                <Column width={150}>
                     <HeaderCell style={styles}>금액합계</HeaderCell>
                     <Cell dataKey="total" />
                 </Column>
 
-                <Column width={120}>
+                <Column width={150}>
                     <HeaderCell style={styles}>거래유형</HeaderCell>
                     <Cell dataKey="transaction_type" />
                 </Column>
 
-                <Column width={100}>
+                <Column width={150}>
                     <HeaderCell style={styles}>입고창고</HeaderCell>
                     <Cell dataKey="storage_name" />
                 </Column>
 
-                <Column width={100}>
+                <Column width={120}>
                     <HeaderCell style={styles}>납기일자</HeaderCell>
                     <Cell dataKey="delivery_date" />
                 </Column>
                 {/* 
-                <Column width={100}>
+                <Column width={150}>
                     <HeaderCell style={styles}>회계반영 여부</HeaderCell>
                     <Cell dataKey="closing_staus"/>
                 </Column> */}
 
-                <Column width={100}>
+                <Column width={120}>
                     <HeaderCell style={styles}>진행상태</HeaderCell>
                     <Cell dataKey="order_status" />
-                    {/* <InputPicker placeholder="미확인" data={Orderstatus} /> */}
                 </Column>
 
                 {/*          
-                <Column width={80} fixed="right">
+                <Column width={150} fixed="right">
                     <HeaderCell style={styles}>불러온전표</HeaderCell>
                     <Cell style={{ padding: '6px' }}>
-                        {orderData => (
+                        {rowData => (
                             <Button color="blue" appearance='link'>
                                 조회
                             </Button>
@@ -138,7 +128,6 @@ export default function BuySelectTabAll() {
                     </Cell>
                 </Column>
  */}
-
                 <Column width={60} fixed="right">
                     <HeaderCell style={styles}>조회</HeaderCell>
                     <Cell style={{ padding: '6px' }}>
@@ -148,17 +137,6 @@ export default function BuySelectTabAll() {
                                     조회
                                 </Button>
                             </Link>
-                        )}
-                    </Cell>
-                </Column>
-
-                <Column width={60} fixed="right">
-                    <HeaderCell style={styles}>삭제</HeaderCell>
-                    <Cell style={{ padding: '6px' }}>
-                        {buyOrderAllList => (
-                            <Button color="blue" appearance='link' onClick={() => deleteOrderItem(buyOrderAllList.order_id)}>
-                                삭제
-                            </Button>
                         )}
                     </Cell>
                 </Column>

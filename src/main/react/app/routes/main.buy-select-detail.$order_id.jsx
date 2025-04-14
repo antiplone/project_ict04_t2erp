@@ -4,7 +4,7 @@ import AppConfig from "#config/AppConfig.json";
 import * as rs from 'rsuite';
 import Table from 'rsuite/Table';
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 export function meta() {
   return [
@@ -18,6 +18,8 @@ const { Column, HeaderCell, Cell } = Table;
 export default function BuySelectDetail() {
 
   const { order_id } = useParams();
+
+  const navigate = useNavigate();
 
   // 주문정보 (단일 객체)
   const [orderInfo, setOrderInfo] = useState({});
@@ -81,7 +83,9 @@ export default function BuySelectDetail() {
       .then((res) => {
         if (res === "ok") {
           alert('삭제 성공!');
-          setBuyOrderAllList(buyOrderAllList.filter(order => order.order_id !== order_id)); // UI 업데이트
+          navigate("/main/buy-select");
+          // setBuyOrderAllList(buyOrderAllList.filter(order => order.order_id !== order_id)); // UI 업데이트
+          
         } else {
           alert('삭제 실패');
         }

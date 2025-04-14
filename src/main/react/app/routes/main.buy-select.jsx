@@ -3,12 +3,12 @@
 import AppConfig from "#config/AppConfig.json";
 import { Container, Tabs, Message, InputGroup, Input, Badge, Button } from "rsuite";
 import React, { useEffect, useState } from 'react';
-import SearchIcon from '@rsuite/icons/Search';
 import BuySelectTabAll from "#components/buy/BuySelectTabAll.jsx";
 import "../styles/buy.css";
 import BuySelectTabUnchk from "#components/buy/BuySelectTabUnchk.jsx";
 import BuySelectTabCheck from "#components/buy/BuySelectTabCheck.jsx";
 import BuySelectTabPaing from "#components/buy/BuySelectTabPaing.jsx";
+import readingGlasses from "#images/common/readingGlasses.png";
 
 // @Remix:모듈함수 - <html>의 <head>의 내용
 export function meta() {
@@ -18,25 +18,23 @@ export function meta() {
     ];
 };
 
-const styles = {
-    backgroundColor: '#f8f9fa',
-};
-
 export default function BuySelect() {
 
+    // 미확인 건수
     const [uncheckedCount, setUnCheckedCount] = useState(0);
 
     const fetchURL = AppConfig.fetch["mytest"];
 
+    // 미확인 건수 조회
     useEffect(() => {
         fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrderUnchkCount`, {
             method: "GET"
         })
-        .then((res) => res.json())
-        .then(res => {
-            setUnCheckedCount(res);
-        });
-    },[]);
+            .then((res) => res.json())
+            .then(res => {
+                setUnCheckedCount(res);
+            });
+    }, []);
 
     return (
         <>
@@ -53,7 +51,12 @@ export default function BuySelect() {
                         <InputGroup >
                             <Input />
                             <InputGroup.Button>
-                                <SearchIcon />
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                />
                             </InputGroup.Button>
                         </InputGroup>
                     </div>

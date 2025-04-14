@@ -3,13 +3,13 @@
 import AppConfig from "#config/AppConfig.json";
 import * as rs from 'rsuite';
 import Table from 'rsuite/Table';
-import SearchIcon from '@rsuite/icons/Search';
 import React, { useState } from "react";
 import "../styles/buy.css";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import StorageSearchModal from "#components/buy/StorageSearchModal.jsx";
 import ItemSearchModal from "#components/buy/ItemSearchModal.jsx";
+import readingGlasses from "#images/common/readingGlasses.png";
 
 export function meta() {
     return [
@@ -118,7 +118,14 @@ export default function BuyStatusSelect() {
                         <rs.InputGroup.Addon style={{ width: 80 }}>담당자</rs.InputGroup.Addon>
                         <rs.Input value={selectedIncharge || ""} readOnly />
                         <rs.InputGroup.Button tabIndex={-1}>
-                            <SearchIcon onClick={() => setInchargeModalOpen(true)} />
+                        <img
+                            src={readingGlasses}
+                            alt="돋보기"
+                            width={20}
+                            height={20}
+                            onClick={() => setInchargeModalOpen(true)}
+                            style={{ cursor: "pointer" }}
+                        />
                         </rs.InputGroup.Button>
                     </rs.InputGroup>
                     <rs.Input value={selectedInchargeName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
@@ -127,7 +134,14 @@ export default function BuyStatusSelect() {
                         <rs.InputGroup.Addon style={{ width: 80 }}>거래처</rs.InputGroup.Addon>
                         <rs.Input value={selectedClient || ""} readOnly />
                         <rs.InputGroup.Addon>
-                            <SearchIcon onClick={() => setClientModalOpen(true)} />
+                        <img
+                            src={readingGlasses}
+                            alt="돋보기"
+                            width={20}
+                            height={20}
+                            onClick={() => setClientModalOpen(true)}
+                            style={{ cursor: "pointer" }}
+                        />
                         </rs.InputGroup.Addon>
                     </rs.InputGroup>
                     <rs.Input value={selectedClientName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
@@ -136,14 +150,27 @@ export default function BuyStatusSelect() {
                 <div className="inputBox">
                     <rs.InputGroup className="input">
                         <rs.InputGroup.Addon style={{ width: 80 }}>거래유형</rs.InputGroup.Addon>
-                        <rs.InputPicker placeholder="거래유형 선택" data={buyType} style={{ width: 224 }} value={selectedType} onChange={setSelectedType} />
+                        <rs.InputPicker 
+                            placeholder="거래유형 선택" 
+                            data={buyType} 
+                            style={{ width: 224 }} 
+                            value={selectedType} 
+                            onChange={setSelectedType} 
+                        />
                     </rs.InputGroup>
 
                     <rs.InputGroup className="input">
                         <rs.InputGroup.Addon style={{ width: 80 }}>입고창고</rs.InputGroup.Addon>
                         <rs.Input value={selectedStorage || ""} readOnly />
                         <rs.InputGroup.Addon>
-                            <SearchIcon onClick={() => setStorageModalOpen(true)} />
+                        <img
+                            src={readingGlasses}
+                            alt="돋보기"
+                            width={20}
+                            height={20}
+                            onClick={() => setStorageModalOpen(true)}
+                            style={{ cursor: "pointer" }}
+                        />
                         </rs.InputGroup.Addon>
                     </rs.InputGroup>
                     <rs.Input value={selectedStorageName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
@@ -152,7 +179,14 @@ export default function BuyStatusSelect() {
                         <rs.InputGroup.Addon style={{ width: 80 }}> 품목코드</rs.InputGroup.Addon>
                         <rs.Input value={selectedItem || ""} readOnly />
                         <rs.InputGroup.Addon>
-                            <SearchIcon onClick={() => setItemModalOpen(true)} />
+                            <img
+                            src={readingGlasses}
+                            alt="돋보기"
+                            width={20}
+                            height={20}
+                            onClick={() => setItemModalOpen(true)}
+                            style={{ cursor: "pointer" }}
+                        />
                         </rs.InputGroup.Addon>
                     </rs.InputGroup>
                     <rs.Input value={selectedItemName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />

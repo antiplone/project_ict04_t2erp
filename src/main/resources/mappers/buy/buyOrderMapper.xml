@@ -75,6 +75,7 @@
 			SELECT COUNT(*) AS buyOrderUnchkCount 
 			  FROM order_status_tbl
 			 WHERE order_status = '미확인'
+			  
   	</select>
 
   	<!-- 구매조회 탭 확인 목록 -->

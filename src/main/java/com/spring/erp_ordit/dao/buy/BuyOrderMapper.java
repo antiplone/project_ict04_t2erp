@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.spring.erp_ordit.dto.buy.BuyOrderDTO;
+import com.spring.erp_ordit.dto.buy.BuyOrderDetailDTO;
+import com.spring.erp_ordit.dto.buy.BuyOrderItemDTO;
 import com.spring.erp_ordit.dto.buy.BuyStatusDTO;
 
 @Mapper 	// DAOImpl 만들지 않고 mapper랑 연결할때 쓴다.
@@ -17,7 +19,7 @@ public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 구매현�
 	public List<BuyOrderDTO> buyOrderAllList();	
 	
 	// 구매조회 탭 <결재중> 목록
-	public List<BuyOrderDTO> buyOrderPaingList();	
+	public List<BuyOrderDTO> buyOrderPayingList();	
 	
 	// 구매 조회 탭 <미확인> 목록
 	public List<BuyOrderDTO> buyOrderUnchkList();	
@@ -27,6 +29,14 @@ public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 구매현�
 	
 	// 구매 조회 탭 <확인> 목록
 	public List<BuyOrderDTO> buyOrderCheckList();	
+	
+	// 구매 내역 <상세> 조회
+	public List<BuyOrderDetailDTO> buyOrderDetail(Long order_id);
+	
+	// 구매 내역 수정
+	public void buyUpdateOrder(BuyOrderDTO order);  // 주문정보 수정
+	public void buyDeleteOrderItems(int order_id); // 주문정보 삭제
+	public void buyInsertOrderItem(BuyOrderItemDTO item);	// 주문정보 입력
 	
 	//구매입력 - <주문정보 입력> => order.getOrder_id()로 insert 후 ID 자동 세팅
 	public int buyOrderInsert(BuyOrderDTO order);  

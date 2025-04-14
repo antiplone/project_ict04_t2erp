@@ -9,9 +9,12 @@
 	<resultMap id="logisStockMap" type="com.spring.erp_ordit.dto.warehouse.LogisStockDTO">
 	    <result column="item_code" property="item_code" jdbcType="INTEGER"/>
 	    <result column="item_name" property="item_name" jdbcType="VARCHAR"/>
+	    <result column="item_standard" property="item_standard" jdbcType="VARCHAR"/>
 	    <result column="stock_amount" property="stock_amount" jdbcType="INTEGER"/>
 	    <result column="safe_stock" property="safe_stock" jdbcType="INTEGER"/>
 	    <result column="last_date" property="last_date" jdbcType="DATE"/>
+	    <result column="storage_code" property="storage_code" jdbcType="INTEGER"/>
+	    <result column="storage_name" property="storage_name" jdbcType="VARCHAR"/>
 	</resultMap>
 
 	<resultMap id="logisOrderMap" type="com.spring.erp_ordit.dto.warehouse.LogisOrderDTO">
@@ -30,6 +33,7 @@
 		<result column="item_standard" property="item_standard" jdbcType="VARCHAR" />
 	    <result column="client_code" property="client_code" jdbcType="VARCHAR"/>
 	    <result column="client_name" property="client_name" jdbcType="VARCHAR"/>
+	    <result column="income_confirm" property="income_confirm" jdbcType="VARCHAR"/>
 	</resultMap>
 	
 	<resultMap id="logisOrderIdMap" type="com.spring.erp_ordit.dto.warehouse.LogisOrderDTO">
@@ -50,7 +54,9 @@
 	    <result property="client_name" column="client_name"/>
 	</resultMap>
 	
-   <select id="warehouseList" resultType="com.spring.erp_ordit.dto.warehouse.WarehouseDTO">
+	<!--재고 관련 -->
+	<!-- 전체 재고 조회 -->
+   <select id="stockhouseList" resultMap="logisStockMap">
 		SELECT
 			it.item_code AS 'item_code',
 			it.item_name AS 'item_name',
@@ -58,34 +64,50 @@
 			st.stock_amount AS 'stock_amount',
 			st.safe_stock AS 'safe_stock',
 			st.last_date AS 'last_date',
-			ct.client_name AS 'client_name',
-			wt.storage_name AS 'storage_name'
+			wt.storage_code,
+			wt.storage_name
 		FROM
-			item_tbl AS it
-		INNER JOIN
-			stock_tbl AS st ON it.item_code = st.item_code
-		INNER JOIN
-			client_tbl AS ct ON ct.client_code
-		INNER JOIN
-			warehouse_tbl AS wt ON wt.storage_code 
-		WHERE
-			it.item_code = st.item_code
-		group by item_code;
-	
+			item_tbl it
+			INNER JOIN stock_tbl st ON it.item_code = st.item_code
+			INNER JOIN warehouse_tbl wt ON st.storage_code = wt.storage_code
+		GROUP BY
+			item_code,
+			item_name,
+			item_standard,
+			stock_amount,
+			safe_stock,
+			last_date,
+			wt.storage_code,
+			wt.storage_name
+		ORDER BY
+			wt.storage_code, item_code;
    </select>
    
     <select id="logisStockList" resultMap="logisStockMap">
-			SELECT 
-				stm.item_code,
-				itm.item_name,
-				stm.stock_amount,
-				stm.safe_stock,
-				stm.last_date
-			FROM 
-				stock_tbl_mhj stm
-			inner join
-				item_tbl itm on itm.item_code = stm.item_code
-			group by item_code, item_name
+			SELECT
+			it.item_code AS 'item_code',
+			it.item_name AS 'item_name',
+			it.item_standard AS 'item_standard',
+			st.stock_amount AS 'stock_amount',
+			st.safe_stock AS 'safe_stock',
+			st.last_date AS 'last_date',
+			wt.storage_code,
+			wt.storage_name
+		FROM
+			item_tbl it
+			INNER JOIN stock_tbl st ON it.item_code = st.item_code
+			INNER JOIN warehouse_tbl wt ON st.storage_code = wt.storage_code
+		GROUP BY
+			item_code,
+			item_name,
+			item_standard,
+			stock_amount,
+			safe_stock,
+			last_date,
+			wt.storage_code,
+			wt.storage_name
+		ORDER BY
+			wt.storage_code, item_code;
 	</select>
     
 	<!-- 창고 관련 -->
@@ -94,7 +116,7 @@
 	</select>
    
 	<!-- 창고 등록 -->
-	<insert id="storageInsert" parameterType="com.spring.erp_ordit.dto.warehouse.LogisWarehouseDTO">
+	<insert id="warehouseInsert" parameterType="com.spring.erp_ordit.dto.warehouse.LogisWarehouseDTO">
 		INSERT INTO warehouse_tbl(storage_name, storage_location)
 		VALUES(#{storage_name}, #{storage_location})
 	</insert>
@@ -106,14 +128,14 @@
 	</select>
 
 	<!-- 창고 수정 -->
-	<update id="updateStorage" parameterType="com.spring.erp_ordit.dto.warehouse.LogisWarehouseDTO">
+	<update id="updateWarehouse" parameterType="com.spring.erp_ordit.dto.warehouse.LogisWarehouseDTO">
 		UPDATE warehouse_tbl
 			SET storage_name=#{storage_name}, storage_location=#{storage_location}
 		WHERE storage_code = #{storage_code}
 	</update>
 
 	<!-- 창고 삭제 -->
-	<delete id="deleteStoragecode" parameterType="int">
+	<delete id="deleteWarehouse" parameterType="int">
 		DELETE FROM warehouse_tbl
 		WHERE storage_code = #{storage_code}
 	</delete>
@@ -136,7 +158,8 @@
 				it.item_name,
 				it.item_standard,
 				ct.client_code,
-				ct.client_name
+				ct.client_name,
+				oit.income_confirm
 		FROM
 				order_tbl as ot
 		INNER JOIN
@@ -170,7 +193,8 @@
 		    it.item_name as 'item_name',
 		    it.item_standard as 'item_standard',
 		    ct.client_code as 'client_code',
-		    ct.client_name as 'client_name'
+		    ct.client_name as 'client_name',
+			oit.income_confirm
 		from
 		    order_tbl as ot
 		inner join
@@ -203,7 +227,8 @@
 			it.item_name,
 			it.item_standard,
 			it.item_status,
-			it.item_reg_date
+			it.item_reg_date,
+			oit.income_confirm
 		FROM 
 			order_item_tbl oit
 		INNER JOIN
@@ -232,7 +257,8 @@
 				it.item_name,
 				it.item_standard,
 				ct.client_code,
-				ct.client_name
+				ct.client_name,
+				oit.income_confirm
 		FROM
 				order_tbl as ot
 		INNER JOIN
@@ -265,7 +291,8 @@
 		    it.item_name as 'item_name',
 		    it.item_standard as 'item_standard',
 		    ct.client_code as 'client_code',
-		    ct.client_name as 'client_name'
+		    ct.client_name as 'client_name',
+   		    oit.income_confirm as 'income_confirm'
 		from
 		    order_tbl as ot
 		inner join
@@ -313,11 +340,48 @@
 	</select>
 
 	<update id="updateStock" parameterType="com.spring.erp_ordit.dto.warehouse.LogisStockDTO">
+	
 		UPDATE
 			stock_tbl
 		SET 
-			quantity = quantity + #{quantity}, last_date = DATE(NOW()), income_confirm = 'Y'
-		WHERE item_code = #{item_code}
+			stock_amount = stock_amount + #{stock_amount}, last_date = DATE(NOW())
+		WHERE
+			item_code = #{item_code}
+		AND
+			storage_code= #{storage_code}
+			
+	</update>
+	
+	<update id="updateOrderStock" parameterType="com.spring.erp_ordit.dto.warehouse.LogisOrderItemDTO">
+	
+		UPDATE 
+			order_item_tbl
+		SET 
+			income_confirm = 'Y'
+		WHERE 
+			item_code = #{item_code}
+		AND
+			order_id = #{order_id}
+			
+	</update>
+	
+	<update id="updateSellStock" parameterType="com.spring.erp_ordit.dto.warehouse.LogisStockDTO">
+		UPDATE
+			stock_tbl
+		SET 
+			stock_amount = stock_amount - #{stock_amount}, last_date = DATE(NOW())
+		WHERE
+			item_code = #{item_code}
+		AND
+			storage_code= #{storage_code};
+	
+		UPDATE 
+			order_item_tbl
+		SET 
+			income_confirm = 'Y'
+		WHERE 
+			item_code = #{item_code}
+		AND order_id = #{order_id};
 	</update>
 
 </mapper>

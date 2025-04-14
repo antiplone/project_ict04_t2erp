@@ -5,7 +5,7 @@ import HrModal from '#components/hr/HrModal'; // 모달 컴포넌트
 import { Input, Grid, Col } from 'rsuite'; // UI 컴포넌트
 import { useNavigate } from 'react-router-dom'; // react-router-dom에서 useNavigate 가져오기
 
-export default function Client() {
+export default function Basic_client() {
   const [open, setOpen] = useState(false);
   const [clients, setClients] = useState([]); // 클라이언트 데이터 상태
   const navigate = useNavigate(); // navigate 훅 사용
@@ -24,7 +24,7 @@ export default function Client() {
   }, []);
 
   const columns = [
-    { label: "거래처 코드", dataKey: "client_code", width: 200 },
+    { label: "거래처 코드", dataKey: "client_code", width: 150 },
     { label: "거래처명", dataKey: "client_name", width: 160 },
     { label: "대표자명", dataKey: "c_ceo", width: 160 },
     { label: "거래처 연락처", dataKey: "c_tel", width: 250 },
@@ -41,12 +41,13 @@ export default function Client() {
 
       {/* 거래처 목록 테이블 렌더링 */}
       <HrTable
-        items={clients}
         columns={columns}
-        // 행 클릭 시 navigate를 사용하여 상세 페이지로 이동
-        onRowSelect={(rowData) => {
-          // client_code를 이용해 상세 페이지로 이동
-          navigate(`/main/client/${rowData.client_code}`);
+        items={clients}
+        onEditClick={(rowData) => {
+          console.log("수정:", rowData);
+        }}
+        onDeleteClick={(client_code) => {
+          console.log("삭제:", client_code);
         }}
       />
 

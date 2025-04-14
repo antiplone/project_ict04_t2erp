@@ -3,7 +3,7 @@
 import AppConfig from "#config/AppConfig.json";
 import { Container, Tabs, Message, InputGroup, Input, Badge, Button } from "rsuite";
 import React, { useEffect, useState } from 'react';
-import SearchIcon from '@rsuite/icons/Search';
+//import SearchIcon from '@rsuite/icons/Search';
 import BuySelectTabAll from "#components/buy/BuySelectTabAll.jsx";
 import "../styles/buy.css";
 import BuySelectTabUnchk from "#components/buy/BuySelectTabUnchk.jsx";
@@ -53,7 +53,7 @@ export default function BuySelect() {
                         <InputGroup >
                             <Input />
                             <InputGroup.Button>
-                                <SearchIcon />
+                                {/*<SearchIcon />*/}
                             </InputGroup.Button>
                         </InputGroup>
                     </div>

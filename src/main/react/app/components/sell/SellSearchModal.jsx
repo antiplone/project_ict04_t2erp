@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Table, Modal, Form, InputGroup, AutoComplete, HStack, Input } from "rsuite";
-import SearchIcon from '@rsuite/icons/Search';
+//import SearchIcon from '@rsuite/icons/Search';
 import ItemSearchModal from "./SellItemSearchModal";
 import Sell_ClientSearchModal from "./SellClientSearchModal";
 import StorageSearchModal from "./SellStorageSearchModal";
@@ -77,7 +77,7 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 							/>
 								<AutoComplete />
 									<InputGroup.Button tabIndex={-1}>
-										<SearchIcon onClick={handleOpenItemModal} />
+										{/*<SearchIcon onClick={handleOpenItemModal} />*/}
 									</InputGroup.Button>
 							</InputGroup>
 							<Input name="customer_1" type="text" autoComplete="off" style={{ width: 200,  marginBottom: 5 }}
@@ -97,7 +97,7 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 								<AutoComplete />
 									<InputGroup.Button tabIndex={-1} >
 										{/* 모달 열기 버튼 */}
-										<SearchIcon onClick={handleOpenClientModal} />
+										{/*<SearchIcon onClick={handleOpenClientModal} />*/}
 									</InputGroup.Button>
 							</InputGroup>
 							<Input name="customer_1" type="text" autoComplete="off" style={{ width: 200,  marginBottom: 5 }}
@@ -116,7 +116,7 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 							/>
 								<AutoComplete />
 									<InputGroup.Button tabIndex={-1}>
-										<SearchIcon onClick={handleOpenStorageModal} />
+										{/*<SearchIcon onClick={handleOpenStorageModal} />*/}
 									</InputGroup.Button>
 							</InputGroup>
 							<Input name="customer_1" type="text" autoComplete="off" style={{ width: 200,  marginBottom: 5 }}

@@ -4,8 +4,8 @@
 import AppConfig from "#config/AppConfig.json";
 import React, { useState } from "react";
 import { Button, Container, DatePicker, Divider, Input, InputGroup, InputNumber, InputPicker, Message, Table, IconButton } from "rsuite";
-import SearchIcon from '@rsuite/icons/Search';
-import TrashIcon from '@rsuite/icons/Trash';
+//import SearchIcon from '@rsuite/icons/Search';
+//import TrashIcon from '@rsuite/icons/Trash';
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import { useNavigate } from "@remix-run/react";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
@@ -172,7 +172,7 @@ export default function BuyInsert() {
                     <InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
                     <Input value={selectedIncharge || ""} readOnly />
                     <InputGroup.Button tabIndex={-1}>
-                        <SearchIcon onClick={() => setInchargeModalOpen(true)} />
+                        {/*<SearchIcon onClick={() => setInchargeModalOpen(true)} />*/}
                     </InputGroup.Button>
                 </InputGroup>
                 <Input value={selectedInchargeName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
@@ -181,7 +181,7 @@ export default function BuyInsert() {
                     <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
                     <Input value={selectedClient || ""} readOnly />
                     <InputGroup.Addon>
-                        <SearchIcon onClick={() => setClientModalOpen(true)} />
+                        {/*<SearchIcon onClick={() => setClientModalOpen(true)} />*/}
                     </InputGroup.Addon>
                 </InputGroup>
                 <Input value={selectedClientName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
@@ -203,7 +203,7 @@ export default function BuyInsert() {
                     <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
                     <Input value={selectedStorage || ""} readOnly />
                     <InputGroup.Addon>
-                        <SearchIcon onClick={() => setStorageModalOpen(true)} />
+                        {/*<SearchIcon onClick={() => setStorageModalOpen(true)} />*/}
                     </InputGroup.Addon>
                 </InputGroup>
                 <Input value={selectedStorageName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />

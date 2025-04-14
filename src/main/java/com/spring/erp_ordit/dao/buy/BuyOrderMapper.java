@@ -35,8 +35,8 @@ public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 구매현�
 	
 	// 구매 내역 수정
 	public void buyUpdateOrder(BuyOrderDTO order);  // 주문정보 수정
-	public void buyDeleteOrderItems(int order_id); // 주문정보 삭제
-	public void buyInsertOrderItem(BuyOrderItemDTO item);	// 주문정보 입력
+	public void buyDeleteOrderItems(int order_id); // 주문 물품정보 삭제
+	public void buyInsertOrderItem(BuyOrderItemDTO item);	// 주문 물품정보 입력
 	
 	//구매입력 - <주문정보 입력> => order.getOrder_id()로 insert 후 ID 자동 세팅
 	public int buyOrderInsert(BuyOrderDTO order);  

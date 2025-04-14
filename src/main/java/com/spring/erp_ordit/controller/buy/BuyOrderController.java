@@ -71,7 +71,7 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		return new ResponseEntity<>(buyOrderService.getBuyOrderCheckList(), HttpStatus.OK); //200
 	}
 	
-	// 구매 내역 <상세> 조회 GetMapping => http://localhost:8081/buy/buyOrderDetail/{order_id}
+	// 구매 내역 1건 <상세> 조회 GetMapping => http://localhost:8081/buy/buyOrderDetail/{order_id}
 	@GetMapping("/buyOrderDetail/{order_id}")
 	public ResponseEntity<?> buyOrderDetail(@PathVariable Long order_id) {	// ?를 주면 자동으로 적용된다. T 와 같은 의미, 데이터가 아직 결정되지 않았다는 뜻 => Integer 또는 ? 를 주면 된다. 
 		List<BuyOrderDetailDTO> orderList = buyOrderService.getBuyOrderDetail(order_id);
@@ -82,13 +82,16 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		return new ResponseEntity<>(buyOrderService.getBuyOrderDetail(order_id), HttpStatus.OK); //200
 	}
 	
-//	// 구매내역 수정 PutMapping => http://localhost:8081/buyOrderUpdate/{order_id}
-//	@PutMapping("/buyOrderUpdate/{order_id}")
-//	public ResponseEntity<?> buyOrderUpdate(@PathVariable int order_id, @RequestBody BuyOrderRequest request){
-//		System.out.println("<<< boyOrderUpdate >>>");
-//		
-//		return new ResponseEntity<>(buyOrderService.buyOrderUpdate(order_id, request), HttpStatus.OK);	// 200
-//	}
+	// 구매내역 수정 PutMapping => http://localhost:8081/buy/buyOrderUpdate/{order_id}
+	@PutMapping("/buyOrderUpdate/{order_id}")
+	public ResponseEntity<?> buyOrderUpdate(@PathVariable int order_id, @RequestBody BuyOrderRequest request){
+		
+		System.out.println("<<< boyOrderUpdate >>>");
+		System.out.println("order_id = " + order_id);
+	    System.out.println("request = " + request);
+		
+		return new ResponseEntity<>(buyOrderService.buyOrderUpdate(order_id, request), HttpStatus.OK);	// 200
+	}
 
 	// 구매 입력 <한건의 주문정보 + 다건의 물품정보> PostMapping => http://localhost:8081/buy/buyInsertAll
 	@PostMapping("/buyInsertAll")

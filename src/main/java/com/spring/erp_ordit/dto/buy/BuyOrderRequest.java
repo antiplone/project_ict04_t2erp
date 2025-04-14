@@ -2,6 +2,8 @@ package com.spring.erp_ordit.dto.buy;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +18,9 @@ import lombok.ToString;
 public class BuyOrderRequest {	// 작성자 - hjy , 구매팀 주문요청 @RequestBody BuyOrderRequest request 부분
 	
 	// 주문정보 + 품목 리스트
+	@JsonProperty("order")
 	private BuyOrderDTO order; // 주문정보
+	
+	@JsonProperty("items")
     private List<BuyOrderItemDTO> items; // 주문에 해당하는 물품정보
 }

@@ -43,7 +43,7 @@ const ItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen, han
 	return (
 		<Modal open={handleOpen} onClose={handleColse} size="xs">
 			<Modal.Header>
-				<Modal.Title>{title}</Modal.Title>
+				<Modal.Title>물품 검색</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<Table

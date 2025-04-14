@@ -43,7 +43,7 @@ const StorageSearchModal = ({ title, confirm, cancel, onStorageSelect, handleOpe
 	return (
 		<Modal open={handleOpen} onClose={handleColse} size="xs">
 			<Modal.Header>
-				<Modal.Title>{title}</Modal.Title>
+				<Modal.Title>창고 검색</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 			<Table

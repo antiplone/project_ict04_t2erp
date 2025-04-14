@@ -1,19 +1,26 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
 import { forwardRef, useState, useEffect } from "react";
-import { useLocation, useNavigate, useSubmit } from "@remix-run/react";
+import { useLocation, useNavigate, redirect, useSubmit } from "@remix-run/react";
 import {
-	Form,
+	Form, Schema,
 	Button,
 	Stack,
 	Panel,
 	VStack,
-	Divider,
+//	Divider,
 	InputGroup,
 	Input,
+	Loader
 } from "rsuite";
 
 import AppConfig from "#config/AppConfig.json"
+
+const { StringType } = Schema.Types;
+const model = Schema.Model({
+	eID: StringType().isRequired("'사번'을 입력해주세요."),
+	password: StringType().isRequired("'비밀번호'를 입력해주세요.")
+});
 
 // @Remix:모듈함수 - <html>의 <head>의 내용
 export function meta() {
@@ -23,27 +30,45 @@ export function meta() {
 	];
 };
 
+let handleAuthData, handleLoading;
 // @Remix:모듈함수 - Submit관련 with Form's action
 export async function clientAction({ request }) { // non-GET
 	const formData = await request.formData();
-	console.log(formData.get('name'));
-	return formData;
-};
+	let entity = {};
+	for (let pair of formData.entries()) {
+		entity[pair[0]] = pair[1];
+	}
+	//console.log(entity);
+	handleLoading(true);
 
-// @Remix:모듈함수 - 페이지가 처음 불려졌을때, 여기로 들어와서, 데이터를 가지고옵니다.
-export async function clientLoader({ request/* or params */ }) {
-
-	const urls = request.url.split('/'); // url전체 경로를 '/'기준으로 나눠서 배열로 저장
-	const pageName = urls[urls.length - 1]; // 현재 페이지명
-	console.log("현재 페이지는", pageName);
-
-	fetch(`http://localhost:8081/api/${pageName}`, { method: "GET" }) // fetcher
-		.then((res) => res.text())
+	const fetchURL = AppConfig.fetch['mytest'];
+	fetch(`${fetchURL.protocol}${fetchURL.url}/auth/get`, {
+		method: "POST",
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(entity)
+	})
 		.then((res) => {
-			console.log(res);
+			handleLoading(false);
+			if (res.ok) {
+				handleLoading(true);
+				entity = res.json();
+				console.log("Promise 시작:", entity);
+				entity.then(
+					res => {
+						handleAuthData(res);
+						console.log("Promise 완료:", res);
+					}
+				);
+			}
+		})
+		.finally(() => {
+			handleLoading(false);
 		});
 
-	return null;
+	return redirect("");
 };
 
 // @Remix:url(/login) - 사원로그인 페이지
@@ -52,22 +77,17 @@ export default function Login() {
 	const location = useLocation();
 	const nav = useNavigate();
 	const submit = useSubmit();
+	const [authData, setAuthData] = useState();
+	handleAuthData = setAuthData;
+	const [isLoading, checkLoading] = useState(false);
+	handleLoading = checkLoading;
 
 	console.log(location.pathname);
-	// fetch()를 통해 톰캣서버에게 데이터를 요청
-	useEffect(
-		() => {
-			fetch("http://localhost:8081/api/publishTest", { method: "GET" })
-				.then((res) => res.text())
-				.then((res) => {
-					console.log(res);
-					// setBoardList(res);
-				});
-		},
-		[
-			/* Renderer 초기화 시점 */
-		]
-	);
+
+	useEffect(() => {
+		if (authData != null)
+			nav("/main");
+	}, [authData, isLoading]);
 
 	const Password = forwardRef((props, ref) => {
 		const [visible, setVisible] = useState(false);
@@ -89,34 +109,38 @@ export default function Login() {
 			style={{ height: "100%" }}
 		>
 			<Panel header="사원정보를 입력해주세요" bordered style={{ width: 400 }}>
-				<Form fluid onSubmit={(formValue) => submit(formValue, {method: "POST"})}>
+				<Form fluid
+					onSubmit={(formValue) => submit(formValue, { method: "POST" })}
+					model={model}
+				>
 					<Form.Group>
 						<Form.ControlLabel>사번</Form.ControlLabel>
-						<Form.Control name="name" />
+						<Form.Control name="eID" />
 					</Form.Group>
 					<Form.Group>
 						<Form.ControlLabel>비밀번호</Form.ControlLabel>
 						<Form.Control
 							name="password"
 							autoComplete="off"
-							accepter={Password}
+							type="password"
+						//accepter={Password}
 						/>
 					</Form.Group>
 
 					<VStack spacing={10}>
-						<Button type='submit' appearance="primary" block>
+						<Button style={{backgroundColor: "#333333"}} type='submit' appearance="primary" loading={isLoading} block>
 							로그인
 						</Button>
 						<a href="#">비밀번호를 잊으셨나요?</a>
 					</VStack>
 				</Form>
 
-				<Divider>OR</Divider>
+				{/*				<Divider>OR</Divider>
 
 				<Button block href="https://github.com/rsuite/rsuite">
 					Continue with Github
 				</Button>
-			</Panel>
+*/}			</Panel>
 		</Stack>
 	);
 }

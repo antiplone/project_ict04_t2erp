@@ -13,7 +13,7 @@ import lombok.ToString;
 @NoArgsConstructor		
 @ToString
 @Builder				
-public class ClientsDTO {
+public class BasicClientDTO {
 	
 	private int client_code;		// 거래처 코드
     private String client_name;		// 거래처명

@@ -150,7 +150,7 @@
 				ot.shipment_order_date,
 				ot.order_type,
 				ot.transaction_type,
-				wt.storage_code,
+				ot.storage_code,
 				wt.storage_name,
 				wt.storage_location,
 		 		it.item_code,
@@ -172,7 +172,7 @@
 		    	client_tbl AS ct ON ct.client_code = ot.client_code
 		WHERE
 		    ot.delivery_date = DATE(NOW())
-		    AND ot.order_type = 1
+		    AND ot.order_type = 2
 		GROUP BY order_id
 	</select>
 	
@@ -185,7 +185,7 @@
 		    ot.shipment_order_date as 'shipment_order_date',
 		    ot.order_type as 'order_type',
 		    ot.transaction_type as 'transaction_type',
-		    wt.storage_code  as 'storage_code',
+		    ot.storage_code  as 'storage_code',
 		    wt.storage_name  as 'storage_name',
 		    wt.storage_location  as 'storage_location',
 		    oit.item_code as 'item_code',
@@ -208,7 +208,7 @@
 		where
 		    ot.order_id = #{order_id}
 		AND 
-			ot.order_type = 1
+			ot.order_type = 2
 		group BY
 		    oit.item_code
 	</select>
@@ -271,7 +271,7 @@
 		    	client_tbl AS ct ON ct.client_code = ot.client_code
 		WHERE
 		    ot.shipment_order_date = DATE(NOW())
-		    AND ot.order_type = 2
+		    AND ot.order_type = 1
 		GROUP BY order_id
 	</select>
 	
@@ -306,7 +306,7 @@
 		where
 		    ot.order_id = #{order_id}
 		AND 
-			ot.order_type = 2
+			ot.order_type = 1
 		group BY
 		    oit.item_code
 	</select>

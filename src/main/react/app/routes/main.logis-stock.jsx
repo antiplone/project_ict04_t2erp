@@ -30,7 +30,7 @@ const StockItemsList = () => {
     return (
         <div>
             <Container>
-                <Message type="success" className='main_title'>
+                <Message type="warning" className='main_title'>
                     <p>재고 목록</p>
                 </Message>
 

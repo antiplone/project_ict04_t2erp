@@ -9,7 +9,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class LogisStorageDTO {
+public class LogisWarehouseDTO {
 
 	private int storage_code;				// 글번호
 	private String storage_name;					// 글제목

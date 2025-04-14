@@ -3,6 +3,7 @@
 import mainIcon from "#images/common/main.png";
 import brand from "#images/common/brand.png";
 import arrow from "#images/common/arrow.png";
+import "#components/common/css/common.css";
 
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "@remix-run/react";
@@ -69,10 +70,10 @@ const HeaderMenu = () => {
 					<Nav.Menu
 						title="물류"
 					>
-						<Nav.Item onSelect={() => { navigate("/main/warehouse") }}>물류메인</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("logis-income-list") }}>입고관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("management") }}>출고관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("warehouseManagement") }}>창고관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("logis-outgoing-list") }}>출고관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("logis-stock") }}>재고관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("logis-warehouse") }}>창고관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu
 						title="회계"

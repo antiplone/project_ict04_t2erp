@@ -9,7 +9,7 @@ const OutGoingList = () => {
 
     // // fetch()를 통해 서버에게 데이터를 요청
     useEffect(() => { // 통신 시작 하겠다.
-        fetch("http://localhost:8081/warehouse/logisSalesList", { // 스프링부트에 요청한다.
+        fetch("http://localhost:8081/logissales/logisSalesList", { // 스프링부트에 요청한다.
             method: "GET" // "GET" 방식으로
         }).then(
             res => res.json() // 응답이 오면 javascript object로 바꾸겠다.

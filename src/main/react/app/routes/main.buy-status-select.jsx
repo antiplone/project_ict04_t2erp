@@ -1,240 +1,180 @@
 // 구매팀 - 구매현황 조회 페이지
 /* eslint-disable react/react-in-jsx-scope */
-import { Button, Container, DatePicker, DateRangePicker, Input, InputGroup, InputPicker, Message } from "rsuite"
+import AppConfig from "#config/AppConfig.json";
+import * as rs from 'rsuite';
+import Table from 'rsuite/Table';
 //import SearchIcon from '@rsuite/icons/Search';
 import React, { useState } from "react";
-import BuyStatusSelectTbl from "#components/buy/BuyStatusSelectTbl";
 import "../styles/buy.css";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import StorageSearchModal from "#components/buy/StorageSearchModal.jsx";
-import { useNavigate } from "@remix-run/react";
-import ItemModalForm from "#components/buy/ItemModalForm.jsx";
+import ItemSearchModal from "#components/buy/ItemSearchModal.jsx";
 
 export function meta() {
     return [
-        { title: "구매현황조회" },
+        { title:  `${AppConfig.meta.title} : 구매현황조회` },
         { name: "description", content: "구매현황조회" },
     ];
 };
 
+const { Column, HeaderCell, Cell } = Table;
+
 /* 거래유형 - 선택 데이터 */
 const buyType = ["부과세율 적용", "부가세율 미적용"].map(
-    (item) => ({ 
-        label: item, // 사용자에게 보여질 이름
-        value: item, // 실제 저장되거나 비교에 쓰이는 값
-    })
+    (item) => ({ label: item, value: item })
 );
 
-const search = {
-    width: 100
-}
+const searchStyle = { width: 100 };
 
 export default function BuyStatusSelect() {
 
-    const navigate = useNavigate();
+    const [orderDate, setOrderDate] = useState(null);
 
-        // 거래처 모달 관리
-        const [selectedClient, setSelectedClient] = useState(null);
-        const [selectedClientName, setSelectedClientName] = useState(null);
-        const [isClientModalOpen, setClientModalOpen] = useState(false);
-    
-        const handleClientSelect = (client_code, client_name) => {
-            setSelectedClient(client_code);
-            setSelectedClientName(client_name);
-            setClientModalOpen(false);
-        };
-    
-        const handleOpenClientModal = () => {
-            setClientModalOpen(true);
-        };
-    
-        // 담당자 모달 관리
-        const [selectedIncharge, setSelectedIncharge] = useState(null);
-        const [selectedInchargeName, setSelectedInchargeName] = useState(null);
-        const [isInchargeModalOpen, setInchargeModalOpen] = useState(false);
-    
-        const handleInchargeSelect = (e_id, e_name) => {
-            setSelectedIncharge(e_id);
-            setSelectedInchargeName(e_name);
-            setClientModalOpen(false);
-        };
-    
-        const handleOpenInchargeModal = () => {
-            setInchargeModalOpen(true);
-        };
-    
-        // 입고창고 모달관리
-        const [selectedStorage, setSelectedStorage] = useState(null);
-        const [selectedStorageName, setSelectedStorageName] = useState(null);
-        const [isStorageModalOpen, setStorageModalOpen] = useState(false);
-    
-        const handleStorageSelect = (storage_code, storage_name) => {
-            setSelectedStorage(storage_code);
-            setSelectedStorageName(storage_name);
-            setClientModalOpen(false);
-        };
-    
-        const handleOpenStorageModal = () => {
-            setStorageModalOpen(true);
-        };
-       
-        // 물품목록 모달관리
-        const [selectedItem, setSelectedItem] = useState(null);
-        const [selectedItemName, setSelectedItemName] = useState(null);
-        const [isItemModalOpen, setItemModalOpen] = useState(false);
-    
-        const handleItemSelect = (Item_code, Item_name) => {
-            setSelectedItem(Item_code);
-            setSelectedItemName(Item_name);
-            setItemModalOpen(false);
-        };
-    
-        const handleOpenItemModal = () => {
-            setItemModalOpen(true);
-        };
+    // 날짜 선택
+    const handleDateChange = (value) => {
+        console.log("선택된 날짜 범위:", value); // [startDate, endDate]
+        setOrderDate(value);
+    };
 
-        // 부가세율 적용, 미적용 관리
-        const [selectedType, setSelectedType] = useState('');
+    const [selectedType, setSelectedType] = useState('');
+    const [selectedClient, setSelectedClient] = useState(null);
+    const [selectedClientName, setSelectedClientName] = useState(null);
+    const [isClientModalOpen, setClientModalOpen] = useState(false);
+    const [selectedIncharge, setSelectedIncharge] = useState(null);
+    const [selectedInchargeName, setSelectedInchargeName] = useState(null);
+    const [isInchargeModalOpen, setInchargeModalOpen] = useState(false);
+    const [selectedStorage, setSelectedStorage] = useState(null);
+    const [selectedStorageName, setSelectedStorageName] = useState(null);
+    const [isStorageModalOpen, setStorageModalOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedItemName, setSelectedItemName] = useState(null);
+    const [isItemModalOpen, setItemModalOpen] = useState(false);
+    const [orderStatus, setOrderStatus] = useState([]);
+    
+    const handleSearch = async () => {
+        let startDate = '';
+        let endDate = '';
+    
+        if (orderDate && orderDate.length === 2) {
+            startDate = orderDate[0].toLocaleDateString('sv-SE');
+            endDate = orderDate[1].toLocaleDateString('sv-SE');
+        }
+    
+        const searchParams = {
+            start_date: startDate,
+            end_date: endDate,
+            client_code: selectedClient,
+            e_id: selectedIncharge,
+            storage_code: selectedStorage,
+            item_code: selectedItem,
+            transaction_type: selectedType
+        };
+    
+        // 빈 값, 널 제거
+        const cleanedParams = Object.fromEntries(
+            Object.entries(searchParams).filter(([_, value]) => value !== null && value !== '')
+        );
+    
+        const query = new URLSearchParams(cleanedParams).toString();
+
+        const fetchURL = AppConfig.fetch["mytest"];
+    
+        try {
+            const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyStatusSearch?${query}`);
+            const result = await res.json();
+            console.log("result:", result);
+
+            if(result.length === 0) {
+                alert("선택한 조건에 해당하는 구매정보가 없습니다.");
+            }
+
+            setOrderStatus(result);
+        } catch (err) {
+            console.error("검색 실패:", err);
+        }
+    };
 
     return (
-
-        <Container>
+        <rs.Container>
             <>
-                <Message type="info" style={{ width: 960 }}>
+                <rs.Message type="info" style={{ width: 1500 }}>
                     <strong>구매현황</strong>
-                </Message>
+                </rs.Message>
                 <br />
 
-                <div className="inputBox" >
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>
-                        일자
-                    </InputGroup.Addon>
-                    <DatePicker />
-                </InputGroup>
-
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>
-                        담당자
-                    </InputGroup.Addon>
-                    <Input
-                        placeholder='담당자 입력'
-                        value={selectedIncharge || ""} readOnly
+                <div className="inputBox">
+                    <rs.InputGroup className="input">
+                        <rs.InputGroup.Addon style={{ width: 80 }}>발주일자</rs.InputGroup.Addon>
+                        <rs.DateRangePicker
+                        value={orderDate}
+                        onChange={handleDateChange}
+                        format="yyyy-MM-dd"
+                        placeholder="날짜 선택"
                     />
-                    {/*<InputGroup.Button tabIndex={-1}>
-                        모달 열기 버튼
-                        <SearchIcon onClick={handleOpenInchargeModal} />
-                    </InputGroup.Button>*/}
-                </InputGroup>
-                <Input name="customer_1" type="text" autoComplete="off" style={{ width: 150, marginBottom: 5 }}
-                    value={selectedInchargeName || ""} readOnly />
+                    </rs.InputGroup>
 
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>
-                        거래처
-                    </InputGroup.Addon>
-                    <Input placeholder='거래처'
-                        value={selectedClient || ""} readOnly
-                    />
-                    {/*<InputGroup.Addon>
-                        <SearchIcon onClick={handleOpenClientModal} />
-                    </InputGroup.Addon>*/}
-                </InputGroup>
-                <Input type="text" autoComplete="off" style={{ width: 150, marginBottom: 5 }}
-                    value={selectedClientName || ""} readOnly />
-            </div>
+                    <rs.InputGroup className="input">
+                        <rs.InputGroup.Addon style={{ width: 80 }}>담당자</rs.InputGroup.Addon>
+                        <rs.Input value={selectedIncharge || ""} readOnly />
+                        <rs.InputGroup.Button tabIndex={-1}>
+                            {/*<SearchIcon onClick={() => setInchargeModalOpen(true)} />*/}
+                        </rs.InputGroup.Button>
+                    </rs.InputGroup>
+                    <rs.Input value={selectedInchargeName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
 
-            <div className="inputBox">
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>
-                        거래유형
-                    </InputGroup.Addon>
-                    <InputPicker
-                        placeholder='거래유형 선택'
-                        data={buyType}
-                        style={{ width: 140, border: 'none', height: 38 }}
-                        value={selectedType}
-                        onChange={setSelectedType} 
-                    />
-                </InputGroup>
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>
-                        입고창고
-                    </InputGroup.Addon>
-                    <Input placeholder='입고창고'
-                        value={selectedStorage || ""} readOnly
-                    />
-                    {/*<InputGroup.Addon>
-                        <SearchIcon onClick={handleOpenStorageModal}/>
-                    </InputGroup.Addon>*/}
-                </InputGroup>
-                <Input type="text" autoComplete="off" style={{ width: 150, marginBottom: 5}}
-                    value={selectedStorageName || ""} readOnly />
-        
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>
-                        품목코드
-                    </InputGroup.Addon>
-                    <Input placeholder='물품입력'
-                        value={selectedItem || ""} readOnly
-                    />
-                   {/*<InputGroup.Addon>
-                        <SearchIcon onClick={handleOpenItemModal}/>
-                    </InputGroup.Addon>*/}
-                </InputGroup>
-                <Input type="text" autoComplete="off" style={{ width: 150, marginBottom: 5}}
-                    value={selectedItemName || ""} readOnly />
-            </div>
-            {/* <Uploader action="//jsonplaceholder.typicode.com/posts/">
-                    <Button style={{ width: 300, height: 40 }} color="green" appearance="ghost">전표등록</Button>
-                </Uploader>     */}
+                    <rs.InputGroup className="input">
+                        <rs.InputGroup.Addon style={{ width: 80 }}>거래처</rs.InputGroup.Addon>
+                        <rs.Input value={selectedClient || ""} readOnly />
+                        <rs.InputGroup.Addon>
+                            {/*<SearchIcon onClick={() => setClientModalOpen(true)} />*/}
+                        </rs.InputGroup.Addon>
+                    </rs.InputGroup>
+                    <rs.Input value={selectedClientName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
+                </div>
 
-            <InchargeSearchModal
-                title="담당자 검색"
-                confirm="확인"
-                cancel="취소"
-                onInchargeSelect={handleInchargeSelect}	// emid, Incharge 받기
-                handleOpen={isInchargeModalOpen}
-                handleColse={() => setInchargeModalOpen(false)}
-            />
+                <div className="inputBox">
+                    <rs.InputGroup className="input">
+                        <rs.InputGroup.Addon style={{ width: 80 }}>거래유형</rs.InputGroup.Addon>
+                        <rs.InputPicker placeholder="거래유형 선택" data={buyType} style={{ width: 224 }} value={selectedType} onChange={setSelectedType} />
+                    </rs.InputGroup>
 
-            <ClientSearchModal
-                title="거래처 검색"
-                confirm="확인"
-                cancel="취소"
-                onClientSelect={handleClientSelect}	// client_code, client_name 받기
-                handleOpen={isClientModalOpen}
-                handleColse={() => setClientModalOpen(false)}
-            />
+                    <rs.InputGroup className="input">
+                        <rs.InputGroup.Addon style={{ width: 80 }}>입고창고</rs.InputGroup.Addon>
+                        <rs.Input value={selectedStorage || ""} readOnly />
+                        <rs.InputGroup.Addon>
+                            {/*<SearchIcon onClick={() => setStorageModalOpen(true)} />*/}
+                        </rs.InputGroup.Addon>
+                    </rs.InputGroup>
+                    <rs.Input value={selectedStorageName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
 
-            <StorageSearchModal
-                title="입고창고 검색"
-                confirm="확인"
-                cancel="취소"
-                onStorageSelect={handleStorageSelect}	// storage_code, storage_name 받기
-                handleOpen={isStorageModalOpen}
-                handleColse={() => setStorageModalOpen(false)}
-            />
+                    <rs.InputGroup className="input">
+                        <rs.InputGroup.Addon style={{ width: 80 }}> 품목코드</rs.InputGroup.Addon>
+                        <rs.Input value={selectedItem || ""} readOnly />
+                        <rs.InputGroup.Addon>
+                            {/*<SearchIcon onClick={() => setItemModalOpen(true)} />*/}
+                        </rs.InputGroup.Addon>
+                    </rs.InputGroup>
+                    <rs.Input value={selectedItemName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
+                </div>
 
-            <ItemModalForm
-                title="물품 검색"
-                confirm="확인"
-                cancel="취소"
-                onItemSelect={handleItemSelect}	// item_code, item_name 받기
-                handleOpen={isItemModalOpen}
-                handleColse={() => setItemModalOpen(false)}
-            />
+                <ClientSearchModal handleOpen={isClientModalOpen} handleColse={() => setClientModalOpen(false)} onClientSelect={(code, name) => { setSelectedClient(code); setSelectedClientName(name); }} />
+                <InchargeSearchModal handleOpen={isInchargeModalOpen} handleColse={() => setInchargeModalOpen(false)} onInchargeSelect={(id, name) => { setSelectedIncharge(id); setSelectedInchargeName(name); }} />
+                <StorageSearchModal handleOpen={isStorageModalOpen} handleColse={() => setStorageModalOpen(false)} onStorageSelect={(code, name) => { setSelectedStorage(code); setSelectedStorageName(name); }} />
+                <ItemSearchModal handleOpen={isItemModalOpen} handleColse={() => setItemModalOpen(false)} onItemSelect={(code, name) => { setSelectedItem(code); setSelectedItemName(name); }} />
 
-            <Button appearance="primary" type="submit" style={search}>
-                검색
-            </Button>
-            <hr />
+                <rs.Button appearance="primary" onClick={handleSearch} style={searchStyle}>검색</rs.Button>
+                <hr />
 
-            <BuyStatusSelectTbl />
-
+                <Table height={400} width={1500} data={orderStatus} onRowClick={itemData => console.log(itemData)}>
+                    <Column width={160}><HeaderCell>발주일자</HeaderCell><Cell dataKey="order_date" /></Column>
+                    <Column width={160}><HeaderCell>거래처명</HeaderCell><Cell dataKey="client_name" /></Column>
+                    <Column width={160}><HeaderCell>품목명</HeaderCell><Cell dataKey="item_name" /></Column>
+                    <Column width={160}><HeaderCell>수량</HeaderCell><Cell dataKey="quantity" /></Column>
+                    <Column width={160}><HeaderCell>단가</HeaderCell><Cell dataKey="price" /></Column>
+                    <Column width={160}><HeaderCell>금액합계</HeaderCell><Cell dataKey="total" /></Column>
+                </Table>
             </>
-        </Container>
-
+        </rs.Container>
     );
 };

@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/react-in-jsx-scope */
 import "rsuite/Sidebar/styles/index.css";
 
 import { useState } from "react";
@@ -90,7 +88,7 @@ const Brand = ({ expand }) => {
 			justifyContent={"center"}
 			spacing={12}
 		>
-			{expand && <Text size={24}>ERP닷</Text>}
+			{expand && <Text size={24}>Ordit</Text>}
 		</HStack>
 	);
 };

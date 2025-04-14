@@ -7,7 +7,7 @@
 <mapper namespace="com.spring.erp_ordit.dao.sell.SellSearchMapper">
 	<!-- 판매 물품 검색 - 전체 리스트 -->
     <select id="sellSearchList" resultType="com.spring.erp_ordit.dto.sell.SellSearchDTO">
-      SELECT * FROM sell_search_view
+      SELECT * FROM sell_searchItemList_view
    </select>
    
    <!-- 판매 - 물품 검색 모달 -->

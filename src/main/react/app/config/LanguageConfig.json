@@ -1,0 +1,35 @@
+{
+	"en-US": {
+		"loading": "Loading...",
+		"login": {
+			"meta": {
+				"title": "Login",
+				"description": { "name": "description", "content": "로그인 인증을 시도합니다." }
+			},
+			"header": "Login to Ordit",
+			"tooltip": "Ordit is an ERP system that helps you manage your entire organization."
+		}
+	},
+	"ko-KR": {
+		"loading": "불러오는중...",
+		"login": {
+			"meta": {
+				"title": "로그인",
+				"description": { "name": "description", "content": "로그인 인증을 시도합니다." }
+			},
+			"header": "Ordit에 접속",
+			"tooltip": "Ordit은 전사적 관리에 도움을 주는 ERP System입니다."
+		}
+	},
+	"ja-JP": {
+		"loading": "ローディング...",
+		"login": {
+			"meta": {
+				"title": "Login",
+				"description": { "name": "description", "content": "로그인 인증을 시도합니다." }
+			},
+			"header": "Orditにログイン",
+			"tooltip": "Orditは全社的な管理に役立つERP Systemです。"
+		}
+	}
+}

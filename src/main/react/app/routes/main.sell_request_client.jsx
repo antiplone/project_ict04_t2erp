@@ -66,7 +66,7 @@ const SellRequestClient = () => {
     return (
         <div>
             <div>
-            <Message type="info" bordered showIcon className="main_title">
+            <Message type="info" className="main_title">
             거래처 관리_등록 요청 및 조회
     		</Message>
             </div>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Button, Table, Modal, Form, InputGroup, AutoComplete, HStack, Input } from "rsuite";
 //import SearchIcon from '@rsuite/icons/Search';
-import ItemSearchModal from "./ItemSearchModal";
-import ClientSearchModal from "./ClientSearchModal";
-import StorageSearchModal from "./StorageSearchModal";
+import ItemSearchModal from "./SellItemSearchModal";
+import Sell_ClientSearchModal from "./SellClientSearchModal";
+import StorageSearchModal from "./SellStorageSearchModal";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -72,13 +72,13 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 							<Form.ControlLabel style={{ marginRight: 45, fontSize: 17 }}>품목명</Form.ControlLabel>
 							<InputGroup style={searchBoxstyles}>
 							<Input
-								placeholder='물품'
+								placeholder='품목명'
 								value={selectedItem || ""} readOnly
 							/>
 								<AutoComplete />
-									{/*<InputGroup.Button tabIndex={-1}>
-										<SearchIcon onClick={handleOpenItemModal} />
-									</InputGroup.Button>*/}
+									<InputGroup.Button tabIndex={-1}>
+										{/*<SearchIcon onClick={handleOpenItemModal} />*/}
+									</InputGroup.Button>
 							</InputGroup>
 							<Input name="customer_1" type="text" autoComplete="off" style={{ width: 200,  marginBottom: 5 }}
 								value={selectedItemName || ""} readOnly />
@@ -95,10 +95,10 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 								value={selectedClient || ""} readOnly
 							/>
 								<AutoComplete />
-									{/*<InputGroup.Button tabIndex={-1} >
-										모달 열기 버튼
-										<SearchIcon onClick={handleOpenClientModal} />
-									</InputGroup.Button>*/}
+									<InputGroup.Button tabIndex={-1} >
+										{/* 모달 열기 버튼 */}
+										{/*<SearchIcon onClick={handleOpenClientModal} />*/}
+									</InputGroup.Button>
 							</InputGroup>
 							<Input name="customer_1" type="text" autoComplete="off" style={{ width: 200,  marginBottom: 5 }}
 								value={selectedClientName || ""} readOnly />
@@ -115,9 +115,9 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 								value={selectedStorage || ""} readOnly
 							/>
 								<AutoComplete />
-									{/*<InputGroup.Button tabIndex={-1}>
-										<SearchIcon onClick={handleOpenStorageModal} />
-									</InputGroup.Button>*/}
+									<InputGroup.Button tabIndex={-1}>
+										{/*<SearchIcon onClick={handleOpenStorageModal} />*/}
+									</InputGroup.Button>
 							</InputGroup>
 							<Input name="customer_1" type="text" autoComplete="off" style={{ width: 200,  marginBottom: 5 }}
 								value={selectedStorageName || ""} readOnly />
@@ -134,7 +134,7 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 					handleColse={() => setItemModalOpen(false)}
 					/>
 
-					<ClientSearchModal
+					<Sell_ClientSearchModal
 					title="거래처 선택"
 					confirm="확인"
 					cancel="취소"

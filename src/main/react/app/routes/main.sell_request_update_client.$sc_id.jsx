@@ -105,7 +105,7 @@ const SellRequestUpdateClient = (props) => {
                     <Form.ControlLabel>요청 부서</Form.ControlLabel>
                     <Form.Control name="sc_req_d_name" 
                         onChange={(value) => changeValue(value, 'sc_req_d_name')} 
-                        value={clientAdd.sc_client_name} />
+                        value={clientAdd.sc_req_d_name} />
                     <Form.HelpText>Required</Form.HelpText>
                     </Form.Group>
 

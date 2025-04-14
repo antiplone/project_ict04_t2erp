@@ -4,6 +4,7 @@ import AppConfig from "#config/AppConfig.json";
 
 const { Column, HeaderCell, Cell } = Table;
 
+
 const SellItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen, handleColse } /* = props:속성 */) => {
 	
 	const [itemList, setItemList] = useState([]);
@@ -13,7 +14,7 @@ const SellItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen,
 
 	// fetch()를 통해 톰캣서버에게 데이터를 요청
 	useEffect(() => {
-		fetch("http://localhost:8081/sell/searchItem", {
+		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchItem`, {
 			method: "GET"
 		})
 		.then(res => res.json())
@@ -99,7 +100,6 @@ const SellItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen,
 };
 
 SellItemSearchModal.defaultProps = {
-	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
 	title: "제목을 입력해주세요.",
 	confirm: "확인",
 	cancel: "취소",

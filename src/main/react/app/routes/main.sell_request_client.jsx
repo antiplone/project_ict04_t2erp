@@ -4,8 +4,10 @@ import "../components/common/Sell_maintitle.css";
 import SellRequestClientAction from "./main.sell_request_client_list";
 import AppConfig from "#config/AppConfig.json";
 
-const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
-
+const Textarea = React.forwardRef((props, ref) => (
+    <Input {...props} as="textarea" ref={ref} />
+  ));
+  Textarea.displayName = "Textarea";
 
 const SellRequestClient = () => {
 

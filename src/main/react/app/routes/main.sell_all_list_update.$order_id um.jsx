@@ -3,7 +3,7 @@ import { Button, ButtonToolbar, Message, DatePicker, Form,
 		 InputGroup, Input, Table, InputPicker,
 		 IconButton, InputNumber } from "rsuite";
 import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
-import { mockUsers } from './sell_mock4';
+import { useNavigate, useParams } from "react-router-dom";
 // import SearchIcon from '@rsuite/icons/Search';
 import "../components/common/Sell_maintitle.css";
 import SellClientSearchModal from "#components/sell/SellClientSearchModal.jsx";
@@ -14,8 +14,8 @@ import AppConfig from "#config/AppConfig.json";
 
 const { Column, HeaderCell, Cell } = Table;
 
-// 빈 테이블로 시작
-const defaultData = [];
+// // 빈 테이블로 시작
+// const defaultData = [];
 
 /* 거래유형 - 선택 데이터 */
 const sellType = ["부과세율 적용", "부가세율 미적용"].map(
@@ -25,11 +25,67 @@ const sellType = ["부과세율 적용", "부가세율 미적용"].map(
 	})
 );
 
-const sell_insert = () => {
+const sell_all_list_update = (props) => {
 
-	
+	const navigate = useNavigate();
+	const propsparam = useParams();
+	const order_id = propsparam.order_id;
+
 	// 하위 입력칸을 초기 배열 상태로
-	const [sellAdd, setSellAdd] = useState([]);
+	const [sellUpAdd, setSellUpAdd] = useState([]);
+	// const [sellUpAdd, setSellUpAdd] = useState({
+	// 	shipment_order_date: '',
+	// 	e_id: '',
+	// 	e_name: '',
+    //     client_code: '',
+    //     client_name: '',
+    //     transaction_type: '',
+    //     storage_code: '',
+    //     item_code: '',
+    //     item_name: '',
+    //     item_standard: '',
+    //     quantity: '',
+    //     price: '',
+    //     supply: '',
+    //     vat: '',
+    //     total: ''
+	// });
+
+	// 주문번호 1개에 대해 조회
+	useEffect(() => {
+		if (!order_id) return; // undefined 방지
+
+		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/allDetail/` + order_id, {
+			method: "GET"
+		})
+		.then(res => res.json())
+		.then(res => {
+			console.log(1, res);
+			setSellUpAdd(res);
+
+			// 상단 입력값 세팅
+			if (res.length > 0) {
+				const firstRow = res[0];
+
+				setShipmentOrderDate(new Date(firstRow.shipment_order_date)); // 날짜는 Date로 변환 필요
+				setSelectedIncharge(firstRow.e_id);
+				setSelectedInchargeName(firstRow.e_name);
+				setSelectedClient(firstRow.client_code);
+				setSelectedClientName(firstRow.client_name);
+				setTransactionType(firstRow.transaction_type);
+				setSelectedStorage(firstRow.storage_code);
+				setSelectedStorageName(firstRow.storage_name);
+			}
+			});
+	}, [order_id]);
+
+	const changeValue = (value, name) => {
+		const nextData = [...sellUpAdd];
+		if (nextData.length > 0) {
+			nextData[0][name] = value;
+			setSellUpAdd(nextData);
+		}
+    }
 
 	// 백엔드로 전달하기 위해 출하창고, 거래유형타입 저장
 	const [shipmentOrderDate, setShipmentOrderDate] = useState(null);
@@ -86,22 +142,29 @@ const sell_insert = () => {
 	//const [selectedItemName, setSelectedItemName] = useState(null);
 	const [isItemModalOpen, setItemModalOpen] = useState(false);
 
-	const handleItemSelect = (item_code, item_name, item_standard) => {
-		console.log('handleItemSelect 실행됨', item_code, item_name, item_standard);
+	const handleItemSelect = (selectedItem) => {
+		console.log('handleItemSelect 실행됨', selectedItem);
 
-        //const nextData = sellAdd.map(item => ({ ...item })); // 깊은 복사
-		const nextData = [...sellAdd]
-		const targetIndex = nextData.findIndex(item => item.status === 'EDIT'); // 현재 편집 중인 행(status === 'EDIT')
-		if (targetIndex !== -1) {
-			nextData[targetIndex].item_code = item_code;
-			nextData[targetIndex].item_name = item_name;
-			nextData[targetIndex].item_standard = item_standard;
-			setSellAdd(nextData);
-			}
-			setItemModalOpen(false);
+		// 수정할 행을 찾고, 해당 행만 수정
+        const updatedRows = sellUpAdd.map(row =>
+			row.id === selectedRowId	// 선택한 row만 업데이트
+			  ? {
+				  ...row,
+				  item_code: selectedItem.item_code,
+				  item_name: selectedItem.item_name,
+				  item_standard: selectedItem.item_standard,
+				}
+			  : row
+		  );
+		  setSellUpAdd(updatedRows);
+		  setItemModalOpen(false);
     };
 
-    const handleOpenItemModal = () => {
+	// 현재 수정 중인 행의 ID 저장
+	const [selectedRowId, setSelectedRowId] = useState([]);
+
+    const handleOpenItemModal = (rowId) => {
+		setSelectedRowId([rowId]);	// 선택된 행 ID를 배열로 저장
         setItemModalOpen(true);
     };
 	console.log(selectedItem);
@@ -111,7 +174,7 @@ const sell_insert = () => {
 	
 
 	const handleChange = (id, key, value) => {
-		const nextData = [...sellAdd];
+		const nextData = [...sellUpAdd];
 		const target = nextData.find(item => item.id === id);
 		if (target) {
 			target[key] = value;
@@ -130,32 +193,32 @@ const sell_insert = () => {
 				target.vat = vat;
 				target.total = total;
 			}
-		setSellAdd(nextData);
+		setSellUpAdd(nextData);
 		}
 	};
 	
 	// 수정
 	const handleEdit = id => {
-		const nextData = [...sellAdd];
+		const nextData = [...sellUpAdd];
 		const activeItem = nextData.find(item => item.id === id);
 		if(activeItem){
 		activeItem.status = activeItem.status ? null : 'EDIT';
 
-		setSellAdd(nextData);
+		setSellUpAdd(nextData);
 		}
 	};
 
 	// 삭제
 	const handleRemove = id => {
-		setSellAdd(sellAdd.filter(item => item.id !== id));
+		setSellUpAdd(sellUpAdd.filter(item => item.id !== id));
 	};
 
 	const fetchURL = AppConfig.fetch['mytest'];
 	
 	// 입력한 값을 백단으로 전달
-	const submitSellInsert = (e) => {
+	const submitSellUpInsert = (e) => {
 		e.preventDefault();
-		const filteredSellAdd = sellAdd.map(({ status, id, ...rest }) => rest);
+		const filteredSellAdd = sellUpAdd.map(({ status, id, ...rest }) => rest);
 
 		const payload = {
 			shipment_order_date: shipmentOrderDate,
@@ -171,7 +234,7 @@ const sell_insert = () => {
 
 		console.log("제출할 전체 데이터:", payload); // 확인용
 
-		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/insert`, {
+		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/allListUpdate` + order_id, {
 			method: "POST",
 			headers: {
 				"Content-Type":"application/json;charset=utf-8"
@@ -191,9 +254,9 @@ const sell_insert = () => {
 			// 등록 성공 시 페이지 새로고침
 			if(res != 0) { 
 				window.location.reload();
-				alert("등록 성공!");
+				alert("수정에 성공했습니다!");
 			}
-			else alert("등록 실패");
+			else alert("수정에 실패했습니다.");
 		})
 		// 예외처리
 		.catch(error => {
@@ -214,13 +277,13 @@ const sell_insert = () => {
 		setSelectedStorage(null);
 		setSelectedStorageName(null);
 		setStorageModalOpen(false);
-		setSellAdd([]); // 하위 테이블 데이터 초기화
+		setSellUpAdd([]); // 하위 테이블 데이터 초기화
 	};
 
 	return (
 		<div>
 			<Message type="info" className="main_title">
-      			판매 입력
+      			판매 입력_수정
     		</Message>
 
 			<Form layout="horizontal">
@@ -237,7 +300,7 @@ const sell_insert = () => {
 							<DatePicker 
 								name="shipment_order_date"
 								value={shipmentOrderDate}
-  								onChange={setShipmentOrderDate} />
+  								onChange={setShipmentOrderDate}  />
 						</InputGroup>
 					</div>
 
@@ -321,8 +384,8 @@ const sell_insert = () => {
 
 						<Button style={{ width: 1240 }} 
 						onClick={() => {
-							const newId = sellAdd.length > 0
-										? Math.max(...sellAdd.map(item => item.id)) + 1
+							const newId = sellUpAdd.length > 0
+										? Math.max(...sellUpAdd.map(item => item.id)) + 1
 										: 1;
 							const newItem = {
 								id: newId,
@@ -337,7 +400,7 @@ const sell_insert = () => {
 								status: 'EDIT'
 							};
 						
-							setSellAdd(prev => [newItem, ...prev]);
+							setSellUpAdd(prev => [newItem, ...prev]);
 							setActiveEditId(newId);
 						}}
 						>
@@ -347,14 +410,14 @@ const sell_insert = () => {
 
 						{/* 입력 하위 칸 */}
 						<div className="addTabel">
-						<Table height={400} data={sellAdd}>
+						<Table height={400} data={sellUpAdd}>
 
 						<Column width={150}>
 							<HeaderCell>물품코드</HeaderCell>
 							<EditableCell
 							dataKey="item_code"
 							dataType="number"
-							onClick={handleOpenItemModal}
+							onClick={() => handleOpenItemModal(rowData.id)} // 행 ID 넘기기
 							onChange={handleChange}
 							onEdit={handleEdit}
 							>
@@ -366,7 +429,7 @@ const sell_insert = () => {
 							<EditableCell
 							dataKey="item_name"
 							dataType="string"
-							onClick={handleOpenItemModal}
+							onClick={() => handleOpenItemModal(rowData.id)} // 행 ID 넘기기
 							onChange={handleChange}
 							onEdit={handleEdit}
 							/>
@@ -377,7 +440,7 @@ const sell_insert = () => {
 							<EditableCell
 							dataKey="item_standard"
 							dataType="string"
-							onClick={handleOpenItemModal}
+							onClick={() => handleOpenItemModal(rowData.id)} // 행 ID 넘기기
 							onChange={handleChange}
 							onEdit={handleEdit}
 							/>
@@ -444,7 +507,7 @@ const sell_insert = () => {
 
 					<div className="sellAddBtn">
 					<ButtonToolbar >
-						<Button appearance="primary" className="sell_Btn" onClick={submitSellInsert}>저장</Button>
+						<Button appearance="primary" className="sell_Btn" onClick={submitSellUpInsert}>저장</Button>
 						<Button appearance="primary" className="sell_Btn" onClick={handleResetForm}>다시 작성</Button>
 					</ButtonToolbar></div>
 					<hr></hr>
@@ -455,7 +518,7 @@ const sell_insert = () => {
 					cancel="취소"
 					onClientSelect={handleClientSelect}	// client_code, client_name 받기
 					handleOpen={isClientModalOpen}
-					handleColse={() => setClientModalOpen(false)}
+					handleClose={() => setClientModalOpen(false)}
 				/>
 
 				<SellEmployeeSearchModal
@@ -464,7 +527,7 @@ const sell_insert = () => {
 					cancel="취소"
 					onInchargeSelect={handleInchargeSelect}	// e_id, e_name 받기
 					handleOpen={isInchargeModalOpen}
-					handleColse={() => setInchargeModalOpen(false)}
+					handleClose={() => setInchargeModalOpen(false)}
 				/>
 
 				<SellStorageSearchModal
@@ -473,7 +536,7 @@ const sell_insert = () => {
 					cancel="취소"
 					onStorageSelect={handleStorageSelect}	// storage_code, storage_name 받기
 					handleOpen={isStorageModalOpen}
-					handleColse={() => setStorageModalOpen(false)}
+					handleClose={() => setStorageModalOpen(false)}
 				/>
 
 				<SellItemSearchModal
@@ -482,7 +545,7 @@ const sell_insert = () => {
 					cancel="취소"
 					onItemSelect={handleItemSelect}
 					handleOpen={isItemModalOpen}
-					handleColse={() => setItemModalOpen(false)}
+					handleClose={() => setItemModalOpen(false)}
 				/>
 			{/* <hr></hr> */}
 			</Form>
@@ -516,7 +579,10 @@ function toValueString(value, dataType) {
 		  onEdit?.(rowData.id);	// 셀을 더블클릭하면 onEdit(rowId) 호출 → 편집 모드로 바뀜
 		}}
 		onClick={() => {
-			props.onClick?.(); // EditableCell 컴포넌트 내부에서 onClick을 받아 처리하게 추가
+			// 클릭 시 해당 아이템 수정
+			if (!selectedRowId.includes(rowData.id)) { // 이미 선택된 ID는 추가하지 않음
+				setSelectedRowId(prev => [...prev, rowData.id]);
+			}
 		  }}
 	  >
 		{editing ? (
@@ -555,4 +621,4 @@ function toValueString(value, dataType) {
   };
 
 
-export default sell_insert;
+export default sell_all_list_update;

@@ -11,7 +11,7 @@
       order by sc_id DESC
     </select> -->
    
-    <!-- 판매 입력 - 등록 요청 시작 -->
+    <!-- 판매 입력 - 등록 시작 -->
     <!-- 주문정보 -->
     <insert id="sell_orderInsert" parameterType="com.spring.erp_ordit.dto.sell.SellOrderDTO"
     		useGeneratedKeys="true"
@@ -25,7 +25,13 @@
     	INSERT INTO order_item_tbl (order_id, order_type, item_code, quantity, price, supply, vat, total)
 		VALUES (#{order_id}, 1, #{item_code}, #{quantity}, #{price}, #{supply}, #{vat}, #{total})
     </insert>
-    <!-- 판매 입력 - 등록 요청 끝 -->
+    
+    <!-- 결재 테이블 등록 -->
+    <insert id="sell_approvalInsert" parameterType="int">
+    	INSERT INTO order_status_tbl (order_id)
+		VALUES (#{order_id})
+    </insert>
+    <!-- 판매 입력 - 등록 끝 -->
 
     <!-- 판매_거래처 관리 - 1건 상세조회 -->
     <!-- <select id="detailClient" parameterType="int" resultType="com.spring.erp_ordit.dto.sell.SellRequestClientDTO">

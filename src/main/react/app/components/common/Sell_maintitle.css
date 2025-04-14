@@ -56,7 +56,7 @@
 .all_title {
     margin: 30px 0px 5px 10px;
     font-size: 15px;
-    max-width: 1400px;
+    max-width: 1200px;
 }
 
 /* 테이블 설정 */
@@ -101,7 +101,16 @@
 .child{
     margin: 0px 0px 0px 500px;
 }
-
+/* 등록일자 */
+.allList-date {
+    cursor: pointer;
+    font-weight: normal;
+    transition: font-weight 0.2s;   
+    /* transition : font-weight 속성이 바뀔 때, 0.2초 동안 부드럽게 변하게 하기 */
+}
+.allList-date:hover {
+    font-weight: bold;
+  }
 
 /* sell_insert.jsx */
 /* 폼 내용 */
@@ -163,6 +172,12 @@
 .status_input {
     width: 300px;
 }
+.status_inputBox {
+    width: 200px;
+}
+.status_inputBox2 {
+    width: 150px;
+}
 
 /* SellEdit.js */
 /* 폼 내용 */
@@ -213,6 +228,25 @@
 
 .itemAddBtn_ {
     margin: 5px;
+}
+
+/* Sell_sell_request_client_detail.js */
+/* 테이블 */
+.detail {
+    width: 500px;
+    text-align:center;
+    margin: 0 auto;
+
+}
+.reqDetailBtn {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    gap: 10px; /* 버튼 사이 간격 */
+    padding-top: 10px;
+}
+
+.detail_table {
+    margin-bottom: -50px;
 }
 
 /* SellRequestItem.js */

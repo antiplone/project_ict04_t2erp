@@ -19,7 +19,7 @@ const sell_search_item = () => {
 	const fetchURL = AppConfig.fetch['mytest'];
 
 	useEffect(()=> {
-		fetch("http://localhost:8081/sell/searchItemList", {
+		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchItemList`, {
 			method: "GET"
 		})
 		.then(res => res.json())

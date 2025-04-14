@@ -33,6 +33,15 @@ public class SellSearchController {
 		return new ResponseEntity<>(service.sellSearchList(), HttpStatus.OK);
 	}
 	
+	// http://localhost:8081/sell/searchResultItemList
+	// 판매 물품 검색 - 원하는 품목 선택 검색한 물품 리스트
+	@GetMapping("/searchResultItemList")
+	public ResponseEntity<List<SellSearchDTO>> sell_searchResultList() {
+		System.out.println("<<< sell_searchResultList >>>");
+
+		return new ResponseEntity<>(service.sellSearchList(), HttpStatus.OK);
+	}
+	
 	// http://localhost:8081/sell/searchItem
 	// 판매 - 품목명 리스트 모달
 	@GetMapping("/searchItem")

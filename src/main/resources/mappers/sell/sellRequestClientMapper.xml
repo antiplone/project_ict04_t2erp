@@ -8,7 +8,8 @@
 	<!-- 판매_거래처 관리 - 요청리스트 -->
     <select id="requestClientList" resultType="com.spring.erp_ordit.dto.sell.SellRequestClientDTO">
       SELECT * FROM request_client_tbl
-      order by sc_id DESC
+      WHERE sc_show = 'Y'
+      ORDER BY sc_id DESC
     </select>
    
     <!-- 판매_거래처 관리 - 등록 요청 -->
@@ -21,6 +22,7 @@
     <select id="detailClient" parameterType="int" resultType="com.spring.erp_ordit.dto.sell.SellRequestClientDTO">
 		SELECT * FROM request_client_tbl
 		 WHERE sc_id = #{sc_id}
+		   AND sc_show = 'Y'
     </select>
    
     <!-- 판매_거래처 관리 - 수정 요청 -->
@@ -33,9 +35,10 @@
 	</update>
 	
     <!-- 판매_거래처 관리 - 삭제 요청 -->
-    <delete id="deleteClient" parameterType="int">
-		DELETE FROM request_client_tbl
-		WHERE sc_id = #{sc_id}
-   </delete>
+    <update id="deleteClient" parameterType="int">
+		UPDATE request_client_tbl
+		   SET sc_show = 'N'
+		 WHERE sc_id = #{sc_id}
+    </update>
    
 </mapper>

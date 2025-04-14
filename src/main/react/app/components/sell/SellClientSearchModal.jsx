@@ -14,7 +14,7 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 
 		// fetch()를 통해 톰캣서버에게 데이터를 요청
 		useEffect(() => {
-			fetch("http://localhost:8081/sell/searchClient", {
+			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchClient`, {
 				method: "GET"
 			})
 			.then(res => res.json())

@@ -9,12 +9,11 @@ const { Column, HeaderCell, Cell } = Table;
 const SellRequestClientList = () => {
 
 	const navigate = useNavigate();
+	const fetchURL = AppConfig.fetch['mytest'];
 
 	// 전체 리스트
     const [reqClient, setReqClient] = useState([]);
     
-	const fetchURL = AppConfig.fetch['mytest'];
-
         useEffect(()=> {
             fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientList`, {
                 method: "GET"
@@ -26,33 +25,38 @@ const SellRequestClientList = () => {
             });
         }, []);
 	
-	// 수정
-	const updateReqClient = (sc_id) => {
-		navigate('/main/sell_request_update_client/' + sc_id);  // App.js의 Route에서 UpdateForm(수정페이지) 호출
-    }
-
-	// 삭제
-	const deleteReqClient = (sc_id) => {
-		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientDel/` + sc_id, {
-			method: 'DELETE',
-		})
-		.then((res) => res.text())
-		.then((res) => {
-			if (res != null) {	// 대소문자 주의
-				alert('삭제 성공!');
-				setReqClient(reqClient.filter(item => item.sc_id !== sc_id)); // 삭제된 항목 제거
-			} else {
-				alert('삭제 실패');
-			}
-		});
+	// 상세 조회
+	const detailReqClient = (sc_id) => {
+		navigate('/main/sell_request_client_detail/' + sc_id);
 	}
+
+	// // 수정
+	// const updateReqClient = (sc_id) => {
+	// 	navigate('/main/sell_request_update_client/' + sc_id);  // App.js의 Route에서 UpdateForm(수정페이지) 호출
+    // }
+
+	// // 삭제
+	// const deleteReqClient = (sc_id) => {
+	// 	fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientDel/` + sc_id, {
+	// 		method: 'DELETE',
+	// 	})
+	// 	.then((res) => res.text())
+	// 	.then((res) => {
+	// 		if (res != null) {	// 대소문자 주의
+	// 			alert('삭제 성공!');
+	// 			setReqClient(reqClient.filter(item => item.sc_no !== sc_no)); // 삭제된 항목 제거
+	// 		} else {
+	// 			alert('삭제 실패');
+	// 		}
+	// 	});
+	// }
 
     return (
         <div>
             {/* 요청 리스트 */}
             <Table
 			height={400}
-			width={1300}
+			width={1200}
 			margin='0 auto'
 			data={reqClient}
 			>
@@ -100,7 +104,7 @@ const SellRequestClientList = () => {
 				</Cell>
 			</Column>
 
-			<Column width={100} className="r_title">
+			<Column width={150} className="r_title">
 				<HeaderCell>연락처</HeaderCell>
 				<Cell>
 					{(rowData) => rowData.sc_tel}
@@ -117,13 +121,15 @@ const SellRequestClientList = () => {
 			<Column width={70} className="r_title">
 				<HeaderCell>상세보기</HeaderCell>
 				<Cell>
-				<Button appearance="link">
-					상세
+				{(rowData) => (
+				<Button appearance="link" onClick={() => detailReqClient(rowData.sc_id)} style={{ marginTop: -7 }}>
+					조회
 				</Button>
+				)}
 				</Cell>
 			</Column>
 
-			<Column width={140} className="r_title">
+			{/* <Column width={140} className="r_title">
 				<HeaderCell>관리</HeaderCell>
 				<Cell>
 				{(rowData) => (
@@ -133,7 +139,7 @@ const SellRequestClientList = () => {
             </>
         )}
 				</Cell>
-			</Column>
+			</Column> */}
 			
 			</Table>
             

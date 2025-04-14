@@ -20,14 +20,19 @@ public class SellAllListDTO {	// 판매 입력건 조회
 	private int item_code;  	  		// 물품코드
 	private String item_name; 	  		// 물품명
 	private String item_standard; 		// 규격
+	private int quantity;				// 수량
 	private int storage_code;		  	// 창고코드
 	private String storage_name;		// 창고명
+	private int e_id;		  			// 담당자 사번
+	private String e_name;				// 담당자명
 	private int client_code;			// 거래처코드
 	private String client_name;	  		// 거래처명
 	private int price;			 		// 단가
 	private int supply;			 		// 공급가
+	private int vat;			 		// 부가세
 	private int total;			  		// 합계
 	private String transaction_type;	// 거래유형
+	private String order_status;		// 결재 상태
 	private Date order_date;		 	// 등록일
 	private Date shipment_order_date;	// 출하지시일
 	

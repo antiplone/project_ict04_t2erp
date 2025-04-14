@@ -1,9 +1,9 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
 		 InputGroup, AutoComplete, HStack, Input, Table, InputPicker,
 		 IconButton, InputNumber, DateRangePicker} from "rsuite";
-//import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
+import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
 import { mockUsers } from './sell_mock4';
 //import SearchIcon from '@rsuite/icons/Search';
 import "../components/common/Sell_maintitle.css";
@@ -11,6 +11,7 @@ import SellEmployeeSearchModal from "#components/sell/SellEmployeeSearchModal.js
 import SellClientSearchModal from "#components/sell/SellClientSearchModal.jsx";
 import SellStorageSearchModal from "#components/sell/SellStorageSearchModal.jsx";
 import SellItemSearchModal from "#components/sell/SellItemSearchModal.jsx";
+import AppConfig from "#config/AppConfig.json";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -24,8 +25,7 @@ const sellType = ["부과세율 적용", "부가세율 미적용"].map(
 
 const sell_status_select = () => {
 
-	const [data, setData] = useState([]);
-
+	
 	// 백엔드로 전달하기 위해 출하창고, 거래유형타입 저장
 	const [shipmentOrderDate, setShipmentOrderDate] = useState(null);
 	const [transactionType, setTransactionType] = useState(null);
@@ -90,6 +90,74 @@ const sell_status_select = () => {
 		setItemModalOpen(true);
 	};
 
+	// 날짜별로 No. 붙이기
+	const getNumberedList = (data) => {
+		let result = [];
+
+		// 최신 날짜가 먼저 오도록 내림차순 정렬
+		const sortedData = [...data].sort((a, b) => {
+			if (a.order_date > b.order_date) return -1;
+			if (a.order_date < b.order_date) return 1;
+			if (a.order_no < b.order_no) return -1;
+			if (a.order_no > b.order_no) return 1;
+			return 0;
+		});
+
+		let currentOrderDate = null;
+		let count = 1;
+		let seen = new Set();
+
+		sortedData.forEach((item) => {
+			const key = `${item.order_date}_${item.order_no}`;
+
+			// 날짜가 바뀌면 count 초기화
+			if (item.order_date !== currentOrderDate) {
+				currentOrderDate = item.order_date;
+				count = 1;
+				seen = new Set(); // 날짜가 바뀌면 seen도 초기화
+			}
+
+			if (!seen.has(item.order_no)) {
+				seen.add(item.order_no);
+
+				const sameOrderItems = sortedData.filter(
+					(x) => x.order_date === item.order_date && x.order_no === item.order_no
+				);
+
+				const itemNames = sameOrderItems.map((x) => x.item_name).join(", ");
+
+				sameOrderItems.forEach((entry) => {
+					result.push({
+						...entry,
+						date_no: count,
+						item_display: itemNames
+					});
+				});
+
+				count++;
+			}
+		});
+
+		return result;
+	};
+
+	const [statusData, setStatusData] = useState([]);
+
+	// 전체 리스트
+	const fetchURL = AppConfig.fetch['mytest'];
+	
+			useEffect(() => {
+				fetch(`${fetchURL.protocol}${fetchURL.url}/sell/allList`, {
+					method: "GET"
+				})
+				.then(res => res.json())
+				.then(res => {
+					console.log(1, res);
+					const numbered = getNumberedList(res);
+					setStatusData(numbered);
+				});
+			}, []);
+
 	return (
 		<div>
 			
@@ -114,7 +182,7 @@ const sell_status_select = () => {
 					</div>
 
 					<div className="status_div">
-						<InputGroup className="status_input">
+						<InputGroup className="status_inputBox">
 							<InputGroup.Addon style={{ width: 80 }}>
 								담당자
 							</InputGroup.Addon>
@@ -129,12 +197,12 @@ const sell_status_select = () => {
 							</InputGroup.Addon>
 						</InputGroup>
 						<Input 
-							name="e_name" type="text" autoComplete="off" style={{ width: 150 }}
+							name="e_name" type="text" autoComplete="off" className="status_inputBox2"
 							value={selectedInchargeName || ""} readOnly />
 					</div>
 
 					<div className="status_div">
-						<InputGroup className="status_input">
+						<InputGroup className="status_inputBox">
 							<InputGroup.Addon style={{ width: 80 }}>
 								거래처
 							</InputGroup.Addon>
@@ -147,7 +215,7 @@ const sell_status_select = () => {
 								{/* <SearchIcon /> */}
 							</InputGroup.Addon>
 						</InputGroup>
-						<Input type="text" autoComplete="off" style={{ width: 150 }}
+						<Input type="text" autoComplete="off" className="status_inputBox2"
 								name="client_name"
 								value={selectedClientName || ""} readOnly 
 						/>
@@ -172,7 +240,7 @@ const sell_status_select = () => {
 					</div>
 
 					<div className="status_div">
-						<InputGroup className="status_input">
+						<InputGroup className="status_inputBox">
 							<InputGroup.Addon style={{ width: 80 }}>
 								출하창고
 							</InputGroup.Addon>
@@ -185,14 +253,14 @@ const sell_status_select = () => {
 									{/* <SearchIcon onClick={handleOpenStorageModal} /> */}
 								</InputGroup.Addon>
 							</InputGroup>
-							<Input type="text" autoComplete="off" style={{ width: 150 }}
+							<Input type="text" autoComplete="off" className="status_inputBox2"
 								name="storage_name"
 								value={selectedStorageName || ""} readOnly 
 							/>
 					</div>
 
 					<div className="status_div">
-						<InputGroup className="status_input">
+						<InputGroup className="status_inputBox">
 							<InputGroup.Addon style={{ width: 80 }}>
 								품목코드
 							</InputGroup.Addon>
@@ -205,7 +273,7 @@ const sell_status_select = () => {
 								{/* <SearchIcon  /> */}
 							</InputGroup.Addon>
 							</InputGroup>
-							<Input name="customer_1" type="text" autoComplete="off" style={{ width: 150 }}
+							<Input name="customer_1" type="text" autoComplete="off" className="status_inputBox2"
 								value={selectedItemName || ""} readOnly />
 						
 					</div>
@@ -219,70 +287,66 @@ const sell_status_select = () => {
 						<hr />
 
 						<div className="addTabel">
-						<Table height={400} data={data}>
+						<Table height={400} data={statusData}>
 
 						<Column width={150}>
-							<HeaderCell>일자-No.</HeaderCell>
-							<Cell
-							dataKey="date"
-							dataType="date"
-							/>
+							<HeaderCell>등록일자_No.</HeaderCell>
+							<Cell>
+								{(rowData) => `${rowData.order_date}_${rowData.date_no}`}
+							</Cell>
 						</Column>
 
-						<Column width={150}>
+						<Column width={200}>
 							<HeaderCell>품목명</HeaderCell>
-							<Cell
-							dataKey="age"
-							dataType="string"
-							/>
+							<Cell>
+								{(rowData) => rowData.item_display}
+							</Cell>
 						</Column>
 
 						<Column width={100}>
 							<HeaderCell>수량</HeaderCell>
-							<Cell
-							dataKey="birthdate"
-							dataType="number"
-							/>
+							<Cell>
+								{(rowData) => rowData.quantity}
+							</Cell>
 						</Column>
 
 						<Column width={150}>
 							<HeaderCell>단가</HeaderCell>
-							<Cell
-							dataKey="birthdate"
-							dataType="number"
-							/>
+							<Cell>
+								{(rowData) => new Intl.NumberFormat().format(rowData.price)}
+								{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
+							</Cell>
 						</Column>
 
 						<Column width={150}>
 							<HeaderCell>공급가액</HeaderCell>
-							<Cell
-							dataKey="birthdate"
-							dataType="number"
-							/>
+							<Cell>
+								{(rowData) => new Intl.NumberFormat().format(rowData.supply)}
+								{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
+							</Cell>
 						</Column>
 
 						<Column width={150}>
 							<HeaderCell>부가세</HeaderCell>
-							<Cell
-							dataKey="birthdate"
-							dataType="number"
-							/>
+							<Cell>
+								{(rowData) => new Intl.NumberFormat().format(rowData.vat)}
+								{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
+							</Cell>
 						</Column>
 
 						<Column width={150}>
-							<HeaderCell>합계</HeaderCell>
-							<Cell
-							dataKey="birthdate"
-							dataType="number"
-							/>
+							<HeaderCell>금액합계</HeaderCell>
+							<Cell>
+								{(rowData) => new Intl.NumberFormat().format(rowData.total)}
+								{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
+							</Cell>
 						</Column>
 
 						<Column width={150}>
 							<HeaderCell>거래처명</HeaderCell>
-							<Cell
-							dataKey="birthdate"
-							dataType="String"
-							/>
+							<Cell>
+								{(rowData) => rowData.client_name}
+							</Cell>
 						</Column>
 
 					

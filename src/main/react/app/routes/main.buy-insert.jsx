@@ -4,8 +4,8 @@
 import AppConfig from "#config/AppConfig.json";
 import React, { useState } from "react";
 import { Button, Container, DatePicker, Divider, Input, InputGroup, InputNumber, InputPicker, Message, Table, IconButton } from "rsuite";
-//import SearchIcon from '@rsuite/icons/Search';
-//import TrashIcon from '@rsuite/icons/Trash';
+import SearchIcon from '@rsuite/icons/Search';
+import TrashIcon from '@rsuite/icons/Trash';
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import { useNavigate } from "@remix-run/react";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
@@ -83,20 +83,21 @@ export default function BuyInsert() {
     const [selectedStorageName, setSelectedStorageName] = useState(null);
     const [isStorageModalOpen, setStorageModalOpen] = useState(false);
     
+
     const handleChange = (id, key, value) => {
-        const updated = orderItems.map(row => {
-            if (row.id === id) {
-                const newRow = { ...row, [key]: value };
-                const quantity = Number(newRow.quantity) || 0;
-                const price = Number(newRow.price) || 0;
-                const supply = quantity * price;
-                const vat = Math.floor(supply * 0.1);
-                const total = supply + vat;
-                return { ...newRow, supply, vat, total };
+        const updated = orderItems.map(order => {
+            if (order.id === id) {
+                const newItem = { ...order, [key]: value };
+                const quantity = Number(newItem.quantity) || 0;
+                const price = Number(newItem.price) || 0;
+                const supply = quantity * price;               // 공급가액: 수량 × 단가
+                const vat = Math.floor(supply * 0.1);          // 부가세: 공급가액의 10% (소수점 버림)
+                const total = supply + vat;                    // 총액: 공급가액 + 부가세
+                return { ...newItem, supply, vat, total };
             }
-            return row;
+            return order;
         });
-        setOrderItems(updated);
+        setOrderItems(updated);   // 수정된 배열로 상태 업데이트
     };
 
     const handleAddRow = () => {
@@ -105,11 +106,11 @@ export default function BuyInsert() {
     };
 
     const handleDeleteRow = (id) => {
-        const filtered = orderItems.filter(row => row.id !== id);
+        const filtered = orderItems.filter(order => order.id !== id);
         setOrderItems(filtered);
     };
 
-    const totalSum = orderItems.reduce((acc, row) => acc + (row.total || 0), 0);
+    const totalSum = orderItems.reduce((acc, order) => acc + (order.total || 0), 0);
 
     const fetchURL = AppConfig.fetch["mytest"];
 
@@ -172,7 +173,7 @@ export default function BuyInsert() {
                     <InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
                     <Input value={selectedIncharge || ""} readOnly />
                     <InputGroup.Button tabIndex={-1}>
-                        {/*<SearchIcon onClick={() => setInchargeModalOpen(true)} />*/}
+                        <SearchIcon onClick={() => setInchargeModalOpen(true)} />
                     </InputGroup.Button>
                 </InputGroup>
                 <Input value={selectedInchargeName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
@@ -181,7 +182,7 @@ export default function BuyInsert() {
                     <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
                     <Input value={selectedClient || ""} readOnly />
                     <InputGroup.Addon>
-                        {/*<SearchIcon onClick={() => setClientModalOpen(true)} />*/}
+                        <SearchIcon onClick={() => setClientModalOpen(true)} />
                     </InputGroup.Addon>
                 </InputGroup>
                 <Input value={selectedClientName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
@@ -203,7 +204,7 @@ export default function BuyInsert() {
                     <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
                     <Input value={selectedStorage || ""} readOnly />
                     <InputGroup.Addon>
-                        {/*<SearchIcon onClick={() => setStorageModalOpen(true)} />*/}
+                        <SearchIcon onClick={() => setStorageModalOpen(true)} />
                     </InputGroup.Addon>
                 </InputGroup>
                 <Input value={selectedStorageName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />

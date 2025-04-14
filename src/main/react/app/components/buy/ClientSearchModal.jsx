@@ -43,7 +43,7 @@ const ClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen,
 	return (
 		<Modal open={handleOpen} onClose={handleColse} size="xs">
 			<Modal.Header>
-				<Modal.Title>{title}</Modal.Title>
+				<Modal.Title>거래처 검색</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<Table

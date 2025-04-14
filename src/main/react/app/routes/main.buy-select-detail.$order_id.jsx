@@ -4,7 +4,7 @@ import AppConfig from "#config/AppConfig.json";
 import * as rs from 'rsuite';
 import Table from 'rsuite/Table';
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 export function meta() {
   return [
@@ -17,8 +17,6 @@ const { Column, HeaderCell, Cell } = Table;
 
 export default function BuySelectDetail() {
 
-  const navigate = useNavigate();
-
   const { order_id } = useParams();
 
   // 주문정보 (단일 객체)
@@ -27,13 +25,13 @@ export default function BuySelectDetail() {
   // 물품정보 (배열)
   const [orderItems, setOrderItems] = useState([]);
 
-  const fecthURL = AppConfig.fetch['mytest']
+  const fetchURL = AppConfig.fetch['mytest']
 
   // fecth()를 통해 톰캣서버에세 데이터를 요청
   useEffect(() => {
     if (!order_id) return;
 
-    fetch(`${fecthURL.protocol}${fecthURL.url}/buy/buyOrderDetail/${order_id}`, {
+    fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrderDetail/${order_id}`, {
       method: "GET"
     })
       .then(async (res) => {
@@ -48,14 +46,14 @@ export default function BuySelectDetail() {
           setOrderInfo(json[0]); // 주문 정보
 
           // item 정보만 따로 추출
-          const items = json.map(row => ({
-            item_code: row.item_code,
-            item_name: row.item_name,
-            quantity: row.quantity,
-            price: row.price,
-            supply: row.supply,
-            vat: row.vat,
-            total: row.total
+          const items = json.map(order => ({
+            item_code: order.item_code,
+            item_name: order.item_name,
+            quantity: order.quantity,
+            price: order.price,
+            supply: order.supply,
+            vat: order.vat,
+            total: order.total
           }));
           setOrderItems(json[0].items); // 물품 목록
         } else {
@@ -71,6 +69,25 @@ export default function BuySelectDetail() {
   }, [order_id]);
   // []은 디펜던시인데, setBuyOrderDetail()로 렌더링될때 실행되면 안되고, 1번만 실행하도록 빈배열을 넣어둔다.
   // CORS 오류 : Controller 진입 직전에 적용된다. 외부에서 자바스크립트 요청이 오는 것을
+
+  // 삭제
+  const deleteOrderItem = (order_id) => {
+    console.log("삭제할 주문 ID:", order_id); // 디버깅용 로그
+
+    fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrder/` + order_id, {
+      method: 'DELETE',
+    })
+      .then((res) => res.text())
+      .then((res) => {
+        if (res === "ok") {
+          alert('삭제 성공!');
+          setBuyOrderAllList(buyOrderAllList.filter(order => order.order_id !== order_id)); // UI 업데이트
+        } else {
+          alert('삭제 실패');
+        }
+      })
+      .catch(error => console.error("삭제 오류:", error));
+  }
 
   return (
     <>
@@ -108,12 +125,23 @@ export default function BuySelectDetail() {
 
       </rs.Container>
 
+      <div style={{ display: 'flex' }}>
+        <Link to={`/main/buy-order-update/${order_id}`}>
+          <rs.Button appearance="primary" style={{ width: 100 }}>
+            수정
+          </rs.Button>
+        </Link>
 
-      <Link to={`/main/buy-order-update/${order_id}`}>
-        <rs.Button appearance="primary" style={{ width: 100 }}>
-          수정
+        <rs.Button appearance="primary" style={{ width: 100 }} onClick={() => deleteOrderItem(orderInfo.order_id)}>
+          삭제
         </rs.Button>
-      </Link>
+
+        <Link to={`/main/buy-select`}>
+          <rs.Button appearance="primary" style={{ width: 100 }}>
+            목록
+          </rs.Button>
+        </Link>
+      </div>
 
     </>
   );

@@ -164,14 +164,20 @@
 	 <!-- 구매 정보 수정 -->
 	 <update id="buyUpdateOrder">
 		    UPDATE order_tbl
-		    SET transaction_type = #{transaction_type},
-		        storage_name = #{storage_name},
-		        order_status = #{order_status}
+		    SET 
+		    	order_id = #{order_id},
+		    	order_date = #{order_date},
+		    	order_type = #{order_type},
+		    	e_id = #{e_id},
+		    	client_code = #{client_code},
+		    	delivery_date = #{delivery_date},
+		    	storage_code = #{storage_code},
+		    	transaction_type = #{transaction_type}
 		    WHERE order_id = #{order_id}
 		</update>
 		
 		<delete id="buyDeleteOrderItemsByOrderId">
-		    DELETE FROM order_item_tbl WHERE order_id = #{orderId}
+		    DELETE FROM order_item_tbl WHERE order_id = #{order_id}
 		</delete>
 		
 		<insert id="buyInsertOrderItem">

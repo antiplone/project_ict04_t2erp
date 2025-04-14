@@ -3,7 +3,7 @@
 import AppConfig from "#config/AppConfig.json";
 import * as rs from 'rsuite';
 import Table from 'rsuite/Table';
-//import SearchIcon from '@rsuite/icons/Search';
+import SearchIcon from '@rsuite/icons/Search';
 import React, { useState } from "react";
 import "../styles/buy.css";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
@@ -118,7 +118,7 @@ export default function BuyStatusSelect() {
                         <rs.InputGroup.Addon style={{ width: 80 }}>담당자</rs.InputGroup.Addon>
                         <rs.Input value={selectedIncharge || ""} readOnly />
                         <rs.InputGroup.Button tabIndex={-1}>
-                            {/*<SearchIcon onClick={() => setInchargeModalOpen(true)} />*/}
+                            <SearchIcon onClick={() => setInchargeModalOpen(true)} />
                         </rs.InputGroup.Button>
                     </rs.InputGroup>
                     <rs.Input value={selectedInchargeName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
@@ -127,7 +127,7 @@ export default function BuyStatusSelect() {
                         <rs.InputGroup.Addon style={{ width: 80 }}>거래처</rs.InputGroup.Addon>
                         <rs.Input value={selectedClient || ""} readOnly />
                         <rs.InputGroup.Addon>
-                            {/*<SearchIcon onClick={() => setClientModalOpen(true)} />*/}
+                            <SearchIcon onClick={() => setClientModalOpen(true)} />
                         </rs.InputGroup.Addon>
                     </rs.InputGroup>
                     <rs.Input value={selectedClientName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
@@ -143,7 +143,7 @@ export default function BuyStatusSelect() {
                         <rs.InputGroup.Addon style={{ width: 80 }}>입고창고</rs.InputGroup.Addon>
                         <rs.Input value={selectedStorage || ""} readOnly />
                         <rs.InputGroup.Addon>
-                            {/*<SearchIcon onClick={() => setStorageModalOpen(true)} />*/}
+                            <SearchIcon onClick={() => setStorageModalOpen(true)} />
                         </rs.InputGroup.Addon>
                     </rs.InputGroup>
                     <rs.Input value={selectedStorageName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
@@ -152,7 +152,7 @@ export default function BuyStatusSelect() {
                         <rs.InputGroup.Addon style={{ width: 80 }}> 품목코드</rs.InputGroup.Addon>
                         <rs.Input value={selectedItem || ""} readOnly />
                         <rs.InputGroup.Addon>
-                            {/*<SearchIcon onClick={() => setItemModalOpen(true)} />*/}
+                            <SearchIcon onClick={() => setItemModalOpen(true)} />
                         </rs.InputGroup.Addon>
                     </rs.InputGroup>
                     <rs.Input value={selectedItemName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />

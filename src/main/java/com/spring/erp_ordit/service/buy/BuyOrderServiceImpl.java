@@ -85,14 +85,14 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 
 	    buyOrderMapper.buyUpdateOrder(order); // 주문 정보 업데이트
 
-	    // 2. 기존 물품 정보 삭제
-	    buyOrderMapper.buyDeleteOrderItems(order_id);
-
-	    // 3. 물품 정보 재등록
-	    for (BuyOrderItemDTO item : request.getItems()) {
-	        item.setOrder_id((long) order_id); // 외래키 설정
-	        buyOrderMapper.buyInsertOrderItem(item);
-	    }
+//	    // 2. 기존 물품 정보 삭제
+//	    buyOrderMapper.buyDeleteOrderItems(order_id);
+//
+//	    // 3. 물품 정보 재등록
+//	    for (BuyOrderItemDTO item : request.getItems()) {
+//	        item.setOrder_id((long) order_id); // 외래키 설정
+//	        buyOrderMapper.buyInsertOrderItem(item);
+//	    }
 
 	    return 1; // 성공 반환 (또는 처리된 row 수 반환 가능)
 	}

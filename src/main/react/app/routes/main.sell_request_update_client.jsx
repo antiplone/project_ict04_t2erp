@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Message, Form, Input, ButtonToolbar, Button, Tabs } from 'rsuite';
 import "../components/common/Sell_maintitle.css";
 import { useNavigate, useParams } from "react-router-dom";
+import AppConfig from "#config/AppConfig.json";
 
 const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
 
@@ -10,7 +11,7 @@ const SellRequestUpdateClient = (props) => {
 
     const navigate = useNavigate();
     const propsparam = useParams();
-    const sc_no = propsparam.sc_no;
+    const sc_id = propsparam.sc_id;
         
 
     const [clientAdd, setClientAdd] = useState({
@@ -26,10 +27,12 @@ const SellRequestUpdateClient = (props) => {
         sc_note: ''
     });
 
+    const fetchURL = AppConfig.fetch['mytest'];
+
     // 1건 조회
     useEffect(() => {
     
-            fetch("http://localhost:8081/reqCli/reqClientDetail/" + sc_no)
+            fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientDetail/` + sc_id)
                 .then((res) => res.json())
                 .then((res) => {
                     setClientAdd(res); // res는 계속 새로 만들어져서 set을 하므로 스프레드 연산자를 붙이지 않는다. 상세정보를 setBoard에 전달해서 화면에 뿌린다.
@@ -49,7 +52,7 @@ const SellRequestUpdateClient = (props) => {
         //e.preventDefault();
         console.log("폼 제출됨! 데이터:", clientAdd);
 
-        fetch("http://localhost:8081/reqCli/reqClientUpdate/" + sc_no, {
+        fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientUpdate/` + sc_id, {
             method: "PUT",
             headers: {
                 "Content-Type":"application/json;charset=utf-8"

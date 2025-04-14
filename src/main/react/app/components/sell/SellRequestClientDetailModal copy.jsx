@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Button, Table, Modal, Checkbox } from "rsuite";
+import AppConfig from "#config/AppConfig.json";
 
 const { Column, HeaderCell, Cell } = Table;
 
 
+<<<<<<<< Updated upstream:src/main/react/app/components/sell/SellRequestClientDetailModal copy.jsx
 const SellRequestClientDetailModal = ({ title, confirm, cancel, onReqClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
+========
+const SellAllListDetailModal = ({ title, confirm, cancel, onReqClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
+>>>>>>>> Stashed changes:src/main/react/app/components/sell/SellAllListDetailModal.jsx
 	
-	const [reqClientList, setReqClientList] = useState([]);
+	const [allDetail, setAllDetail] = useState([]);
+
+	const fetchURL = AppConfig.fetch['mytest'];
 
 		// fetch()를 통해 톰캣서버에게 데이터를 요청
 		useEffect((sc_no) => {
-			fetch("http://localhost:8081/sell/reqClientDetail/" + sc_no)
+			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientDetail/` + sc_no)
 			.then(res => res.json())
 			.then(res => {
 				setReqClientList(res);
@@ -127,7 +134,11 @@ const SellRequestClientDetailModal = ({ title, confirm, cancel, onReqClientSelec
 	);
 };
 
+<<<<<<<< Updated upstream:src/main/react/app/components/sell/SellRequestClientDetailModal copy.jsx
 SellRequestClientDetailModal.defaultProps = {
+========
+SellAllListDetailModal.defaultProps = {
+>>>>>>>> Stashed changes:src/main/react/app/components/sell/SellAllListDetailModal.jsx
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
 	title: "제목을 입력해주세요.",
 	confirm: "확인",
@@ -135,4 +146,8 @@ SellRequestClientDetailModal.defaultProps = {
 	
 };
 
+<<<<<<<< Updated upstream:src/main/react/app/components/sell/SellRequestClientDetailModal copy.jsx
 export default SellRequestClientDetailModal;
+========
+export default SellAllListDetailModal;
+>>>>>>>> Stashed changes:src/main/react/app/components/sell/SellAllListDetailModal.jsx

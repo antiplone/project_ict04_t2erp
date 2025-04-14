@@ -228,8 +228,8 @@ const sell_insert = () => {
 
 				<div className="form_div">
 					<div className="add_div">
-						<InputGroup className="input">
-							<InputGroup.Addon >
+						<InputGroup className="insert_input">
+							<InputGroup.Addon style={{ width: 90 }}>
 							출하지시일
 							</InputGroup.Addon>
 							<DatePicker 
@@ -240,8 +240,8 @@ const sell_insert = () => {
 					</div>
 
 					<div className="add_div">
-						<InputGroup className="input">
-							<InputGroup.Addon >
+						<InputGroup className="insert_inputBox">
+							<InputGroup.Addon style={{ width: 90 }}>
 								담당자
 							</InputGroup.Addon>
 							<Input
@@ -259,8 +259,8 @@ const sell_insert = () => {
 					</div>
 
 					<div className="add_div">
-						<InputGroup className="input">
-							<InputGroup.Addon>
+						<InputGroup className="insert_inputBox">
+							<InputGroup.Addon style={{ width: 90 }}>
 								거래처
 							</InputGroup.Addon>
 							<Input placeholder='거래처'
@@ -280,8 +280,8 @@ const sell_insert = () => {
 
 				<div className="form_div">
 					<div className="add_div">
-						<InputGroup className="input">
-							<InputGroup.Addon>
+						<InputGroup className="insert_input">
+							<InputGroup.Addon style={{ width: 90 }}>
 								거래유형
 							</InputGroup.Addon>
 							<InputPicker
@@ -296,8 +296,8 @@ const sell_insert = () => {
 					</div>
 
 					<div className="add_div">
-						<InputGroup className="input">
-							<InputGroup.Addon>
+						<InputGroup className="insert_inputBox">
+							<InputGroup.Addon style={{ width: 90 }}>
 								출하창고
 							</InputGroup.Addon>
 							<Input 

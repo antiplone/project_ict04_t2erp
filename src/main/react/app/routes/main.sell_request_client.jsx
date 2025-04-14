@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Message, Form, Input, ButtonToolbar, Button, Tabs } from 'rsuite';
 import "../components/common/Sell_maintitle.css";
 import SellRequestClientAction from "./main.sell_request_client_list";
+import AppConfig from "#config/AppConfig.json";
 
 const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
 
@@ -29,9 +30,11 @@ const SellRequestClient = () => {
         })
     }
 
+    const fetchURL = AppConfig.fetch['mytest'];
+
     const submitclientAdd = (e) => {
         //e.preventDefault();
-        fetch("http://localhost:8081/sell/reqClientInsert", {
+        fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientInsert`, {
             method: "POST",
             headers: {
                 "Content-Type":"application/json;charset=utf-8"
@@ -86,20 +89,20 @@ const SellRequestClient = () => {
                     <Form.HelpText>Required</Form.HelpText>
                     </Form.Group>
 
-                    <Form.Group controlId="name-1">
+                    <Form.Group controlId="name-2">
                     <Form.ControlLabel>거래처명</Form.ControlLabel>
                     <Form.Control name="sc_client_name" onChange={(value) => changeValue(value, 'sc_client_name')} />
                     <Form.HelpText>Required</Form.HelpText>
                     </Form.Group>
                     
-                    <Form.Group controlId="name-2">
+                    <Form.Group controlId="name-3">
                     <Form.ControlLabel>대표자명</Form.ControlLabel>
                     <Form.Control name="sc_ceo" onChange={(value) => changeValue(value, 'sc_ceo')} />
                     <Form.HelpText>Required</Form.HelpText>
                     </Form.Group>
                 
 
-                    <Form.Group controlId="name-3">
+                    <Form.Group controlId="name-4">
                     <Form.ControlLabel>사업자등록번호</Form.ControlLabel>
                     <Form.Control name="sc_biz_num" onChange={(value) => changeValue(value, 'sc_biz_num')} />
                     <Form.HelpText>Required</Form.HelpText>
@@ -121,12 +124,12 @@ const SellRequestClient = () => {
                     <Form.Control name="sc_address" onChange={(value) => changeValue(value, 'sc_address')} />
                     </Form.Group>
 
-                    <Form.Group controlId="name-4">
+                    <Form.Group controlId="name-5">
                     <Form.ControlLabel>업태</Form.ControlLabel>
                     <Form.Control name="sc_type" onChange={(value) => changeValue(value, 'sc_type')} />
                     </Form.Group>
 
-                    <Form.Group controlId="name-5">
+                    <Form.Group controlId="name-6">
                     <Form.ControlLabel>업종</Form.ControlLabel>
                     <Form.Control name="sc_industry" onChange={(value) => changeValue(value, 'sc_industry')} />
                     </Form.Group>

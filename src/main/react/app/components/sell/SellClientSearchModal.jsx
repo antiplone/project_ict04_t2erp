@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Table, Modal, Checkbox } from "rsuite";
+import AppConfig from "#config/AppConfig.json";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -8,6 +9,8 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 	
 	const [clientList, setClientList] = useState([]);
 	const [selectedClient, setSelectedClient] = useState(null);
+
+	const fetchURL = AppConfig.fetch['mytest'];
 
 		// fetch()를 통해 톰캣서버에게 데이터를 요청
 		useEffect(() => {

@@ -8,6 +8,7 @@ import { Button, ButtonToolbar, Message, DatePicker, Form,
 import { mockUsers } from '../routes/sell_mock4';
 // import SearchIcon from '@rsuite/icons/Search';
 import "../components/common/Sell_maintitle.css";
+import AppConfig from "#config/AppConfig.json";
 
 const styles = {
 	width: 130,
@@ -50,6 +51,7 @@ const SellEdit = () => {
             setData(data.filter(item => item.id !== id));
         };
     
+        const fetchURL = AppConfig.fetch['mytest'];
         
     return(
         <div>

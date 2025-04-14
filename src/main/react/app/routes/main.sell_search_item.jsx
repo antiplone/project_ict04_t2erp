@@ -1,6 +1,7 @@
 import { Table, Button, Tabs, Message, ButtonToolbar } from 'rsuite';
 import React, { useState,  useEffect } from "react";
 import SellSearchModal from '#components/sell/SellSearchModal';
+import AppConfig from "#config/AppConfig.json";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -14,6 +15,8 @@ const sell_search_item = () => {
 	};
 
 	const [itemList, setItemList] = useState([]);
+
+	const fetchURL = AppConfig.fetch['mytest'];
 
 	useEffect(()=> {
 		fetch("http://localhost:8081/sell/searchItemList", {
@@ -163,6 +166,10 @@ const sell_search_item = () => {
 				// onClientSelect={handleClientSelect}	// client_code, client_name 받기
 				handleOpen={isSearchModalOpen}
 				handleColse={() => setSearchModalOpen(false)}
+				onSearchResult={(resultList) => {
+				console.log("검색 결과:", resultList);
+				setSearchResultList(resultList);
+				}}
 			/>
 		</div>
 		

@@ -7,10 +7,9 @@ import { Link } from "react-router-dom";
 import SellSalesInvoice from '#components/sell/SellSalesInvoice.jsx';
 import SellSlipAll from '#components/sell/SellSlipAll';
 import "../components/common/Sell_maintitle.css";
+import AppConfig from "#config/AppConfig.json";
 
 const { Column, HeaderCell, Cell } = Table;
-
-const data = mock(5);
 
 // const confirm = ['미확인', '결재중', '완료'].map(
 // 	confirmChk => ({ label: confirmChk, value: confirmChk })
@@ -135,7 +134,7 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 
-			<Column width={150}  className="all_text">
+			<Column width={200}  className="all_text">
 				<HeaderCell>품목명</HeaderCell>
 				<Cell>
 					{(rowData) => rowData.item_name}

@@ -4,8 +4,8 @@
 import AppConfig from "#config/AppConfig.json";
 import React, { useState } from "react";
 import { Button, Container, DatePicker, Divider, Input, InputGroup, InputNumber, InputPicker, Message, Table, IconButton } from "rsuite";
-//import SearchIcon from '@rsuite/icons/Search';
-//import TrashIcon from '@rsuite/icons/Trash';
+import SearchIcon from '@rsuite/icons/Search';
+import TrashIcon from '@rsuite/icons/Trash';
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import { useNavigate } from "@remix-run/react";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
@@ -62,8 +62,8 @@ export default function BuyInsert() {
         { id: 1, item_code: '', quantity: 0, price: 0, supply: 0, vat: 0, total: 0 },
     ]);
     
-    // 납기일자
-    const [deliveryDate, setDeliveryDate] = useState(null);
+    // 입력일자
+    const [orderDate, setOrderDate] = useState(new Date());
     
     // 거래유형
     const [selectedType, setSelectedType] = useState('');
@@ -83,6 +83,9 @@ export default function BuyInsert() {
     const [selectedStorageName, setSelectedStorageName] = useState(null);
     const [isStorageModalOpen, setStorageModalOpen] = useState(false);
     
+    // 발주번호
+    const [orderCode, setOrderCode] = useState("");
+
     const handleChange = (id, key, value) => {
         const updated = orderItems.map(row => {
             if (row.id === id) {
@@ -111,8 +114,6 @@ export default function BuyInsert() {
 
     const totalSum = orderItems.reduce((acc, row) => acc + (row.total || 0), 0);
 
-    const fetchURL = AppConfig.fetch["mytest"];
-
     const handleSubmit = async () => {
         if (!selectedClient || !selectedIncharge || !selectedStorage || !selectedType) {
             alert("주문 정보를 모두 입력해주세요.");
@@ -122,21 +123,22 @@ export default function BuyInsert() {
             alert("물품을 1개 이상 입력해주세요.");
             return;
         }
-     
+
         try {
             const requestBody = {
                 order: {
-                    delivery_date: deliveryDate.toLocaleDateString('sv-SE'), // 브라우저 기준 날짜
+                    order_date: orderDate.toISOString().slice(0, 10),
                     client_code: selectedClient,
                     e_id: selectedIncharge,
                     storage_code: selectedStorage,
                     transaction_type: selectedType,
-                    order_type: 2, // 2는 구매팀 주문입력건
+                    order_type: 2,
+                    order_code: orderCode
                 },
                 items: orderItems.map(({ id, ...item }) => item)
             };
 
-            const response = await fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyInsertAll`, {
+            const response = await fetch("http://localhost:8081/buy/buyInsertAll", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(requestBody)
@@ -148,7 +150,7 @@ export default function BuyInsert() {
             }
 
             alert("주문이 정상 등록되었습니다.");
-            navigate("/main/buy-select");
+            navigate("/main/buy-insert");
         } catch (err) {
             console.error(err);
             alert("오류 발생");
@@ -164,15 +166,15 @@ export default function BuyInsert() {
 
             <div className="inputBox">
                 <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>납기일자</InputGroup.Addon>
-                    <DatePicker value={deliveryDate} onChange={setDeliveryDate} />
+                    <InputGroup.Addon style={{ width: 80 }}>일자</InputGroup.Addon>
+                    <DatePicker value={orderDate} onChange={setOrderDate} />
                 </InputGroup>
 
                 <InputGroup className="input">
                     <InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
                     <Input value={selectedIncharge || ""} readOnly />
                     <InputGroup.Button tabIndex={-1}>
-                        {/*<SearchIcon onClick={() => setInchargeModalOpen(true)} />*/}
+                        <SearchIcon onClick={() => setInchargeModalOpen(true)} />
                     </InputGroup.Button>
                 </InputGroup>
                 <Input value={selectedInchargeName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
@@ -181,7 +183,7 @@ export default function BuyInsert() {
                     <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
                     <Input value={selectedClient || ""} readOnly />
                     <InputGroup.Addon>
-                        {/*<SearchIcon onClick={() => setClientModalOpen(true)} />*/}
+                        <SearchIcon onClick={() => setClientModalOpen(true)} />
                     </InputGroup.Addon>
                 </InputGroup>
                 <Input value={selectedClientName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
@@ -203,11 +205,15 @@ export default function BuyInsert() {
                     <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
                     <Input value={selectedStorage || ""} readOnly />
                     <InputGroup.Addon>
-                        {/*<SearchIcon onClick={() => setStorageModalOpen(true)} />*/}
+                        <SearchIcon onClick={() => setStorageModalOpen(true)} />
                     </InputGroup.Addon>
                 </InputGroup>
                 <Input value={selectedStorageName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
-        
+
+                <InputGroup className="input">
+                    <InputGroup.Addon style={{ width: 80 }}>주문번호</InputGroup.Addon>
+                    <Input value={orderCode} onChange={setOrderCode} />
+                </InputGroup>
             </div>
 
             {/* 거래처 모달 관리 */}

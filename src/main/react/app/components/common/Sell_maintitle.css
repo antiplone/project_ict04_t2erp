@@ -121,6 +121,12 @@
     margin-right: 20px;
     width: 70;
 }
+.insert_input {
+    width: 300px;
+}
+.insert_inputBox {
+    width: 200px;
+}
 
 /* 버튼 */
 .sellAddBtn {

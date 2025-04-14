@@ -58,6 +58,23 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 		setStorageModalOpen(true);
 	};
 
+	const [searchResultList, setSearchResultList] = useState([]);
+	
+	const fetchURL = AppConfig.fetch['mytest'];
+
+	// const submitSellSearch = (e) => {
+	// 	e.preventDefault();
+
+	// 	useEffect(() => { 
+	// 		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchResultItemList`, {
+	// 		method: "GET"
+	// 		})
+	// 		.then(res => res.json())
+	// 		.then(res => {
+	// 			setSearchResultList(res);
+	// 		});
+	// }, []);
+
 	return (
 		<Modal open={handleOpen} onClose={handleColse} style={{width: 700}}>
 			<Modal.Header>

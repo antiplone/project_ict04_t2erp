@@ -10,6 +10,23 @@
       SELECT * FROM sell_searchItemList_view
    </select>
    
+   <!-- 판매 물품 검색 - 원하는 품목 선택 검색한 물품 리스트 -->
+    <select id="sellSearchResultList" parameterType="com.spring.erp_ordit.dto.sell.SellSearchDTO" resultType="com.spring.erp_ordit.dto.sell.SellSearchDTO">
+      SELECT * 
+      FROM sell_searchItemList_view
+      <where>
+	    <if test="item_code != null">
+	      AND item_code = #{item_code}
+	    </if>
+	    <if test="storage_name != null">
+	      AND storage_name = #{storage_name}
+	    </if>
+	    <if test="client_name != client_name">
+	      AND client_name = #{client_name}
+	    </if>
+	  </where>
+   </select>
+   
    <!-- 판매 - 물품 검색 모달 -->
     <select id="sellItemList" resultType="com.spring.erp_ordit.dto.sell.SellSearchDTO">
       SELECT *

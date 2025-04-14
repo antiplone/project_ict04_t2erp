@@ -3,28 +3,15 @@ import React, { useState } from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
 		 InputGroup, AutoComplete, HStack, Input, Table, 
 		 IconButton, InputNumber, SelectPicker, VStack } from "rsuite";
-//import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
+import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
 import { mockUsers } from './sell_mock4';
 // import SearchIcon from '@rsuite/icons/Search';
 import "../components/common/Sell_maintitle.css";
 
-const styles = {
-	width: 150,
-	marginBottom: 5
-  };
 
 const { Column, HeaderCell, Cell } = Table;
 const defaultData = mockUsers(8);
 
-
-// const t_styles = `
-//   .table-cell-editing .rs-table-cell-content {
-// 	padding: 4px;
-//   }
-//   .table-cell-editing .rs-input {
-// 	width: 100%;
-//   }
-//   `;
 
 /* 거래유형 - 선택 데이터 */
 const sellType = ["부과세율 적용", "부가세율 미적용"].map(
@@ -38,6 +25,8 @@ const SellRequestItem = () => {
 
 	const [data, setData] = React.useState(defaultData);
 
+	const fetchURL = AppConfig.fetch['mytest'];
+	
 	const handleChange = (id, key, value) => {
 		const nextData = Object.assign([], data);
 		nextData.find(item => item.id === id)[key] = value;

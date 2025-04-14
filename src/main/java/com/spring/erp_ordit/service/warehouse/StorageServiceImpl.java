@@ -1,4 +1,4 @@
-package com.spring.erp_ordit.service.warehouse;
+/*package com.spring.erp_ordit.service.warehouse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,16 +13,16 @@ public class StorageServiceImpl {
 	
 	// 창고 목록	
 //	@Transactional(readOnly=true)
-//	public List<LogisStorageDTO> storageList(){
+//	public List<LogisWarehouseDTO> storageList(){
 //		System.out.println("StorageServiceImpl - storageList");
-//		List<LogisStorageDTO> a = logisMapper.storageList();
+//		List<LogisWarehouseDTO> a = logisMapper.storageList();
 //		System.out.println("a : " + a);
 //		return a;
 //	}
 //	
 	// 창고 등록
 //	@Transactional  // 서비스 함수가 종료될 때 commit할지 rollback할지 트랜잭션 관리하겠다.
-//	public int storageInsert(LogisStorageDTO dto){
+//	public int storageInsert(LogisWarehouseDTO dto){
 //		System.out.println("StorageServiceImpl - insertStorage");
 //		return logisMapper.storageInsert(dto);
 //	}
@@ -37,13 +37,13 @@ public class StorageServiceImpl {
 	
 	// 창고 상세
 //	@Transactional(readOnly = true)
-//	public LogisStorageDTO findByStoragecode(int storage_code) {
+//	public LogisWarehouseDTO findByStoragecode(int storage_code) {
 //		return logisMapper.findByStoragecode(storage_code);
 //	}
 	
 	// 창고 수정
 //	@Transactional  // 
-//	public int /*LogisStorageDTO*/ updateStorage(int storage_code, LogisStorageDTO dto){ // BoardDTO return : 상세페이지로 리턴하기 위해 
+//	public int updateStorage(int storage_code, LogisWarehouseDTO dto){ // BoardDTO return : 상세페이지로 리턴하기 위해 
 //		System.out.println("StorageServiceImpl - updateStorage");
 //		 dto.setStorage_code(storage_code);
 //		return logisMapper.updateStorage(dto);
@@ -59,3 +59,4 @@ public class StorageServiceImpl {
 //	}
 	
 }
+*/

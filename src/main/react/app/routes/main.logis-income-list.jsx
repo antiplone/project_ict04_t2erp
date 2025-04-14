@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "@remix-run/react";
-import { Container, /* Form, */ Table } from 'rsuite';
+import { Container, Message, /* Form, */ Table } from 'rsuite';
 import "#components/common/css/common.css";
 
 const OrderIncomeList = () => {
@@ -34,9 +34,9 @@ const OrderIncomeList = () => {
     return (
         <div>
             <Container >
-                <div className='header logiHeader'>
+                <Message type="success" className="main_title">
                     금일 입고 목록
-                </div>
+                </Message>
                 <br />
                 <Table height={400} data={orderListWithRowNum} className="text_center">
                     <Table.Column width={80} align="center" fixed>

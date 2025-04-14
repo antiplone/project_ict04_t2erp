@@ -11,7 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Builder
-public class LogisOrderItemDTO {
+public class LogisSalesItemDTO {
 	private int order_id;				// 주문번호
 	private int order_type;				// 주문부서
 	private int quantity;				// 주문수량
@@ -25,5 +25,4 @@ public class LogisOrderItemDTO {
 	private String item_standard;		// 규격
 	private String item_status;			// 품목상태
 	private Date item_reg_date;			// 등록 날짜
-	private String income_confirm;		// 입고 컨펌
 }

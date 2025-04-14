@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.erp_ordit.dto.warehouse.LogisOrderDTO;
-import com.spring.erp_ordit.dto.warehouse.LogisSalesDTO;
 import com.spring.erp_ordit.service.warehouse.LogisOrderServiceImpl;
-import com.spring.erp_ordit.service.warehouse.LogisSalesServiceImpl;
 
 @RestController
 @RequestMapping("/logisorder")
@@ -46,14 +44,5 @@ public class LogisOrderlController {
 		return new ResponseEntity<>(orderService.findByOrderItem(order_id, item_code, order_type), HttpStatus.OK); // 200을 리턴해라
 	}
 	
-	@Autowired
-	private LogisSalesServiceImpl salesService;
-	
-	// 주문 목록 GetMapping = > http://localhost:8081/api/WarehouseList
-	@GetMapping("/logisSalesList") // 조회는 GetMapping
-	public ResponseEntity<List<LogisSalesDTO>> logisSalesList() {
-		System.out.println("<<< logisSalesList >>>");
-		return new ResponseEntity<>(salesService.logisSalesList(), HttpStatus.OK);
-	}
 }
 	

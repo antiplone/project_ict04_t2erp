@@ -128,7 +128,7 @@ export default function Login() {
 					</Form.Group>
 
 					<VStack spacing={10}>
-						<Button style={{backgroundColor: "#333333"}} type='submit' appearance="primary" loading={isLoading} block>
+						<Button style={{color: "#333333", fontWeight: "bold"}} type='submit' appearance="primary" loading={isLoading} block>
 							로그인
 						</Button>
 						<a href="#">비밀번호를 잊으셨나요?</a>

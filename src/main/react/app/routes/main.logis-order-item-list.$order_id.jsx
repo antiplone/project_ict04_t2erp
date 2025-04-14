@@ -87,10 +87,10 @@ const OrderItemList = () => {
 			return actualAmount !== item.order_amount;
 		});
 
-		if (invalidItems.length > 0) {
+		/*if (invalidItems.length > 0) {
 			const proceed = window.confirm("입고 수량이 주문 수량과 다릅니다. 계속 진행할까요?");
 			if (!proceed) return;
-		}
+		}*/
 
 		Promise.all(
 			itemsToSubmit.map((item_code) => {

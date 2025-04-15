@@ -36,15 +36,15 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 	// 판매_거래처 관리 - 1건 상세조회
 	@Override
 	@Transactional(readOnly=true)
-	public SellRequestClientDTO detailClient(int sc_no) {
+	public SellRequestClientDTO detailClient(int sc_id) {
 		System.out.println("서비스 - detailClient");
 		
-		return requestC_Mapper.detailClient(sc_no);
+		return requestC_Mapper.detailClient(sc_id);
 	}
 	
 	// 판매_거래처 관리 - 수정
 	@Transactional
-    public int updateClient(int sc_no, SellRequestClientDTO dto) {	// BoardDTO 리턴: 상세페이지로 리턴하기 위해
+    public int updateClient(int sc_id, SellRequestClientDTO dto) {	// BoardDTO 리턴: 상세페이지로 리턴하기 위해
     	
     	return requestC_Mapper.updateClient(dto);
     }
@@ -52,9 +52,9 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 	// 판매_거래처 관리 - 삭제
 	@Override
 	@Transactional
-	public String deleteClient(int sc_no) {
-		System.out.println("서비스 - deleteClient=> sc_no: " + sc_no);
-		requestC_Mapper.deleteClient(sc_no);
+	public String deleteClient(int sc_id) {
+		System.out.println("서비스 - deleteClient=> sc_no: " + sc_id);
+		requestC_Mapper.deleteClient(sc_id);
 		
 		return "ok";
 	}

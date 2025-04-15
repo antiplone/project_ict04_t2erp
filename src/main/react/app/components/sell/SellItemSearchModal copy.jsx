@@ -4,39 +4,47 @@ import AppConfig from "#config/AppConfig.json";
 
 const { Column, HeaderCell, Cell } = Table;
 
-const SellStorageSearchModal = ({ title, confirm, cancel, onStorageSelect, handleOpen, handleColse } /* = props:속성 */) => {
+
+const SellItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen, handleColse } /* = props:속성 */) => {
 	
-	const [storageList, setStorageList] = useState([]);
-	const [selectedStorage, setSelectedStorage] = useState(null);
-	
+	const [itemList, setItemList] = useState([]);
+	const [selectedItem, setSelectedItem] = useState(null);
+
 	const fetchURL = AppConfig.fetch['mytest'];
 
 	// fetch()를 통해 톰캣서버에게 데이터를 요청
 	useEffect(() => {
-		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchStorage`, {
+		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchItem`, {
 			method: "GET"
 		})
 		.then(res => res.json())
 		.then(res => {
-			setStorageList(res);
+			setItemList(res);
 		});
 	}, []);
 
-	const storageChkChange = (checked, storage) => {
+	const itemChkChange = (checked, item) => {
 		if (checked) {
-			setSelectedStorage(storage); // 체크된 창고 저장
+			setSelectedItem(item); // 체크된 물품 저장
 		} else {
-			setSelectedStorage(null); // 체크 해제 시 초기화
+			setSelectedItem(null); // 체크 해제 시 초기화
 		}
 	};
 	
 	// 선택 완료 처리
 	const handleSubmit = () => {
-		if (selectedStorage) {
-			onStorageSelect(selectedStorage.storage_code, selectedStorage.storage_name);
+		if (selectedItem) {
+			onItemSelect(selectedItem.item_code, selectedItem.item_name, selectedItem.item_standard);
 			handleColse();
 		}
 	};
+
+	// 모달이 열릴 때 선택값 초기화
+	useEffect(() => {
+		if (handleOpen) {
+			setSelectedItem(null);
+		}
+	}, [handleOpen]);
 
 	return (
 		<Modal open={handleOpen} onClose={handleColse} size="xs">
@@ -46,7 +54,7 @@ const SellStorageSearchModal = ({ title, confirm, cancel, onStorageSelect, handl
 			<Modal.Body>
 			<Table
 				height={400}
-				data={storageList}
+				data={itemList}
 			>
 
 				<Column width={100} align="center" fixed>
@@ -54,24 +62,29 @@ const SellStorageSearchModal = ({ title, confirm, cancel, onStorageSelect, handl
 					
 					<Cell>{(rowData) => (
 						<Checkbox
-						checked={selectedStorage?.storage_code === rowData.storage_code} 
+						checked={selectedItem?.item_code === rowData.item_code} 
                         onChange={(_, checked) => 
-							storageChkChange(checked, rowData)}
+							itemChkChange(checked, rowData)}
 						/>
 						)}
 			  		</Cell>
 				</Column>
 
 				<Column width={100} align="center" fixed>
-					<HeaderCell>창고 코드</HeaderCell>
-					<Cell>{(rowData) => rowData.storage_code}</Cell>
+					<HeaderCell>물품코드</HeaderCell>
+					
+					<Cell>{(rowData) => rowData.item_code}</Cell>
 				</Column>
 
-				<Column width={150}>
-					<HeaderCell>창고명</HeaderCell>
-					<Cell>{(rowData) => rowData.storage_name}</Cell>
+				<Column width={250}>
+					<HeaderCell>물품명</HeaderCell>
+					<Cell>{(rowData) => rowData.item_name}</Cell>
 				</Column>
 
+				<Column width={250}>
+					<HeaderCell>규격</HeaderCell>
+					<Cell>{(rowData) => rowData.item_standard}</Cell>
+				</Column>
 	  		</Table>
 			</Modal.Body>
 			<Modal.Footer>
@@ -86,11 +99,10 @@ const SellStorageSearchModal = ({ title, confirm, cancel, onStorageSelect, handl
 	);
 };
 
-SellStorageSearchModal.defaultProps = {
-	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
+SellItemSearchModal.defaultProps = {
 	title: "제목을 입력해주세요.",
 	confirm: "확인",
 	cancel: "취소",
 };
 
-export default SellStorageSearchModal;
+export default SellItemSearchModal;

@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +33,15 @@ public class SellSearchController {
 		System.out.println("<<< sell_searchList >>>");
 
 		return new ResponseEntity<>(service.sellSearchList(), HttpStatus.OK);
+	}
+	
+	// http://localhost:8081/sell/searchResultItemList
+	// 판매 물품 검색 - 원하는 품목 선택 검색한 물품 리스트
+	@PostMapping("/searchResultItemList")
+	public ResponseEntity<List<SellSearchDTO>> sell_searchResultList(@RequestBody SellSearchDTO dto) {
+		System.out.println("<<< sell_searchResultList >>>");
+
+		return new ResponseEntity<>(service.sellSearchResultList(dto), HttpStatus.OK);
 	}
 	
 	// http://localhost:8081/sell/searchItem

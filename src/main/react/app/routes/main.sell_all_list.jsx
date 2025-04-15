@@ -1,16 +1,14 @@
-import { Table, Button, Tabs, Message, ButtonToolbar, Checkbox, Modal, InputPicker,
+import { Table, Button, Tabs, Message, ButtonToolbar, Checkbox, Modal,
 		InputGroup, Input } from 'rsuite';
 // import SearchIcon from '@rsuite/icons/Search';
-import mock from './sell_mock';
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 import SellSalesInvoice from '#components/sell/SellSalesInvoice.jsx';
 import SellSlipAll from '#components/sell/SellSlipAll';
 import "../components/common/Sell_maintitle.css";
+import AppConfig from "#config/AppConfig.json";
 
 const { Column, HeaderCell, Cell } = Table;
-
-const data = mock(5);
 
 // const confirm = ['미확인', '결재중', '완료'].map(
 // 	confirmChk => ({ label: confirmChk, value: confirmChk })
@@ -19,14 +17,14 @@ const data = mock(5);
   /* 결재 여부 - 선택 데이터 */
 const confirm = ['미확인', '결재중', '완료'].map(
 	(confirmChk) => ({ // 이렇게 하면, 둘다 같게 들어가서, 라벨따로 값따로 안넣어줘도 됩니다.
-		label: confirmChk, // Eugenia
-		value: confirmChk, // Eugenia
+		label: confirmChk, 
+		value: confirmChk,
 	})
 );
 
-const confirmStyles = { width: 100, marginBottom: 0 };
-
 const sell_all_list = () => {
+
+	const navigate = useNavigate();
 
 	// '거래명세서' 모달
 	const [open1, setOpen1] = React.useState(false);
@@ -38,32 +36,63 @@ const sell_all_list = () => {
 	const handleOpen2 = () => setOpen2(true);
 	const handleClose2 = () => setOpen2(false);
 
-	// 날짜별로 No. 붙이기
 	const getNumberedList = (data) => {
-		let currentDate = null;	// 현재 기준이 되는 날짜를 저장할 변수. 처음엔 null로 시작.
-		let count = 0;			// 같은 날짜 내에서 몇 번째 항목인지 세는 카운터
+		let result = [];
+		let groupedByDate = {};
 	
-		return data.map((item) => {
-			// 현재 아이템의 날짜가 이전 아이템과 다르면 (날짜가 바뀌었으면)
-			if (item.order_date !== currentDate) {
-				currentDate = item.order_date;	// 기준 날짜를 현재 날짜로 바꾸고
-				count = 1;		// 첫 번째 항목이니까 count는 1부터 시작
-			} else {
-				count++;	// 날짜가 같으면 같은 날짜의 두 번째, 세 번째...로 증가
+		// 날짜별로 그룹핑
+		data.forEach(item => {
+			if (!groupedByDate[item.order_date]) {
+				groupedByDate[item.order_date] = [];
 			}
-		
-			return {
-				...item,
-				date_no: count	// 새로 붙인 일련번호 추가
-			};
+			groupedByDate[item.order_date].push(item);
 		});
+	
+		// 날짜별로 처리
+		Object.keys(groupedByDate).forEach(date => { 
+			// groupedByDate : 날짜별로 데이터를 묶어둔 객체
+			 // ex: { '2025-04-10': [item1, item2, ...], '2025-04-11': [item3, ...] }
+			let orders = groupedByDate[date];	// 해당 날짜(date)의 전체 주문 데이터 배열
+			let seenOrderIds = new Set();	// 중복된 주문(order_id)을 한 번만 처리하기 위해 사용
+			let count = 1;
+	
+			orders.forEach(item => {
+				if (seenOrderIds.has(item.order_id)) return;	 // 이미 처리한 주문번호(order_id)는 무시
+				seenOrderIds.add(item.order_id);
+	
+				// 같은 order_id의 품목 모으기
+				const sameOrderItems = orders.filter(x => x.order_id === item.order_id);
+													// 주문번호와 item 주문번호가 같은 걸 배열로 만들기
+				const firstItemName = sameOrderItems[0].item_name;
+				const displayName = sameOrderItems.length > 1
+					? `${firstItemName} 외 ${sameOrderItems.length - 1}건`
+					: firstItemName;
+	
+				// 한 줄만 push
+				result.push({
+					...item,
+					date_no: count,
+					item_display: displayName
+				});
+	
+				count++;
+			});
+		});
+
+		return result;
 	};
   
+	const allListDetail = (order_id) => {
+		navigate(`/main/sell_all_list_detail/${order_id}`)
+	}
+
 	// 전체 리스트
 	const [allList, setAllList] = useState([]);
 
+	const fetchURL = AppConfig.fetch['mytest'];
+
 		useEffect(() => {
-			fetch("http://localhost:8081/sell/allList", {
+			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/allList`, {
 				method: "GET"
 			})
 			.then(res => res.json())
@@ -74,6 +103,19 @@ const sell_all_list = () => {
 			});
 		}, []);
 
+
+	const [searchTerm, setSearchTerm] = useState(""); // 검색창 상태 관리
+	
+	// 타이틀 포함한것만 필터
+	// const filteredData = data.filter((item) => item.title.toLowerCase().includes(searchTerm.toLowerCase())); 
+	// // filter메서드는 제공된 함수에 의해 구현된 테스트를 통과한 모든 요소가 포함된 새 배열을 만든다.
+	// // 필터 함수의 조건이 (title에 있는 글자를 포함하는 것이) true인 경우 해당 요소가 배열에 들어간다.
+
+	// // state를 업데이트 해주는 함수
+	// const onSearch = (term) =>{
+	// 	setSearchTerm(term)
+	//   }
+
 	return (
 		<div>
 			<Message type="success" className="main_title">
@@ -83,10 +125,11 @@ const sell_all_list = () => {
 			{/* 검색바 */}
             <div className="status_search_bar">
 				<InputGroup >
-					<Input />
+					<Input placeholder='검색어 입력' />
 					<InputGroup.Button>
 						{/* <SearchIcon /> */}
 					</InputGroup.Button>
+
 				</InputGroup>
             </div>
 
@@ -101,12 +144,13 @@ const sell_all_list = () => {
 				</Tabs.Tab>
 			</Tabs>
 
-			<Table className="all_table"
-			height={500}
-			data={allList}
-			onRowClick={rowData => {
-				console.log(rowData);
-			}}
+			<Table 
+				className="all_table"
+				height={500}
+				data={allList}
+				onRowClick={rowData => {
+					console.log(rowData);
+				}}
 			>	
 			
 			<Column width={50} className="all_text">
@@ -117,7 +161,15 @@ const sell_all_list = () => {
 			<Column width={130} className="all_text">
 				<HeaderCell>등록일자_No.</HeaderCell>
 				<Cell>
-				{(rowData) => `${rowData.order_date}_${rowData.date_no}`}
+					{(rowData) => (
+						<span 
+							onClick={() => allListDetail(rowData.order_id)}
+							// style={{ cursor: 'pointer' }}
+							className="allList-date"
+						>
+							{`${rowData.order_date}_${rowData.date_no}`}
+						</span>
+					)}
 				</Cell>
 			</Column>
 
@@ -135,10 +187,10 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 
-			<Column width={150}  className="all_text">
+			<Column width={200}  className="all_text">
 				<HeaderCell>품목명</HeaderCell>
 				<Cell>
-					{(rowData) => rowData.item_name}
+					{(rowData) => rowData.item_display}
 				</Cell>
 			</Column>
 
@@ -230,10 +282,10 @@ const sell_all_list = () => {
   				<div className="child">
 					<ButtonToolbar>
 						<Link to="/main/sell_insert">
-							<Button appearance="primary">판매 입력</Button>
+							<Button appearance="primary" className="allList_btn">판매 입력</Button>
 						</Link>
 						{/* <Button appearance="primary">저장</Button> */}
-						<Button appearance="primary">선택 삭제</Button>
+						<Button appearance="primary" className="allList_btn">선택 삭제</Button>
 					</ButtonToolbar>
 				</div>
 			</div>

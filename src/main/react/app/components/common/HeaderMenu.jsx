@@ -48,9 +48,10 @@ const HeaderMenu = () => {
 				<Nav>
 					{/* <Nav.Item icon={<ToImage src={mainIcon} fbText="Main" width={32} height={32} />} /> */}
 					<Nav.Menu title="관리운영">
+						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_client") }}>거래처등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_item") }}>상품등록</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("basic_insa") }}>인사관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("att_regAttItems") }}>근태관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="구매관리">

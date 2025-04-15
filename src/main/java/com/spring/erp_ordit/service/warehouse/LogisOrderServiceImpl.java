@@ -1,6 +1,5 @@
 package com.spring.erp_ordit.service.warehouse;
 
-//	import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.spring.erp_ordit.dao.warehouse.*;
+import com.spring.erp_ordit.dto.buy.BuyStatusDTO;
 import com.spring.erp_ordit.dto.warehouse.LogisOrderDTO;
 import com.spring.erp_ordit.dto.warehouse.LogisSalesDTO;
+import com.spring.erp_ordit.dto.warehouse.LogisStatusDTO;
 import com.spring.erp_ordit.dto.warehouse.LogisOrderItemDTO;
 
 @Service
@@ -29,7 +30,7 @@ public class LogisOrderServiceImpl {
 		System.out.println("logisOrder : " + logisOrder);
 		return logisOrder;
 	}
-	
+
 	// 입고 상세
 	@Transactional(readOnly=true)
 	public List<LogisOrderDTO> findByLogisOrderId(int order_id){
@@ -50,6 +51,13 @@ public class LogisOrderServiceImpl {
 	        return null; // 혹은 예외 처리
 	    }
 		return orderDTO;
+	}
+	
+	// 입고 목록 조건 조회
+	public List<LogisStatusDTO> logisOrderSearch(String start_date, String end_date, String client_code, String e_id, Integer storage_code) {
+		System.out.println("LogisOrderServiceImpl - logisOrderSearch");
+		System.out.println(start_date+ " " + end_date + " " +  client_code + " " +  e_id + " " +  storage_code);
+		return logisMapper.logisOrderSearch(start_date, end_date, client_code, e_id, storage_code);
 	}
 	
 

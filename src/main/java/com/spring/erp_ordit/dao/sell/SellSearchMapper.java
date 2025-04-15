@@ -1,6 +1,7 @@
 package com.spring.erp_ordit.dao.sell;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -16,6 +17,10 @@ public interface SellSearchMapper {
 	
 	// 판매 물품 검색 - 등록 물품 리스트
 	public List<SellSearchDTO> sellSearchList();
+	
+	// 판매 물품 검색 - 원하는 품목 선택 검색한 물품 리스트
+	public List<SellSearchDTO> sellSearchResultList(SellSearchDTO dto);
+	
 	
 	// 판매 - 물품 리스트 모달
 	public List<SellSearchDTO> sellItemList();

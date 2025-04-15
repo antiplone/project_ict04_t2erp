@@ -18,11 +18,11 @@ public interface SellRequestClientMapper {
 	public int insertClient(SellRequestClientDTO dto);
 	
 	// 판매_거래처 관리 - 1건 상세조회
-	public SellRequestClientDTO detailClient(int sc_no);
+	public SellRequestClientDTO detailClient(int sc_id);
 	
 	// 판매_거래처 관리 - 수정
 	public int updateClient(SellRequestClientDTO dto);
 	
 	// 판매_거래처 관리 - 삭제
-	public int deleteClient(int sc_no);
+	public int deleteClient(int sc_id);
 }

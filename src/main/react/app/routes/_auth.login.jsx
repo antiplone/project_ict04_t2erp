@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
-import { forwardRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate, redirect, useSubmit } from "@remix-run/react";
 import {
 	Form, Schema,
@@ -9,9 +9,6 @@ import {
 	Panel,
 	VStack,
 //	Divider,
-	InputGroup,
-	Input,
-	Loader
 } from "rsuite";
 
 import AppConfig from "#config/AppConfig.json"
@@ -39,34 +36,53 @@ export async function clientAction({ request }) { // non-GET
 		entity[pair[0]] = pair[1];
 	}
 	//console.log(entity);
-	handleLoading(true);
 
-	const fetchURL = AppConfig.fetch['mytest'];
-	fetch(`${fetchURL.protocol}${fetchURL.url}/auth/get`, {
-		method: "POST",
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(entity)
-	})
-		.then((res) => {
-			handleLoading(false);
-			if (res.ok) {
-				handleLoading(true);
-				entity = res.json();
-				console.log("Promise 시작:", entity);
-				entity.then(
-					res => {
-						handleAuthData(res);
-						console.log("Promise 완료:", res);
-					}
-				);
-			}
+	if (localStorage.length < 1) {
+		handleLoading(true); // 로딩의 시작
+
+		// 사원인증정보 요청
+		const fetchURL = AppConfig.fetch['mytest'];
+		fetch(`${fetchURL.protocol}${fetchURL.url}/auth/get`, {
+			method: "POST",
+			mode: "cors",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(entity)
 		})
-		.finally(() => {
-			handleLoading(false);
-		});
+			.then((res) => {
+
+				handleLoading(false); // 로딩의 끝
+
+				if (res.ok) {
+
+					console.log(res.headers.getSetCookie());
+					handleLoading(true);
+					entity = res.json();
+					console.log("Promise 시작:", entity);
+					entity.then(
+						res => {
+							// 세션처리
+							for (const key in res) {
+								localStorage.setItem(key, res[key]);
+								console.log(localStorage.getItem(key));
+							}
+
+							handleAuthData(res);
+							console.log("Promise 완료:", res);
+						}
+					);
+				}
+			})
+			.finally(() => { // 통신실패시 예외처리
+				handleLoading(false);
+			});
+	}
+	else {
+		alert("세션이 남아있습니다.");
+		localStorage.clear();
+	}
 
 	return redirect("");
 };
@@ -82,25 +98,12 @@ export default function Login() {
 	const [isLoading, checkLoading] = useState(false);
 	handleLoading = checkLoading;
 
-	console.log(location.pathname);
+//	console.log(location.pathname);
 
 	useEffect(() => {
-		if (authData != null)
-			nav("/main");
+		if (authData != null) // redirect로 페이지로 다시 돌아왔을때 인증정보가 있으면,
+			nav("/main", { replace: true });
 	}, [authData, isLoading]);
-
-	const Password = forwardRef((props, ref) => {
-		const [visible, setVisible] = useState(false);
-		const handleChange = () => {
-			setVisible(!visible);
-		};
-
-		return (
-			<InputGroup inside ref={ref} {...props}>
-				<Input type={visible ? "text" : "password"} />
-			</InputGroup>
-		);
-	});
 
 	return (
 		<Stack

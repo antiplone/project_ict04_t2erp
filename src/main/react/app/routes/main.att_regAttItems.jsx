@@ -7,11 +7,15 @@ import AttItemsTable from "#components/attendance/AttItemsTable";
 import AttModal from "#components/attendance/AttModal";
 import "#styles/attendance.css";
 import MessageBox from "#components/common/MessageBox";
-import MetaBox from "#components/common/MetaBox";
 
 import AppConfig from "#config/AppConfig.json";
 
-<MetaBox title="근태 항목 등록" content="기본 항목 등록 - 근태 항목 등록 페이지" />
+export function meta() {
+  return [
+      { title: `${AppConfig.meta.title} : 근태항목등록` },
+      { name: "description", content: "근태항목 페이지" },
+  ];
+};
 
 // @Remix:url(/main/att_regAttItems)
 export default function Att_regAttItems() {

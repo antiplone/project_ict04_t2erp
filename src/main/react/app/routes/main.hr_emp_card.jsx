@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { HrTable } from '#components/hr/HrTable';
 import HrButton from '#components/hr/HrButton';
 import HrModal from '#components/hr/HrModal';
-import { Input, Grid, Col, Button } from 'rsuite';
-import MessageBox from "#components/common/MessageBox";
-import ErrorText from '#components/hr/ErrorText';
-import HrDropdown from '#components/hr/HrDropdown.jsx';
+import { Input, Grid, Col, Button, Message } from 'rsuite';
+import ErrorText from '#components/hr/ErrorText';         // 필수 입력란 미입력 시 에러 메세지
+import HrDropdown from '#components/hr/HrDropdown';
+import HrRadio from '#components/hr/HrRadio';
+import "#components/common/css/common.css";   // Message 컴포넌트
 import HrEmpCardDetail from './main.hr_emp_card_detail.$e_id';
 
 // 초기 입력값 공통 정의
@@ -29,13 +30,13 @@ const initialFormData = {
 };
 
 export default function Hr_emp_card() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);    // useState - 화면에 보여질 값들을 기억
   const [message, setMessage] = useState('');
   const [items, setItems] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [errors, setErrors] = useState({});
-  const [hrCardData, setHrCardData] = useState(initialFormData);
-  const [selectedEid, setSelectedEid] = useState(null);
+  const [hrCardData, setHrCardData] = useState(initialFormData); 
+  const [selectedEid, setSelectedEid] = useState(null);   // 상세페이지에 보여줄 id
 
   // 목록 불러오는 함수
   const fetchHrCardList = () => {
@@ -47,9 +48,9 @@ export default function Hr_emp_card() {
       .catch((err) => console.error('데이터를 불러오지 못했습니다:', err));
   };
 
-  useEffect(() => {
-    fetchHrCardList();
-  }, []);
+  useEffect(() => {     // 화면이 처음 열릴 때 실행
+    fetchHrCardList();  // 사원 목록 서버에서 불러오기
+  }, []);   // 빈배열 처음 한 번만 실행됨
 
   const handleOpen = () => {
     setIsEditMode(false);
@@ -78,10 +79,10 @@ export default function Hr_emp_card() {
 
     if (!hrCardData.e_name.trim()) newErrors.e_name = "이름은 필수 항목입니다.";
     if (!hrCardData.e_tel.trim()) newErrors.e_tel = "전화번호는 필수 항목입니다.";
-    if (!hrCardData.e_position.trim()) newErrors.e_position = "직위는 필수 항목입니다.";
-    if (!hrCardData.e_status.trim()) newErrors.e_status = "재직 상태는 필수 항목입니다.";
     if (!hrCardData.e_email.trim()) newErrors.e_email = "이메일은 필수 항목입니다.";
     if (!hrCardData.e_birth) newErrors.e_birth = "생년월일은 필수 항목입니다.";
+    if (!hrCardData.e_position.trim()) newErrors.e_position = "직위는 필수 항목입니다.";
+    if (!hrCardData.e_status.trim()) newErrors.e_status = "재직 상태는 필수 항목입니다.";    
     if (!hrCardData.e_salary_account_bank.trim()) newErrors.e_salary_account_bank = "은행명은 필수 항목입니다.";
     if (!hrCardData.e_salary_account_num.trim()) newErrors.e_salary_account_num = "계좌번호는 필수 항목입니다.";
     if (!hrCardData.e_salary_account_owner.trim()) newErrors.e_salary_account_owner = "예금주는 필수 항목입니다.";
@@ -155,8 +156,9 @@ export default function Hr_emp_card() {
         />
       ) : (
         <div style={{ padding: '30px', width: '100%' }}>
-          <MessageBox text="인사카드 등록" />
-  
+          <Message type="success" className="main_title">
+              인사카드 등록
+          </Message>
           <div style={{ maxWidth: '1450px' }}>
             <HrTable
               columns={columns}
@@ -181,10 +183,10 @@ export default function Hr_emp_card() {
           </div>
   
           <HrModal
-            title={isEditMode ? "인사카드 수정" : "인사카드 등록"}
-            open={open}
-            handleClose={handleClose}
-            onRegister={isEditMode ? () => {} : handleRegister}
+            title={isEditMode ? "인사카드 수정" : "인사카드 등록"}    // isEditMode === true 인사카드 수정, isEditMode === false 인사카드 등록
+            open={open}       // 모달 열기(true)
+            handleClose={handleClose}     // 모달 닫기
+            onRegister={isEditMode ? () => {} : handleRegister}   // 등록 버튼 눌렀을 때 실행되는 함수
             onDeleteClick={() => {}}
             backdrop="static"
             onBackdropClick={(e) => e.stopPropagation()}
@@ -193,8 +195,8 @@ export default function Hr_emp_card() {
               <Col xs={24}>
                 <label>사원 이름 *</label>
                 <Input
-                  value={hrCardData.e_name}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_name: value })}
+                  value={hrCardData.e_name}   // 현재 상태값
+                  onChange={(value) => setHrCardData({ ...hrCardData, e_name: value })}   // 입력할 때마다 상태 업데이트
                 />
                 <ErrorText message={errors.e_name} />
               </Col>
@@ -205,6 +207,23 @@ export default function Hr_emp_card() {
                   onChange={(value) => setHrCardData({ ...hrCardData, e_tel: value })}
                 />
                 <ErrorText message={errors.e_tel} />
+              </Col>
+              <Col xs={24}>
+                <label>이메일 *</label>
+                <Input
+                  value={hrCardData.e_email}
+                  onChange={(value) => setHrCardData({ ...hrCardData, e_email: value })}
+                />
+                <ErrorText message={errors.e_email} />
+              </Col>
+              <Col xs={24}>
+                <label>생년월일 *</label>
+                <Input
+                  type="date"
+                  value={hrCardData.e_birth}
+                  onChange={(value) => setHrCardData({ ...hrCardData, e_birth: value })}
+                />
+                <ErrorText message={errors.e_birth} />
               </Col>
               <Col xs={24}>
                 <label>직위 *</label>
@@ -225,27 +244,11 @@ export default function Hr_emp_card() {
                 <ErrorText message={errors.e_status} />
               </Col>
               <Col xs={24}>
-                <label>이메일 *</label>
-                <Input
-                  value={hrCardData.e_email}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_email: value })}
-                />
-                <ErrorText message={errors.e_email} />
-              </Col>
-              <Col xs={24}>
-                <label>생년월일 *</label>
-                <Input
-                  type="date"
-                  value={hrCardData.e_birth}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_birth: value })}
-                />
-                <ErrorText message={errors.e_birth} />
-              </Col>
-              <Col xs={24}>
-                <label>입사 구분 (신입/경력)</label>
-                <Input
+                <label>입사 구분</label>
+                <HrRadio
                   value={hrCardData.e_entry}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_entry: value })}
+                  onChange={(val) => setHrCardData({ ...hrCardData, e_entry: val })}
+                  options={['신입', '경력']}
                 />
               </Col>
               <Col xs={24}>

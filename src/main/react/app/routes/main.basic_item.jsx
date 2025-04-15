@@ -40,7 +40,7 @@ export default function Item() {
     fetch('http://localhost:8081/basic/itemList')
       .then(response => response.json())
       .then(data => setItems(data))
-      .catch(error => console.error('데이터를 불러오지 못했습니다:', error));
+      .catch(error => console.error('데이터를 불러오지 못했습니다:', error));     // 요청 실패하면 console에 에러메세지 출력
   };
 
   useEffect(() => {
@@ -181,13 +181,12 @@ export default function Item() {
 
       {/* 기초 등록 - 상품 등록, 수정 */}
       <HrModal
-        title={isEditMode ? "상품 수정" : "상품 등록"} 
+        title={isEditMode ? "상품 수정" : "상품 등록"}
         open={open}
         handleClose={handleClose}
         onRegister={isEditMode ? handleEditSubmit : handleRegister} // 상품 수정(handleEditSubmit)일 때 실행(true면 수정 false면 등록)
         onDeleteClick={handleDeleteClick}
         backdrop="static"  // 배경 클릭 시 모달이 닫히지 않도록 설정
-        onBackdropClick={(e) => e.stopPropagation()} // 배경 클릭 시 모달 닫히지 않게 설정
       >
         <Grid fluid>
           <Col xs={24}>

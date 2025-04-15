@@ -4,6 +4,7 @@ import { Input, Grid, Col, Button } from 'rsuite';
 import HrModal from '#components/hr/HrModal';
 import ErrorText from '#components/hr/ErrorText';
 import HrDropdown from '#components/hr/HrDropdown';
+import HrRadio from '#components/hr/HrRadio.jsx';
 
 export default function HrEmpCardDetail({ e_id, onBack }) {
   const [detail, setDetail] = useState(null);
@@ -11,7 +12,7 @@ export default function HrEmpCardDetail({ e_id, onBack }) {
   const [editData, setEditData] = useState({});
   const [errors, setErrors] = useState({});
 
-  const positionList = ['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무'];
+  const positionList = ['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무'];    // 직위 dropdown 리스트
 
   // 상세 정보 조회
   useEffect(() => {
@@ -120,11 +121,11 @@ export default function HrEmpCardDetail({ e_id, onBack }) {
         <Grid fluid>
           <Col xs={24}><label>사원 이름 *</label><Input value={editData.e_name} onChange={v => setEditData({ ...editData, e_name: v })} /><ErrorText message={errors.e_name} /></Col>
           <Col xs={24}><label>전화번호 *</label><Input value={editData.e_tel} onChange={v => setEditData({ ...editData, e_tel: v })} /><ErrorText message={errors.e_tel} /></Col>
-          <Col xs={24}><label>직위 *</label><HrDropdown title={editData.e_position || '직위를 선택하세요'} items={positionList} onSelect={(v) => setEditData({ ...editData, e_position: v })} style={{ width: '100%' }} /><ErrorText message={errors.e_position} /></Col>
-          <Col xs={24}><label>재직 상태 *</label><Input value={editData.e_status} onChange={v => setEditData({ ...editData, e_status: v })} /><ErrorText message={errors.e_status} /></Col>
           <Col xs={24}><label>이메일 *</label><Input value={editData.e_email} onChange={v => setEditData({ ...editData, e_email: v })} /><ErrorText message={errors.e_email} /></Col>
           <Col xs={24}><label>생년월일 *</label><Input type="date" value={editData.e_birth} onChange={v => setEditData({ ...editData, e_birth: v })} /><ErrorText message={errors.e_birth} /></Col>
-          <Col xs={24}><label>입사 구분</label><Input value={editData.e_entry || ''} onChange={v => setEditData({ ...editData, e_entry: v })} /></Col>
+          <Col xs={24}><label>직위 *</label><HrDropdown title={editData.e_position || '직위를 선택하세요'} items={positionList} onSelect={(v) => setEditData({ ...editData, e_position: v })} style={{ width: '100%' }} /><ErrorText message={errors.e_position} /></Col>
+          <Col xs={24}><label>재직 상태 *</label><Input value={editData.e_status} onChange={v => setEditData({ ...editData, e_status: v })} /><ErrorText message={errors.e_status} /></Col>
+          <Col xs={24}><label>입사 구분</label><HrRadio value={editData.e_entry} onChange={(val) => setEditData({ ...editData, e_entry: val })} options={['신입', '경력']} /></Col>
           <Col xs={24}><label>주소</label><Input value={editData.e_address || ''} onChange={v => setEditData({ ...editData, e_address: v })} /></Col>
           <Col xs={24}><label>사진</label><Input value={editData.e_photo || ''} onChange={v => setEditData({ ...editData, e_photo: v })} /></Col>
           <Col xs={24}><label>급여통장 - 은행 *</label><Input value={editData.e_salary_account_bank} onChange={v => setEditData({ ...editData, e_salary_account_bank: v })} /><ErrorText message={errors.e_salary_account_bank} /></Col>

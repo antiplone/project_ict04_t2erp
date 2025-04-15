@@ -19,8 +19,8 @@ export default function HrDropdown({ title, items, onSelect, style = {} }) {
   );
 }
 
-HrDropdown.propTypes = {
-  title: PropTypes.string,
+HrDropdown.propTypes = {                // value props를 사용하고 있는데 어떤 타입인지 명시해주지 않으면 
+  title: PropTypes.string,              // 경고가 뜰 수 있기 때문에 PropTypes 선언
   items: PropTypes.array.isRequired,
   onSelect: PropTypes.func.isRequired,
   style: PropTypes.object

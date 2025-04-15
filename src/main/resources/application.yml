@@ -2,6 +2,9 @@ spring:
   application: # 응용프로그램 관련설정
     name: erp_ordit # 프로젝트명
 
+  transaction:
+    default-timeout: 15
+
   profiles:
     include: # application-mybatis, application-server 설정을 사전에 포함시킴
       - "server"
@@ -10,4 +13,4 @@ spring:
     
     # 이것만 바꾸면 DB접속을 바꿀수 있어요.
     # publish면 배포버전DB, mytest면 개인DB
-    active: mytest
+    active: publish

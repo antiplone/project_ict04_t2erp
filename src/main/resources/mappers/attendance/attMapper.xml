@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+     
+<mapper namespace="com.spring.erp_ordit.dao.attendance.AttMapper">
+
+    <!-- 기본사항등록 - 근태 항목 -->
+	<!-- 근태 항목 리스트 -->
+	<select id="regAttList" resultType="com.spring.erp_ordit.dto.attendance.AttItemsDTO">
+		SELECT * FROM attendance_view
+	</select>
+    <!-- 근태 항목 등록 -->
+    <insert id="insertAttItems" parameterType="com.spring.erp_ordit.dto.attendance.AttItemsDTO">
+        insert into attendance_tbl(a_code,a_name,a_type,a_note)
+        values(#{a_code},#{a_name},#{a_type},#{a_note})
+    </insert>
+    <!-- 근태 항목 삭제 -->
+    <delete id="deleteAttItems" parameterType="int">
+        DELETE FROM attendance_tbl
+         WHERE a_code = #{a_code}
+    </delete>
+    <!-- 근태 항목 수정 -->
+    <update id="updateAttItems" parameterType="com.spring.erp_ordit.dto.attendance.AttItemsDTO">
+        UPDATE attendance_tbl
+			   SET a_name = #{a_name}
+			     , a_type = #{a_type}
+			     , a_use = #{a_use}
+			     , a_note = #{a_note}
+			 WHERE a_code = #{a_code}
+    </update>
+    
+	<!-- 기본사항등록 - 휴가 항목 등록 -->
+	<select id="regVacaList" resultType="com.spring.erp_ordit.dto.attendance.VacaItemsDTO">
+		SELECT * FROM vacation_view
+	</select>
+	<select id="vacaName" resultType="String">
+		SELECT v_name FROM vacation_tbl
+	</select>
+</mapper>

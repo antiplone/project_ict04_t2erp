@@ -8,6 +8,8 @@ src/main/resources/application-*.yml
 
 ### Java ###
 # Compiled class file
+.classpath
+	### ↑ Added ###
 *.class
 
 # Log file
@@ -356,6 +358,8 @@ poetry.toml
 pyrightconfig.json
 
 ### react ###
+**/bin/
+	### ↑ Added ###
 .DS_*
 **/*.backup.*
 **/*.back.*

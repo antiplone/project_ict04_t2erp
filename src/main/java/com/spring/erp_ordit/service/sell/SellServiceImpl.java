@@ -48,6 +48,13 @@ public class SellServiceImpl implements SellService {
 				System.out.println("서비스 - item : " + item);
 				
 				itemResult += mapper.sell_itemInsert(item);  // insert 성공 시마다 +1
+				
+				if (itemResult == 0) {
+					return 0;
+				}
+				else {
+					mapper.sell_approvalInsert(order_id);
+				}
 			}
 			System.out.println("서비스 - itemResult: " + itemResult);
 			// 총 insert된 row 수 리턴 (order 1건 + item n건)

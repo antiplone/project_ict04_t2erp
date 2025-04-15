@@ -12,6 +12,9 @@ public interface SellSearchService {
 	// 판매 물품 검색 - 물품 전체 리스트
 	public List<SellSearchDTO> sellSearchList();
 	
+	// 판매 물품 검색 - 원하는 품목 선택 검색한 물품 리스트
+	public List<SellSearchDTO> sellSearchResultList(SellSearchDTO dto);
+	
 	// 판매 - 품목명 리스트 모달
 	public List<SellSearchDTO> sellItemList();
 	

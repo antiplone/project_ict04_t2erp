@@ -1,6 +1,8 @@
 package com.spring.erp_ordit.service.sell;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,16 +22,23 @@ public class SellSearchServiceImpl implements SellSearchService {
 	
 	// 판매 물품 검색 - 물품 리스트
 	@Override
-	@Transactional(readOnly=true)
 	public List<SellSearchDTO> sellSearchList() {
 		System.out.println("서비스 - sellSearchList");
 		
 		return SearchMapper.sellSearchList();
 	}
 	
+	// 판매 물품 검색 - 원하는 품목 선택 검색한 물품 리스트
+	@Override
+	public List<SellSearchDTO> sellSearchResultList(SellSearchDTO dto) {
+		System.out.println("서비스 - sellSearchResultList");
+		System.out.println("서비스 - dto: " + dto);
+		
+		return SearchMapper.sellSearchResultList(dto);
+	}
+	
 	// 판매 - 품목명 리스트 모달
 	@Override
-	@Transactional(readOnly=true)
 	public List<SellSearchDTO> sellItemList() {
 		System.out.println("서비스 - sellItemList");
 		
@@ -38,7 +47,6 @@ public class SellSearchServiceImpl implements SellSearchService {
 	
 	// 판매 - 거래처 검색 모달
 	@Override
-	@Transactional(readOnly=true)
 	public List<SellSearchClientDTO> sellClientList() {
 		System.out.println("서비스 - sellClientList");
 		
@@ -60,5 +68,5 @@ public class SellSearchServiceImpl implements SellSearchService {
 		
 		return SearchMapper.sellWarehouseList();
 	}
-	
+
 }

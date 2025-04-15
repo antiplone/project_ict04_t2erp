@@ -17,7 +17,7 @@ public class SellOrderItemDTO {	// 판매입력 _ 아이템 정보 DTO
 	
 	private int order_id; 				// 고유 주문번호
 	private int order_type; 			// 판매팀 구매 입력 1, 구매팀 구매 입력 2
-//	private String order_date; 			// 입력일자
+	private String item_standard; 			// 규격
 //	private int e_id; 					// 사원코드 
 //	private int client_code; 			// 거래처코드  				   	 
 //	private int storage_code;	 		// 창고코드

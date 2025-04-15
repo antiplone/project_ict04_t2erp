@@ -44,31 +44,31 @@ public class SellRequestClientController {
 		return new ResponseEntity<>(service.insertClient(dto), HttpStatus.CREATED);
 	}
 	
-	// http://localhost:8081/sell/reqClientDetail/{sc_no}
+	// http://localhost:8081/sell/reqClientDetail/{sc_id}
 	// 판매_거래처 관리 - 1건 상세
-	@GetMapping("/reqClientDetail/{sc_no}")
-	public ResponseEntity<SellRequestClientDTO> detail_ReqClient(@PathVariable int sc_no) {
+	@GetMapping("/reqClientDetail/{sc_id}")
+	public ResponseEntity<SellRequestClientDTO> detail_ReqClient(@PathVariable int sc_id) {
 		System.out.println("<<< detail_ReqClient >>>");
-
-		return new ResponseEntity<>(service.detailClient(sc_no), HttpStatus.OK);
+		
+		return new ResponseEntity<>(service.detailClient(sc_id), HttpStatus.OK);
 	}
 	
-	// http://localhost:8081/sell/reqClientUpdate/{sc_no}
+	// http://localhost:8081/sell/reqClientUpdate/{sc_id}
 	// 판매_거래처 관리 - 수정
-	@PutMapping("/reqClientUpdate/{sc_no}")
-	public ResponseEntity<Integer> update_ReqClient(@PathVariable int sc_no, @RequestBody SellRequestClientDTO dto) {
+	@PutMapping("/reqClientUpdate/{sc_id}")
+	public ResponseEntity<Integer> update_ReqClient(@PathVariable int sc_id, @RequestBody SellRequestClientDTO dto) {
 		System.out.println("<<< update_ReqClient >>>");
 
-		return new ResponseEntity<>(service.updateClient(sc_no, dto), HttpStatus.OK);
+		return new ResponseEntity<>(service.updateClient(sc_id, dto), HttpStatus.OK);
 	}
 	
 	// http://localhost:8081/sell/reqClientDel/{sc_no}
 	// 판매_거래처 관리 - 삭제
-	@DeleteMapping("/reqClientDel/{sc_no}")
-	public ResponseEntity<?> delete_ReqClient(@PathVariable int sc_no) {
-		System.out.println("<<< delete_ReqClient >>> sc_no: " + sc_no);
+	@DeleteMapping("/reqClientDel/{sc_id}")
+	public ResponseEntity<?> delete_ReqClient(@PathVariable int sc_id) {
+		System.out.println("<<< delete_ReqClient >>> sc_no: " + sc_id);
 		
-		return new ResponseEntity<>(service.deleteClient(sc_no), HttpStatus.OK);	// 200
+		return new ResponseEntity<>(service.deleteClient(sc_id), HttpStatus.OK);	// 200
 		
 	}
 	

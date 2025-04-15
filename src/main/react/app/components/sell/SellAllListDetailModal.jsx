@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Table, Modal, Checkbox } from "rsuite";
+import AppConfig from "#config/AppConfig.json";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -8,9 +9,11 @@ const SellAllListDetailModal = ({ title, confirm, cancel, onReqClientSelect, han
 	
 	const [allDetail, setAllDetail] = useState([]);
 
+	const fetchURL = AppConfig.fetch['mytest'];
+
 		// fetch()를 통해 톰캣서버에게 데이터를 요청
-		useEffect((sc_no) => {
-			fetch("http://localhost:8081/sell/reqClientDetail/" + sc_no)
+		useEffect((sc_id) => {
+			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientDetail/` + sc_id)
 			.then(res => res.json())
 			.then(res => {
 				setReqClientList(res);
@@ -35,7 +38,7 @@ const SellAllListDetailModal = ({ title, confirm, cancel, onReqClientSelect, han
 
 					<Column width={50} align="center" fixed resizable>
 						<HeaderCell>No.</HeaderCell>
-						<Cell>{(rowData) => rowData.sc_no}</Cell>
+						<Cell>{(rowData) => rowData.sc_id}</Cell>
 					</Column>
 
 					<Column width={100} fixed resizable>

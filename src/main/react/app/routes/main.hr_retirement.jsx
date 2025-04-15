@@ -1,14 +1,19 @@
 /* eslint-disable react/react-in-jsx-scope */
 import Tables from "#components/attendance/Tables.jsx";
 import MessageBox from "#components/common/MessageBox";
-import MetaBox from "#components/common/MetaBox";
 import { useState } from "react";
 import { Container } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 
-<MetaBox title="인사 관리" content="인사 관리 - 퇴직 관리 페이지" />
 
-export default function Per_retirement() {
+export function meta() {
+  return [
+    { title: `${AppConfig.meta.title} : 인사관리` },
+    { name: "description", content: "퇴직관리 페이지" },
+  ];
+};
+
+export default function Hr_retirement() {
   const fetchURL = AppConfig.fetch['mytest'];
   
   const [resiData, setResiData] = useState([]); // 퇴사자 데이터를 저장하는 상태 변수.
@@ -18,7 +23,7 @@ export default function Per_retirement() {
     { label: "사원번호", dataKey: "e_id", width: 70 },
     { label: "사원명", dataKey: "e_name", width: 80 },
     { label: "부서", dataKey: "d_name", width: 100 },
-    { label: "직위", dataKey: "e_position", width: 50 },
+    { label: "직위", dataKey: "e_position", width: 60 },
     { label: "퇴사유형", dataKey: "resi_type", width: 80 },
     { label: "퇴사신청일", dataKey: "resi_app_date", width: 100, render: rowData => new Date(rowData.resi_app_date).toLocaleDateString("ko-KR") },
     { label: "퇴사예정일", dataKey: "resi_date", width: 100 },

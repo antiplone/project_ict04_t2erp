@@ -13,4 +13,5 @@ public interface BuyItemMapper {  // 작성자 - hjy 물품정보 찾는 Mapper 
 	@Select("SELECT item_id FROM item_tbl WHERE item_code = #{item_code}")
     Long findItemIdByCode(String item_code);
 	
+	
 }

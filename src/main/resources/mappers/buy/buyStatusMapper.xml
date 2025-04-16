@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.erp_ordit.dao.buy.BuyStatusMapper"> <!-- 구매 물품정보 입력 -->
+
+	<!-- 구매팀 - 구매입력시 자동으로 주문상태 '진행중'으로 입력 -->
+	<insert id="insertOrderStatus" parameterType="com.spring.erp_ordit.dto.buy.BuyStatusDTO">
+	    INSERT INTO order_status_tbl (order_id, order_status)
+	    VALUES (#{order_id},#{order_status})
+	</insert>
+	
+	<!-- 주문정보 수정처리시 - 주문상태가 존재할때는 update, 주문상태 값이 없을때는 insert -->
+	<!-- 존재하는 주문상태 조회 -->
+	<select id="existsStatus" resultType="int">
+	    SELECT COUNT(*) FROM order_status_tbl WHERE order_id = #{order_id}
+	</select>
+	
+	<!-- 주문상태 수정 -->
+	<update id="updateOrderStatus">
+	    UPDATE order_status_tbl
+	    SET order_status = #{order_status}
+	    WHERE order_id = #{order_id}
+	</update>
+	
+	 <!-- 주문상태 입력 -->
+	<insert id="insertOrderStatus2">
+	    INSERT INTO order_status_tbl (order_id, order_status)
+	    VALUES (#{order_id}, #{order_status})
+	</insert>
+
+</mapper>   

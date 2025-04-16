@@ -32,4 +32,16 @@ public class EmpAuthService {
 //			Map.entry("call", "ㅇㅇ")
 //		);
 	}
+	
+	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+	public Map<String, Object> postTransaction(Map<String, Object> form) {
+
+		if (dao.searchQuery(form) > 0)
+			return null;
+
+		return dao.getQuery(form);
+//		return Map.ofEntries(
+//			Map.entry("call", "ㅇㅇ")
+//		);
+	}
 }

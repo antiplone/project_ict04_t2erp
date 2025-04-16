@@ -3,15 +3,22 @@ import SearchIcon from '@rsuite/icons/Search';
 import { Link } from "@remix-run/react";
 import { Button, Container, DateRangePicker, Input, InputGroup, /*Message,  Form, */ Table } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
-import "#components/common/css/common.css";
+import "#styles/common.css";
 import InchargeSearchModal from "#components/logis/InchargeSearchModal.jsx";
 import ClientSearchModal from "#components/logis/ClientSearchModal.jsx";
 import StorageSearchModal from "#components/logis/StorageSearchModal.jsx";
+import EmailFormModal from "#components/email/EmailFormModal.jsx";
 import MessageBox from '../components/common/MessageBox';
 
 const OrderIncomeList = () => {
     const fetchURL = Appconfig.fetch['mytest']
     const [orderList, setOrderList] = useState([]); // 초기값을 모르므로 빈배열로 Warehousingist에 대입
+    
+     const [modalOpen, setModalOpen] = useState(false); // modal visibility state
+    
+    // Handle modal open/close
+    const handleOpenModal = () => setModalOpen(true);
+    const handleCloseModal = () => setModalOpen(false);
 
     // // fetch()를 통해 서버에게 데이터를 요청
     useEffect(() => { // 통신 시작 하겠다.
@@ -55,6 +62,10 @@ const OrderIncomeList = () => {
     const [selectedStorage, setSelectedStorage] = useState(null);
     const [selectedStorageName, setSelectedStorageName] = useState(null);
     const [isStorageModalOpen, setStorageModalOpen] = useState(false);
+	/*const [to, setTo] = useState('');
+	const [subject, setSubject] = useState('');
+	const [body, setBody] = useState('');
+	const [message, setMessage] = useState('');*/
     
     /* 검색 조건*/
 
@@ -118,8 +129,8 @@ const OrderIncomeList = () => {
 						<InputGroup className="input">
 							<InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
 							<Input value={selectedIncharge || ""} readOnly />
-							<InputGroup.Button tabIndex={-1}>
-								<SearchIcon onClick={() => setInchargeModalOpen(true)} />
+							<InputGroup.Button className="cursor_pointer" tabIndex={-1} onClick={() => setInchargeModalOpen(true)} >
+								<SearchIcon />
 							</InputGroup.Button>
 						</InputGroup>
 						<Input value={selectedInchargeName || ""} readOnly style={{ width: 150 }} />
@@ -127,8 +138,8 @@ const OrderIncomeList = () => {
 					<InputGroup className="input">
 						<InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
 						<Input value={selectedClient || ""} readOnly />
-						<InputGroup.Addon>
-							<SearchIcon onClick={() => setClientModalOpen(true)} />
+						<InputGroup.Addon className="cursor_pointer" onClick={() => setClientModalOpen(true)} >
+							<SearchIcon />
 						</InputGroup.Addon>
 					</InputGroup>
 					<Input value={selectedClientName || ""} readOnly style={{ width: 150 }} />
@@ -136,8 +147,8 @@ const OrderIncomeList = () => {
 					<InputGroup className="input">
 						<InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
 						<Input value={selectedStorage || ""} readOnly />
-						<InputGroup.Addon>
-							<SearchIcon onClick={() => setStorageModalOpen(true)} />
+						<InputGroup.Addon className="cursor_pointer" onClick={() => setStorageModalOpen(true)} >
+							<SearchIcon />
 						</InputGroup.Addon>
 					</InputGroup>
 					<Input value={selectedStorageName || ""} readOnly style={{ width: 150 }} />
@@ -193,7 +204,16 @@ const OrderIncomeList = () => {
                         <Table.Cell dataKey="storage_name" />
                     </Table.Column>
                 </Table>
-            </Container>
+                      {/* Email Modal */}
+				<div width={50} height={50}>
+					<Button appearance="primary" onClick={handleOpenModal}>
+						이메일 보내기
+					</Button>
+				</div>
+
+				{/* EmailFormModal Component */}
+				<EmailFormModal open={modalOpen} onClose={() => setModalOpen(false)} />
+             </Container>
         </div>
     );
 }

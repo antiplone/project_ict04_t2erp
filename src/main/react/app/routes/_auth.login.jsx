@@ -74,6 +74,9 @@ export async function clientAction({ request }) { // non-GET
 						}
 					);
 				}
+				else {
+					alert("로그인을 실패했습니다.");
+				}
 			})
 			.finally(() => { // 통신실패시 예외처리
 				handleLoading(false);

@@ -1,8 +1,9 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable react/prop-types */
 import mainIcon from "#images/common/main.png";
-import brand from "#images/common/brand.png";
+import settingIcon from "#images/common/setting.png";
 import arrow from "#images/common/arrow.png";
+
 import "#components/common/css/common.css";
 
 import { useState, useEffect } from "react";
@@ -79,8 +80,8 @@ const HeaderMenu = () => {
 					>
 						<Nav.Item onSelect={() => { navigate("finance_main") }}>회계메인</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("finance_sales_resume") }}>매출매입거래</Nav.Item>
-						<Nav.Item onSelect={() => alert("한국")}>전자계산서</Nav.Item>
-						<Nav.Item onSelect={() => alert("한국")}>전표관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("finance_invoice") }}>전자계산서</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("finance_voucher") }}>전표관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="문의">
 						<Nav.Item>Company</Nav.Item>
@@ -91,7 +92,7 @@ const HeaderMenu = () => {
 					</Nav.Menu>
 				</Nav>
 				<Nav pullRight>
-					<Nav.Item>설정</Nav.Item>
+					<Nav.Item icon={<ToImage src={settingIcon} width={20} height={20} />}>설정</Nav.Item>
 				</Nav>
 			</Navbar>
 

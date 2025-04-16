@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spring.erp_ordit.dto.buy.BuyOrderDTO;
 import com.spring.erp_ordit.dto.buy.BuyOrderDetailDTO;
-import com.spring.erp_ordit.dto.buy.BuyOrderItemDTO;
 import com.spring.erp_ordit.dto.buy.BuyOrderRequest;
 import com.spring.erp_ordit.dto.buy.BuyStatusDTO;
 import com.spring.erp_ordit.service.buy.BuyOrderServiceImpl;
@@ -98,11 +96,7 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
     public ResponseEntity<?> buyInsertAll(@RequestBody BuyOrderRequest request) {	// @RequestBody BuyOrderRequest request => 화면에서 입력받은 JSON 데이터를 BuyOrderRequest 객체로 변환해서 받음
 		System.out.println("<<< buyInsertAll >>>");
 		
-		// BuyOrderRequest 클래스에서 주문정보와 물품정보을 get으로 꺼냄.
-		BuyOrderDTO order = request.getOrder();
-	    List<BuyOrderItemDTO> items = request.getItems();
-		
-		buyOrderService.setBuyInsertAll(order, items);
+		buyOrderService.setBuyInsertAll(request);
 		
 		return new ResponseEntity<>("구매 입력 성공!", HttpStatus.CREATED);
     }

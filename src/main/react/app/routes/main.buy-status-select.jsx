@@ -3,13 +3,13 @@
 import AppConfig from "#config/AppConfig.json";
 import * as rs from 'rsuite';
 import Table from 'rsuite/Table';
-import SearchIcon from '@rsuite/icons/Search';
 import React, { useState } from "react";
 import "../styles/buy.css";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import StorageSearchModal from "#components/buy/StorageSearchModal.jsx";
 import ItemSearchModal from "#components/buy/ItemSearchModal.jsx";
+import readingGlasses from "#images/common/readingGlasses.png";
 
 export function meta() {
     return [
@@ -24,8 +24,6 @@ const { Column, HeaderCell, Cell } = Table;
 const buyType = ["부과세율 적용", "부가세율 미적용"].map(
     (item) => ({ label: item, value: item })
 );
-
-const searchStyle = { width: 100 };
 
 export default function BuyStatusSelect() {
 
@@ -118,44 +116,78 @@ export default function BuyStatusSelect() {
                         <rs.InputGroup.Addon style={{ width: 80 }}>담당자</rs.InputGroup.Addon>
                         <rs.Input value={selectedIncharge || ""} readOnly />
                         <rs.InputGroup.Button tabIndex={-1}>
-                            <SearchIcon onClick={() => setInchargeModalOpen(true)} />
+                        <img
+                            src={readingGlasses}
+                            alt="돋보기"
+                            width={20}
+                            height={20}
+                            onClick={() => setInchargeModalOpen(true)}
+                            style={{ cursor: "pointer" }}
+                        />
                         </rs.InputGroup.Button>
                     </rs.InputGroup>
-                    <rs.Input value={selectedInchargeName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
+                    <rs.Input value={selectedInchargeName || ""} readOnly style={{ width: 180 }} />
 
                     <rs.InputGroup className="input">
                         <rs.InputGroup.Addon style={{ width: 80 }}>거래처</rs.InputGroup.Addon>
                         <rs.Input value={selectedClient || ""} readOnly />
                         <rs.InputGroup.Addon>
-                            <SearchIcon onClick={() => setClientModalOpen(true)} />
+                        <img
+                            src={readingGlasses}
+                            alt="돋보기"
+                            width={20}
+                            height={20}
+                            onClick={() => setClientModalOpen(true)}
+                            style={{ cursor: "pointer" }}
+                        />
                         </rs.InputGroup.Addon>
                     </rs.InputGroup>
-                    <rs.Input value={selectedClientName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
+                    <rs.Input value={selectedClientName || ""} readOnly style={{ width: 180 }} />
                 </div>
 
                 <div className="inputBox">
                     <rs.InputGroup className="input">
                         <rs.InputGroup.Addon style={{ width: 80 }}>거래유형</rs.InputGroup.Addon>
-                        <rs.InputPicker placeholder="거래유형 선택" data={buyType} style={{ width: 224 }} value={selectedType} onChange={setSelectedType} />
+                        <rs.InputPicker 
+                            placeholder="거래유형 선택" 
+                            data={buyType} 
+                            style={{ width: 224, border: 'none' }} 
+                            value={selectedType} 
+                            onChange={setSelectedType} 
+                        />
                     </rs.InputGroup>
 
                     <rs.InputGroup className="input">
                         <rs.InputGroup.Addon style={{ width: 80 }}>입고창고</rs.InputGroup.Addon>
                         <rs.Input value={selectedStorage || ""} readOnly />
                         <rs.InputGroup.Addon>
-                            <SearchIcon onClick={() => setStorageModalOpen(true)} />
+                        <img
+                            src={readingGlasses}
+                            alt="돋보기"
+                            width={20}
+                            height={20}
+                            onClick={() => setStorageModalOpen(true)}
+                            style={{ cursor: "pointer" }}
+                        />
                         </rs.InputGroup.Addon>
                     </rs.InputGroup>
-                    <rs.Input value={selectedStorageName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
+                    <rs.Input value={selectedStorageName || ""} readOnly style={{ width: 180 }} />
 
                     <rs.InputGroup className="input">
                         <rs.InputGroup.Addon style={{ width: 80 }}> 품목코드</rs.InputGroup.Addon>
                         <rs.Input value={selectedItem || ""} readOnly />
                         <rs.InputGroup.Addon>
-                            <SearchIcon onClick={() => setItemModalOpen(true)} />
+                            <img
+                            src={readingGlasses}
+                            alt="돋보기"
+                            width={20}
+                            height={20}
+                            onClick={() => setItemModalOpen(true)}
+                            style={{ cursor: "pointer" }}
+                        />
                         </rs.InputGroup.Addon>
                     </rs.InputGroup>
-                    <rs.Input value={selectedItemName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
+                    <rs.Input value={selectedItemName || ""} readOnly style={{ width: 180 }} />
                 </div>
 
                 <ClientSearchModal handleOpen={isClientModalOpen} handleColse={() => setClientModalOpen(false)} onClientSelect={(code, name) => { setSelectedClient(code); setSelectedClientName(name); }} />
@@ -163,16 +195,19 @@ export default function BuyStatusSelect() {
                 <StorageSearchModal handleOpen={isStorageModalOpen} handleColse={() => setStorageModalOpen(false)} onStorageSelect={(code, name) => { setSelectedStorage(code); setSelectedStorageName(name); }} />
                 <ItemSearchModal handleOpen={isItemModalOpen} handleColse={() => setItemModalOpen(false)} onItemSelect={(code, name) => { setSelectedItem(code); setSelectedItemName(name); }} />
 
-                <rs.Button appearance="primary" onClick={handleSearch} style={searchStyle}>검색</rs.Button>
+                <rs.Button appearance="ghost" color="green" onClick={handleSearch} className="statusSearchBtn">검색</rs.Button>
                 <hr />
 
                 <Table height={400} width={1500} data={orderStatus} onRowClick={itemData => console.log(itemData)}>
-                    <Column width={160}><HeaderCell>발주일자</HeaderCell><Cell dataKey="order_date" /></Column>
-                    <Column width={160}><HeaderCell>거래처명</HeaderCell><Cell dataKey="client_name" /></Column>
-                    <Column width={160}><HeaderCell>품목명</HeaderCell><Cell dataKey="item_name" /></Column>
-                    <Column width={160}><HeaderCell>수량</HeaderCell><Cell dataKey="quantity" /></Column>
-                    <Column width={160}><HeaderCell>단가</HeaderCell><Cell dataKey="price" /></Column>
-                    <Column width={160}><HeaderCell>금액합계</HeaderCell><Cell dataKey="total" /></Column>
+                    <Column width={150}><HeaderCell>발주일자</HeaderCell><Cell dataKey="order_date" /></Column>
+                    <Column width={150}><HeaderCell>발주번호</HeaderCell><Cell dataKey="order_id" /></Column>
+                    <Column width={150}><HeaderCell>거래처명</HeaderCell><Cell dataKey="client_name" /></Column>
+                    <Column width={200}><HeaderCell>품목명</HeaderCell><Cell dataKey="item_name" /></Column>
+                    <Column width={150}><HeaderCell>수량</HeaderCell><Cell dataKey="quantity" /></Column>
+                    <Column width={150}><HeaderCell>단가</HeaderCell><Cell dataKey="price" /></Column>
+                    <Column width={150}><HeaderCell>공급가액</HeaderCell><Cell dataKey="supply" /></Column>
+                    <Column width={150}><HeaderCell>부가세</HeaderCell><Cell dataKey="vat" /></Column>
+                    <Column width={150}><HeaderCell>금액합계</HeaderCell><Cell dataKey="total" /></Column>
                 </Table>
             </>
         </rs.Container>

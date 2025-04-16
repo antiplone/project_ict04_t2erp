@@ -17,7 +17,8 @@ import lombok.ToString;
 @Builder
 public class SellRequestClientDTO {
 	
-	private int sc_no; 				// 요청 넘버
+	private int sc_id; 				// 요청 넘버
+	private String sc_req_d_name;	// 요청 부서
 	private String sc_client_name; 	// 거래처명
 	private String sc_ceo; 			// 대표자명
 	private int sc_biz_num; 		// 사업자등록번호

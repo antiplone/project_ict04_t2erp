@@ -5,9 +5,88 @@
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
      
 <mapper namespace="com.spring.erp_ordit.dao.sell.SellAllListMapper">
-	<!-- 판매 물품 검색 - 전체 리스트 -->
+	<!-- 판매 조회, 판매 현황 - 전체 리스트 -->
     <select id="sellAllList" resultType="com.spring.erp_ordit.dto.sell.SellAllListDTO">
       SELECT * FROM sell_allList_view
+      WHERE order_show = 'Y'
     </select>
+    
+    <!-- 판매 현황 - 검색 후 나오는 전체 리스트 -->
+    <!-- <select id="sellStatusSearchList" resultType="com.spring.erp_ordit.dto.sell.SellAllListDTO">
+      SELECT * FROM sell_allList_view
+      <where>
+		  <choose>
+		    <when test="order_date != null and order_date != '' and e_id != null and e_id != '' and client_code != null and client_code != ''
+		    			and transaction_type != null and transaction_type != '' and storage_code != null and storage_code != ''
+		    			and item_code != null and item_code != ''">
+		      order_date = #{order_date} AND e_id = #{e_id} AND client_code = #{client_code}
+		      AND transaction_type = #{transaction_type} AND storage_code = #{storage_code}
+		      AND item_code = #{item_code}
+		    </when>
+		    <when test="item_code != null and item_code != ''">
+		      item_code = #{item_code}
+		    </when>
+		    <when test="storage_name != null and storage_name != ''">
+		      storage_name = #{storage_name}
+		    </when>
+		  </choose>
+	  </where>
+    </select> -->
+    
+    <!-- 판매 현황 - 검색 후 나오는 전체 리스트 -->
+    <select id="sellStatusSearchList" resultType="com.spring.erp_ordit.dto.sell.SellAllListDTO">
+      SELECT * FROM sell_allList_view
+      <where>
+	    <if test="order_date_start != null and order_date_start != '' 
+              and order_date_end != null and order_date_end != ''">
+		      AND order_date BETWEEN #{order_date_start} AND #{order_date_end}
+		    </if>
+	    <if test="e_id != null and e_id != ''">
+	      AND e_id = #{e_id}
+	    </if>
+	    <if test="client_code != null and client_code != ''">
+	      AND client_code = #{client_code}
+	    </if>
+	    <if test="transaction_type != null and transaction_type != ''">
+	      AND transaction_type = #{transaction_type}
+	    </if>
+	    <if test="storage_code != null and storage_code != ''">
+	      AND storage_code = #{storage_code}
+	    </if>
+	    <if test="item_code != null and item_code != ''">
+	      AND item_code = #{item_code}
+	    </if>
+	  </where>
+    </select>
+    
+    <!-- 판매 조회 - 1건 상세 조회 -->
+    <select id="detailAllList" resultType="com.spring.erp_ordit.dto.sell.SellAllListDTO">
+      SELECT * FROM sell_allList_view
+      WHERE order_id = #{order_id}
+      AND order_show = 'Y'
+    </select>
+    
+    <!-- 판매 조회 - 수정 시작 -->
+    <!-- 주문정보 -->
+    <update id="updateAllList_order" parameterType="int">
+		UPDATE order_tbl
+   		   SET e_id=#{e_id}, client_code=#{client_code}, storage_code=#{storage_code}, transaction_type=#{transaction_type}, shipment_order_date=#{shipment_order_date}
+ 		 WHERE order_id = #{order_id}
+    </update>
+    
+    <!-- 아이템 정보 -->
+    <update id="updateAllList_item" parameterType="int">
+		UPDATE order_item_tbl
+	 	   SET item_id=#{item_code}-1000, item_code=#{item_code}, quantity=#{quantity}, price=#{price}, supply=#{supply}, vat=#{vat}, total=#{total}
+		 WHERE order_id = #{order_id}
+	</update>
+    <!-- 판매 입력 - 등록 끝 -->
+    
+    <!-- 판매 조회 - 삭제 요청 -->
+    <update id="deleteAllList" parameterType="int">
+		UPDATE order_tbl
+   		   SET order_show = 'N'
+ 		 WHERE order_id = #{order_id}
+    </update>
    
 </mapper>

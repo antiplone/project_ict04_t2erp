@@ -4,7 +4,7 @@ import AppConfig from "#config/AppConfig.json";
 import * as rs from 'rsuite';
 import Table from 'rsuite/Table';
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 export function meta() {
   return [
@@ -18,6 +18,8 @@ const { Column, HeaderCell, Cell } = Table;
 export default function BuySelectDetail() {
 
   const { order_id } = useParams();
+
+  const navigate = useNavigate();
 
   // 주문정보 (단일 객체)
   const [orderInfo, setOrderInfo] = useState({});
@@ -81,7 +83,9 @@ export default function BuySelectDetail() {
       .then((res) => {
         if (res === "ok") {
           alert('삭제 성공!');
-          setBuyOrderAllList(buyOrderAllList.filter(order => order.order_id !== order_id)); // UI 업데이트
+          navigate("/main/buy-select");
+          // setBuyOrderAllList(buyOrderAllList.filter(order => order.order_id !== order_id)); // UI 업데이트
+          
         } else {
           alert('삭제 실패');
         }
@@ -89,55 +93,63 @@ export default function BuySelectDetail() {
       .catch(error => console.error("삭제 오류:", error));
   }
 
+  const styles = {
+    backgroundColor: '#f8f9fa',
+  };
+
   return (
     <>
       <rs.Container>
 
         <rs.Message type="info" style={{ width: 1500 }}>
-          <strong>구매 상세페이지</strong>
+          <strong>구매 상세페이지 - 주문번호: {order_id}</strong>
         </rs.Message>
         <br />
         <>
-          <Table height={100} width={1500} data={[orderInfo]} onRowClick={OrderData => console.log(OrderData)}>
-            <Column width={120}><HeaderCell>발주번호</HeaderCell><Cell dataKey="order_id" /></Column>
-            <Column width={120}><HeaderCell>발주일자</HeaderCell><Cell dataKey="order_date" /></Column>
-            <Column width={120}><HeaderCell>구매요청 부서</HeaderCell><Cell dataKey="order_type" /></Column>
-            <Column width={120}><HeaderCell>담당자명</HeaderCell><Cell dataKey="e_name" /></Column>
-            <Column width={120}><HeaderCell>거래처명</HeaderCell><Cell dataKey="client_name" /></Column>
-            <Column width={120}><HeaderCell>거래유형</HeaderCell><Cell dataKey="transaction_type" /></Column>
-            <Column width={120}><HeaderCell>입고창고</HeaderCell><Cell dataKey="storage_name" /></Column>
-            <Column width={120}><HeaderCell>진행상태</HeaderCell><Cell dataKey="order_status" /></Column>
+          <Table height={100} width={1350} data={[orderInfo]} onRowClick={OrderData => console.log(OrderData)}>
+            <Column width={150}><HeaderCell style={styles}>발주번호</HeaderCell><Cell dataKey="order_id" /></Column>
+            <Column width={150}><HeaderCell style={styles}>발주일자</HeaderCell><Cell dataKey="order_date" /></Column>
+            <Column width={150}><HeaderCell style={styles}>구매요청 부서</HeaderCell><Cell dataKey="order_type" /></Column>
+            <Column width={150}><HeaderCell style={styles}>담당자명</HeaderCell><Cell dataKey="e_name" /></Column>
+            <Column width={150}><HeaderCell style={styles}>거래처명</HeaderCell><Cell dataKey="client_name" /></Column>
+            <Column width={150}><HeaderCell style={styles}>거래유형</HeaderCell><Cell dataKey="transaction_type" /></Column>
+            <Column width={150}><HeaderCell style={styles}>입고창고</HeaderCell><Cell dataKey="storage_name" /></Column>
+            <Column width={150}><HeaderCell style={styles}>납기일자</HeaderCell><Cell dataKey="delivery_date" /></Column>
+            <Column width={150}><HeaderCell style={styles}>진행상태</HeaderCell><Cell dataKey="order_status" /></Column>
             {/* <Column width={120}><HeaderCell>회계처리 여부</HeaderCell><Cell dataKey="" /></Column> */}
           </Table>
         </>
 
+        <rs.Divider style={{maxWidth: 1200}}/>
         <>
-          <Table height={400} width={1500} data={orderItems} onRowClick={itemData => console.log(itemData)}>
-            <Column width={120}><HeaderCell>물품코드</HeaderCell><Cell dataKey="item_code" /></Column>
-            <Column width={120}><HeaderCell>물품명</HeaderCell><Cell dataKey="item_name" /></Column>
-            <Column width={120}><HeaderCell>수량</HeaderCell><Cell dataKey="quantity" /></Column>
-            <Column width={120}><HeaderCell>단가</HeaderCell><Cell dataKey="price" /></Column>
-            <Column width={120}><HeaderCell>공급가액</HeaderCell><Cell dataKey="supply" /></Column>
-            <Column width={120}><HeaderCell>부가세</HeaderCell><Cell dataKey="vat" /></Column>
-            <Column width={120}><HeaderCell>총액</HeaderCell><Cell dataKey="total" /></Column>
+          <Table height={400} width={1200} data={orderItems} onRowClick={itemData => console.log(itemData)}>
+            <Column width={150}><HeaderCell style={styles}>물품코드</HeaderCell><Cell dataKey="item_code" /></Column>
+            <Column width={300}><HeaderCell style={styles}>물품명</HeaderCell><Cell dataKey="item_name" /></Column>
+            <Column width={150}><HeaderCell style={styles}>수량</HeaderCell><Cell dataKey="quantity" /></Column>
+            <Column width={150}><HeaderCell style={styles}>단가</HeaderCell><Cell dataKey="price" /></Column>
+            <Column width={150}><HeaderCell style={styles}>공급가액</HeaderCell><Cell dataKey="supply" /></Column>
+            <Column width={150}><HeaderCell style={styles}>부가세</HeaderCell><Cell dataKey="vat" /></Column>
+            <Column width={150}><HeaderCell style={styles}>총액</HeaderCell><Cell dataKey="total" /></Column>
           </Table>
         </>
 
       </rs.Container>
 
-      <div style={{ display: 'flex' }}>
+      <rs.Divider style={{maxWidth: 1200}}/>
+
+      <div className="buyUpdateBtnBox">
         <Link to={`/main/buy-order-update/${order_id}`}>
-          <rs.Button appearance="primary" style={{ width: 100 }}>
+          <rs.Button appearance="ghost" color="blue" className="buyUpdateBtn">
             수정
           </rs.Button>
         </Link>
 
-        <rs.Button appearance="primary" style={{ width: 100 }} onClick={() => deleteOrderItem(orderInfo.order_id)}>
+        <rs.Button appearance="ghost" color="red" className="buyUpdateBtn" onClick={() => deleteOrderItem(orderInfo.order_id)}>
           삭제
         </rs.Button>
 
         <Link to={`/main/buy-select`}>
-          <rs.Button appearance="primary" style={{ width: 100 }}>
+          <rs.Button appearance="ghost" color="cyan" className="buyUpdateBtn">
             목록
           </rs.Button>
         </Link>

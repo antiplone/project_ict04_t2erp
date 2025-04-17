@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Message, Form, Input, ButtonToolbar, Button, Tabs } from 'rsuite';
-import "../components/common/Sell_maintitle.css";
+import "#styles/sell.css";
 import SellRequestClientAction from "./main.sell_request_client_list";
 import AppConfig from "#config/AppConfig.json";
+
+// sell_request_client_list => 거래처 등록 요청 페이지
 
 const Textarea = React.forwardRef((props, ref) => (
     <Input {...props} as="textarea" ref={ref} />

@@ -1,0 +1,214 @@
+/* 판매 페이지 CSS */
+
+
+/* 각 페이지 메인 타이틀 폰트 설정 */
+.main_title {
+    margin: 20px 20px 20px 0px;
+    font-size: 15px;
+    font-weight: bold;
+    max-width: 1500px;
+}
+
+/* sell_search_item.jsx */
+/* 표 헤더 폰트 설정 */
+.search_title {
+    margin: 30px 0px 5px 10px;
+    font-size: 13px;
+    max-width: 1200px;
+}
+
+/* 테이블 설정 */
+.search_table {
+    margin-left: 5px;
+    max-width: 1200px;
+}
+
+/* 리스트 폰트 */
+.search_text {
+    text-align: center;
+}
+
+/* 물품검색 버튼 */
+.search_btn{
+    display: flex;
+    justify-content: center; /* 가로 가운데 정렬 */
+    margin-top: 30px;
+}
+
+/* sell_all_list.jsx */
+/* 표 헤더 폰트 설정 */
+.all_title {
+    margin: 30px 0px 5px 10px;
+    font-size: 13px;
+    max-width: 1350px;
+}
+
+/* 테이블 설정 */
+.all_table {
+    margin-left: 5px;
+    max-width: 1350px;
+}
+
+/* 리스트 폰트 */
+.all_text {
+    margin-left: 2px;
+}
+
+/* 판매입력 버튼 */
+.all_listBtn{
+    display: flex;
+    justify-content: center; /* 가로 가운데 정렬 */
+    margin-top: 30px;
+}
+
+/* 등록일자 */
+.allList-date {
+    cursor: pointer;
+    font-weight: normal;
+    transition: font-weight 0.2s;   
+    /* transition : font-weight 속성이 바뀔 때, 0.2초 동안 부드럽게 변하게 하기 */
+}
+.allList-date:hover {
+    font-weight: bold;
+}
+
+
+/* sell_all_list_detail.jsx - 구매 조회 상세페이지 */
+/* 버튼 */
+.sell_DetailBtnBox {
+    display: flex;
+    gap: 20px;
+}
+
+.sell_DetailBtn {
+    width: 80px;
+    height: 35px;
+}
+
+/* sell_all_list_update - 판매 입력 수정 */
+/* 입력 form */
+.updateItem {
+    max-width: 1300px !important;
+}
+.sellUpdateFrom {
+    display: flex;
+    /* flex-wrap: wrap; */
+    gap: 5px;
+    align-items: flex-start;
+    padding: 0px;
+  }
+
+.updateBox_price {
+    margin-top: 20px !important;;
+}
+
+.inputBox {
+    display: flex;
+    justify-content: flex-start; /* 왼쪽 정렬로 고정 */
+    width: 100%;
+    max-width: 1500px;
+    height: 40px;
+    margin-bottom: 10px;
+    gap: 20px;
+}
+.updateInput {
+    display: flex;
+    justify-content: flex-start; /* 왼쪽 정렬로 고정 */
+    width: 250px;
+    gap: 20px;
+}
+
+/* 
+.updateBox {
+    width: 150px !important;
+    /* !important : rsuite <Form.Control> 컴포넌트일 경우 CSS 적용이 까다로울 수 있음.
+                    !important를 붙여줘야 rsuite 기본 스타일을 덮을 수 있다 
+} */
+
+
+/* sell_insert.jsx - 판매 입력 */
+/* 폼 내용 */
+.add_final {
+    max-width: 1500px;
+}
+
+.form_div {
+    display: flex;
+    width: 960px;
+    height: 40px;
+    margin-bottom: 10px;
+}
+
+.add_div {
+    display: flex;
+    margin-right: 20px;
+    width: 70;
+}
+.insert_input {
+    width: 300px;
+}
+.insert_inputBox {
+    width: 200px;
+}
+
+/* 입력 하위 칸 */
+.addTabel {
+    text-align:center;
+    max-width: 1500px;
+    margin-left: 20px;
+}
+
+/* sell_status_select.jsx - 판매 현황 */
+/* 폼 내용 */
+.status_div {
+    display: flex;
+    margin-right: 30px;
+}
+.status_input {
+    width: 300px;
+}
+.status_inputBox {
+    width: 200px;
+}
+.status_inputBox2 {
+    width: 150px;
+}
+
+
+/* sell_request_client_list.js */
+/* 리스트 - 테이블 타이틀 */
+.r_title {
+    text-align: center;
+}
+
+/* Sell_sell_request_client_detail.js */
+/* 테이블 */
+.detail {
+    width: 500px;
+    text-align:center;
+    margin: 0 auto;
+
+}
+.reqDetailBtn {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    gap: 10px; /* 버튼 사이 간격 */
+    padding-top: 10px;
+}
+
+
+/* sell_insert 저장, 초기화 - 버튼 */
+.resultContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .resultBtn {
+    text-align: center;
+  }
+  
+  .total {
+    font-weight: bold;
+  }

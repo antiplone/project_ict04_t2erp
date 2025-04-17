@@ -13,6 +13,15 @@ import com.spring.erp_ordit.dto.sell.SellOrderItemDTO;
 @Repository
 public interface SellAllListMapper {
 	
+	// 판매 입력 - 등록_주문정보
+	public int sell_orderInsert(SellOrderDTO dto);
+	
+	// 판매 입력 - 등록_물품 정보
+	public int sell_itemInsert(SellOrderItemDTO itemDto);
+	
+	// 판매 입력 - 등록_결재 테이블
+	public int sell_approvalInsert(int order_id);
+		
 	// 판매 조회, 판매 현황 - 판매 입력한 전체 리스트
 	public List<SellAllListDTO> sellAllList();
 	
@@ -22,10 +31,10 @@ public interface SellAllListMapper {
 	// 판매 조회 - 1건 상세 조회
 	public List<SellAllListDTO> detailAllList(int order_id);
 	
-	// 판매 조회 - 수정_주문정보
+	// 판매 조회 - 입력건 수정_주문정보
 	public int updateAllList_order(SellOrderDTO dto);
 	
-	// 판매 조회 - 수정_물품정보
+	// 판매 조회 - 입력건 수정_물품정보
 	public int updateAllList_item(SellOrderItemDTO itemDto);
 	
 	// 판매 조회 - 삭제

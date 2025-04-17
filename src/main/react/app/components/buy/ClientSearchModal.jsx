@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import AppConfig from "#config/AppConfig.json";
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Checkbox } from "rsuite";
+import { Button, Table, Modal, Checkbox, InputGroup, Input } from "rsuite";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -10,6 +10,7 @@ const ClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen,
 
 	const [clientList, setClientList] = useState([]);
 	const [selectedClient, setSelectedClient] = useState(null);
+	const [searchKeyword, setSearchKeyword] = useState("");
 
 	const fetchURL = AppConfig.fetch["mytest"];
 
@@ -46,9 +47,21 @@ const ClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen,
 				<Modal.Title>거래처 검색</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
+				<InputGroup style={{ marginBottom: 10 }}>
+					<Input
+						placeholder="거래처명 또는 코드로 검색"
+						value={searchKeyword}
+						onChange={setSearchKeyword}
+					/>
+				</InputGroup>
 				<Table
 					height={400}
-					data={(clientList ?? []).filter(client => client !== null && client !== undefined)}
+					data={clientList.filter(client =>
+					(!searchKeyword ||
+						client.client_name?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+						client.client_code?.toString().includes(searchKeyword)
+					)
+					)}
 				>
 
 					<Column width={100} align="center" fixed>
@@ -76,7 +89,18 @@ const ClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen,
 				</Table>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button onClick={handleSubmit} appearance="primary">
+				<Button
+					appearance="primary"
+					onClick={() => {
+						if (selectedClient) {
+							onClientSelect(selectedClient.client_code, selectedClient.client_name);
+						} else {
+							// 선택 안 했을 경우 null 전달
+							onClientSelect(null, null);
+						}
+						handleColse(); // 모달 닫기
+					}}
+				>
 					{confirm}
 				</Button>
 				<Button onClick={handleColse} appearance="subtle">

@@ -3,6 +3,7 @@
 import AppConfig from "#config/AppConfig.json";
 import React, { useState, useEffect } from "react";
 import { Button, Table, Modal, Checkbox } from "rsuite";
+import { Input, InputGroup } from "rsuite";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -10,6 +11,7 @@ const ItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen, han
 
 	const [itemList, setItemList] = useState([]);
 	const [selectedItem, setSelectedItem] = useState(null);
+	const [searchKeyword, setSearchKeyword] = useState("");
 
 	const fetchURL = AppConfig.fetch["mytest"];
 
@@ -46,9 +48,22 @@ const ItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen, han
 				<Modal.Title>물품 검색</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
+				<InputGroup style={{ marginBottom: 10 }}>
+					<Input
+						placeholder="물품명 또는 코드로 검색"
+						value={searchKeyword}
+						onChange={setSearchKeyword}
+					/>
+				</InputGroup>
+
 				<Table
 					height={400}
-					data={(itemList ?? []).filter(item => item !== null && item !== undefined)}
+					data={itemList.filter(item =>
+					(!searchKeyword ||
+						item.item_name?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+						item.item_code?.toString().includes(searchKeyword)
+					)
+					)}
 				>
 
 					<Column width={100} align="center" fixed>
@@ -77,7 +92,18 @@ const ItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen, han
 				</Table>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button onClick={handleSubmit} appearance="primary">
+				<Button
+					appearance="primary"
+					onClick={() => {
+						if (selectedItem) {
+							onItemSelect(selectedItem.item_code, selectedItem.item_name);
+						} else {
+							// 선택 안 했을 경우 null 전달
+							onItemSelect(null, null);
+						}
+						handleColse(); // 모달 닫기
+					}}
+				>
 					{confirm}
 				</Button>
 				<Button onClick={handleColse} appearance="subtle">

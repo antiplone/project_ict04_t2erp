@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Modal, Form, Radio, RadioGroup, Button, ButtonGroup, Schema } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
+import Btn from "./Btn";
 
 const { StringType } = Schema.Types;
 
@@ -15,6 +16,8 @@ const model = Schema.Model({
 
 const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
   const fetchURL = AppConfig.fetch['mytest'];
+  const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
+
   const [att, setAtt] = useState({
     a_code: "",
     a_name: "",
@@ -50,7 +53,7 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
     }
 
     try {
-      const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/attendance/updateAttItems/${att.a_code}`, {
+      const res = await fetch(`${attURL}/updateAttItems/${att.a_code}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json;charset=utf-8" },
         body: JSON.stringify(att),
@@ -79,7 +82,7 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
         <Form fluid model={model} formValue={att} onChange={handleChange}>
           <Form.Group controlId="a_code">
             <Form.ControlLabel>근태코드</Form.ControlLabel>
-            <Form.Control value={att.a_code} disabled readOnly />
+            <Form.Control name="a_code" value={att.a_code} disabled readOnly />
           </Form.Group>
 
           <Form.Group controlId="a_name">
@@ -121,10 +124,8 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <ButtonGroup>
-          <Button appearance="primary" onClick={handleSubmit}>저장</Button>
-          <Button appearance="subtle" onClick={onClose}>취소</Button>
-        </ButtonGroup>
+        <Btn text="저장" onClick={handleSubmit} size="sm" />
+        <Btn text="취소" onClick={onClose} size="sm" style={{ color: "grey", borderColor: "grey" }} />
       </Modal.Footer>
     </Modal>
   );

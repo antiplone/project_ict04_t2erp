@@ -2,6 +2,12 @@ spring:
   application: # 응용프로그램 관련설정
     name: erp_ordit # 프로젝트명
 
+#  jackson:  # Spring Boot의 기본 시간대는 UTC이기 때문에, 한국시간(KST) 으로 변경
+#    time-zone: Asia/Seoul
+#  datasource:
+#    hikari:
+#      connection-init-sql: SET time_zone = 'Asia/Seoul';
+
   transaction:
     default-timeout: 15
 
@@ -9,6 +15,7 @@ spring:
     include: # application-mybatis, application-server 설정을 사전에 포함시킴
       - "server"
       - "mybatis"
+      - "email"
     default: none
     
     # 이것만 바꾸면 DB접속을 바꿀수 있어요.

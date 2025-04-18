@@ -8,7 +8,6 @@ import {
   Radio,
   RadioGroup,
   Schema,
-  SelectPicker,
 } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 
@@ -29,6 +28,7 @@ const model = Schema.Model({
 
 const AttModal = ({ open, onClose, onReloading }) => {
   const fetchURL = AppConfig.fetch['mytest'];
+  const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
 
   const [formError, setFormError] = useState({});
   const [vacationList, setVacationList] = useState([]);
@@ -41,13 +41,13 @@ const AttModal = ({ open, onClose, onReloading }) => {
     v_name: "",
   });
 
-  const handleChange = (formValue) => {
+  const attChange = (formValue) => {
     setAtt(formValue);
     const check = model.check(formValue);
     setFormError(check);
   };
 
-  const handleTypeChange = (value) => {
+  const vNameChange = (value) => {
     const updated = { ...att, a_type: value, v_name: "" };
     setAtt(updated);
     if (value === "휴가") {
@@ -66,7 +66,7 @@ const AttModal = ({ open, onClose, onReloading }) => {
   };
 
   const insertAtt = async () => {
-    const response = await fetch(`${fetchURL.protocol}${fetchURL.url}/attendance/addAttItems`, {
+    const response = await fetch(`${attURL}/addAttItems`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(att), // form 상태
@@ -102,7 +102,7 @@ const AttModal = ({ open, onClose, onReloading }) => {
         <Modal.Title>근태항목등록</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form model={model} formValue={att} onChange={handleChange} fluid>
+        <Form model={model} formValue={att} onChange={attChange} fluid>
           <Form.Group controlId="a_code">
             <Form.ControlLabel>근태코드 *</Form.ControlLabel>
             <Form.Control name="a_code" />
@@ -116,7 +116,7 @@ const AttModal = ({ open, onClose, onReloading }) => {
 
           <Form.Group controlId="a_type">
             <Form.ControlLabel>근태유형</Form.ControlLabel>
-            <RadioGroup inline name="a_type" value={att.a_type} onChange={handleTypeChange}>
+            <RadioGroup inline name="a_type" value={att.a_type} onChange={vNameChange}>
               <Radio value="기본">기본</Radio>
               <Radio value="휴가">휴가</Radio>
               <Radio value="출/퇴근">출/퇴근</Radio>

@@ -1,7 +1,14 @@
+import brand from "#images/common/brand.png";
+import backImg from "#images/common/back.png";
+import rightImg from "#images/common/right.png";
+
 import "rsuite/Sidebar/styles/index.css";
 
 import { useState } from "react";
-import { HStack, IconButton, Nav, Sidebar, Sidenav, Stack, Text } from "rsuite";
+import { HStack, Button, Nav, Sidebar, Sidenav, Stack, Text } from "rsuite";
+
+import ToImage from "#components/res/ToImage";
+
 
 const SideMenu = () => {
 
@@ -10,7 +17,7 @@ const SideMenu = () => {
 	return (
 		<Sidebar
 			style={{ display: "flex", flexDirection: "column" }}
-			width={expand ? 260 : 56}
+			width={expand ? 232 : 56}
 			collapsible
 		>
 			<Sidenav.Header>
@@ -24,7 +31,7 @@ const SideMenu = () => {
 				<Sidenav.Body>
 					<Nav defaultActiveKey="1">
 						<Nav.Item eventKey="1">
-							대시보드
+							<Text>대시보드</Text>
 						</Nav.Item>
 						<Nav.Item
 							eventKey="2"
@@ -70,12 +77,9 @@ const NavToggle = ({ expand, onChange }) => {
 			className="nav-toggle"
 			justifyContent={expand ? "flex-end" : "center"}
 		>
-			<IconButton
-				onClick={onChange}
-				appearance="subtle"
-				size="lg"
-//				icon={expand ? <ArrowLeftLineIcon /> : <ArrowRightLineIcon />}
-			/>
+			<Button appearance="subtle" onClick={onChange}>
+				{expand ? <ToImage src={backImg} width={24} height={24} /> : <ToImage src={rightImg} width={24} height={24} />}
+			</Button>
 		</Stack>
 	);
 };
@@ -88,6 +92,7 @@ const Brand = ({ expand }) => {
 			justifyContent={"center"}
 			spacing={12}
 		>
+			<ToImage src={brand} width={32} height={32} />
 			{expand && <Text size={24}>Ordit</Text>}
 		</HStack>
 	);

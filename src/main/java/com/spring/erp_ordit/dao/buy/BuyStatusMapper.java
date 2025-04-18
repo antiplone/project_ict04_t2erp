@@ -14,11 +14,11 @@ public interface BuyStatusMapper {	// 작성자 - hjy, 구매팀 - 주문상태 
 	
 	// 구매팀 - 주문수정시 주문상태 수정
 	// 1. 상태 존재 여부 확인 (기존 order_id가 있는지)
-    int existsStatus(Long order_id);
+	public int existsStatus(Long order_id);
 
-    // 2. 상태 업데이트
-    int updateOrderStatus(BuyStatusDTO orderStatus);
+    // 2. 기존 상태 삭제
+	public int deleteOrderStatus(BuyStatusDTO orderStatus);
 
     // 3. 상태 입력
-    int insertOrderStatus2(BuyStatusDTO orderStatus);
+	public int insertOrderStatus2(BuyStatusDTO orderStatus);
 }

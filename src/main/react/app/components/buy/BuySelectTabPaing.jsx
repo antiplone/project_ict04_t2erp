@@ -1,15 +1,13 @@
 // 구매팀 - 구매조회 탭 결재중
 import AppConfig from "#config/AppConfig.json";
-import { Table, Button, Checkbox, ButtonToolbar } from 'rsuite';
+import { Table, Button, ButtonToolbar } from 'rsuite';
 import React, { useEffect, useState } from 'react';
 import '../../styles/buy.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const { Column, HeaderCell, Cell } = Table;
 
 export default function BuySelectTabPaing() {
-
-    const navigate = useNavigate();
 
     const [buyOrderPayingList, setBuyOrderPayingList] = useState([]); // 초기값을 모르므로 빈배열로 buyList에 대입
 
@@ -38,30 +36,11 @@ export default function BuySelectTabPaing() {
         backgroundColor: '#f8f9fa',
     };
 
-    // 삭제
-    const deleteOrderItem = (order_id) => {
-        console.log("삭제할 주문 ID:", order_id); // 디버깅용 로그
-
-        fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrder/` + order_id, {
-            method: 'DELETE',
-        })
-            .then((res) => res.text())
-            .then((res) => {
-                if (res === "ok") {
-                    alert('삭제 성공!');
-                    setBuyOrderPayingList(buyOrderPayingList.filter(order => order.order_id !== order_id)); // UI 업데이트
-                } else {
-                    alert('삭제 실패');
-                }
-            })
-            .catch(error => console.error("삭제 오류:", error));
-    }
-
     return (
         <>
             <Table height={500} data={buyOrderPayingList} style={{ maxWidth: 1500 }}>
 
-            <Column width={120}>
+                <Column width={120}>
                     <HeaderCell style={styles}>등록일자</HeaderCell>
                     <Cell dataKey="order_date" />
                 </Column>
@@ -83,7 +62,10 @@ export default function BuySelectTabPaing() {
 
                 <Column width={150}>
                     <HeaderCell style={styles}>금액합계</HeaderCell>
-                    <Cell dataKey="total" />
+                    <Cell>
+                        {(totalData) => new Intl.NumberFormat().format(totalData.total)}
+                        {/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
+                    </Cell>
                 </Column>
 
                 <Column width={150}>
@@ -100,11 +82,6 @@ export default function BuySelectTabPaing() {
                     <HeaderCell style={styles}>납기일자</HeaderCell>
                     <Cell dataKey="delivery_date" />
                 </Column>
-                {/* 
-                <Column width={150}>
-                    <HeaderCell style={styles}>회계반영 여부</HeaderCell>
-                    <Cell dataKey="closing_staus"/>
-                </Column> */}
 
                 <Column width={120}>
                     <HeaderCell style={styles}>진행상태</HeaderCell>
@@ -129,7 +106,7 @@ export default function BuySelectTabPaing() {
                     <Cell style={{ padding: '6px' }}>
                         {buyOrderPayingList => (
                             <Link to={`/main/buy-select-detail/${buyOrderPayingList.order_id}`}>
-                                <Button color="green" appearance='ghost' onClick={() => detailOrder(buyOrderPayingList.order_id)}>
+                                <Button color="green" appearance='ghost'>
                                     조회
                                 </Button>
                             </Link>
@@ -141,9 +118,8 @@ export default function BuySelectTabPaing() {
             <>
                 <ButtonToolbar>
                     <Link to="/main/buy-insert">
-                        <Button appearance="primary" style={{ marginTop: 20 }} >구매 입력</Button>
+                        <Button appearance="ghost" color="blue" style={{ marginTop: 20 }} >구매 입력</Button>
                     </Link>
-                    {/* <Button appearance="primary">선택 삭제</Button> */}
                 </ButtonToolbar>
             </>
 

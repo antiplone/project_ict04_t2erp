@@ -18,10 +18,11 @@
     
 }
 
-/* 구매 수정페이지  */
+/* 구매 수정페이지 -주문정보 행 한줄 */
 .BuyUpdateFrom {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; /* 왼쪽 정렬로 고정 */
+    gap: 20px;
 }
 
 /* 구매 입력 페이지 - 구매입력 */
@@ -45,21 +46,29 @@
 }
 
 /* 구매 입력 페이지 - 총합계 */
-.totalSum {
+.insertTotalSum {
     display: flex;
     justify-content: flex-end; /* 오른쪽 정렬로 고정 */
     width: 100%;
-    max-width: 1200px;
+    max-width: 1350px;
     font-weight: bold;
 }
 
-/* 구매 입력 페이지 - 행추가, 저장버튼 */
-.buyInsertBtnBox {
+.updateTotalSum {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬로 고정 */
+    width: 100%;
+    max-width: 1500px;
+    font-weight: bold;
+}
+
+/* 구매 팀 버튼 - 행추가, 저장버튼 */
+.buyBtnBox {
     display: flex;
     gap: 20px;
 }
 
-.buyInsertBtn {
+.buyBtn {
     width: 80px;
     height: 35px;
 }
@@ -67,6 +76,12 @@
 /* 구매현황 페이지 - 검색 버튼 */
 .statusSearchBtn {
     width: 80px;
+    height: 35px;
+    margin-top: 10px;
+}
+
+.statusExcelBtn {
+    width: 100px;
     height: 35px;
     margin-top: 10px;
 }

@@ -23,4 +23,7 @@ public class BuyOrderRequest {	// 작성자 - hjy , 구매팀 주문요청 @Requ
 	
 	@JsonProperty("items")
     private List<BuyOrderItemDTO> items; // 주문에 해당하는 물품정보
+	
+	@JsonProperty("status")
+	private BuyStatusDTO status;		 // 진행상태
 }

@@ -1,16 +1,15 @@
-import { Table, Button, Tabs, Message, ButtonToolbar, Checkbox, Modal, InputPicker,
-		InputGroup, Input } from 'rsuite';
-// import SearchIcon from '@rsuite/icons/Search';
-import mock from './sell_mock';
+import { Table, Button, Tabs, Message, ButtonToolbar, 
+	Checkbox, Modal } from 'rsuite';
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 import SellSalesInvoice from '#components/sell/SellSalesInvoice.jsx';
 import SellSlipAll from '#components/sell/SellSlipAll';
-import "../components/common/Sell_maintitle.css";
+import "#styles/sell.css";
+import AppConfig from "#config/AppConfig.json";
+
+// sell_all_list => 판매 조회 페이지
 
 const { Column, HeaderCell, Cell } = Table;
-
-const data = mock(5);
 
 // const confirm = ['미확인', '결재중', '완료'].map(
 // 	confirmChk => ({ label: confirmChk, value: confirmChk })
@@ -19,14 +18,14 @@ const data = mock(5);
   /* 결재 여부 - 선택 데이터 */
 const confirm = ['미확인', '결재중', '완료'].map(
 	(confirmChk) => ({ // 이렇게 하면, 둘다 같게 들어가서, 라벨따로 값따로 안넣어줘도 됩니다.
-		label: confirmChk, // Eugenia
-		value: confirmChk, // Eugenia
+		label: confirmChk, 
+		value: confirmChk,
 	})
 );
 
-const confirmStyles = { width: 100, marginBottom: 0 };
-
 const sell_all_list = () => {
+
+	const navigate = useNavigate();
 
 	// '거래명세서' 모달
 	const [open1, setOpen1] = React.useState(false);
@@ -38,86 +37,128 @@ const sell_all_list = () => {
 	const handleOpen2 = () => setOpen2(true);
 	const handleClose2 = () => setOpen2(false);
 
-	// 날짜별로 No. 붙이기
 	const getNumberedList = (data) => {
-		let currentDate = null;	// 현재 기준이 되는 날짜를 저장할 변수. 처음엔 null로 시작.
-		let count = 0;			// 같은 날짜 내에서 몇 번째 항목인지 세는 카운터
+		let result = [];
+		let groupedByDate = {};
 	
-		return data.map((item) => {
-			// 현재 아이템의 날짜가 이전 아이템과 다르면 (날짜가 바뀌었으면)
-			if (item.order_date !== currentDate) {
-				currentDate = item.order_date;	// 기준 날짜를 현재 날짜로 바꾸고
-				count = 1;		// 첫 번째 항목이니까 count는 1부터 시작
-			} else {
-				count++;	// 날짜가 같으면 같은 날짜의 두 번째, 세 번째...로 증가
+		// 날짜별로 그룹핑
+		data.forEach(item => {
+			if (!groupedByDate[item.order_date]) {
+				groupedByDate[item.order_date] = [];
 			}
-		
-			return {
-				...item,
-				date_no: count	// 새로 붙인 일련번호 추가
-			};
+			groupedByDate[item.order_date].push(item);
 		});
+	
+		// 날짜별로 처리
+		Object.keys(groupedByDate).forEach(date => { 
+			// groupedByDate : 날짜별로 데이터를 묶어둔 객체
+			 // ex: { '2025-04-10': [item1, item2, ...], '2025-04-11': [item3, ...] }
+			let orders = groupedByDate[date];	// 해당 날짜(date)의 전체 주문 데이터 배열
+			let seenOrderIds = new Set();	// 중복된 주문(order_id)을 한 번만 처리하기 위해 사용
+			let count = 1;
+	
+			orders.forEach(item => {
+				if (seenOrderIds.has(item.order_id)) return;	 // 이미 처리한 주문번호(order_id)는 무시
+				seenOrderIds.add(item.order_id);
+	
+				// 같은 order_id의 품목 모으기
+				const sameOrderItems = orders.filter(x => x.order_id === item.order_id);
+													// 주문번호와 item 주문번호가 같은 걸 배열로 만들기
+				const firstItemName = sameOrderItems[0].item_name;
+				const displayName = sameOrderItems.length > 1
+					? `${firstItemName} 외 ${sameOrderItems.length - 1}건`
+					: firstItemName;
+	
+				// 한 줄만 push
+				result.push({
+					...item,
+					date_no: count,
+					item_display: displayName
+				});
+	
+				count++;
+			});
+		});
+
+		return result;
 	};
   
+	const allListDetail = (order_id) => {
+		navigate(`/main/sell_all_list_detail/${order_id}`)
+	}
+
 	// 전체 리스트
 	const [allList, setAllList] = useState([]);
 
-		useEffect(() => {
-			fetch("http://localhost:8081/sell/allList", {
-				method: "GET"
-			})
-			.then(res => res.json())
-			.then(res => {
-				console.log(1, res);
-				const numbered = getNumberedList(res);
-				setAllList(numbered);
-			});
-		}, []);
+	const fetchURL = AppConfig.fetch['mytest'];
 
+	useEffect(() => {
+		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/allList`, {
+			method: "GET"
+		})
+		.then(res => res.json())
+		.then(res => {
+			console.log(1, res);
+			const numbered = getNumberedList(res);
+			setAllList(numbered);
+		});
+	}, []);
+
+	// 탭 상태(기본값 1 : 전체리스트)
+	const [activeTab, setActiveTab] = useState("1");
+
+	// 결재 상태에 따라 필터링 만들기
+	const filteredList = allList.filter(row => {
+		if (activeTab === "1") return true; // 전체
+		if (activeTab === "2") return row.order_status === "진행중";
+		if (activeTab === "3") return row.order_status === "미확인";
+		if (activeTab === "4") return row.order_status === "승인";
+		return false;
+	  });
+	
 	return (
 		<div>
 			<Message type="success" className="main_title">
 				판매조회
 			</Message>
 
-			{/* 검색바 */}
-            <div className="status_search_bar">
-				<InputGroup >
-					<Input />
-					<InputGroup.Button>
-						{/* <SearchIcon /> */}
-					</InputGroup.Button>
-				</InputGroup>
-            </div>
-
-			<Tabs defaultActiveKey="1" className="all_title">
-				<Tabs.Tab eventKey="1" title="전체">
-				</Tabs.Tab>
-				<Tabs.Tab eventKey="2" title="결재중">
-				</Tabs.Tab>
-				<Tabs.Tab eventKey="3" title="미확인">
-				</Tabs.Tab>
-				<Tabs.Tab eventKey="4" title="확인">
-				</Tabs.Tab>
+			<Tabs 
+				activeKey={activeTab}
+				onSelect={(key) => setActiveTab(key)}
+				className="all_title"
+			>
+				<Tabs.Tab eventKey="1" title={`전체 (${allList.length})`} />
+				<Tabs.Tab eventKey="2" title={`결재중 (${allList.filter(r => r.order_status === '진행중').length})`} />
+				<Tabs.Tab eventKey="3" title={`미확인 (${allList.filter(r => r.order_status === '미확인').length})`} />
+				<Tabs.Tab eventKey="4" title={`확인 (${allList.filter(r => r.order_status === '승인').length})`} />
 			</Tabs>
 
-			<Table className="all_table"
-			height={500}
-			data={allList}
-			onRowClick={rowData => {
-				console.log(rowData);
-			}}
+			<Table 
+				className="all_table"
+				height={500}
+				data={filteredList}
+				onRowClick={rowData => {
+					console.log(rowData);
+				}}
 			>	
 			
-			<Column width={50} className="all_text">
+			{/* <Column width={50} className="all_text">
 				<HeaderCell>선택</HeaderCell>
 				<Cell><Checkbox className="all_checkbox" /></Cell>
-			</Column>
+			</Column> */}
 			
 			<Column width={130} className="all_text">
 				<HeaderCell>등록일자_No.</HeaderCell>
 				<Cell>
-				{(rowData) => `${rowData.order_date}_${rowData.date_no}`}
+					{(rowData) => (
+						<span 
+							onClick={() => allListDetail(rowData.order_id)}
+							// style={{ cursor: 'pointer' }}
+							className="allList-date"
+						>
+							{`${rowData.order_date}_${rowData.date_no}`}
+						</span>
+					)}
 				</Cell>
 			</Column>
 
@@ -135,10 +176,10 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 
-			<Column width={150}  className="all_text">
+			<Column width={200}  className="all_text">
 				<HeaderCell>품목명</HeaderCell>
 				<Cell>
-					{(rowData) => rowData.item_name}
+					{(rowData) => rowData.item_display}
 				</Cell>
 			</Column>
 
@@ -169,19 +210,10 @@ const sell_all_list = () => {
 				<Cell />
 			</Column>
 
-			{/* <Column width={150} >
-				<HeaderCell className="all_text">결재</HeaderCell>
-				<Cell className="all_chkText">
-					<InputPicker placeholder="미확인" data={confirm} style={confirmStyles} />
-				</Cell>
-			</Column> */}
-
 			<Column width={100} className="all_text">
-				<HeaderCell>거래명세서</HeaderCell>
+				<HeaderCell>출하여부</HeaderCell>
 				<Cell>
-					<Button appearance="link" onClick={handleOpen1}>
-					조회
-					</Button>
+					{(rowData) => rowData.income_confirm === null ? 'N' : rowData.income_confirm}
 				</Cell>
 			</Column>
 
@@ -226,16 +258,12 @@ const sell_all_list = () => {
 				</Modal.Footer>
 			</Modal>
 
-			<div className="parent">
-  				<div className="child">
-					<ButtonToolbar>
-						<Link to="/main/sell_insert">
-							<Button appearance="primary">판매 입력</Button>
-						</Link>
-						{/* <Button appearance="primary">저장</Button> */}
-						<Button appearance="primary">선택 삭제</Button>
-					</ButtonToolbar>
-				</div>
+			<div className="all_listBtn">
+				<ButtonToolbar>
+					<Link to="/main/sell_insert">
+						<Button appearance="primary" className="allList_btn">판매 입력</Button>
+					</Link>
+				</ButtonToolbar>
 			</div>
 		</div>
   );

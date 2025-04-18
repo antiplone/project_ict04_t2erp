@@ -9,11 +9,12 @@ import org.springframework.stereotype.Repository;
 import com.spring.erp_ordit.dto.buy.BuyOrderDTO;
 import com.spring.erp_ordit.dto.buy.BuyOrderDetailDTO;
 import com.spring.erp_ordit.dto.buy.BuyOrderItemDTO;
+import com.spring.erp_ordit.dto.buy.BuyStockStatusDTO;
 import com.spring.erp_ordit.dto.buy.BuyStatusDTO;
 
 @Mapper 	// DAOImpl 만들지 않고 mapper랑 연결할때 쓴다.
 @Repository
-public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 구매현황 조회 Mapper
+public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 상세조회, 구매수정, 구매삭제, 구매현황 조회, 입고조회 Mapper
 	
 	// 구매 조회 탭 <전체> 목록
 	public List<BuyOrderDTO> buyOrderAllList();	
@@ -36,10 +37,13 @@ public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 구매현�
 	// 구매 내역 수정
 	public void buyUpdateOrder(BuyOrderDTO order);  // 주문정보 수정
 	public void buyDeleteOrderItems(int order_id); // 주문 물품정보 삭제
-	public void buyInsertOrderItem(BuyOrderItemDTO item);	// 주문 물품정보 입력
+	public void buyInsertOrderItems(List<BuyOrderItemDTO> items);	// 주문 물품정보 입력
 	
 	//구매입력 - <주문정보 입력> => order.getOrder_id()로 insert 후 ID 자동 세팅
 	public int buyOrderInsert(BuyOrderDTO order);  
+	
+	// 구매 내역 삭제
+	public int buyOrderDelete(int order_id);
 	
 	// 구매 <현황> 조회 
 	public List<BuyStatusDTO> buyStatusSearch(
@@ -53,11 +57,18 @@ public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 구매현�
         @Param("transaction_type") String transaction_type	
 	);
 	
-	// 구매 내역 삭제
-	public int buyOrderDelete(int order_id);	
-	
-//	public int updateOrder(ItemDTO dto); 	// 게시글 수정
-	
-//	public ItemDTO findByOrderId(int order_id);	// 구매물품 1건 조회
+	// 입고현황 조회
+	public List<BuyStockStatusDTO> buyStockStatusSearch(
+			
+		@Param("start_date") String start_date,
+		@Param("end_date") String end_date,
+		@Param("order_id") String order_id,
+        @Param("client_code") String client_code,
+        @Param("item_code") String item_code,
+        @Param("storage_code") String storage_code,
+        @Param("stock_amount") String stock_amount,
+        @Param("safe_stock") String safe_stock,
+        @Param("last_date") String last_date
+	);
 	
 }

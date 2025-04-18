@@ -10,5 +10,5 @@
 	    INSERT INTO order_item_tbl (order_id, order_type, item_id, item_code, quantity, price, supply, vat, total)
 	    VALUES (#{order_id}, 2, #{item_id, javaType=Long}, #{item_code, javaType=String},  #{quantity}, #{price}, #{supply}, #{vat}, #{total})
 	</insert>
-
+	
 </mapper>   

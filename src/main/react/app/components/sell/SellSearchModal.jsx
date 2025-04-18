@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Form, InputGroup, AutoComplete, HStack, Input } from "rsuite";
-//import SearchIcon from '@rsuite/icons/Search';
+import { Button, Modal, Form, InputGroup, AutoComplete, HStack, Input } from "rsuite";
 import ItemSearchModal from "./SellItemSearchModal";
-import Sell_ClientSearchModal from "./SellClientSearchModal";
 import StorageSearchModal from "./SellStorageSearchModal";
+import AppConfig from "#config/AppConfig.json";
+import readingGlasses from "#images/common/readingGlasses.png";
 
-const { Column, HeaderCell, Cell } = Table;
+// SellSearchModal => 판매 물품 검색 > 물품, 창고 검색 가능한 모달 페이지
 
+// 검색바 스타일 지정
 const searchBoxstyles = {
 	width: 200,
 	marginBottom: 5
   };
 
-const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* = props:속성 */) => {
+const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleClose, onSearchResult } /* = props:속성 */) => {
+	
 	// 물품 모달 관리
 	const [selectedItem, setSelectedItem] = useState(null);
 	const [selectedItemName, setSelectedItemName] = useState(null);
@@ -22,25 +24,6 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 		setSelectedItem(emid);
 		setSelectedItemName(incharge);
 		setItemModalOpen(false);
-	};
-
-	const handleOpenItemModal = () => {
-		setItemModalOpen(true);
-	};
-	
-	// 거래처 모달 관리
-	const [selectedClient, setSelectedClient] = useState(null);
-	const [selectedClientName, setSelectedClientName] = useState(null);
-	const [isClientModalOpen, setClientModalOpen] = useState(false);
-
-	const handleClientSelect = (client_code, client_name) => {
-		setSelectedClient(client_code);
-		setSelectedClientName(client_name);
-		setClientModalOpen(false);
-	};
-
-	const handleOpenClientModal = () => {
-		setClientModalOpen(true);
 	};
 
 	// 창고 모달 관리
@@ -54,12 +37,54 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 		setStorageModalOpen(false);
 	};
 
-	const handleOpenStorageModal = () => {
-		setStorageModalOpen(true);
+	const [searchResultList, setSearchResultList] = useState([]);
+	
+	const fetchURL = AppConfig.fetch['mytest'];
+
+	// 입력한 값을 백엔드로 전달
+	const submitSellSearch = (e) => {
+		e.preventDefault();
+		
+		const payload = {
+			item_code: selectedItem,
+			storage_name: selectedStorageName,
+		};
+	
+		console.log("제출할 전체 데이터:", payload); // 확인용
+	
+		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchResultItemList`, {
+			method: "POST", // 보통 검색 필터는 POST로 보냄. GET은 URL에 붙여야 해서 복잡함.
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(payload),
+		})
+			.then((res) => res.json())
+			.then((data) => {
+				console.log("검색 결과:", data);
+				setSearchResultList(data);
+				if (onSearchResult) {
+					onSearchResult(data); // 부모에게 전달
+				}
+				handleClose(); // 모달 닫기 추가!!
+			})
+			.catch((error) => {
+				console.error("검색 오류:", error);
+			});
 	};
 
+	// 모달이 열릴 때 선택값 초기화
+	useEffect(() => {
+		if (handleOpen) {
+			setSelectedItem(null);
+			setSelectedItemName(null);
+			setSelectedStorage(null);
+			setSelectedStorageName(null);
+		}
+	}, [handleOpen]);
+
 	return (
-		<Modal open={handleOpen} onClose={handleColse} style={{width: 700}}>
+		<Modal open={handleOpen} onClose={handleClose} style={{width: 700}}>
 			<Modal.Header>
 				<Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
@@ -75,9 +100,16 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 								placeholder='품목명'
 								value={selectedItem || ""} readOnly
 							/>
-								<AutoComplete />
-									<InputGroup.Button tabIndex={-1}>
-										{/*<SearchIcon onClick={handleOpenItemModal} />*/}
+								<AutoComplete /> 
+									{/* AutoComplete => 추후 정리 필요 */}
+									<InputGroup.Button tabIndex={-1} onClick={() => setItemModalOpen(true)}>
+										<img
+										src={readingGlasses}
+										alt="돋보기"
+										width={20}
+										height={20}
+										style={{ cursor: "pointer "}}
+										/>
 									</InputGroup.Button>
 							</InputGroup>
 							<Input name="customer_1" type="text" autoComplete="off" style={{ width: 200,  marginBottom: 5 }}
@@ -85,26 +117,7 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 						</HStack>
 					</Form.Group>
                 </div>
-                <div className="form_div">
-					<Form.Group controlId="customer_2">
-						<HStack>
-							<Form.ControlLabel style={{ marginRight: 45, fontSize: 17 }}>거래처</Form.ControlLabel>
-							<InputGroup style={searchBoxstyles}>
-							<Input
-								placeholder='거래처'
-								value={selectedClient || ""} readOnly
-							/>
-								<AutoComplete />
-									<InputGroup.Button tabIndex={-1} >
-										{/* 모달 열기 버튼 */}
-										{/*<SearchIcon onClick={handleOpenClientModal} />*/}
-									</InputGroup.Button>
-							</InputGroup>
-							<Input name="customer_1" type="text" autoComplete="off" style={{ width: 200,  marginBottom: 5 }}
-								value={selectedClientName || ""} readOnly />
-						</HStack>
-					</Form.Group>
-				</div>
+
                 <div className="form_div">
 					<Form.Group controlId="storage">
 						<HStack>
@@ -115,8 +128,14 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 								value={selectedStorage || ""} readOnly
 							/>
 								<AutoComplete />
-									<InputGroup.Button tabIndex={-1}>
-										{/*<SearchIcon onClick={handleOpenStorageModal} />*/}
+								<InputGroup.Button tabIndex={-1} onClick={() => setStorageModalOpen(true)}>
+										<img
+										src={readingGlasses}
+										alt="돋보기"
+										width={20}
+										height={20}
+										style={{ cursor: "pointer "}}
+										/>
 									</InputGroup.Button>
 							</InputGroup>
 							<Input name="customer_1" type="text" autoComplete="off" style={{ width: 200,  marginBottom: 5 }}
@@ -126,23 +145,13 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 					</div>
 
 					<ItemSearchModal
-					title="물품 선택"
-					confirm="확인"
-					cancel="취소"
-					onItemSelect={handleItemSelect}
-					handleOpen={isItemModalOpen}
-					handleColse={() => setItemModalOpen(false)}
+						title="물품 선택"
+						confirm="확인"
+						cancel="취소"
+						onItemSelect={handleItemSelect}
+						handleOpen={isItemModalOpen}
+						handleClose={() => setItemModalOpen(false)}
 					/>
-
-					<Sell_ClientSearchModal
-					title="거래처 선택"
-					confirm="확인"
-					cancel="취소"
-					onClientSelect={handleClientSelect}	// client_code, client_name 받기
-					handleOpen={isClientModalOpen}
-					handleColse={() => setClientModalOpen(false)}
-					/>
-
 
 					<StorageSearchModal
 						title="창고 선택"
@@ -150,16 +159,16 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 						cancel="취소"
 						onStorageSelect={handleStorageSelect}	// emid, Incharge 받기
 						handleOpen={isStorageModalOpen}
-						handleColse={() => setStorageModalOpen(false)}
+						handleClose={() => setStorageModalOpen(false)}
 					/>
 
 					</Form>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button appearance="primary">
+				<Button appearance="primary" onClick={submitSellSearch}>
 					{confirm}
 				</Button>
-				<Button onClick={handleColse} appearance="subtle">
+				<Button onClick={handleClose} appearance="subtle">
 					{cancel}
 				</Button>
 			</Modal.Footer>
@@ -171,8 +180,8 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleColse } /* 
 
 SellSearchModal.defaultProps = {
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
-	title: "제목을 입력해주세요.",
-	confirm: "확인",
+	title: "상세 검색",
+	confirm: "검색",
 	cancel: "취소",
 };
 

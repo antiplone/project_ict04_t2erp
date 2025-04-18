@@ -50,7 +50,7 @@
     display: flex;
     justify-content: flex-end; /* 오른쪽 정렬로 고정 */
     width: 100%;
-    max-width: 1350px;
+    max-width: 1200px;
     font-weight: bold;
 }
 
@@ -76,12 +76,6 @@
 /* 구매현황 페이지 - 검색 버튼 */
 .statusSearchBtn {
     width: 80px;
-    height: 35px;
-    margin-top: 10px;
-}
-
-.statusExcelBtn {
-    width: 100px;
     height: 35px;
     margin-top: 10px;
 }

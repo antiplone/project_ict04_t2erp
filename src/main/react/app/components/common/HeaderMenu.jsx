@@ -51,17 +51,17 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_client") }}>거래처등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_item") }}>상품등록</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("basic_insa") }}>인사관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("att_regAttItems") }}>근태관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("att_management") }}>근태관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="구매관리">
 						<Nav.Item onSelect={() => { navigate("buy-select") }}>구매조회</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("buy-insert") }}>구매입력</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("buy-status-select") }}>구매현황</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("buy-stock-status") }}>입고현황</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="판매관리">
 						<Nav.Item onSelect={() => { navigate("sell_search_item") }}>판매물품 검색</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_request_item") }}>판매물품 관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_all_list") }}>판매조회</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_insert") }}>판매입력</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_status_select") }}>판매현황</Nav.Item>

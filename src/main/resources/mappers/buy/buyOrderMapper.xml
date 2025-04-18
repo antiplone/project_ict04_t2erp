@@ -3,7 +3,7 @@
      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.spring.erp_ordit.dao.buy.BuyOrderMapper"> <!-- 구매조회(전체,결재중,미확인,확인), 미확인'건수'조회, 구매 입력, 구매현황 조회 -->
+<mapper namespace="com.spring.erp_ordit.dao.buy.BuyOrderMapper"> <!-- 구매조회(전체,결재중,미확인,확인), 미확인'건수'조회, 상세조회, 구매수정, 구매삭제, 구매 입력, 구매현황 조회, 입고현황 -->
 
 	<!-- 구매조회 탭 전체 목록 -->
 	<select id="buyOrderAllList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
@@ -68,13 +68,17 @@
 			LEFT JOIN order_status_tbl ost ON ost.order_id = ot.order_id
 			WHERE ot.order_type = 1
 			  AND order_show='Y'
+			  AND order_status='미확인'
   	</select>
   	
   	<!-- 구매조회 탭 미확인 "건수" 조회 -->
 	<select id="buyOrderUnchkCount" resultType="int">
-			SELECT COUNT(*) AS buyOrderUnchkCount 
-			  FROM order_status_tbl
-			 WHERE order_status = '미확인'
+			SELECT COUNT(DISTINCT os.order_id) AS buyOrderUnchkCount
+			  FROM order_status_tbl os
+			  JOIN order_tbl o ON os.order_id = o.order_id
+			  WHERE os.order_status = '미확인'
+			    AND o.order_type = 1
+			    AND o.order_show = 'Y'
   	</select>
 
   	<!-- 구매조회 탭 확인 목록 -->
@@ -88,7 +92,8 @@
 			    ot.transaction_type,
 			    wt.storage_name,
 			    ot.delivery_date,
-			    ost.order_status
+			    ost.order_status,
+			    oit.income_confirm
 			FROM order_tbl ot
 			LEFT JOIN order_item_tbl oit ON oit.order_id = ot.order_id
 			LEFT JOIN item_tbl it ON oit.item_id = it.item_id
@@ -176,22 +181,25 @@
 		    WHERE order_id = #{order_id}
 		</update>
 		
-		<delete id="buyDeleteOrderItemsByOrderId">
+		<!-- 기존 물품 삭제 -->
+		<delete id="buyDeleteOrderItems">
 		    DELETE FROM order_item_tbl WHERE order_id = #{order_id}
 		</delete>
 		
-		<insert id="buyInsertOrderItem">
+		<!-- 새 물품 여러건 insert -->
+		<insert id="buyInsertOrderItems" parameterType="java.util.List">
 		    INSERT INTO order_item_tbl (
-		        order_id, item_code, item_name, quantity,
+		        order_id, order_type, item_id, item_code, quantity,
 		        price, supply, vat, total
-		    ) VALUES (
-		        #{order_id}, #{item_code}, #{item_name}, #{quantity},
-		        #{price}, #{supply}, #{vat}, #{total}
-		    )
+		    ) VALUES
+		    <foreach collection="list" item="item" separator=",">
+		        (#{item.order_id}, #{item.order_type}, #{item.item_id, javaType=Long}, #{item.item_code, javaType=String}, #{item.quantity},
+		         #{item.price}, #{item.supply}, #{item.vat}, #{item.total})
+		    </foreach>
 		</insert>
 	
 	<!-- 구매 입력 (일자, 담당자, 거래처, 거래유형, 입고창고) -->
-	<insert id="buyOrderInsert" useGeneratedKeys="true" keyProperty="order_id">
+	<insert id="buyOrderInsert" parameterType="com.spring.erp_ordit.dto.buy.BuyOrderDTO" useGeneratedKeys="true" keyProperty="order_id">
         INSERT INTO order_tbl (
 		    order_type, e_id, client_code, storage_code,
 		    transaction_type, delivery_date, shipment_order_date
@@ -199,7 +207,7 @@
 		(#{order_type}, #{e_id}, #{client_code}, #{storage_code}, #{transaction_type}, #{delivery_date}, #{shipment_order_date})
     </insert>
     
-    <!-- 구매 내역 삭제 -->
+ 	<!-- 구매 내역 삭제 -->
     <delete id="buyOrderDelete" parameterType="int">
 	       UPDATE order_tbl
 			  SET order_show = 'N'
@@ -210,6 +218,7 @@
 	<select id="buyStatusSearch" resultType="com.spring.erp_ordit.dto.buy.BuyStatusDTO">
 	      SELECT 
 		        ot.order_date AS order_date,
+		        ot.order_id AS order_id,
 		        ot.e_id AS e_id,
 		        ct.client_code AS client_code,
 		        ct.client_name AS client_name,
@@ -217,6 +226,8 @@
 		        it.item_name AS item_name,
 		        oit.quantity,
 		        oit.price,
+		        oit.supply,
+		        oit.vat,
 		        oit.total AS total,
 		        ot.transaction_type AS transaction_type
 		    FROM order_tbl ot
@@ -245,6 +256,56 @@
 			        AND ot.transaction_type = #{transaction_type}
 			    </if>
 			</where>
+			ORDER BY ot.order_date ASC
   	</select>
-	
+  	
+  	<!-- 구매관리 - 입고조회  -->
+	<select id="buyStockStatusSearch" resultType="com.spring.erp_ordit.dto.buy.BuyStockStatusDTO">
+	      SELECT
+			    ot.order_date AS order_date,
+			    ot.order_id AS order_id,
+			    ct.client_code AS client_code,
+			    ct.client_name AS client_name,
+			    it.item_code AS item_code,
+			    it.item_name AS item_name,
+			    st.storage_code AS storage_code,
+			    st.storage_name AS storage_name,
+			    st.stock_amount AS stock_amount,
+			    st.safe_stock AS safe_stock,
+			    st.last_date AS last_date
+			FROM order_tbl ot
+			LEFT JOIN order_item_tbl oit ON ot.order_id = oit.order_id
+			LEFT JOIN item_tbl it ON oit.item_id = it.item_id
+			LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
+			LEFT JOIN stock_tbl st ON it.item_code = st.item_code
+		    <where>
+		    	ot.order_show = 'Y'
+		    	
+			    <if test="start_date != null and end_date != null">
+				    AND ot.order_date BETWEEN #{start_date} AND #{end_date}
+				</if>
+			    <if test="order_id != null and order_id != ''">
+			        AND ot.order_id = #{order_id}
+			    </if>
+			    <if test="client_code != null and client_code != ''">
+			        AND ot.client_code = #{client_code}
+			    </if>
+		        <if test="item_code != null and item_code != ''">
+			        AND it.item_code = #{item_code}
+			    </if>
+			    <if test="storage_code != null and storage_code != ''">
+			        AND st.storage_code = #{storage_code}
+			    </if>
+			    <if test="stock_amount != null and stock_amount != ''">
+			        AND st.stock_amount = #{stock_amount}
+			    </if>
+			    <if test="safe_stock != null and safe_stock != ''">
+			        AND st.safe_stock = #{safe_stock}
+			    </if>
+			    <if test="last_date != null and last_date != ''">
+			        AND st.last_date = #{last_date}
+			    </if>
+			</where>
+			ORDER BY ot.order_date ASC
+  	</select>
 </mapper>   

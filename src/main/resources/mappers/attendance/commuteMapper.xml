@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.spring.erp_ordit.dao.attendance.CommuteMapper">
+
+	<!-- 출퇴근 리스트: 사원번호를 통해 사원명 가지고 오기 -->
+	<select id="selectAttList" resultType="com.spring.erp_ordit.dto.attendance.CommuteDTO">
+		SELECT 
+			c.co_list_no,
+			c.co_work_date,
+			c.co_start_time,
+			c.co_end_time,
+			c.co_total_work_time,
+			c.co_status,
+			c.co_status_note,
+			e.e_id,
+			e.e_name
+		FROM commute_tbl c
+		JOIN employee_tbl e ON c.e_id = e.e_id
+		ORDER BY c.co_work_date DESC, co_start_time DESC, e.e_name ASC
+		
+	</select>
+	
+	<!-- 오늘자 출퇴근 1건만 조회 -->
+	<select id="selectTodayRecord" parameterType="int" resultType="com.spring.erp_ordit.dto.attendance.CommuteDTO">
+		SELECT 
+			c.*,
+			e.e_id,
+			e.e_name
+		FROM commute_tbl c
+		  JOIN employee_tbl e ON c.e_id = e.e_id
+	 WHERE c.e_id = #{e_id}
+		   AND c.co_work_date = CURRENT_DATE()
+         LIMIT 1
+	</select>
+	<!-- selectOne() 썼는데 결과가 여러 개라 오류날 때, DB에서 한 건만 나오게 수정(LIMIT 1) -->
+	
+	<!-- 출근 시간 저장 처리 -->
+	<insert id="insertStartTime" parameterType="com.spring.erp_ordit.dto.attendance.CommuteDTO">
+		INSERT INTO commute_tbl (co_work_date, co_start_time, e_id, co_status)
+		VALUES (#{co_work_date}, #{co_start_time}, #{e_id}, #{co_status})
+	</insert>
+	<!-- 퇴근 시간 저장 처리 -->
+	<update id="updateEndTime" parameterType="com.spring.erp_ordit.dto.attendance.CommuteDTO">
+		UPDATE commute_tbl
+				 SET co_end_time = #{co_end_time}
+					   , co_total_work_time = #{co_total_work_time}
+				 	   , co_status = #{co_status}
+		 WHERE co_work_date = #{co_work_date}
+			   AND e_id = #{e_id}
+	</update>
+	
+	<!-- 출퇴근 수정 -->
+	<update id="updateCommute" parameterType="com.spring.erp_ordit.dto.attendance.CommuteDTO">
+		UPDATE commute_tbl
+				 SET co_end_time = #{co_end_time}
+					   , co_total_work_time = #{co_total_work_time}
+				 	   , co_status = #{co_status}
+		 WHERE co_work_date = #{co_work_date}
+			   AND e_id = #{e_id}
+	</update>
+</mapper>

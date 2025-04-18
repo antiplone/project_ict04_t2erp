@@ -47,8 +47,18 @@
 			WHERE order_show='Y'
 			  AND ost.order_status='진행중'
   	</select>
-	
-	<!-- 구매조회 탭 미확인 목록 -->
+  	
+  	<!-- 구매조회 탭 결재중 "건수" 조회 -->
+	<select id="buyOrderPayingCount" resultType="int">
+			SELECT COUNT(DISTINCT os.order_id) AS buyOrderUnchkCount
+			  FROM order_status_tbl os
+			  JOIN order_tbl o ON os.order_id = o.order_id
+			  WHERE os.order_status = '진행중'
+			    AND o.order_show = 'Y'
+  	</select>
+
+<!-- 	
+	구매조회 탭 미확인 목록
 	<select id="buyOrderUnchkList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
 	      SELECT
 				ot.order_id, 
@@ -71,7 +81,7 @@
 			  AND order_status='미확인'
   	</select>
   	
-  	<!-- 구매조회 탭 미확인 "건수" 조회 -->
+  	구매조회 탭 미확인 "건수" 조회
 	<select id="buyOrderUnchkCount" resultType="int">
 			SELECT COUNT(DISTINCT os.order_id) AS buyOrderUnchkCount
 			  FROM order_status_tbl os
@@ -81,7 +91,8 @@
 			    AND o.order_show = 'Y'
   	</select>
 
-  	<!-- 구매조회 탭 확인 목록 -->
+ -->  	
+ 	<!-- 구매조회 탭 확인 목록 -->
 	<select id="buyOrderCheckList" resultType="com.spring.erp_ordit.dto.buy.BuyOrderDTO">
 	      SELECT 
 	      		ot.order_id,

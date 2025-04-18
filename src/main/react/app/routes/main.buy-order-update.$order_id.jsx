@@ -218,7 +218,7 @@ export default function BuyOrderUpdate() {
                             <Form.Control
                                 name="order_status"
                                 accepter={InputPicker}
-                                data={[{ label: '미확인', value: '미확인' },
+                                data={[
                                 { label: '진행중', value: '진행중' },
                                 { label: '승인', value: '승인' },
                                 { label: '반려', value: '반려' }]}

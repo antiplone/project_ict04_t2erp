@@ -51,21 +51,29 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 		return buyOrderMapper.buyOrderPayingList();
 	}
 	
-	// 구매조회 탭 <미확인> 목록
-	public List<BuyOrderDTO> getBuyOrderUnchkList() {
+	// 구매조회 탭 <결재중> "건수" 조회
+	public List<BuyOrderDTO> getBuyOrderPayingCount() {
 		
-		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderUnchkList >>>");
+		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderPayingCount >>>");
 		
-		return buyOrderMapper.buyOrderUnchkList();
+		return buyOrderMapper.buyOrderPayingCount();
 	}
 	
-	// 구매조회 탭 <미확인> "건수" 조회
-	public List<BuyOrderDTO> getBuyOrderUnchkCount() {
-		
-		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderUnchkCount >>>");
-		
-		return buyOrderMapper.buyOrderUnchkCount();
-	}
+//	// 구매조회 탭 <미확인> 목록
+//	public List<BuyOrderDTO> getBuyOrderUnchkList() {
+//		
+//		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderUnchkList >>>");
+//		
+//		return buyOrderMapper.buyOrderUnchkList();
+//	}
+//	
+//	// 구매조회 탭 <미확인> "건수" 조회
+//	public List<BuyOrderDTO> getBuyOrderUnchkCount() {
+//		
+//		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderUnchkCount >>>");
+//		
+//		return buyOrderMapper.buyOrderUnchkCount();
+//	}
 	
 	// 구매조회 탭 <확인> 목록
 	public List<BuyOrderDTO> getBuyOrderCheckList() {

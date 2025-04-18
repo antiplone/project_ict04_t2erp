@@ -1,21 +1,19 @@
 import React, { useState, useMemo } from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
-		 InputGroup, Input, Table, InputPicker,
-		 IconButton, InputNumber } from "rsuite";
-import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
-import { mockUsers } from './sell_mock4';
-// import SearchIcon from '@rsuite/icons/Search';
-import "../components/common/Sell_maintitle.css";
+		InputGroup, Input, Table, InputPicker,
+		InputNumber } from "rsuite";
+import "#styles/sell.css";
 import SellClientSearchModal from "#components/sell/SellClientSearchModal.jsx";
 import SellEmployeeSearchModal from "#components/sell/SellEmployeeSearchModal.jsx";
 import SellStorageSearchModal from "#components/sell/SellStorageSearchModal.jsx";
 import SellItemSearchModal from "#components/sell/SellItemSearchModal.jsx";
 import AppConfig from "#config/AppConfig.json";
+import readingGlasses from "#images/common/readingGlasses.png";
+import ashBn from "#images/common/ashBn.png";
+
+// sell_insert => 판매 입력 페이지
 
 const { Column, HeaderCell, Cell } = Table;
-
-// 빈 테이블로 시작
-const defaultData = [];
 
 /* 거래유형 - 선택 데이터 */
 const sellType = ["부과세율 적용", "부가세율 미적용"].map(
@@ -25,13 +23,47 @@ const sellType = ["부과세율 적용", "부가세율 미적용"].map(
 	})
 );
 
+// RSuite Table => 편집 셀, 셀 하나를 렌더링하고, 데이터 수정할 수 있도록 input 필드 표시 (문자입력)
+const EditableCell = ({ rowData, dataKey, onChange, editable, onDoubleClickCell, ...props }) => (
+	<Cell {...props} onDoubleClick={() => onDoubleClickCell?.(rowData.id)}>
+		{editable ? ( // editable ? 셀편집이 가능한지 여부, editable === true 편집가능 모드, editable === false 읽기 전용 모드 
+			<Input
+				size="xs"
+				value={rowData[dataKey] || ''}
+				onChange={(value) => onChange(rowData.id, dataKey, value)} // 사용자가 입력한 값 onchange를 통해 부모 컨포넌트로 전달
+			/>
+		) : (
+			rowData[dataKey]
+		)}
+	</Cell>
+);
+
+// RSuite Table => 테이블 내에서 숫자를 수정할 수 있게 해준다. (숫자 전용 입력)
+const EditableNumberCell = ({ rowData, dataKey, onChange, editable, ...props }) => (  // rowData  행 데이터, 물품정보 한건에 해당하는 정보
+	<Cell {...props}>
+		{editable ? (
+			<InputNumber
+				size="xs"
+				value={rowData[dataKey] || 0}
+				onChange={(value) => onChange(rowData.id, dataKey, value)}
+			/>
+		) : (
+			rowData[dataKey]
+		)}
+	</Cell>
+);
+
 const sell_insert = () => {
 
-	// 하위 입력칸을 초기 배열 상태로
+	// 현재 편집중인 셀
+	const [currentEditId, setCurrentEditId] = useState(null);
+	
+	// 입력한 내역 저장
 	const [sellAdd, setSellAdd] = useState([]);
 
-	// 백엔드로 전달하기 위해 출하창고, 거래유형타입 저장
+	// 백엔드로 전달하기 위해 출하창고 저장
 	const [shipmentOrderDate, setShipmentOrderDate] = useState(null);
+	// 백엔드로 전달하기 위해 거래유형 저장
 	const [transactionType, setTransactionType] = useState(null);
 
 	// 거래처 모달 관리
@@ -45,10 +77,6 @@ const sell_insert = () => {
         setClientModalOpen(false);
     };
 
-    const handleOpenClientModal = () => {
-        setClientModalOpen(true);
-    };
-
 	// 담당자 모달 관리
 	const [selectedIncharge, setSelectedIncharge] = useState(null);
 	const [selectedInchargeName, setSelectedInchargeName] = useState(null);
@@ -59,11 +87,6 @@ const sell_insert = () => {
 		setSelectedInchargeName(e_name);
         setInchargeModalOpen(false);
     };
-
-    const handleOpenInchargeModal = () => {
-        setInchargeModalOpen(true);
-    };
-
 
 	// 창고 모달 관리
 	const [selectedStorage, setSelectedStorage] = useState(null);
@@ -76,39 +99,8 @@ const sell_insert = () => {
         setStorageModalOpen(false);
     };
 
-    const handleOpenStorageModal = () => {
-        setStorageModalOpen(true);
-    };
-
 	// 물품 검색 모달 관리
-	const [selectedItem, setSelectedItem] = useState(null);
-	//const [selectedItemName, setSelectedItemName] = useState(null);
-	const [isItemModalOpen, setItemModalOpen] = useState(false);
-
-	const handleItemSelect = (item_code, item_name, item_standard) => {
-		console.log('handleItemSelect 실행됨', item_code, item_name, item_standard);
-
-        //const nextData = sellAdd.map(item => ({ ...item })); // 깊은 복사
-		const nextData = [...sellAdd]
-		const targetIndex = nextData.findIndex(item => item.id === editingRowId); // 선택한 행 찾기
-
-		if (targetIndex !== -1) {
-			nextData[targetIndex].item_code = item_code;
-			nextData[targetIndex].item_name = item_name;
-			nextData[targetIndex].item_standard = item_standard;
-			setSellAdd(nextData);
-			}
-			setItemModalOpen(false);
-    };
-
-    const handleOpenItemModal = () => {
-        setItemModalOpen(true);
-    };
-	console.log(selectedItem);
-	// const [data, setData] = React.useState(defaultData);
-	
-	//const [activeEditId, setActiveEditId] = useState(null);
-	
+	const [isItemModalOpen, setItemModalOpen] = useState(null);
 
 	const handleChange = (id, key, value) => {
 		const nextData = [...sellAdd];
@@ -134,24 +126,10 @@ const sell_insert = () => {
 		}
 	};
 	
-	// 행을 선택할 수 있도록 상태 추가
-	const [editingRowId, setEditingRowId] = useState(null);
-
-	// 수정
-	const handleEdit = id => {
-   	 	//setEditingRowId(id); // 수정할 행의 id 설정
-		setSellAdd(prev =>
-			prev.map(row =>
-				row.id === id
-				? { ...row, status: row.status === 'EDIT' ? 'DEFAULT' : 'EDIT' }
-				: row
-			)
-			);
-	};
-
 	// 삭제
-	const handleRemove = id => {
-		setSellAdd(sellAdd.filter(item => item.id !== id));
+	const handleRemove = (id) => {
+		const filtered = sellAdd.filter(order => order.id !== id);
+        setSellAdd(filtered); // 필터링된 배열로 상태를 업데이트
 	};
 
 	const fetchURL = AppConfig.fetch['mytest'];
@@ -205,25 +183,36 @@ const sell_insert = () => {
 		})
 	}
 
-	// '다시 작성' 버튼 클릭 시 내용 리셋
-	const handleResetForm = () => {
+	// 리셋을 위해 공통인 부분 묶기
+	const resetCommon = () => {
 		setShipmentOrderDate(null);
 		setTransactionType(null);
+	
 		setSelectedClient(null);
 		setSelectedClientName(null);
 		setClientModalOpen(false);
+	
 		setSelectedIncharge(null);
 		setSelectedInchargeName(null);
 		setInchargeModalOpen(false);
+	
 		setSelectedStorage(null);
 		setSelectedStorageName(null);
 		setStorageModalOpen(false);
-		setSellAdd([]); // 하위 테이블 데이터 초기화
 	};
 
-	// 총액
-	//const [tableData, setTableData] = useState([]);
+	// '검색초기화' 버튼 - 검색 필터 초기화
+	const searchStatusReset = () => {
+		resetCommon(); // 공통 리셋만
+	}
 
+	// '다시 작성' 버튼 - 전체 내용 리셋
+	const handleResetForm = () => {
+		resetCommon(); // 공통 리셋
+		setSellAdd([]); // 하위 테이블 초기화만 추가
+	};
+
+	// 총액 계산
 	const totalSum = useMemo(() => {
 		return sellAdd.reduce((sum, row) => {
 			const value = Number(row.total);
@@ -265,10 +254,15 @@ const sell_insert = () => {
 								name="e_id"
 								value={selectedIncharge || ""} readOnly
 							/>
-							<InputGroup.Button tabIndex={-1} onClick={handleOpenInchargeModal}>
-								{/* 모달 열기 버튼 */}
-								{/* <SearchIcon onClick={handleOpenInchargeModal} /> */}
-							</InputGroup.Button>
+							<InputGroup.Addon tabIndex={-1} onClick={() => setInchargeModalOpen(true)}>
+								<img
+								src={readingGlasses}
+								alt="돋보기"
+								width={20}
+								height={20}
+								style={{ cursor: "pointer "}}
+								/>
+							</InputGroup.Addon>
 						</InputGroup>
 						<Input name="e_name" type="text" autoComplete="off" style={{ width: 150 }}
 							value={selectedInchargeName || ""} readOnly />
@@ -283,8 +277,14 @@ const sell_insert = () => {
 								name="client_code"
 								value={selectedClient || ""} readOnly
 							/>
-							<InputGroup.Addon onClick={handleOpenClientModal}>
-								{/* <SearchIcon onClick={handleOpenClientModal} /> */}
+							<InputGroup.Addon tabIndex={-1} onClick={() => setClientModalOpen(true)}>
+								<img
+								src={readingGlasses}
+								alt="돋보기"
+								width={20}
+								height={20}
+								style={{ cursor: "pointer "}}
+								/>
 							</InputGroup.Addon>
 						</InputGroup>
 						<Input type="text" autoComplete="off" style={{ width: 150 }}
@@ -317,12 +317,18 @@ const sell_insert = () => {
 								출하창고
 							</InputGroup.Addon>
 							<Input 
-								placeholder='출하창고' 
+								placeholder='창고' 
 								name="storage_code"
 								value={selectedStorage || ""} readOnly
 							/>
-							<InputGroup.Addon onClick={handleOpenStorageModal}>
-								{/* <SearchIcon onClick={handleOpenStorageModal} /> */}
+							<InputGroup.Addon tabIndex={-1} onClick={() => setStorageModalOpen(true)}>
+								<img
+								src={readingGlasses}
+								alt="돋보기"
+								width={20}
+								height={20}
+								style={{ cursor: "pointer "}}
+								/>
 							</InputGroup.Addon>
 						</InputGroup>
 						<Input type="text" autoComplete="off" style={{ width: 150 }}
@@ -331,10 +337,10 @@ const sell_insert = () => {
 					</div>
 				</div>
 
-					<div className="addPlus">
-
+				<div className="form_div">
+				<ButtonToolbar>
 						<Button appearance="primary"
-							style={{ width: 300 }} 
+							// className="status_btn"
 							onClick={() => {
 								const newId = sellAdd.length > 0
 											? Math.max(...sellAdd.map(item => item.id)) + 1
@@ -351,158 +357,165 @@ const sell_insert = () => {
 									total: 0,
 									status: 'EDIT'
 								};
-							
 								setSellAdd(prev => [newItem, ...prev]);
-								setEditingRowId(newId);
+								// setEditingRowId(newId);
 							}}
 						>
-							입력 추가하기
-						</Button></div>
+							입력 추가
+						</Button>
+
+					<Button appearance="primary" type="submit" onClick={searchStatusReset}>
+						검색창 초기화
+					</Button>
+					</ButtonToolbar>
+				</div>
+
 						<hr />
 
 						{/* 입력 하위 칸 */}
 						<div className="addTabel">
 						<Table height={400} data={sellAdd}>
+							
+							<Column width={150}>
+								<HeaderCell>물품코드</HeaderCell>
+								<EditableCell
+								dataKey="item_code"
+								onDoubleClickCell={(id) => {
+									setCurrentEditId(id); // 현재 편집 중인 행 저장
+									setItemModalOpen(true);
+								}} 
+								onChange={handleChange}
+								editable
+								>
+								</EditableCell>
+							</Column>
 
-						<Column width={150}>
-							<HeaderCell>물품코드</HeaderCell>
-							<EditableCell
-							dataKey="item_code"
-							dataType="number"
-							onClick={handleOpenItemModal}
-							onChange={handleChange}
-							onEdit={handleEdit}
-							>
-							</EditableCell>
-						</Column>
+							<Column width={150}>
+								<HeaderCell>물품명</HeaderCell>
+								<EditableCell
+								dataKey="item_name"
+								onDoubleClickCell={(id) => {
+									setCurrentEditId(id); // 현재 편집 중인 행 저장
+									setItemModalOpen(true);
+								}} 
+								onChange={handleChange}
+								editable
+								/>
+							</Column>
 
-						<Column width={150}>
-							<HeaderCell>물품명</HeaderCell>
-							<EditableCell
-							dataKey="item_name"
-							dataType="string"
-							onClick={handleOpenItemModal}
-							onChange={handleChange}
-							onEdit={handleEdit}
-							/>
-						</Column>
-
-						<Column width={150}>
-							<HeaderCell>규격</HeaderCell>
-							<EditableCell
-							dataKey="item_standard"
-							dataType="string"
-							onClick={handleOpenItemModal}
-							onChange={handleChange}
-							onEdit={handleEdit}
-							/>
-						</Column>
+							<Column width={150}>
+								<HeaderCell>규격</HeaderCell>
+								<EditableCell
+								dataKey="item_standard"
+								onDoubleClickCell={(id) => {
+									setCurrentEditId(id); // 현재 편집 중인 행 저장
+									setItemModalOpen(true);
+								}} 
+								onChange={handleChange}
+								editable
+								/>
+							</Column>
 
 						<Column width={100}>
 							<HeaderCell>수량</HeaderCell>
-							<EditableCell
+							<EditableNumberCell
 							dataKey="quantity"
 							dataType="number"
 							onChange={handleChange}
-							onEdit={handleEdit}
+							editable
 							/>
 						</Column>
 
 						<Column width={150}>
 							<HeaderCell>단가</HeaderCell>
-							<EditableCell
-							dataKey="price"
-							dataType="number"
-							onChange={handleChange}
-							onEdit={handleEdit}
+							<EditableNumberCell
+								dataKey="price"
+								dataType="number"
+								onChange={handleChange}
+								editable
 							/>
 						</Column>
 
 						<Column width={150}>
 							<HeaderCell>공급가액</HeaderCell>
-							<EditableCell
-							dataKey="supply"
-							dataType="number"
-							onChange={handleChange}
-							onEdit={handleEdit}
-							/>
+							<Cell dataKey="supply" />
 						</Column>
 
 						<Column width={150}>
 							<HeaderCell>부가세</HeaderCell>
-							<EditableCell
-							dataKey="vat"
-							dataType="number"
-							onChange={handleChange}
-							onEdit={handleEdit}
-							/>
+							<Cell dataKey="vat" />
 						</Column>
 
 						<Column width={150}>
-							<HeaderCell>전체금액</HeaderCell>
-							<EditableCell
-							dataKey="total"
-							dataType="number"
-							onChange={handleChange}
-							onEdit={handleEdit}
-							/>
+							<HeaderCell>총액</HeaderCell>
+							<Cell dataKey="total" />
 						</Column>
 
 
 						<Column width={100}>
-							<HeaderCell>Action</HeaderCell>
-							<ActionCell dataKey="id" onEdit={handleEdit} onRemove={handleRemove} />
+							<HeaderCell>삭제</HeaderCell>
+							<Cell>
+								{rowData => (
+									<img
+										src={ashBn}
+										alt="돋보기"
+										width={20}
+										height={20}
+										onClick={() => handleRemove(rowData.id)}
+										style={{ cursor: "pointer" }}
+									/>
+								)}
+                   			 </Cell>
 						</Column>
 					</Table>
 					</div>
-					</div>
+				
 
-					<div className="sellAddBtn">
-						<ButtonToolbar >
-							<Button appearance="primary" className="sell_Btn" onClick={submitSellInsert}>저장</Button>
-							<Button appearance="primary" className="sell_Btn" onClick={handleResetForm}>다시 작성</Button>
-						</ButtonToolbar>
-						
-						<div className="sellAddTotal">
-							총액: {totalSum.toLocaleString()} 원
+					<div className="resultContainer">
+						<div className="resultBtn">
+							<ButtonToolbar>
+								<Button appearance="primary" onClick={submitSellInsert}>저장</Button>
+								<Button appearance="primary" onClick={handleResetForm}>다시 작성</Button>
+							</ButtonToolbar>
+						</div>
+
+						<div className="total">
+							총액 합계: {totalSum.toLocaleString()} 원
 						</div>
 					</div>
+				</div>
 					<hr></hr>
 				
 				<SellClientSearchModal
-					title="거래처 선택"
-					confirm="확인"
-					cancel="취소"
 					onClientSelect={handleClientSelect}	// client_code, client_name 받기
 					handleOpen={isClientModalOpen}
-					handleColse={() => setClientModalOpen(false)}
+					handleClose={() => setClientModalOpen(false)}
 				/>
 
 				<SellEmployeeSearchModal
-					title="담당자 선택"
-					confirm="확인"
-					cancel="취소"
 					onInchargeSelect={handleInchargeSelect}	// e_id, e_name 받기
 					handleOpen={isInchargeModalOpen}
 					handleClose={() => setInchargeModalOpen(false)}
 				/>
 
 				<SellStorageSearchModal
-					title="창고 선택"
-					confirm="확인"
-					cancel="취소"
 					onStorageSelect={handleStorageSelect}	// storage_code, storage_name 받기
 					handleOpen={isStorageModalOpen}
 					handleClose={() => setStorageModalOpen(false)}
 				/>
 
 				<SellItemSearchModal
-					title="물품 선택"
-					confirm="확인"
-					cancel="취소"
-					onItemSelect={handleItemSelect}
 					handleOpen={isItemModalOpen}
 					handleClose={() => setItemModalOpen(false)}
+					onItemSelect={(item_code, item_name, item_standard) => {
+						setSellAdd(prev =>
+							prev.map(row => row.id === currentEditId
+								? { ...row, item_code, item_name, item_standard }
+								: row
+							)
+						);
+						setItemModalOpen(false);
+					}}
 				/>
 			{/* <hr></hr> */}
 			</Form>
@@ -510,69 +523,5 @@ const sell_insert = () => {
 		
 	);
 };
-
-function toValueString(value, dataType) {
-	return dataType === 'date' ? value?.toLocaleDateString() : value;
-  }
-  
-  const fieldMap = {
-	string: Input,
-	number: InputNumber,
-	date: DatePicker
-  };
-  
-  const EditableCell = ({ rowData, dataType, dataKey, onChange, onEdit, ...props }) => {
-	const editing = rowData.status === 'EDIT';
-  
-	const Field = fieldMap[dataType];
-	const value = rowData[dataKey];
-	const text = toValueString(value, dataType);
-  
-	return (
-	  <Cell
-		{...props}
-		className={editing ? 'table-cell-editing' : ''}
-		onDoubleClick={() => {
-		  onEdit?.(rowData.id);	// 셀을 더블클릭하면 onEdit(rowId) 호출 → 편집 모드로 바뀜
-		}}
-		onClick={() => {
-			props.onClick?.(); // EditableCell 컴포넌트 내부에서 onClick을 받아 처리하게 추가
-		  }}
-	  >
-		{editing ? (
-		  <Field
-			value={value}	// defaultValue는 최초 한 번만 세팅 되어 상태 변경해도 반영X => 반응형으로 만들려면 value 써야 함
-			onChange={value => {
-			  onChange?.(rowData.id, dataKey, value);
-			}}
-		  />
-		) : (
-		  text
-		)}
-	  </Cell>
-	);
-  };
-  
-  const ActionCell = ({ rowData, dataKey, onEdit, onRemove, ...props }) => {
-	return (
-	  <Cell {...props} style={{ padding: '6px', display: 'flex', gap: '4px' }}>
-		<IconButton
-		  appearance="subtle"
-		  icon={rowData.status === 'EDIT' ? <VscSave /> : <VscEdit />}
-		  onClick={() => {
-			onEdit(rowData.id);
-		  }}
-		/>
-		<IconButton
-		  appearance="subtle"
-		  icon={<VscRemove />}
-		  onClick={() => {
-			onRemove(rowData.id);
-		  }}
-		/>
-	  </Cell>
-	);
-  };
-
 
 export default sell_insert;

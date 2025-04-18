@@ -26,7 +26,6 @@ const SideMenu_hr = () => {
               <Nav.Item eventKey="2-1" as={Link} to="/main/hr_emp_card">인사발령조회</Nav.Item>	{/* 스타일 깨짐 방지를 위해 as 속성 사용함 */}
               <Nav.Item eventKey="2-2" as={Link} to="/main/a">테스트</Nav.Item>
             </Nav.Menu>
-            <Nav.Item eventKey="1" as={Link} to="/main/hr_department" style={{ fontWeight: "500" }}>부서 관리</Nav.Item>
             <Nav.Item eventKey="3" as={Link} to="/main/hr_retirement" style={{ fontWeight: "500" }}>퇴직관리</Nav.Item>
           </Nav>
         </Sidenav.Body>

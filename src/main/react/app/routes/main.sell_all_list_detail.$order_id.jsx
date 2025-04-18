@@ -1,9 +1,13 @@
-import { List, Button, Card, Message, ButtonToolbar } from 'rsuite';
-// import SearchIcon from '@rsuite/icons/Search';
+import { List, Button, Card, Message, ButtonToolbar, Container,
+	Divider, Table } from 'rsuite';
 import React, { useState, useEffect } from "react";
-import "../components/common/Sell_maintitle.css";
+import "#styles/sell.css";
 import AppConfig from "#config/AppConfig.json";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
+
+//  sell_all_list_detail => 판매 입력건 상세 페이지
+
+const { Column, HeaderCell, Cell } = Table;
 
 const sell_all_list_detail = () => {
 
@@ -56,61 +60,84 @@ const sell_all_list_detail = () => {
 		});
 	}
 
+	const styles = {
+		backgroundColor: '#f8f9fa',
+	  };
+
 	return (
-		<div>
-			<Message type="success" className="main_title">
-				판매조회_상세 정보
-			</Message>
+		<>
+			<Container>
+				<Message type="success" className="main_title">
+					판매 상세페이지 - 주문번호: {order_id}
+				</Message>
+				<br />
+			<>
 
-			<Card className="detail" shaded>
-                <Card.Header as="h5">[ 상세 내역 ] </Card.Header>
-                <Card.Body>
-                    
-                    <List>
-                    {allDetail.map((rowData, idx) => (
-                    <List.Item key={idx}>
-                        <strong>순번</strong>: {rowData.order_id} <br />
-                        <strong>출하지시일</strong>: {rowData.shipment_order_date} <br />
-						<strong>출하창고</strong>: {rowData.storage_name} <br />
-						<strong>담당자명</strong>: {rowData.e_name} <br />
-                        <strong>거래처명</strong>: {rowData.client_name} <br />
-                        <strong>거래유형</strong>: {rowData.transaction_type} <br /> <br />
+			{allDetail.length > 0 && (	// 주문정보는 1회만 출력되어야 하므로 첫번째 데이터만 가져오기
+			<Table height={100} width={1350} data={[allDetail[0]]} >
+				<Column width={150}><HeaderCell style={styles}>주문번호</HeaderCell><Cell dataKey="order_id" /></Column>
+				<Column width={150}><HeaderCell style={styles}>요청일자</HeaderCell><Cell dataKey="order_date" /></Column>
+				<Column width={150}><HeaderCell style={styles}>판매요청 부서</HeaderCell>
+					<Cell>
+						{(rowData) => rowData.order_type === 1 ? "판매팀" : rowData.order_type === 2 ? "구매팀" : ""}
+					</Cell>
+				</Column>
+				<Column width={150}><HeaderCell style={styles}>담당자명</HeaderCell><Cell dataKey="e_name" /></Column>
+				<Column width={150}><HeaderCell style={styles}>거래처명</HeaderCell><Cell dataKey="client_name" /></Column>
+				<Column width={150}><HeaderCell style={styles}>거래유형</HeaderCell><Cell dataKey="transaction_type" /></Column>
+				<Column width={150}><HeaderCell style={styles}>출하창고</HeaderCell><Cell dataKey="storage_name" /></Column>
+				<Column width={150}><HeaderCell style={styles}>출하지시일</HeaderCell><Cell dataKey="shipment_order_date" /></Column>
+				<Column width={150}><HeaderCell style={styles}>진행상태</HeaderCell><Cell dataKey="order_status" /></Column>
+			</Table> )}
+			</>
 
-                        <strong>물품코드</strong>: {rowData.item_code} <br />
-                        <strong>물품명</strong>: {rowData.item_name} <br />
-						<strong>수량</strong>: {new Intl.NumberFormat().format(rowData.quantity)} <br /> <br />
-                        <strong>단가</strong>: {new Intl.NumberFormat().format(rowData.price)}원<br />
-						<strong>공급가액</strong>: {new Intl.NumberFormat().format(rowData.supply)}원 <br />
-                        <strong>부가세</strong>: {new Intl.NumberFormat().format(rowData.vat)}원 <br />
-						<strong>총액</strong>: {new Intl.NumberFormat().format(rowData.total)}원 <br /><br />
-						<strong>진행상태</strong>: {rowData.order_status}<br /><br />
-					</List.Item>
-                    ))}
-                    </List>
+        <Divider style={{maxWidth: 1200}}/>
+        <>
+			<Table height={400} width={1350} data={allDetail}>
+				<Column width={150}><HeaderCell style={styles}>물품코드</HeaderCell><Cell dataKey="item_code" /></Column>
+				<Column width={300}><HeaderCell style={styles}>물품명</HeaderCell><Cell dataKey="item_name" /></Column>
+				<Column width={150}>
+					<HeaderCell style={styles}>수량</HeaderCell>
+					<Cell>{rowData => Number(rowData.quantity).toLocaleString()}</Cell>
+				</Column>	
+				{/* Number(...).toLocaleString() : 문자열 숫자("1234" 등)도 자동으로 변환됨 
+				 	new Intl.NumberFormat().format(...): 다양한 국가별 통화/숫자 형식 지원 */}
+				<Column width={150}>
+					<HeaderCell style={styles}>단가</HeaderCell>
+					<Cell>{rowData => Number(rowData.price).toLocaleString()}</Cell>
+				</Column>
+				<Column width={150}>
+					<HeaderCell style={styles}>공급가액</HeaderCell>
+					<Cell>{rowData => Number(rowData.supply).toLocaleString()}</Cell>
+				</Column>
+				<Column width={150}>
+					<HeaderCell style={styles}>부가세</HeaderCell>
+					<Cell>{rowData => Number(rowData.vat).toLocaleString()}</Cell>
+				</Column>
+				<Column width={150}>
+					<HeaderCell style={styles}>총액</HeaderCell>
+					<Cell>{rowData => Number(rowData.total).toLocaleString()}</Cell>
+				</Column>
+        	</Table>
+        </>
+      </Container>
 
-                </Card.Body>
+      <Divider style={{maxWidth: 1200}}/>
 
-                <div className="reqDetailBtn">
-                    <Card.Footer>
-						<ButtonToolbar>
-							<Button onClick={allList} appearance="primary">목록</Button>
-							<Button
-								onClick={() => updateAllList(allDetail[0]?.order_id)}
-								appearance="primary"
-							>
-							수정
-							</Button>
-							<Button
-								onClick={() => deleteAllList(allDetail[0]?.order_id)}
-								appearance="primary"
-							>
-							삭제
-							</Button>
-						</ButtonToolbar>
-                    </Card.Footer>
-                </div>
-            </Card>
-		</div>
+      <div className="sell_DetailBtnBox">
+        <Button appearance="ghost" color="blue" className="sell_DetailBtn" onClick={() => updateAllList(order_id)}>
+            수정
+        </Button>
+
+        <Button appearance="ghost" color="red" className="sell_DetailBtn" onClick={() => deleteAllList(order_id)}>
+          삭제
+        </Button>
+
+        <Button appearance="ghost" color="cyan" className="sell_DetailBtn" onClick={() => allList}>
+            목록
+        </Button>
+      </div>
+	</>
   );
 };
 

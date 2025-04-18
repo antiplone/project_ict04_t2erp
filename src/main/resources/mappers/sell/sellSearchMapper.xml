@@ -29,25 +29,72 @@
 	  </where>
    </select>
    
+   <!-- 판매 - 품목명 리스트 모달(키워드로 검색) -->
+    <select id="sellSearchItemDetailList" parameterType="String" resultType="com.spring.erp_ordit.dto.sell.SellSearchDTO">
+       SELECT item_code, item_name, item_standard 
+       	FROM item_tbl
+		WHERE item_code LIKE CONCAT('%', #{keyword}, '%')
+		   OR item_name LIKE CONCAT('%', #{keyword}, '%')
+		   OR item_standard LIKE CONCAT('%', #{keyword}, '%')
+   	</select>
+   
    <!-- 판매 - 물품 검색 모달 -->
     <select id="sellItemList" resultType="com.spring.erp_ordit.dto.sell.SellSearchDTO">
       SELECT *
       FROM item_tbl
    </select>
 	
+	   
+	<!-- 판매 - 거래처 검색 모달(키워드로 검색) -->
+    <select id="sellSearchClientDetailList" parameterType="String" resultType="com.spring.erp_ordit.dto.sell.SellSearchClientDTO">
+		SELECT client_code, client_name FROM client_tbl 
+		 WHERE client_code LIKE CONCAT('%', #{keyword}, '%')
+			OR client_name LIKE CONCAT('%', #{keyword}, '%')
+	</select>
+		      
 	<!-- 판매 - 거래처 검색 모달 -->
     <select id="sellClientList" resultType="com.spring.erp_ordit.dto.sell.SellSearchClientDTO">
       SELECT * FROM client_tbl
    </select>
 	
+	<!-- 판매 - 담당자 검색 모달(키워드 검색) -->
+	<select id="sellSearchEmployeeDetailList" parameterType="String" resultType="com.spring.erp_ordit.dto.sell.SellSearchEmployeeDTO">
+      SELECT et.e_id,
+		     et.e_name,
+		     dt.d_code,
+		     dt.d_name
+		FROM
+		    employee_tbl et
+		LEFT JOIN
+		    department_tbl dt
+		    ON et.d_code = dt.d_code
+	   WHERE 
+			et.e_id > 0 AND (
+			        et.e_id LIKE CONCAT('%', #{keyword}, '%') OR
+			        et.e_name LIKE CONCAT('%', #{keyword}, '%') OR
+			        dt.d_name LIKE CONCAT('%', #{keyword}, '%')
+			    	);
+   </select>
+   
 	<!-- 판매 - 담당자 검색 모달 -->
 	<select id="sellEmployeeList" resultType="com.spring.erp_ordit.dto.sell.SellSearchEmployeeDTO">
-      SELECT e.e_id,
-		     e.e_name,
-		     d.d_name
-	    FROM employee_tbl e, department_tbl d
-	   WHERE e.d_code=d.d_code
-	ORDER BY e.d_code, e.e_id
+      SELECT et.e_id,
+		     et.e_name,
+		     dt.d_code,
+		     dt.d_name
+		FROM
+		    employee_tbl et
+		LEFT JOIN
+		    department_tbl dt
+		    ON et.d_code = dt.d_code
+	   WHERE et.e_id > 0
+   </select>
+   
+   <!-- 판매 - 창고 검색 모달(키워드로 검색) -->
+   <select id="sellSearchWarehouseDetailList" parameterType="String" resultType="com.spring.erp_ordit.dto.sell.SellSearchStorageDTO">
+      SELECT * FROM warehouse_tbl
+       WHERE storage_code LIKE CONCAT('%', #{keyword}, '%')
+		  OR storage_name LIKE CONCAT('%', #{keyword}, '%')
    </select>
    
    <!-- 판매 - 창고 검색 모달 -->

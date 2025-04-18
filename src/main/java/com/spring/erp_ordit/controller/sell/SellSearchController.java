@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +45,15 @@ public class SellSearchController {
 		return new ResponseEntity<>(service.sellSearchResultList(dto), HttpStatus.OK);
 	}
 	
+	// http://localhost:8081/sell/searchDetailItemList
+	// 판매 - 품목명 리스트 모달(키워드로 검색)
+	@GetMapping("/searchDetailItemList/{keyword}")
+	public ResponseEntity<List<SellSearchDTO>> searchDetail_itemList(@PathVariable String keyword) {
+		System.out.println("<<< sell_searchDetailItemList >>>");
+
+		return new ResponseEntity<>(service.sellSearchItemDetailList(keyword), HttpStatus.OK);
+	}
+	
 	// http://localhost:8081/sell/searchItem
 	// 판매 - 품목명 리스트 모달
 	@GetMapping("/searchItem")
@@ -53,6 +63,15 @@ public class SellSearchController {
 		return new ResponseEntity<>(service.sellItemList(), HttpStatus.OK);
 	}
 	
+	// http://localhost:8081/sell/searchDetailClient/{keyword}
+	// 판매 - 거래처 조회 모달(키워드로 검색)
+	@GetMapping("/searchDetailClient/{keyword}")
+	public ResponseEntity<List<SellSearchClientDTO>> searchDetail_clientList(@PathVariable String keyword) {
+		System.out.println("<<< search_clientList >>>");
+
+		return new ResponseEntity<>(service.sellSearchClientDetailList(keyword), HttpStatus.OK);
+	}
+		
 	// http://localhost:8081/sell/searchClient
 	// 판매 - 거래처 조회 모달
 	@GetMapping("/searchClient")
@@ -62,6 +81,15 @@ public class SellSearchController {
 		return new ResponseEntity<>(service.sellClientList(), HttpStatus.OK);
 	}
 	
+	// http://localhost:8081/sell/searchDetailEmployee/{keyword}
+	// 판매 - 담당자 조회 모달(키워드로 검색)
+	@GetMapping("/searchDetailEmployee/{keyword}")
+	public ResponseEntity<List<SellSearchEmployeeDTO>> searchDetail_employeeList(@PathVariable String keyword) {
+		System.out.println("<<< searchDetail_employeeList >>>");
+
+		return new ResponseEntity<>(service.sellSearchEmployeeDetailList(keyword), HttpStatus.OK);
+	}
+		
 	// http://localhost:8081/sell/searchEmployee
 	// 판매 - 담당자 조회 모달
 	@GetMapping("/searchEmployee")
@@ -71,12 +99,21 @@ public class SellSearchController {
 		return new ResponseEntity<>(service.sellEmployeeList(), HttpStatus.OK);
 	}
 	
+	// http://localhost:8081/sell/searchDetailStorage/{keyword}
+	// 판매 - 창고 조회 모달(키워드로 검색)
+	@GetMapping("/searchDetailStorage/{keyword}")
+	public ResponseEntity<List<SellSearchStorageDTO>> searchDetail_storageList(@PathVariable String keyword) {
+		System.out.println("<<< searchDetail_storageList >>>");
+
+		return new ResponseEntity<>(service.sellWarehouseDetailList(keyword), HttpStatus.OK);
+	}
+	
 	// http://localhost:8081/sell/searchStorage
-	// 판매 - 담당자 조회 모달
+	// 판매 - 창고 조회 모달
 	@GetMapping("/searchStorage")
 	public ResponseEntity<List<SellSearchStorageDTO>> search_storageList() {
 		System.out.println("<<< search_storageList >>>");
-
+		
 		return new ResponseEntity<>(service.sellWarehouseList(), HttpStatus.OK);
 	}
 	

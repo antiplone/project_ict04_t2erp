@@ -30,8 +30,8 @@ public class BuyOrderDTO {	// 작성자 hjy - 주문정보 DTO
 	private String storage_name;		// 창고명
 	private String transaction_type;	// 거래유형
 	private String order_status;		// 주문 진행상태
+	private String income_confirm;		// 입고확인
 	
-	private String closing_status ; 	// 종결여부
 	private int item_id;				// 물품고유 번호
 	private int item_code; 				// 물품코드
 	private String item_name; 			// 물품명

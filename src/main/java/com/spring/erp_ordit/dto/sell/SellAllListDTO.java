@@ -17,6 +17,8 @@ import lombok.ToString;
 public class SellAllListDTO {	// 판매 입력건 조회
 	
 	private int order_id;  	  			// 주문번호
+	private int order_item_id;  	  			// 주문번호
+	private int order_type;  	  		// 요청부서 1이면 판매, 2면 구매
 	private int item_code;  	  		// 물품코드
 	private String item_name; 	  		// 물품명
 	private String item_standard; 		// 규격
@@ -33,6 +35,7 @@ public class SellAllListDTO {	// 판매 입력건 조회
 	private int total;			  		// 합계
 	private String transaction_type;	// 거래유형
 	private String order_status;		// 결재 상태
+	private String income_confirm;		// 출하여부
 	private Date order_date;		 	// 등록일
 	private Date shipment_order_date;	// 출하지시일
 	private String order_date_start;		// 판매현황 조회_날짜 검색 시작일

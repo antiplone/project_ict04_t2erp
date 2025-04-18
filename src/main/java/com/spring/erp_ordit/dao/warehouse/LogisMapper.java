@@ -32,6 +32,10 @@ public interface LogisMapper {
 		// 주문관련
 		// 입고 목록
 		public List<LogisOrderDTO> logisOrderList();
+
+		public List<LogisStatusDTO> logisOrderSearch(@Param("start_date") String start_date,
+				@Param("end_date") String end_date, @Param("client_code") String client_code,
+				@Param("e_id") String e_id, @Param("storage_code") Integer storage_code);
 		
 		public List<LogisOrderDTO> findByLogisOrderId(int order_id);
 		
@@ -45,6 +49,10 @@ public interface LogisMapper {
 		// 출고 목록
 		public List<LogisSalesDTO> logisSalesList();
 		
+		public List<LogisStatusDTO> logisSalesSearch(@Param("start_date") String start_date,
+				@Param("end_date") String end_date, @Param("client_code") String client_code,
+				@Param("e_id") String e_id, @Param("storage_code") Integer storage_code);
+		
 		public List<LogisSalesDTO> findByLogisSalesId(int order_id);
 		
 		public LogisSalesItemDTO findBySalesItem(int order_id, int item_code, int order_type);
@@ -52,15 +60,14 @@ public interface LogisMapper {
 		public int updateSales(int item_code, int stock_amount, int order_id);
 		
 		
-		// 창고관련
+		// 재고관련
 		// 재고 목록
 		public List<LogisStockDTO> logisStockList();
 		
-//		// 창고 등록
-//		public int StockInsert(LogisWarehouseDTO dto);
-//		
-//		// 창고 상세
-//		public LogisWarehouseDTO findByStockcode(int storage_code);
+//		// 재고 조건 조회
+		public List<LogisStockDTO> logisStockSearch(@Param("start_date") String start_date,
+		@Param("end_date") String end_date, @Param("item_code") Integer item_code,
+		@Param("client_code") Integer client_code, @Param("storage_code") Integer storage_code);
 //		
 //		// 창고 삭제
 //		public Integer deleteStock(int storage_code);

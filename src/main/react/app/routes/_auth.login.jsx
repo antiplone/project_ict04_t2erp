@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
-import { forwardRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate, redirect, useSubmit } from "@remix-run/react";
 import {
 	Form, Schema,
@@ -9,10 +9,7 @@ import {
 	Stack,
 	Panel,
 	VStack,
-//	Divider,
-	InputGroup,
-	Input,
-	Loader
+	//	Divider
 } from "rsuite";
 
 import AppConfig from "#config/AppConfig.json"
@@ -40,37 +37,58 @@ export async function clientAction({ request }) { // non-GET
 		entity[pair[0]] = pair[1];
 	}
 	//console.log(entity);
-	handleLoading(true);
+	if (localStorage.length < 1) {
+		handleLoading(true); // 로딩의 시작
 
-	const fetchURL = AppConfig.fetch['mytest'];
-	fetch(`${fetchURL.protocol}${fetchURL.url}/auth/get`, {
-		method: "POST",
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(entity)
-	})
-		.then((res) => {
-			handleLoading(false);
-			if (res.ok) {
-				handleLoading(true);
-				entity = res.json();
-				console.log("Promise 시작:", entity);
-				entity.then(
-					res => {
-						handleAuthData(res);
-						console.log("Promise 완료:", res);
-					}
-				);
-			}
+		// 사원인증정보 요청
+		const fetchURL = AppConfig.fetch['mytest'];
+		fetch(`${fetchURL.protocol}${fetchURL.url}/auth/get`, {
+			method: "POST",
+			mode: "cors",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(entity)
 		})
-		.finally(() => {
-			handleLoading(false);
-		});
+			.then((res) => {
+
+				handleLoading(false); // 로딩의 끝
+
+				if (res.ok) {
+
+					console.log(res.headers.getSetCookie());
+					handleLoading(true);
+					entity = res.json();
+					console.log("Promise 시작:", entity);
+					entity.then(
+						res => {
+							// 세션처리
+							for (const key in res) {
+								localStorage.setItem(key, res[key]);
+								console.log(localStorage.getItem(key));
+							}
+
+							handleAuthData(res);
+							console.log("Promise 완료:", res);
+						}
+					);
+				}
+				else {
+					alert("로그인을 실패했습니다.");
+				}
+			})
+			.finally(() => { // 통신실패시 예외처리
+				handleLoading(false);
+			});
+	}
+	else {
+		alert("세션이 남아있습니다. 세션을 만료합니다.");
+		localStorage.clear();
+	}
 
 	return redirect("");
-};
+}
 
 // @Remix:url(/login) - 사원로그인 페이지
 export default function Login() {
@@ -105,19 +123,6 @@ export default function Login() {
 			nav("/main");
 	}, [authData, isLoading]);
 
-	const Password = forwardRef((props, ref) => {
-		const [visible, setVisible] = useState(false);
-		const handleChange = () => {
-			setVisible(!visible);
-		};
-
-		return (
-			<InputGroup inside ref={ref} {...props}>
-				<Input type={visible ? "text" : "password"} />
-			</InputGroup>
-		);
-	});
-
 	return (
 		<Stack
 			alignItems="center"
@@ -143,16 +148,13 @@ export default function Login() {
 						/>
 					</Form.Group>
 
-               <VStack spacing={10}>
-				   <Button style={{ color: "#333333", fontWeight: "bold" }} type='submit' appearance="primary" loading={isLoading} block>
-					   로그인
-				   </Button>
-				   <Button onClick={handleLogout}>
-					   로그아웃
-				   </Button>
-				   <a href="#">비밀번호를 잊으셨나요?</a>
-               </VStack>
-            </Form>
+					<VStack spacing={10}>
+						<Button style={{ color: "#333333", fontWeight: "bold" }} type='submit' appearance="primary" loading={isLoading} block>
+							로그인
+						</Button>
+						<a href="#">비밀번호를 잊으셨나요?</a>
+					</VStack>
+				</Form>
 
             {/*            <Divider>OR</Divider>
 

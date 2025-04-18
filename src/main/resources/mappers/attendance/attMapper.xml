@@ -5,22 +5,22 @@
      
 <mapper namespace="com.spring.erp_ordit.dao.attendance.AttMapper">
 
-    <!-- 기본사항등록 - 근태 항목 -->
-	<!-- 근태 항목 리스트 -->
+    <!-- 기본사항등록 -->
+	<!-- 근태항목 리스트 -->
 	<select id="regAttList" resultType="com.spring.erp_ordit.dto.attendance.AttItemsDTO">
 		SELECT * FROM attendance_view
 	</select>
-    <!-- 근태 항목 등록 -->
+    <!-- 근태항목 등록 -->
     <insert id="insertAttItems" parameterType="com.spring.erp_ordit.dto.attendance.AttItemsDTO">
         insert into attendance_tbl(a_code,a_name,a_type,a_note)
         values(#{a_code},#{a_name},#{a_type},#{a_note})
     </insert>
-    <!-- 근태 항목 삭제 -->
+    <!-- 근태항목 삭제 -->
     <delete id="deleteAttItems" parameterType="int">
         DELETE FROM attendance_tbl
          WHERE a_code = #{a_code}
     </delete>
-    <!-- 근태 항목 수정 -->
+    <!-- 근태항목 수정 -->
     <update id="updateAttItems" parameterType="com.spring.erp_ordit.dto.attendance.AttItemsDTO">
         UPDATE attendance_tbl
 			   SET a_name = #{a_name}
@@ -30,10 +30,30 @@
 			 WHERE a_code = #{a_code}
     </update>
     
-	<!-- 기본사항등록 - 휴가 항목 등록 -->
+	<!-- 휴가항목 리스트 -->
 	<select id="regVacaList" resultType="com.spring.erp_ordit.dto.attendance.VacaItemsDTO">
 		SELECT * FROM vacation_view
 	</select>
+    <!-- 휴가항목 등록 -->
+    <insert id="insertVacaItems" parameterType="com.spring.erp_ordit.dto.attendance.VacaItemsDTO">
+        insert into vacation_tbl(v_code, v_name, v_period, v_note)
+        values(#{v_code},#{v_name},#{v_period},#{v_note})
+    </insert>
+    <!-- 휴가항목 삭제 -->
+    <delete id="deleteVacaItems" parameterType="int">
+        DELETE FROM vacation_tbl
+         WHERE v_code = #{v_code}
+    </delete>
+    <!-- 휴가항목 수정 -->
+    <update id="updateVacaItems" parameterType="com.spring.erp_ordit.dto.attendance.VacaItemsDTO">
+        UPDATE vacation_tbl
+			   SET v_name = #{v_name}
+			     , v_period = #{v_period}
+			     , v_use = #{v_use}
+			     , v_note = #{v_note}
+			 WHERE v_code = #{v_code}
+    </update>
+    
 	<select id="vacaName" resultType="String">
 		SELECT v_name FROM vacation_tbl
 	</select>

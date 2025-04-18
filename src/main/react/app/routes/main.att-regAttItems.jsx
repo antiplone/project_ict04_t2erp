@@ -1,21 +1,24 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useEffect, useState } from "react";
-import { Meta, useFetcher } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import { Container, Button } from "rsuite";
 
 import AttItemsTable from "#components/attendance/AttItemsTable";
 import AttModal from "#components/attendance/AttModal";
-import "#styles/attendance.css";
 import MessageBox from "#components/common/MessageBox";
-import MetaBox from "#components/common/MetaBox";
-
+import "#styles/attendance.css";
 import AppConfig from "#config/AppConfig.json";
 
-<MetaBox title="근태 항목 등록" content="기본 항목 등록 - 근태 항목 등록 페이지" />
+export function meta() {
+  return [
+      { title: `${AppConfig.meta.title} : 근태항목등록` },
+      { name: "description", content: "근태항목 페이지" },
+  ];
+};
 
-// @Remix:url(/main/att-regAttItems)
 export default function RegAttItems() {
   const fetchURL = AppConfig.fetch['mytest'];
+  const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
 
   // 등록 버튼을 누르면 AttModal 을 보여줌.
   const [modalOpen, setModalOpen] = useState(false);
@@ -38,7 +41,7 @@ export default function RegAttItems() {
   // 데이터 로딩 & 리로딩 처리
   // 처음 렌더링(서버로부터 HTML 파일을 받아 브라우저에 뿌리는 과정)되면 이곳을 호출해서 데이터를 로딩한다.
   useEffect(() => {
-    fetch(`${fetchURL.protocol}${fetchURL.url}/attendance/regAttItems`)
+    fetch(`${attURL}/regAttItems`)
       .then(res => res.json())
       .then(data => setAttData(data));
   }, []);
@@ -50,7 +53,7 @@ export default function RegAttItems() {
 
       <Container className="tbl">
         <AttItemsTable
-          url={`${fetchURL.protocol}${fetchURL.url}/attendance/regAttItems`}
+          url={`${attURL}/regAttItems`}
           data={attData}
           columns={attColumns}
           onReloading={() => fetcher.load("/main/att-regAttItems")}

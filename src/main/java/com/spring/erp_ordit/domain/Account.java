@@ -18,6 +18,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class Account {
+
 	/**
 	 * 과목
 	 */

@@ -143,7 +143,7 @@ const HeaderMenu = () => {
 				</Nav>
 				<Nav pullRight>
 					<Nav.Item style={{ fontSize: "large" }}>{myInfo !== "" ? myInfo : <Loader />}</Nav.Item>
-					<Nav.Item icon={<ToImage src={logout} width={32} height={32} />} onSelect={handleLogout}>로그아웃</Nav.Item>
+					{myInfo != "" ? <Nav.Item icon={<ToImage src={logout} width={32} height={32} />} onSelect={handleLogout}>로그아웃</Nav.Item> : null}
 					{/*<Nav.Item icon={<ToImage src={settingIcon} width={20} height={20} />}>설정</Nav.Item>*/}
 				</Nav>
 			</Navbar>

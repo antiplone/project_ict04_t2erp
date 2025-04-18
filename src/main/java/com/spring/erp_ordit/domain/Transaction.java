@@ -19,6 +19,11 @@ import lombok.ToString;
 public class Transaction {
 
 	/**
+	 * 거래처명
+	 */
+	private String customer;
+
+	/**
 	 * 구분
 	 */
 	private Map<String, Object> classification;

@@ -1,7 +1,9 @@
 import { Outlet, useLocation } from "@remix-run/react";
 import { Container, Message } from "rsuite";
 
-import AppConfig from "#config/AppConfig.json"
+import AppConfig from "#config/AppConfig.json";
+
+import TabsTable from "#components/common/TabsTable";
 
 import "#components/common/css/common.css";
 
@@ -30,6 +32,7 @@ export default function FinanceInvoice() {
 			<Message type="info" className="main_title">
 				회계-전자계산서
 			</Message>
+			<TabsTable />
 			<Outlet />
 		</Container>
 	);

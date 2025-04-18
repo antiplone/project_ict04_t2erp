@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.erp_ordit.dao.buy.BuySearchMapper"> <!-- 모달검색 (담당자, 거래처, 입고창고, 물품코드) -->
+
+	 <select id="buyInchargeList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
+	      select e.e_id 
+		  	  , e.e_name 
+		   	  , d.d_name 
+		   from employee_tbl e
+		   join department_tbl d
+		 	 on e.d_code = d.d_code
+  	 </select>
+	
+	 <select id="buyClientList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
+	      select client_code 
+		  	   , client_name 
+		    from client_tbl
+  	 </select>
+  	 
+  	 <select id="buyStorageList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
+	      select storage_code 
+		  	   , storage_name 
+		    from warehouse_tbl
+  	 </select>
+  	 
+  	 <select id="buyItemList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
+	      select item_code 
+		  	   , item_name 
+		    from item_tbl
+  	 </select>
+
+</mapper>   

@@ -1,0 +1,27 @@
+/* 구매관리 css */
+
+/* 검색바 */
+.buy_search_bar {
+    width: 230px;
+    margin-bottom: 10px;
+}
+
+.input {
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+        
+}
+
+.inputBox {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1500px;
+    height: 40px;
+    margin-bottom: 10px;
+}
+
+.BuyUpdateFrom {
+    display: flex;
+    justify-content: space-between;
+}

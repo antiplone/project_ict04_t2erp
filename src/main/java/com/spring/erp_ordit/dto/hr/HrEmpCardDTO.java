@@ -31,4 +31,5 @@ public class HrEmpCardDTO {
 	private String e_salary_account_owner;    // 급여통장 - 예금주
 	private String e_note;                    // 비고
 	private String d_code;                    // 부서코드(외래키)
+	private String d_name;					  // 부서명
 }

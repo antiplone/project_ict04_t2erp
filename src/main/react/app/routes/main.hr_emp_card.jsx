@@ -8,6 +8,7 @@ import HrDropdown from '#components/hr/HrDropdown';
 import HrRadio from '#components/hr/HrRadio';
 import "#components/common/css/common.css";   // Message 컴포넌트
 import HrEmpCardDetail from './main.hr_emp_card_detail.$e_id';
+import { Link } from '@remix-run/react';
 
 // 초기 입력값 공통 정의
 const initialFormData = {
@@ -26,7 +27,7 @@ const initialFormData = {
   e_salary_account_num: '',
   e_salary_account_owner: '',
   e_note: '',
-  d_code: '',
+  d_code: '',     // 부서 코드 저장
 };
 
 export default function Hr_emp_card() {
@@ -37,8 +38,9 @@ export default function Hr_emp_card() {
   const [errors, setErrors] = useState({});
   const [hrCardData, setHrCardData] = useState(initialFormData); 
   const [selectedEid, setSelectedEid] = useState(null);   // 상세페이지에 보여줄 id
+  const [deptList, setDeptList] = useState([]);           // 부서명 리스트
 
-  // 목록 불러오는 함수
+  // 인사카드 목록
   const fetchHrCardList = () => {
     fetch('http://localhost:8081/hrCard/hrCardList')
       .then((res) => res.json())
@@ -48,9 +50,35 @@ export default function Hr_emp_card() {
       .catch((err) => console.error('데이터를 불러오지 못했습니다:', err));
   };
 
-  useEffect(() => {     // 화면이 처음 열릴 때 실행
-    fetchHrCardList();  // 사원 목록 서버에서 불러오기
-  }, []);   // 빈배열 처음 한 번만 실행됨
+  // 부서 목록 불러오기
+  const fetchDeptList = () => {
+    fetch('http://localhost:8081/hrDept/hrDeptList')
+      .then(res => res.json())
+      .then(data => {
+        // label은 화면에 보여질 부서명, value는 저장할 부서코드
+        const mapped = data.map(dept => ({
+          label: dept.d_name,
+          value: dept.d_code
+        }));
+        setDeptList(mapped);
+      })
+      .catch(err => console.error('부서 목록 불러오기 실패:', err));
+  };
+
+  // useEffect 안에서 부서 목록 불러오기 실행
+  useEffect(() => {       // 화면이 처음 열릴 때 실행
+    fetchHrCardList();    // 기존 사원 목록 서버에서 불러오기
+    fetchDeptList();      // 부서 목록도 같이 불러오기/ 빈배열 처음 한 번만 실행됨
+  }, []);
+
+  useEffect(() => {
+    fetch('http://localhost:8081/hrCard/hrCardList')
+      .then((res) => res.json())
+      .then((data) => {
+        setItems(data);
+      })
+      .catch((err) => console.error('데이터를 불러오지 못했습니다:', err));
+  }, []);
 
   const handleOpen = () => {
     setIsEditMode(false);
@@ -64,15 +92,6 @@ export default function Hr_emp_card() {
     setHrCardData(initialFormData); // 모달 닫을 때도 초기화
     setErrors({});
   };
-
-  useEffect(() => {
-    fetch('http://localhost:8081/hrCard/hrCardList')
-      .then((res) => res.json())
-      .then((data) => {
-        setItems(data);
-      })
-      .catch((err) => console.error('데이터를 불러오지 못했습니다:', err));
-  }, []);
 
   const validate = () => {
     const newErrors = {};
@@ -107,7 +126,8 @@ export default function Hr_emp_card() {
       e_salary_account_bank: hrCardData.e_salary_account_bank,
       e_salary_account_num: hrCardData.e_salary_account_num,
       e_salary_account_owner: hrCardData.e_salary_account_owner,
-      e_note: hrCardData.e_note
+      e_note: hrCardData.e_note,
+      d_code: hrCardData.d_code
     };
 
     fetch('http://localhost:8081/hrCard/hrCardInsert', {
@@ -137,16 +157,17 @@ export default function Hr_emp_card() {
     { label: '이름', dataKey: 'e_name', width: 150 },
     { label: '전화번호', dataKey: 'e_tel', width: 210 },
     { label: '이메일', dataKey: 'e_email', width: 300 },
+    { label: '부서', dataKey: 'd_name', width: 150 },
     { label: '직위', dataKey: 'e_position', width: 120 },
     { label: '재직 상태', dataKey: 'e_status', width: 120 },
     { label: '등록일', dataKey: 'e_reg_date', width: 200 },
   ];
 
-  const positionList = ['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무'];    // 직위 dropDown list
+  const positionList = ['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무'];    // 직위 dropDown list/ 문자열 배열
 
   return (
     <>
-      {selectedEid ? (
+      {/*{selectedEid ? (
         <HrEmpCardDetail
           e_id={selectedEid}
           onBack={() => {
@@ -154,7 +175,7 @@ export default function Hr_emp_card() {
             fetchHrCardList();      // 목록 새로고침
           }}
         />
-      ) : (
+      ) : (*/}
         <div style={{ padding: '30px', width: '100%' }}>
           <Message type="success" className="main_title">
               인사카드 등록
@@ -164,17 +185,19 @@ export default function Hr_emp_card() {
               columns={columns}
               items={items}
               renderActionButtons={(rowData) => (
-                <Button
-                  color="green"
-                  appearance="ghost"
-                  size="xs"
-                  onClick={() => {
-                    console.log("조회 클릭! 선택된 e_id:", rowData.e_id); // 🔍 여기에 로그 찍어보기!
-                    setSelectedEid(rowData.e_id);
-                  }}
-                >
+                // <Button
+                //   color="green"
+                //   appearance="ghost"
+                //   size="xs"
+                //   onClick={() => {
+                //     console.log("조회: 선택된 e_id:", rowData.e_id); // 🔍 여기에 로그 찍어보기!
+                //     setSelectedEid(rowData.e_id);
+                //   }}
+                // >
+                <Link to={`/main/hr_emp_card_detail/${rowData.e_id}`} >
                   조회
-                </Button>
+                </Link>
+                // </Button>
               )}
             />
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -226,13 +249,27 @@ export default function Hr_emp_card() {
                 <ErrorText message={errors.e_birth} />
               </Col>
               <Col xs={24}>
+                <label>부서 *</label>
+                <HrDropdown
+                  title={
+                    deptList.find((dept) => dept.value === hrCardData.d_code)?.label || '부서를 선택하세요'
+                  }
+                  items={deptList}  // [{label: '기획팀', value: 'D001'}, ...]
+                  onSelect={(val) => setHrCardData({ ...hrCardData, d_code: val })}
+                  style={{ width: '100%' }}
+                  menuStyle={{ width: 120 }}
+                />
+                <ErrorText message={errors.d_code} />
+              </Col>
+              <Col xs={24}>
                 <label>직위 *</label>
                 <HrDropdown
-                  title={hrCardData.e_position || "직위를 선택하세요"}
-                  items={positionList}
-                  onSelect={(value) => setHrCardData({ ...hrCardData, e_position: value })}
-                  style={{ width: '100%' }}
-                />
+                    title={hrCardData.e_position || "직위를 선택하세요"}
+                    items={['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무']}
+                    onSelect={(val) => setHrCardData({ ...hrCardData, e_position: val })}
+                    style={{ width: '100%' }}
+                    menuStyle={{ width: 120 }}
+                  />
                 <ErrorText message={errors.e_position} />
               </Col>
               <Col xs={24}>
@@ -301,7 +338,7 @@ export default function Hr_emp_card() {
             </Grid>
           </HrModal>
         </div>
-      )}
+      {/* )} */}
     </>
   );
   

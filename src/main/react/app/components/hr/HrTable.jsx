@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Button, Table } from 'rsuite';
+import { Button, Checkbox, Table } from 'rsuite';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -14,7 +14,13 @@ export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActi
       style={{ marginTop: '25px', marginBottom: '50px', border: '1px solid #EEEEEE' }}
     >
       {columns.map((col, index) => (
-        <Column key={index} width={col.width} align="center" sortable>
+        <Column
+          key={index}
+          minWidth={col.minWidth || 100}
+          flexGrow={1}
+          align="center"
+          sortable
+        >
           <HeaderCell>{col.label}</HeaderCell>
           <Cell dataKey={col.dataKey} />
         </Column>
@@ -25,7 +31,7 @@ export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActi
         <Cell style={{ display: 'flex', alignContent: 'center' }}>
           {(rowData) =>
             renderActionButtons ? (
-              renderActionButtons(rowData) // 외부에서 원하는 버튼 구성 전달 전달하지 않으면 수정/삭제 버튼 나옴
+              renderActionButtons(rowData)
             ) : (
               <>
                 <Button
@@ -50,6 +56,93 @@ export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActi
           }
         </Cell>
       </Column>
+    </Table>
+  );
+};
+
+export const HrAppointTable = ({ items, selectedIds, onSelectChange, columns }) => {
+  const handleRowCheck = (e_id) => {
+    if (selectedIds.includes(e_id)) {
+      onSelectChange(selectedIds.filter(id => id !== e_id));
+    } else {
+      onSelectChange([...selectedIds, e_id]);
+    }
+  };
+
+  const handleCheckAll = (checked) => {
+    if (checked) {
+      onSelectChange(items.map(emp => emp.e_id));
+    } else {
+      onSelectChange([]);
+    }
+  };
+
+  const allChecked = selectedIds.length === items.length;
+  const partiallyChecked = selectedIds.length > 0 && selectedIds.length < items.length;
+
+  return (
+    <Table
+      autoHeight
+      width={1050}
+      data={items}
+      cellBordered
+      style={{ marginTop: '25px', marginBottom: '50px', border: '1px solid #EEEEEE'}}
+    >
+      <Column width={60} align="center">
+        <HeaderCell>
+          <Checkbox
+            checked={allChecked}
+            indeterminate={partiallyChecked}
+            onChange={(value, checked) => handleCheckAll(checked)}
+          />
+        </HeaderCell>
+        <Cell>
+          {rowData => (
+            <Checkbox
+              checked={selectedIds.includes(rowData.e_id)}
+              onChange={() => handleRowCheck(rowData.e_id)}
+            />
+          )}
+        </Cell>
+      </Column>
+
+      {columns.map((col, index) => (
+        <Column
+          key={index}
+          minWidth={col.minWidth || 100}
+          flexGrow={1}
+          align="center"
+          sortable
+        >
+          <HeaderCell>{col.label}</HeaderCell>
+          <Cell dataKey={col.dataKey} />
+        </Column>
+      ))}
+    </Table>
+  );
+};
+
+export const HrReadOnlyTable = ({ items, columns }) => {
+  return (
+    <Table
+      autoHeight
+      width={1050}
+      data={items}
+      cellBordered
+      style={{ marginTop: '25px', marginBottom: '50px', border: '1px solid #EEEEEE' }}
+    >
+      {columns.map((col, index) => (
+        <Column
+          key={index}
+          minWidth={col.minWidth || 100}
+          flexGrow={1}
+          align="center"
+          sortable
+        >
+          <HeaderCell>{col.label}</HeaderCell>
+          <Cell dataKey={col.dataKey} />
+        </Column>
+      ))}
     </Table>
   );
 };

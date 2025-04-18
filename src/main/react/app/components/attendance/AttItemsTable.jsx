@@ -1,16 +1,18 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
-import { useEffect, useState } from "react";
-import { useNavigate } from "@remix-run/react";
-import { Button, Table } from "rsuite";
+import { useState } from "react";
+import { Table } from "rsuite";
 import AttUpdateModal from "./AttUpdateModal";
 import AppConfig from "#config/AppConfig.json";
 import Btn from "./Btn";
 
 const { Column, HeaderCell, Cell } = Table;
 
+// url : 컴포넌트를 선언한 곳(main.Att-regAttItems.jsx)에서 지정한 url 주소를 받음
+// columns : columns 를 props로 받아 동적으로 설정할 수 있도록 변경
 const AttItemsTable = ({ data, columns, onReloading }) => {
   const fetchURL = AppConfig.fetch['mytest'];
+  const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRow, setEditingRow] = useState(null);
@@ -24,7 +26,8 @@ const AttItemsTable = ({ data, columns, onReloading }) => {
     if (!isDel) return alert("삭제가 취소되었습니다.");
 
     try {
-      const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/attendance/deleteAttItems/${a_code}`, {
+      // fetch를 통해 데이터를 서버(백엔드)에서 가져와 attList 변수에 저장
+      const res = await fetch(`${attURL}/deleteAttItems/${a_code}`, {
         method: "DELETE",
       });
 

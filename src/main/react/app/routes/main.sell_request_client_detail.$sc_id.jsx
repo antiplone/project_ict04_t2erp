@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Message, Card, List, ButtonToolbar, Button } from 'rsuite';
 import { useParams, useNavigate } from "react-router-dom";
-import "../components/common/Sell_maintitle.css";
+import "#styles/sell.css";
 import AppConfig from "#config/AppConfig.json";
+
+// sell_request_client_detail => 거래처 등록 요청 상세 페이지
 
 const sell_request_client_detail = () => {
     const navigate = useNavigate();

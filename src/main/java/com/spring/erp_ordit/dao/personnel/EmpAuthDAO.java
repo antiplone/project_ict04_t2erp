@@ -23,6 +23,6 @@ public interface EmpAuthDAO {
 	 * 
 	 * @return 사원인증정보
 	 */
-	@Select(value = "SELECT e_auth_id, e_token FROM employee_auth_tbl WHERE e_auth_id=#{eID}")
+	@Select(value = "SELECT e_id, e_auth_id, e_token FROM employee_auth_tbl WHERE e_auth_id=#{eID}")
 	public Map<String, Object> getQuery(Map<String, Object> map);
 }

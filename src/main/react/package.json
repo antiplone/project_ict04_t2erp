@@ -21,7 +21,7 @@
 		"@fullcalendar/react": "^6.1.17",
 		"@remix-run/node": "^2.16.4",
 		"@remix-run/react": "^2.16.4",
-		"css-loader": "^7.1.2",
+		"axios": "^1.8.4",
 		"isbot": "^4.1.0",
 		"node-sass": "^9.0.0",
 		"react": "^18.3.1",

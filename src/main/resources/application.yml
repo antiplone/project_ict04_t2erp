@@ -15,6 +15,7 @@ spring:
     include: # application-mybatis, application-server 설정을 사전에 포함시킴
       - "server"
       - "mybatis"
+      - "email"
     default: none
     
     # 이것만 바꾸면 DB접속을 바꿀수 있어요.

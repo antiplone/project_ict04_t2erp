@@ -61,21 +61,30 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		return new ResponseEntity<>(buyOrderService.getBuyOrderPayingList(), HttpStatus.OK); //200
 	}
 	
-	// 구매조회 탭 <미확인> 목록 GetMapping => http://localhost:8081/buy/buyOrderUnchkList
-	@GetMapping("/buyOrderUnchkList")
-	public ResponseEntity<?> buyOrderUnchkList() {	
-		System.out.println("<<< buyOrderUnchkList >>>");
+	// 구매조회 탭 <결재중> "건수" 조회 GetMapping => http://localhost:8081/buy/buyOrderPayingCount
+	@GetMapping("/buyOrderPayingCount")
+	public ResponseEntity<?> buyOrderPayingCount() {	
+		System.out.println("<<< buyOrderPayingCount >>>");
 		
-		return new ResponseEntity<>(buyOrderService.getBuyOrderUnchkList(), HttpStatus.OK); //200
+		return new ResponseEntity<>(buyOrderService.getBuyOrderPayingCount(), HttpStatus.OK); //200
 	}
+
+// 판매팀 구매요청 프로세스 보류로 인해 주석처리	
+//	// 구매조회 탭 <미확인> 목록 GetMapping => http://localhost:8081/buy/buyOrderUnchkList
+//	@GetMapping("/buyOrderUnchkList")
+//	public ResponseEntity<?> buyOrderUnchkList() {	
+//		System.out.println("<<< buyOrderUnchkList >>>");
+//		
+//		return new ResponseEntity<>(buyOrderService.getBuyOrderUnchkList(), HttpStatus.OK); //200
+//	}
 	
-	// 구매조회 탭 <미확인> "건수" 조회 GetMapping => http://localhost:8081/buy/buyOrderUnchkCount
-	@GetMapping("/buyOrderUnchkCount")
-	public ResponseEntity<?> buyOrderUnchkCount() {	
-		System.out.println("<<< buyOrderUnchkCount >>>");
-		
-		return new ResponseEntity<>(buyOrderService.getBuyOrderUnchkCount(), HttpStatus.OK); //200
-	}
+//	// 구매조회 탭 <미확인> "건수" 조회 GetMapping => http://localhost:8081/buy/buyOrderUnchkCount
+//	@GetMapping("/buyOrderUnchkCount")
+//	public ResponseEntity<?> buyOrderUnchkCount() {	
+//		System.out.println("<<< buyOrderUnchkCount >>>");
+//		
+//		return new ResponseEntity<>(buyOrderService.getBuyOrderUnchkCount(), HttpStatus.OK); //200
+//	}
 	
 	// 구매조회 탭 <확인> 목록 GetMapping => http://localhost:8081/buy/buyOrderCheckList
 	@GetMapping("/buyOrderCheckList")

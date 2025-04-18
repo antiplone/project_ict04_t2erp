@@ -22,11 +22,14 @@ public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 상세조�
 	// 구매조회 탭 <결재중> 목록
 	public List<BuyOrderDTO> buyOrderPayingList();	
 	
-	// 구매 조회 탭 <미확인> 목록
-	public List<BuyOrderDTO> buyOrderUnchkList();	
+	// 구매조회 탭 <결재중 "건수"> 조회
+	public List<BuyOrderDTO> buyOrderPayingCount();	
 	
-	// 구매조회 탭 <미확인 "건수"> 조회
-	public List<BuyOrderDTO> buyOrderUnchkCount();	
+//	// 구매 조회 탭 <미확인> 목록
+//	public List<BuyOrderDTO> buyOrderUnchkList();	
+//	
+//	// 구매조회 탭 <미확인 "건수"> 조회
+//	public List<BuyOrderDTO> buyOrderUnchkCount();	
 	
 	// 구매 조회 탭 <확인> 목록
 	public List<BuyOrderDTO> buyOrderCheckList();	

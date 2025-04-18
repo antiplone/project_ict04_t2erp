@@ -131,7 +131,7 @@ export default function BuyStockStatus() {
             <Container>
 
                 <Message type="info" style={{ width: 1500 }}>
-                    <strong>구매관리 - 입고조회</strong>
+                    <strong>구매관리 - 입고현황</strong>
                 </Message>
                 <br />
 

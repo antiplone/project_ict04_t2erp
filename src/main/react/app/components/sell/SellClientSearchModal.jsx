@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Checkbox } from "rsuite";
+import { Button, Table, Modal, Checkbox, InputGroup, Input } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
+import readingGlasses from "#images/common/readingGlasses.png";
 
 const { Column, HeaderCell, Cell } = Table;
 
+// SellClientSearchModal => 거래처 검색 모달 페이지
 
-const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
+const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen, handleClose } /* = props:속성 */) => {
 	
 	const [clientList, setClientList] = useState([]);
+	const [keyword, setKeyword] = useState("");
 	const [selectedClient, setSelectedClient] = useState(null);
 
 	const fetchURL = AppConfig.fetch['mytest'];
 
-		// fetch()를 통해 톰캣서버에게 데이터를 요청
+		// 전체 리스트 - fetch()를 통해 톰캣서버에게 데이터를 요청
 		useEffect(() => {
 			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchClient`, {
 				method: "GET"
@@ -31,27 +34,85 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 			}
 		};
 		
+
+		// 키워드 검색 시 데이터 조회
+		const handleSearch = (keyword) => {
+			console.log("키워드: ", keyword);
+			if (keyword.trim() === "") {
+				// 빈 검색어면 전체 리스트 다시 불러오기
+				
+				fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchClient`, {
+					method: "GET"
+				})
+				.then(res => res.json())
+				.then(res => setClientList(res));
+			} else {
+				// 키워드로 검색 요청
+				fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchDetailClient/${keyword}`, {
+					method: "GET"
+				})
+				.then(res => res.json())
+				.then(res => setClientList(res));
+			}
+		}
+
+
 		// 선택 완료 처리
 		const handleSubmit = () => {
 			if (selectedClient) {
 				onClientSelect(selectedClient.client_code, selectedClient.client_name);
-				handleColse();
+				handleClose();
 			}
 		};
 
-		// 모달이 열릴 때 선택값 초기화
+		// 모달이 열릴 때 선택값 초기화 + 전체 리스트 불러오기
 		useEffect(() => {
 			if (handleOpen) {
 				setSelectedClient(null);
+				setKeyword("");
+				
+				// 전체 리스트 다시 불러오기
+				fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchClient`, {
+					method: "GET"
+				})
+				.then(res => res.json())
+				.then(res => setClientList(res));
 			}
 		}, [handleOpen]);
 
 	return (
-		<Modal open={handleOpen} onClose={handleColse} size="xs">
+		<Modal open={handleOpen} onClose={handleClose} size="xs">
 			<Modal.Header>
 				<Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
+
+			<InputGroup>
+				<InputGroup.Addon style={{ width: 90 }}>
+					검색어
+				</InputGroup.Addon>
+				<Input style={{ width: 150 }}
+					placeholder='찾는 거래처를 입력하세요'
+					name="keyword"
+					value={keyword}
+					onChange={(value) => setKeyword(value)}
+					onKeyDown={(e) => {
+						if (e.key === "Enter") {
+						  handleSearch(keyword); // 엔터 키 누르면 검색 실행
+						}
+					}}
+				/>
+				<InputGroup.Addon tabIndex={-1} onClick={() => handleSearch(keyword)}>
+					<img
+					src={readingGlasses}
+					alt="돋보기"
+					width={20}
+					height={20}
+					style={{ cursor: "pointer "}}
+					/>
+				</InputGroup.Addon>
+			</InputGroup>
+
 			<Table
 				height={400}
 				data={clientList}
@@ -85,7 +146,7 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 				<Button onClick={handleSubmit} appearance="primary">
 					{confirm}
 				</Button>
-				<Button onClick={handleColse} appearance="subtle">
+				<Button onClick={handleClose} appearance="subtle">
 					{cancel}
 				</Button>
 			</Modal.Footer>
@@ -95,7 +156,7 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 
 SellClientSearchModal.defaultProps = {
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
-	title: "제목을 입력해주세요.",
+	title: "거래처 선택",
 	confirm: "확인",
 	cancel: "취소",
 	

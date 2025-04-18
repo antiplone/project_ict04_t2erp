@@ -1,12 +1,13 @@
-import { Table, Button, Tabs, Message, ButtonToolbar, Checkbox, Modal,
-		InputGroup, Input } from 'rsuite';
-// import SearchIcon from '@rsuite/icons/Search';
+import { Table, Button, Tabs, Message, ButtonToolbar, 
+	Checkbox, Modal } from 'rsuite';
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate  } from "react-router-dom";
 import SellSalesInvoice from '#components/sell/SellSalesInvoice.jsx';
 import SellSlipAll from '#components/sell/SellSlipAll';
-import "../components/common/Sell_maintitle.css";
+import "#styles/sell.css";
 import AppConfig from "#config/AppConfig.json";
+
+// sell_all_list => 판매 조회 페이지
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -91,72 +92,60 @@ const sell_all_list = () => {
 
 	const fetchURL = AppConfig.fetch['mytest'];
 
-		useEffect(() => {
-			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/allList`, {
-				method: "GET"
-			})
-			.then(res => res.json())
-			.then(res => {
-				console.log(1, res);
-				const numbered = getNumberedList(res);
-				setAllList(numbered);
-			});
-		}, []);
+	useEffect(() => {
+		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/allList`, {
+			method: "GET"
+		})
+		.then(res => res.json())
+		.then(res => {
+			console.log(1, res);
+			const numbered = getNumberedList(res);
+			setAllList(numbered);
+		});
+	}, []);
 
+	// 탭 상태(기본값 1 : 전체리스트)
+	const [activeTab, setActiveTab] = useState("1");
 
-	const [searchTerm, setSearchTerm] = useState(""); // 검색창 상태 관리
+	// 결재 상태에 따라 필터링 만들기
+	const filteredList = allList.filter(row => {
+		if (activeTab === "1") return true; // 전체
+		if (activeTab === "2") return row.order_status === "진행중";
+		if (activeTab === "3") return row.order_status === "미확인";
+		if (activeTab === "4") return row.order_status === "승인";
+		return false;
+	  });
 	
-	// 타이틀 포함한것만 필터
-	// const filteredData = data.filter((item) => item.title.toLowerCase().includes(searchTerm.toLowerCase())); 
-	// // filter메서드는 제공된 함수에 의해 구현된 테스트를 통과한 모든 요소가 포함된 새 배열을 만든다.
-	// // 필터 함수의 조건이 (title에 있는 글자를 포함하는 것이) true인 경우 해당 요소가 배열에 들어간다.
-
-	// // state를 업데이트 해주는 함수
-	// const onSearch = (term) =>{
-	// 	setSearchTerm(term)
-	//   }
-
 	return (
 		<div>
 			<Message type="success" className="main_title">
 				판매조회
 			</Message>
 
-			{/* 검색바 */}
-            <div className="status_search_bar">
-				<InputGroup >
-					<Input placeholder='검색어 입력' />
-					<InputGroup.Button>
-						{/* <SearchIcon /> */}
-					</InputGroup.Button>
-
-				</InputGroup>
-            </div>
-
-			<Tabs defaultActiveKey="1" className="all_title">
-				<Tabs.Tab eventKey="1" title="전체">
-				</Tabs.Tab>
-				<Tabs.Tab eventKey="2" title="결재중">
-				</Tabs.Tab>
-				<Tabs.Tab eventKey="3" title="미확인">
-				</Tabs.Tab>
-				<Tabs.Tab eventKey="4" title="확인">
-				</Tabs.Tab>
+			<Tabs 
+				activeKey={activeTab}
+				onSelect={(key) => setActiveTab(key)}
+				className="all_title"
+			>
+				<Tabs.Tab eventKey="1" title={`전체 (${allList.length})`} />
+				<Tabs.Tab eventKey="2" title={`결재중 (${allList.filter(r => r.order_status === '진행중').length})`} />
+				<Tabs.Tab eventKey="3" title={`미확인 (${allList.filter(r => r.order_status === '미확인').length})`} />
+				<Tabs.Tab eventKey="4" title={`확인 (${allList.filter(r => r.order_status === '승인').length})`} />
 			</Tabs>
 
 			<Table 
 				className="all_table"
 				height={500}
-				data={allList}
+				data={filteredList}
 				onRowClick={rowData => {
 					console.log(rowData);
 				}}
 			>	
 			
-			<Column width={50} className="all_text">
+			{/* <Column width={50} className="all_text">
 				<HeaderCell>선택</HeaderCell>
 				<Cell><Checkbox className="all_checkbox" /></Cell>
-			</Column>
+			</Column> */}
 			
 			<Column width={130} className="all_text">
 				<HeaderCell>등록일자_No.</HeaderCell>
@@ -221,19 +210,10 @@ const sell_all_list = () => {
 				<Cell />
 			</Column>
 
-			{/* <Column width={150} >
-				<HeaderCell className="all_text">결재</HeaderCell>
-				<Cell className="all_chkText">
-					<InputPicker placeholder="미확인" data={confirm} style={confirmStyles} />
-				</Cell>
-			</Column> */}
-
 			<Column width={100} className="all_text">
-				<HeaderCell>거래명세서</HeaderCell>
+				<HeaderCell>출하여부</HeaderCell>
 				<Cell>
-					<Button appearance="link" onClick={handleOpen1}>
-					조회
-					</Button>
+					{(rowData) => rowData.income_confirm === null ? 'N' : rowData.income_confirm}
 				</Cell>
 			</Column>
 
@@ -278,16 +258,12 @@ const sell_all_list = () => {
 				</Modal.Footer>
 			</Modal>
 
-			<div className="parent">
-  				<div className="child">
-					<ButtonToolbar>
-						<Link to="/main/sell_insert">
-							<Button appearance="primary" className="allList_btn">판매 입력</Button>
-						</Link>
-						{/* <Button appearance="primary">저장</Button> */}
-						<Button appearance="primary" className="allList_btn">선택 삭제</Button>
-					</ButtonToolbar>
-				</div>
+			<div className="all_listBtn">
+				<ButtonToolbar>
+					<Link to="/main/sell_insert">
+						<Button appearance="primary" className="allList_btn">판매 입력</Button>
+					</Link>
+				</ButtonToolbar>
 			</div>
 		</div>
   );

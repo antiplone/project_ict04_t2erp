@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.erp_ordit.dto.sell.SellAllListDTO;
 import com.spring.erp_ordit.dto.sell.SellOrderDTO;
-import com.spring.erp_ordit.dto.sell.SellRequestClientDTO;
 import com.spring.erp_ordit.service.sell.SellAllListServiceImpl;
 
 @RestController
@@ -28,6 +27,16 @@ public class SellAllListController {
 	@Autowired
 	private SellAllListServiceImpl service;
 	
+	
+	// http://localhost:8081/sell/insert
+	// 판매 입력 - 등록 요청
+	@PostMapping("/insert")
+	public ResponseEntity<Integer> sell_insert(@RequestBody SellOrderDTO dto) {
+		System.out.println("<<< sell_insert >>>");
+
+		return new ResponseEntity<>(service.sellInsert(dto), HttpStatus.CREATED);
+	}
+		
 	// http://localhost:8081/sell/allList
 	// 판매 조회, 판매 현황 - 판매 입력한 전체 리스트
 	@GetMapping("/allList")
@@ -57,9 +66,9 @@ public class SellAllListController {
 	}
 	
 	// http://localhost:8081/sell/allListUpdate/{order_id}
-	// 판매 조회 - 수정
+	// 판매 조회 - 입력 건 수정
 	@PutMapping("/allListUpdate/{order_id}")
-	public ResponseEntity<Integer> update_allList(@PathVariable int order_id, @RequestBody SellOrderDTO dto) {
+		public ResponseEntity<Integer> update_allList(@PathVariable int order_id, @RequestBody SellOrderDTO dto) {
 		System.out.println("<<< update_allList >>>");
 
 		return new ResponseEntity<>(service.updateAllList(order_id, dto), HttpStatus.OK);

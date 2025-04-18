@@ -4,7 +4,7 @@ import { Card, Container, Message } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
 import "#components/common/css/common.css";
 
-export default function SalesItemDetail (){ 
+const SalesItemDetail = () => { 
 	const fetchURL = Appconfig.fetch['mytest']
     const { order_id, item_code, order_type } = useParams();
 
@@ -19,13 +19,11 @@ export default function SalesItemDetail (){
       }).toString();
 
     const [salesItemDetail, setSalesItemDetail] = useState(null);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!order_id || !item_code) {
             console.error("필요한 파라미터가 없습니다.");
-            setLoading(false);
             return;
         }
 
@@ -38,15 +36,13 @@ export default function SalesItemDetail (){
         })
         .then(data => {
             setSalesItemDetail(data);
-            setLoading(false);
+            console.log(setSalesItemDetail)
         })
         .catch(err => {
             setError(err.message);
-            setLoading(false);
         });
     }, [order_id, item_code]);
 
-    if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
@@ -87,4 +83,4 @@ export default function SalesItemDetail (){
     );
 }
 
- 
+export default SalesItemDetail

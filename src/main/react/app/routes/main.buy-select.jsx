@@ -1,7 +1,7 @@
 // 구매팀 - 구매조회 페이지 
 /* eslint-disable react/react-in-jsx-scope */
 import AppConfig from "#config/AppConfig.json";
-import { Container, Tabs, Message, InputGroup, Input, Badge, Button } from "rsuite";
+import { Container, Tabs, Message, Badge, Button, InputGroup, Input } from "rsuite";
 import React, { useEffect, useState } from 'react';
 import BuySelectTabAll from "#components/buy/BuySelectTabAll.jsx";
 import "../styles/buy.css";
@@ -21,6 +21,9 @@ export default function BuySelect() {
 
     // 미확인 건수
     const [uncheckedCount, setUnCheckedCount] = useState(0);
+
+    // 키워드 검색
+    const [searchKeyword, setSearchKeyword] = useState("");
 
     const fetchURL = AppConfig.fetch["mytest"];
 
@@ -45,7 +48,7 @@ export default function BuySelect() {
                 <br />
 
                 {/* 검색바 */}
-                <div style={{ display: 'flex', gap: 20, marginBottom: 20}}>
+                <div style={{ display: 'flex', gap: 20, marginBottom: 20 }}>
                     <Badge content={uncheckedCount}>
                         <Button>미확인건</Button>
                     </Badge>

@@ -5,15 +5,11 @@ import VacaItemsTable from "#components/attendance/VacaItemsTable.jsx";
 import VacaModal from "#components/attendance/VacaModal.jsx";
 import "#styles/attendance.css";
 import MessageBox from "#components/common/MessageBox";
+import MetaBox from "#components/common/MetaBox";
 import AppConfig from "#config/AppConfig.json";
 
 
-export function meta() {
-  return [
-      { title: `${AppConfig.meta.title} : 휴가항목등록` },
-      { name: "description", content: "휴가항목 페이지" },
-  ];
-};
+<MetaBox title="휴가 항목 등록" content="기본 항목 등록 - 휴가 항목 등록 페이지" />
 
 // @Remix:url(/main/Att_regVacaItems)
 export default function Att_regVacaItems() {

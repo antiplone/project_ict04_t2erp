@@ -1,4 +1,5 @@
 
+//  SellSalesInvoice => 판매조회 > 전표 조회 페이지
 
 const SellSlipAll = () => {
 

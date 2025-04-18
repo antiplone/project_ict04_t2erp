@@ -18,10 +18,9 @@ public class BuyStatusDTO {	// 작성자 - hjy, 구매현황에 대한 DTO
 	// 주문정보
 	private Long order_id ; 				// 주문번호
 	private int order_type;				// 주문타입 type 1 판매팀, type 2 구매팀
-	private int	order_code;				// 구매팀 발주번호
 	private Date order_date;			// 등록일자
-	private String start_date;			// 등록일자
-	private String end_date;			// 등록일자
+	private String start_date;			// 조회시 시작일
+	private String end_date;			// 조회시 마지막일
 	private int e_id;					// 사원코드
 	private String e_name;				// 사원명
 	private int client_code;			// 거래처코드

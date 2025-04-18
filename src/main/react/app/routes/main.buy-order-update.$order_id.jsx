@@ -1,8 +1,8 @@
-// 구매팀 - 구매 주문 수정 페이지
+// 구매팀 - 주문 수정 페이지
 /* eslint-disable react/react-in-jsx-scope */
 import AppConfig from "#config/AppConfig.json";
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import "../styles/buy.css";
 import { Form, Button, Container, Message, Divider, InputGroup, Input, InputPicker } from 'rsuite';
 import ashBn from "#images/common/ashBn.png";
@@ -10,6 +10,7 @@ import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
 import StorageSearchModal from "#components/buy/StorageSearchModal.jsx";
 import readingGlasses from "#images/common/readingGlasses.png";
+import ItemSearchModal from "#components/buy/ItemSearchModal.jsx";
 
 export function meta() {
     return [
@@ -21,12 +22,20 @@ export function meta() {
 export default function BuyOrderUpdate() {
 
     const navigate = useNavigate();
-    const { order_id } = useParams();
+
+    const { order_id } = useParams(); // URL에서 전달된 파라미터들을 객체 형태로 반환 ex) order_id -> '1' 문자열로 출력됨
+
     const fetchURL = AppConfig.fetch['mytest'];
 
     // 주문 정보 및 물품 정보
     const [orderInfo, setOrderInfo] = useState({});
     const [orderItems, setOrderItems] = useState([]);
+
+    // 물품 모달관리
+    const [isItemModalOpen, setItemModalOpen] = useState(null);
+
+    // 현재 편집중인 셀
+    const [currentEditIndex, setCurrentEditIndex] = useState(null);
 
     // 거래처 모달관리
     const [selectedClient, setSelectedClient] = useState(null);
@@ -44,19 +53,19 @@ export default function BuyOrderUpdate() {
     const [isStorageModalOpen, setStorageModalOpen] = useState(false);
 
     // 물품 항목 수정 핸들러
-    const updateItem = (index, newData) => {
+    const updateItem = (index, newData) => {  // 수정하려는 행의 인덱스, 사용자가 입력한 변경값
         setOrderItems(prev => {
-            const updated = [...prev];
-            const current = { ...updated[index], ...newData };
+            const updated = [...prev];  // 기존 물품리스트 불러와서 updated 새로운 배열 생성
+            const current = { ...updated[index], ...newData };  // 기존 인덱스 항목 (...updated[index])에 변경값을 덮어씀 => 수정된 내용만 적용
 
             // 수량과 단가가 모두 있는 경우 자동 계산
             const quantity = Number(current.quantity) || 0;
             const price = Number(current.price) || 0;
-            const supply = quantity * price;
-            const vat = supply * 0.1;
-            const total = supply + vat;
+            const supply = quantity * price;  // 공급가액 = 수량 × 단가
+            const vat = supply * 0.1;         // 부가세 = 공급가액의 10%
+            const total = supply + vat;       //  총액 = 공급가액 + 부가세
 
-            updated[index] = {
+            updated[index] = { // updated에 계산한 값을 덮어서 수정
                 ...current,
                 supply,
                 vat,
@@ -67,11 +76,14 @@ export default function BuyOrderUpdate() {
         });
     };
 
-    // 행 추가
+    // 행 추가 함수
     const handleAddRow = () => {
-        const maxId = orderItems.length > 0 ? Math.max(...orderItems.map(d => d.id ?? 0)) : 0;
+        // 현재 입력된 모든 행의 id 값만 추출 ex) [{id:1}, {id:2}, {id:5}] → [1, 2, 5] / 현재 존재하는 id 중 가장 큰 값을 찾아서 +1
+        const newId = orderItems.length > 0
+            ? Math.max(...orderItems.map(d => d.id)) + 1
+            : 1;
         const newItem = {
-            id: maxId + 1,
+            id: newId,
             order_id: orderInfo.order_id, // 누락시 물품정보 추가해도 db에 해당 order_id의 물품정보가 안들어간다.
             item_code: '',
             item_name: '',
@@ -81,35 +93,39 @@ export default function BuyOrderUpdate() {
             vat: 0,
             total: 0
         };
-        setOrderItems(prev => [...prev, newItem]);
+        setOrderItems(prev => [...prev, newItem]); // 기존 orderItems 배열에 새 항목 newItem 추가
     };
 
 
     // 행 삭제
     const handleDeleteRow = (id) => {
-        setOrderItems(orderItems.filter(item => item.id !== id));
+        setOrderItems(prev => prev.filter(item => item.id !== id));
     };
 
-    // 총액 합계 계산
+    // 총액 합계 계산 
+    // reduce는 배열의 각 항목을 순차적으로 처리 => 하나의 결과 값을 받환 (acc: 누적값, item: 현재 항목) / null 일 경우 0으로 대체
     const totalSum = orderItems.reduce((acc, item) => acc + (item.total || 0), 0);
-
 
     // 주문정보 조회
     useEffect(() => {
-        if (!order_id) return;
+        if (!order_id) return; // order_id가 null 이면 종료
 
         fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrderDetail/${order_id}`, {
             method: "GET"
         })
-            .then(res => res.json())
+            .then(res => res.json()) // 응답 받은 내용을 json 형식으로 파싱
             .then(json => {
-                if (Array.isArray(json) && json.length > 0) {
+                if (Array.isArray(json) && json.length > 0) { // 서버 응답이 배열 형태일때 첫번째 요소를 꺼냄
                     const data = json[0]; // 추가 하지 않으면 모달에 값들이 안들어온다.
-                    setOrderInfo(json[0]);
-                    setOrderItems(json[0].items || []);
+                    const withIds = (data.items || []).map((item, index) => ({ // data.items에 id 값 부여
+                        ...item,
+                        id: index
+                    }));
+                    setOrderInfo(data);
+                    setOrderItems(withIds);
 
                     // 모달창 선택용 값 저장 (표시용)
-                    setSelectedClient(data.client_code || null);
+                    setSelectedClient(data.client_code || null); // 선택값 없을 경우 대비 null 또는 ""
                     setSelectedClientName(data.client_name || "");
                     setSelectedIncharge(data.e_id || null);
                     setSelectedInchargeName(data.e_name || "");
@@ -119,7 +135,7 @@ export default function BuyOrderUpdate() {
             })
             .catch(err => {
                 console.error("데이터 가져오기 오류:", err);
-                setOrderInfo({});
+                setOrderInfo({}); // 상태 초기화
                 setOrderItems([]);
             });
     }, [order_id]);
@@ -130,11 +146,11 @@ export default function BuyOrderUpdate() {
     // 2. 실제로 받았다면 submit이 제대로 되었는지 확인
     // 저장 버튼 클릭 시
     const submitOrder = (e) => {
-        e.preventDefault();     // submit이 action을 안타고 자기 할일을 그만한다.
+        e.preventDefault();     // submit이 action을 안타고 자기 할일을 그만한다. (새로고침 방지)
 
-        const itemsWithOrderId = orderItems.map(item => ({
+        const itemsWithOrderId = orderItems.map(({ id, ...item }) => ({  // 각 물품 객체에 order_id를 명시적으로 추가
             ...item,
-            order_id: orderInfo.order_id || order_id  // fallback
+            order_id: orderInfo.order_id || order_id
         }));
 
         fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrderUpdate/${order_id}`, {
@@ -146,6 +162,7 @@ export default function BuyOrderUpdate() {
                 order: orderInfo,
                 items: itemsWithOrderId,
                 status: { order_status: orderInfo.order_status },
+                txType: { transaction_type: orderInfo.transaction_type }
             })
         })
             .then(res => {
@@ -161,78 +178,39 @@ export default function BuyOrderUpdate() {
     return (
         <>
             <Container style={{ padding: 20 }}>
-                <Message type="info"><strong>구매 정보 수정페이지 - 발주번호:{order_id}</strong></Message>
+                <Message type="info" style={{ width: 1500 }}>
+                    <strong>구매 정보 수정페이지 - 발주번호:{order_id}</strong>
+                </Message>
 
                 <br />
+
                 {/* 주문 정보 수정 */}
-                <Form fluid formValue={orderInfo} onChange={setOrderInfo} style={{ display: "flex", gap: "1rem", marginBottom: 8 }}>
+                <Form fluid formValue={orderInfo} onChange={setOrderInfo} >
                     <div className="BuyUpdateFrom">
                         <Form.Group>
                             <Form.ControlLabel>발주일자</Form.ControlLabel>
-                            <Form.Control name="order_date" />
+                            <Form.Control name="order_date" style={{ width: 233 }} />
                         </Form.Group>
 
                         <Form.Group>
                             <Form.ControlLabel>구매요청 부서</Form.ControlLabel>
-                            <Form.Control name="order_type" />
+                            <Form.Control name="order_type" style={{ width: 233 }} />
                         </Form.Group>
-
-                        <InputGroup className="input">
-                            <InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
-                            <Input value={selectedIncharge || ""} readOnly />
-                            <InputGroup.Button tabIndex={-1}>
-                                <img
-                                    src={readingGlasses}
-                                    alt="돋보기"
-                                    width={20}
-                                    height={20}
-                                    onClick={() => setInchargeModalOpen(true)}
-                                    style={{ cursor: "pointer" }}
-                                />
-                            </InputGroup.Button>
-                        </InputGroup>
-                        <Input value={selectedInchargeName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
-
-                        <InputGroup className="input">
-                            <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
-                            <Input value={selectedClient || ""} readOnly />
-                            <InputGroup.Addon>
-                                <img
-                                    src={readingGlasses}
-                                    alt="돋보기"
-                                    width={20}
-                                    height={20}
-                                    onClick={() => setClientModalOpen(true)}
-                                    style={{ cursor: "pointer" }}
-                                />
-                            </InputGroup.Addon>
-                        </InputGroup>
-                        <Input value={selectedClientName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
-
-                        <Form.Group>
-                            <Form.ControlLabel>거래유형</Form.ControlLabel>
-                            <Form.Control name="transaction_type" />
-                        </Form.Group>
-
-                        <InputGroup className="input">
-                            <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
-                            <Input value={selectedStorage || ""} readOnly />
-                            <InputGroup.Addon>
-                                <img
-                                    src={readingGlasses}
-                                    alt="돋보기"
-                                    width={20}
-                                    height={20}
-                                    onClick={() => setStorageModalOpen(true)}
-                                    style={{ cursor: "pointer" }}
-                                />
-                            </InputGroup.Addon>
-                        </InputGroup>
-                        <Input value={selectedStorageName || ""} readOnly style={{ width: 150, marginBottom: 5 }} />
 
                         <Form.Group>
                             <Form.ControlLabel>납기일자</Form.ControlLabel>
-                            <Form.Control name="delivery_date" />
+                            <Form.Control name="delivery_date" style={{ width: 233 }} />
+                        </Form.Group>
+
+                        <Form.Group>
+                            <Form.ControlLabel>거래유형</Form.ControlLabel>
+                            <Form.Control
+                                name="transaction_type"
+                                accepter={InputPicker}
+                                data={[{ label: '부과세율 적용', value: '부과세율 적용' },
+                                { label: '부가세율 미적용', value: '부가세율 미적용' }]}
+                                style={{ width: 233 }}
+                            />
                         </Form.Group>
 
                         <Form.Group>
@@ -240,71 +218,65 @@ export default function BuyOrderUpdate() {
                             <Form.Control
                                 name="order_status"
                                 accepter={InputPicker}
-                                data={[{ label: '미확인', value: '미확인' }, { label: '진행중', value: '진행중' }, { label: '승인', value: '승인' }, { label: '반려', value: '반려' }]}
+                                data={[{ label: '미확인', value: '미확인' },
+                                { label: '진행중', value: '진행중' },
+                                { label: '승인', value: '승인' },
+                                { label: '반려', value: '반려' }]}
+                                style={{ width: 233 }}
                             />
                         </Form.Group>
                     </div>
-                </Form>
-                <Divider />
-                {/* <Message type="info"><strong>물품 정보 수정</strong></Message> */}
 
-                {/* 물품 정보 수정 */}
-                {orderItems.map((item, index) => (
-                    <Form
-                        key={item.id} // 여기 꼭 고유한 id
-                        fluid
-                        formValue={item}
-                        onChange={val => updateItem(index, val)}
-                    >
-                        <div className="BuyUpdateFrom">
-                            <Form.Group>
-                                <Form.ControlLabel>물품코드</Form.ControlLabel>
-                                <Form.Control name="item_code" placeholder="물품코드" />
-                            </Form.Group>
-
-                            {/* <Form.Group>
-                                <Form.ControlLabel>물품명</Form.ControlLabel>
-                                <Form.Control name="item_name" placeholder="물품명" />
-                            </Form.Group> */}
-
-                            <Form.Group>
-                                <Form.ControlLabel>수량</Form.ControlLabel>
-                                <Form.Control name="quantity" type="number" placeholder="수량" />
-                            </Form.Group>
-
-                            <Form.Group>
-                                <Form.ControlLabel>단가</Form.ControlLabel>
-                                <Form.Control name="price" type="number" placeholder="단가" />
-                            </Form.Group>
-
-                            <Form.Group>
-                                <Form.ControlLabel>공급가액</Form.ControlLabel>
-                                <Form.Control name="supply" type="number" placeholder="공급가액" />
-                            </Form.Group>
-
-                            <Form.Group>
-                                <Form.ControlLabel>부가세</Form.ControlLabel>
-                                <Form.Control name="vat" type="number" placeholder="부가세" />
-                            </Form.Group>
-
-                            <Form.Group>
-                                <Form.ControlLabel>총액</Form.ControlLabel>
-                                <Form.Control name="total" type="number" placeholder="총액" />
-                            </Form.Group>
-
-                            <Button color="red" size="xs">
+                    <div className="inputBox">
+                        <InputGroup className="input">
+                            <InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
+                            <Input value={selectedIncharge || ""} readOnly onClick={() => setInchargeModalOpen(true)} />
+                            <InputGroup.Button tabIndex={-1}>
                                 <img
-                                    src={ashBn}
+                                    src={readingGlasses}
                                     alt="돋보기"
                                     width={20}
                                     height={20}
-                                    onClick={() => handleDeleteRow(item.id)}
                                     style={{ cursor: "pointer" }}
                                 />
-                            </Button>
-                        </div>
-                    </Form>
-                ))}
+                            </InputGroup.Button>
+                        </InputGroup>
+                        <Input value={selectedInchargeName || ""} readOnly className="input" />
+
+                        <InputGroup className="input">
+                            <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
+                            <Input value={selectedClient || ""} readOnly onClick={() => setClientModalOpen(true)} />
+                            <InputGroup.Addon>
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                    style={{ cursor: "pointer" }}
+                                />
+                            </InputGroup.Addon>
+                        </InputGroup>
+                        <Input value={selectedClientName || ""} readOnly className="input" />
+
+
+
+                        <InputGroup className="input">
+                            <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
+                            <Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
+                            <InputGroup.Addon>
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                    style={{ cursor: "pointer" }}
+                                />
+                            </InputGroup.Addon>
+                        </InputGroup>
+                        <Input value={selectedStorageName || ""} readOnly className="input" />
+                    </div>
+                </Form>
+                <Divider style={{ maxWidth: 1500 }} />
 
                 {/* 거래처 모달 관리 */}
                 <ClientSearchModal
@@ -339,15 +311,98 @@ export default function BuyOrderUpdate() {
                     }}
                 />
 
-                <Divider />
-                <div style={{ fontWeight: 'bold', marginBottom: 10 }}>
+                {/* 물품 모달 관리 */}
+                <ItemSearchModal
+                    handleOpen={isItemModalOpen}
+                    handleColse={() => setItemModalOpen(false)}
+                    onItemSelect={(item_code, item_name) => {
+                        if (currentEditIndex !== null) {
+                            updateItem(currentEditIndex, { item_code, item_name });
+                            setItemModalOpen(false);
+                        }
+                    }}
+                />
+
+                {/* 물품 정보 수정 */}
+                {orderItems.map((item, index) => (
+                    <Form
+                        key={item.id} // 여기 꼭 고유한 id
+                        fluid
+                        formValue={item}
+                        onChange={val => updateItem(index, val)}
+                    >
+                        <div className="BuyUpdateFrom">
+                            <Form.Group>
+                                <Form.ControlLabel>물품코드</Form.ControlLabel>
+                                <Form.Control
+                                    name="item_code"
+                                    plaintext={false} // 읽기 전용 아님
+                                    value={item.item_code}
+                                    onDoubleClick={() => {
+                                        setCurrentEditIndex(index);  // 현재 클릭한 행의 인덱스를 저장
+                                        setItemModalOpen(true);     // 모달 열기
+                                    }}
+                                />
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Form.ControlLabel>물품명</Form.ControlLabel>
+                                <Form.Control name="item_name" placeholder="물품명" />
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Form.ControlLabel>수량</Form.ControlLabel>
+                                <Form.Control name="quantity" type="number" placeholder="수량" />
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Form.ControlLabel>단가</Form.ControlLabel>
+                                <Form.Control name="price" type="number" placeholder="단가" />
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Form.ControlLabel>공급가액</Form.ControlLabel>
+                                <Form.Control name="supply" type="number" placeholder="공급가액" />
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Form.ControlLabel>부가세</Form.ControlLabel>
+                                <Form.Control name="vat" type="number" placeholder="부가세" />
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Form.ControlLabel>총액</Form.ControlLabel>
+                                <Form.Control name="total" type="number" placeholder="총액" />
+                            </Form.Group>
+
+                            <Button style={{ display: 'flex', width: 20, height: 40, margin: 20 }}>
+                                <img
+                                    src={ashBn}
+                                    alt="휴지통"
+                                    width={20}
+                                    height={20}
+                                    onClick={() => handleDeleteRow(item.id)}
+                                    style={{ cursor: "pointer" }}
+                                />
+                            </Button>
+                        </div>
+                    </Form>
+                ))}
+
+                <Divider style={{ maxWidth: 1500 }} />
+                <div className="updateTotalSum">
                     총액 합계: {totalSum.toLocaleString()} 원
                 </div>
 
-                <div style={{ display: 'flex', gap: 10 }}>
-                    <Button appearance="primary" onClick={handleAddRow}>행 추가</Button>
-                    <Button appearance="primary" onClick={submitOrder}>저장</Button>
-                    <Button appearance="subtle" onClick={() => navigate(-1)}>취소</Button> {/* navigate(-1); 브라우저 history 뒤로 */}
+                <div className="buyBtnBox">
+                    <Button appearance="default" className="buyBtn" onClick={handleAddRow}>행 추가</Button>
+                    <Button appearance="ghost" color="blue" className="buyBtn" onClick={submitOrder}>저장</Button>
+                    <Button appearance="ghost" color="red" className="buyBtn" onClick={() => navigate(-1)}>취소</Button> {/* navigate(-1); 브라우저 history 뒤로 */}
+                    <Link to={`/main/buy-select`}>
+                        <Button appearance="ghost" color="cyan" className="buyUpdateBtn">
+                            목록
+                        </Button>
+                    </Link>
                 </div>
             </Container>
 

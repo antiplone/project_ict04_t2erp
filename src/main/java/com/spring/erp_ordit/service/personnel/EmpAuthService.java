@@ -21,6 +21,11 @@ public class EmpAuthService {
 	@Autowired
 	private EmpAuthDAO dao;
 
+	/**
+	 * @param form react에서 받아온 사원인증정보
+	 * 
+	 * @return null이거나, 사원인증정보
+	 */
 	@Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
 	public Map<String, Object> getTransaction(Map<String, Object> form) {
 

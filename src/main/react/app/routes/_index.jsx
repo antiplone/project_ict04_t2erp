@@ -22,8 +22,9 @@ export default function Index() {
 	const nav = useNavigate();
 
 	useEffect(() => { // 세션이 없으면, 로그인 페이지로
-		if (location.pathname === "/") {
+		if (localStorage.length < 1) {
 			nav("/login", { replace: true });
 		}
+		else nav("/main", { replace: true });
 	}, []);
 }

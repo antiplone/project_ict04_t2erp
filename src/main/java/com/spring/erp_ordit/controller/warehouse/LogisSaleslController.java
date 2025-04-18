@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.erp_ordit.dao.warehouse.LogisMapper;
 import com.spring.erp_ordit.dto.warehouse.LogisSalesDTO;
+import com.spring.erp_ordit.dto.warehouse.LogisStatusDTO;
 import com.spring.erp_ordit.service.warehouse.LogisSalesServiceImpl;
 
 @RestController
@@ -46,12 +47,31 @@ public class LogisSaleslController {
 		return new ResponseEntity<>(salesService.findBySalesItem(order_id, item_code, order_type), HttpStatus.OK); // 200을 리턴해라
 	}
 	
-	// 출고 확정(stock_table 수정) 
-//	@Transactional  // 
-//	public int /*LogisStockDTO*/ updateOrderStock(int stock_amount, int item_code, int order_id, int storage_code){ // BoardDTO return : 상세페이지로 리턴하기 위해 
-//		System.out.println("LogisStockItemsServiceImpl - updateStock");
-//		return salesService.updateOrderStock(stock_amount, item_code, order_id, storage_code);
-//	}
+	@GetMapping("/logisSalesSearch")
+	public ResponseEntity<List<LogisStatusDTO>> logisSalesSearch(	// ?를 주면 자동으로 적용된다. T 와 같은 의미, 데이터가 아직 결정되지 않았다는 뜻 => Integer 또는 ? 를 주면 된다. 
+		// required = false: 선택적인 파라미터 → 안 보내도 null로 들어가게 하려고 씀.
+		@RequestParam(required = false) String start_date, 
+		@RequestParam(required = false) String end_date, 
+	    @RequestParam(required = false) String client_code,
+	    @RequestParam(required = false) String e_id,
+	    @RequestParam(required = false) Integer storage_code
+	) {
+	    System.out.println("<<< logisSalesSearch >>>");
+
+	    System.out.println("start_date: " + start_date);
+	    System.out.println("end_date: " + end_date);
+	    System.out.println("client_code: " + client_code);
+	    System.out.println("e_id: " + e_id);
+	    System.out.println("storage_code: " + storage_code);
+	    
+	    // 서비스 메서드 호출 (파라미터 전달)
+	    List<LogisStatusDTO> result = salesService.logisSalesSearch(
+	    		start_date, end_date, client_code, e_id, storage_code
+	    );
+	    
+	    
+	    return new ResponseEntity<>(result, HttpStatus.OK); // 200 OK
+	}
 	
 }
 	

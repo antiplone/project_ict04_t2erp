@@ -16,6 +16,7 @@ import lombok.ToString;
 public class SellOrderItemDTO {	// 판매입력 _ 아이템 정보 DTO
 	
 	private int order_id; 				// 고유 주문번호
+	private int order_item_id; 			// 아이템 테이블의 고유 주문번호
 	private int order_type; 			// 판매팀 구매 입력 1, 구매팀 구매 입력 2
 	private String item_standard; 			// 규격
 //	private int e_id; 					// 사원코드 

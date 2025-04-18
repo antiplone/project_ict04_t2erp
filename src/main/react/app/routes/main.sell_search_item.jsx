@@ -2,7 +2,9 @@ import { Table, Button, Tabs, Message, ButtonToolbar } from 'rsuite';
 import React, { useState,  useEffect } from "react";
 import SellSearchModal from '#components/sell/SellSearchModal';
 import AppConfig from "#config/AppConfig.json";
-import "../components/common/Sell_maintitle.css";
+import "#styles/sell.css";
+
+// sell_search_item => 판매 물품 검색 페이지
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -67,77 +69,47 @@ const sell_search_item = () => {
 				// 검색 결과가 있으면 해당 데이터 보여주고, 없으면 전체 목록 보여주기
 			>	
 			
-			{/* <Column width={50} className="search_text">
-				<HeaderCell><Checkbox className="search_checkbox_all"  /></HeaderCell>
-				<Cell><Checkbox className="search_checkbox" /></Cell>
-			</Column> */}
-
 			<Column width={100} className="search_text">
 				<HeaderCell>품목코드</HeaderCell>
-				<Cell>
-					{(rowData) => rowData.item_code}
-				</Cell>
+				<Cell>{(rowData) => rowData.item_code}</Cell>
 			</Column>
 
 			<Column width={150} className="search_text">
 				<HeaderCell>품목명</HeaderCell>
-				<Cell>
-					{(rowData) => rowData.item_name}
-				</Cell>
+				<Cell>{(rowData) => rowData.item_name}</Cell>
 			</Column>
 
 			<Column width={300} className="search_text">
 				<HeaderCell>규격</HeaderCell>
-				<Cell>
-					{(rowData) => rowData.item_standard}
-				</Cell>
+				<Cell>{(rowData) => rowData.item_standard}</Cell>
 			</Column>
-			{/* 
-			<Column width={100} className="search_text">
-				<HeaderCell>단가</HeaderCell>
-				<Cell>
-					{(rowData) => rowData.price}
-				</Cell>
-			</Column> */}
 
 			<Column width={150} className="search_text">
 				<HeaderCell>창고명</HeaderCell>
-				<Cell>
-					{(rowData) => rowData.storage_name}
-				</Cell>
+				<Cell>{(rowData) => rowData.storage_name}</Cell>
 			</Column>
 
 			<Column width={100} className="search_text">
 				<HeaderCell>창고수량</HeaderCell>
-				<Cell>
-					{(rowData) => rowData.stock_amount}
-				</Cell>
+				<Cell>{(rowData) => rowData.stock_amount}</Cell>
 			</Column>
 
 			<Column width={200} className="search_text">
 				<HeaderCell>등록일자</HeaderCell>
-				<Cell>
-					{(rowData) => rowData.item_reg_date}
-				</Cell>
+				<Cell>{(rowData) => rowData.item_reg_date}</Cell>
 			</Column>
 			
 			</Table> 
 			)}
 
-			<div className="search_parent">
-  				<div className="search_child">
-					<ButtonToolbar>
-						<Button appearance="primary" onClick={handleOpenSearchModal}>물품 검색</Button>
-						<Button appearance="primary" onClick={resetBtn}>초기화</Button>
-					</ButtonToolbar>
-				</div>
+			<div className="search_btn">
+				<ButtonToolbar>
+					<Button appearance="primary" onClick={handleOpenSearchModal}>물품 검색</Button>
+					<Button appearance="primary" onClick={resetBtn}>초기화</Button>
+				</ButtonToolbar>
 			</div>
 			
 			<SellSearchModal
-				title="물품 상세 검색"
-				confirm="확인"
-				cancel="취소"
-				// onClientSelect={handleClientSelect}	// client_code, client_name 받기
 				handleOpen={isSearchModalOpen}
 				handleClose={() => setSearchModalOpen(false)}
 				onSearchResult={(resultList) => {

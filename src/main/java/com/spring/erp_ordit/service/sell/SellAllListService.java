@@ -7,6 +7,9 @@ import com.spring.erp_ordit.dto.sell.SellOrderDTO;
 
 public interface SellAllListService {
 	
+	// 판매 입력 - 등록
+	public int sellInsert(SellOrderDTO dto);
+	
 	// 판매 조회, 판매 현황 - 판매 입력한 전체 리스트
 	public List<SellAllListDTO> sellAllList();
 	

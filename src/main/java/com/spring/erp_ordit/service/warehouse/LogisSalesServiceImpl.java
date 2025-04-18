@@ -43,5 +43,12 @@ private LogisMapper logisMapper;
 	    }
 		return sorderDTO;
 	}
+	
+	// 출고 목록 조건 조회
+	public List<LogisStatusDTO> logisSalesSearch(String start_date, String end_date, String client_code, String e_id, Integer storage_code) {
+		System.out.println("LogisSalesServiceImpl - logisSalesSearch");
+		System.out.println(start_date+ " " + end_date + " " +  client_code + " " +  e_id + " " +  storage_code);
+		return logisMapper.logisSalesSearch(start_date, end_date, client_code, e_id, storage_code);
+	}
 
 }

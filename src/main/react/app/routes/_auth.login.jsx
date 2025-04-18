@@ -14,6 +14,8 @@ import {
 
 import AppConfig from "#config/AppConfig.json"
 
+import "#components/common/css/common.css";
+
 const { StringType } = Schema.Types;
 const model = Schema.Model({
    eID: StringType().isRequired("'사번'을 입력해주세요."),
@@ -120,7 +122,7 @@ export default function Login() {
 
 	useEffect(() => {
 		if (authData != null)
-			nav("/main");
+			nav("/main", { replace: true });
 	}, [authData, isLoading]);
 
 	return (
@@ -149,7 +151,7 @@ export default function Login() {
 					</Form.Group>
 
 					<VStack spacing={10}>
-						<Button style={{ color: "#333333", fontWeight: "bold" }} type='submit' appearance="primary" loading={isLoading} block>
+						<Button type='submit' appearance="primary" loading={isLoading} block>
 							로그인
 						</Button>
 						<a href="#">비밀번호를 잊으셨나요?</a>

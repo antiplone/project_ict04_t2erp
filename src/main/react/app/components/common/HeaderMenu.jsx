@@ -5,6 +5,8 @@ import settingIcon from "#images/common/setting.png";
 import logout from "#images/common/logout.png";
 import arrow from "#images/common/arrow.png";
 
+import AppConfig from "#config/AppConfig.json"
+
 import "#components/common/css/common.css";
 
 import { useState, useEffect } from "react";
@@ -47,6 +49,38 @@ const HeaderMenu = () => {
 	const [placement, setPlacement] = chatState.placement;
 
 	useEffect(() => {
+
+		const fetchURL = AppConfig.fetch['mytest'];
+		fetch(`${fetchURL.protocol}${fetchURL.url}/hrCard/hrCardDetail/${localStorage.getItem('e_id')}`, {
+			method: "GET",
+			mode: "cors",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			}
+		})
+			.then((res) => {
+
+				if (res.ok) {
+
+					let entity = res.json();
+					entity.then(
+						res => {
+
+							localStorage.setItem('e_name', res.e_name);
+							localStorage.setItem('e_position', res.e_position);
+							console.log("Promise 완료:", res);
+						}
+					);
+				}
+				else {
+					alert("로그인을 실패했습니다.");
+				}
+			})
+			.finally(() => { // 통신실패시 예외처리
+				
+			});
+
 		if (open)
 			console.log("상담시작");
 		else console.log("상담종료");
@@ -60,7 +94,7 @@ const HeaderMenu = () => {
 	const handleLogout = () => {
 		localStorage.clear();
 		console.log("세션만료.");
-		navigate("/");
+		navigate("/", { replace: true });
 	};
 
 	if (crumbs.length > 0)
@@ -68,7 +102,7 @@ const HeaderMenu = () => {
 
 	return (
 		<Header>
-			<Navbar appearance="inverse">
+			<Navbar style={{ fontSize: "large" }} appearance="inverse">
 				<Nav>
 					{/* <Nav.Item icon={<ToImage src={mainIcon} fbText="Main" width={32} height={32} />} /> */}
 					<Nav.Menu title="관리운영">
@@ -76,6 +110,8 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("basic_client") }}>거래처등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_item") }}>상품등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("hr_department") }}>부서관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("hr_appointment") }}>인사발령관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="근태관리">
 						<Nav.Item onSelect={() => { navigate("att-regAttItems") }}>근태항목등록</Nav.Item>
@@ -121,7 +157,8 @@ const HeaderMenu = () => {
 					</Nav.Menu>
 				</Nav>
 				<Nav pullRight>
-					<Nav.Item icon={<ToImage src={logout} width={20} height={20} />} onSelect={handleLogout}>로그아웃</Nav.Item>
+					<Nav.Item style={{ fontSize: "large" }}>{localStorage.getItem('e_name') + ' ' + localStorage.getItem('e_position') + '님'}</Nav.Item>
+					<Nav.Item icon={<ToImage src={logout} width={32} height={32} />} onSelect={handleLogout}>로그아웃</Nav.Item>
 					{/*<Nav.Item icon={<ToImage src={settingIcon} width={20} height={20} />}>설정</Nav.Item>*/}
 				</Nav>
 			</Navbar>

@@ -1,17 +1,16 @@
 
 import React, { useState, useEffect } from "react";
-import { Button, ButtonToolbar, Message, DatePicker, Form, 
-		 InputGroup, AutoComplete, HStack, Input, Table, InputPicker,
-		 IconButton, InputNumber, DateRangePicker} from "rsuite";
-import { VscEdit, VscSave, VscRemove } from 'react-icons/vsc';
-import { mockUsers } from './sell_mock4';
-//import SearchIcon from '@rsuite/icons/Search';
-import "../components/common/Sell_maintitle.css";
+import { Button, ButtonToolbar, Message, Form, 
+		 InputGroup, Input, Table, InputPicker,
+		  DateRangePicker} from "rsuite";
 import SellEmployeeSearchModal from "#components/sell/SellEmployeeSearchModal.jsx";
 import SellClientSearchModal from "#components/sell/SellClientSearchModal.jsx";
 import SellStorageSearchModal from "#components/sell/SellStorageSearchModal.jsx";
 import SellItemSearchModal from "#components/sell/SellItemSearchModal.jsx";
 import AppConfig from "#config/AppConfig.json";
+import readingGlasses from "#images/common/readingGlasses.png";
+import "#styles/sell.css";
+// sell_status_select => 판매 현황 페이지
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -38,11 +37,7 @@ const sell_status_select = () => {
 	const handleInchargeSelect = (e_id, e_name) => {
 		setSelectedIncharge(e_id);
 		setSelectedInchargeName(e_name);
-		setClientModalOpen(false);
-	};
-
-	const handleOpenInchargeModal = () => {
-		setInchargeModalOpen(true);
+		setInchargeModalOpen(false);
 	};
 
 	// 거래처 모달 관리
@@ -56,10 +51,6 @@ const sell_status_select = () => {
 		setClientModalOpen(false);
 	};
 
-	const handleOpenClientModal = () => {
-		setClientModalOpen(true);
-	};
-
 	// 창고 모달 관리
 	const [selectedStorage, setSelectedStorage] = useState(null);
 	const [selectedStorageName, setSelectedStorageName] = useState(null);
@@ -71,9 +62,6 @@ const sell_status_select = () => {
 		setStorageModalOpen(false);
 	};
 	
-	const handleOpenStorageModal = () => {
-		setStorageModalOpen(true);
-	};
 
 	// 물품 검색 모달 관리
 	const [selectedItem, setSelectedItem] = useState(null);
@@ -84,10 +72,6 @@ const sell_status_select = () => {
 		setSelectedItem(item_code);
 		setSelectedItemName(item_name);
 		setItemModalOpen(false);
-	};
-
-	const handleOpenItemModal = () => {
-		setItemModalOpen(true);
 	};
 
 	// 날짜 별로 순번 붙이기 (동일한 날짜+동일 주문건이면 동일한 No.)
@@ -172,16 +156,11 @@ const sell_status_select = () => {
 		const payload = {
 			order_date_start: formatDate(orderDate && orderDate[0] ? orderDate[0] : null),
   			order_date_end: formatDate(orderDate && orderDate[1] ? orderDate[1] : null),
-			// order_date: orderDate,
 			e_id: selectedIncharge,
-			// e_name: selectedInchargeName,
 			client_code: selectedClient,
-			// client_name: selectedClientName,
 			transaction_type : transactionType,
 			storage_code: selectedStorage,
-			// storage_name: selectedStorageName,
 			item_code: selectedItem,
-			// item_name: selectedItemName,
 		};
 	
 		console.log("제출할 전체 데이터:", payload); // 확인용
@@ -210,7 +189,7 @@ const sell_status_select = () => {
 		setSearchResultList([]);
 		setIsSearched(false); // 검색 상태 해제
 	}
-
+	
 	// 검색 필터 초기화
 	const submitStatusReset = () => {
 		setOrderDate(null);
@@ -229,7 +208,7 @@ const sell_status_select = () => {
 		<div>
 			
 			<Message type="success" className="main_title">
-				판매 현황
+				판매현황
 			</Message>
 			
 			{/* 입력 상위 칸 */}
@@ -263,8 +242,15 @@ const sell_status_select = () => {
 								value={selectedIncharge || ""} readOnly
 								// value={selectedIncharge ? selectedIncharge.em_name : ""}
 							/>
-							<InputGroup.Addon onClick={handleOpenInchargeModal}>
-								{/* <SearchIcon /> */}
+							<InputGroup.Addon tabIndex={-1}>
+								<img
+								src={readingGlasses}
+								alt="돋보기"
+								width={20}
+								height={20}
+								onClick={() => setInchargeModalOpen(true)}
+								style={{ cursor: "pointer "}}
+								/>
 							</InputGroup.Addon>
 						</InputGroup>
 						<Input 
@@ -282,8 +268,15 @@ const sell_status_select = () => {
 								name="client_code"
 								value={selectedClient || ""} readOnly
 							/>
-							<InputGroup.Addon onClick={handleOpenClientModal}>
-								{/* <SearchIcon /> */}
+							<InputGroup.Addon tabIndex={-1}>
+								<img
+								src={readingGlasses}
+								alt="돋보기"
+								width={20}
+								height={20}
+								onClick={() => setClientModalOpen(true)}
+								style={{ cursor: "pointer "}}
+								/>
 							</InputGroup.Addon>
 						</InputGroup>
 						<Input type="text" autoComplete="off" className="status_inputBox2"
@@ -320,9 +313,16 @@ const sell_status_select = () => {
 								name="storage_code"
 								value={selectedStorage || ""} readOnly
 								/>
-							<InputGroup.Addon onClick={handleOpenStorageModal}>
-									{/* <SearchIcon onClick={handleOpenStorageModal} /> */}
-								</InputGroup.Addon>
+							<InputGroup.Addon tabIndex={-1}>
+								<img
+								src={readingGlasses}
+								alt="돋보기"
+								width={20}
+								height={20}
+								onClick={() => setStorageModalOpen(true)}
+								style={{ cursor: "pointer "}}
+								/>
+							</InputGroup.Addon>
 							</InputGroup>
 							<Input type="text" autoComplete="off" className="status_inputBox2"
 								name="storage_name"
@@ -340,8 +340,15 @@ const sell_status_select = () => {
 								name="item_code"
 								value={selectedItem || ""} readOnly
 							/>
-							<InputGroup.Addon tabIndex={-1} onClick={handleOpenItemModal}>
-								{/* <SearchIcon  /> */}
+							<InputGroup.Addon tabIndex={-1}>
+								<img
+								src={readingGlasses}
+								alt="돋보기"
+								width={20}
+								height={20}
+								onClick={() => setItemModalOpen(true)}
+								style={{ cursor: "pointer "}}
+								/>
 							</InputGroup.Addon>
 							</InputGroup>
 							<Input name="item_name" type="text" autoComplete="off" className="status_inputBox2"
@@ -351,132 +358,130 @@ const sell_status_select = () => {
 				</div>
 
 					<div className="form_div">
-					
-						<Button appearance="primary" type="submit" className="status_btn" onClick={submitStatusSearch}>
+					<ButtonToolbar>
+						<Button appearance="primary" type="submit" onClick={submitStatusSearch}>
 							검색
 						</Button>
-						<Button appearance="primary" type="submit" className="status_btn" onClick={submitStatusReset}>
-							검색 초기화
+						<Button appearance="primary" type="submit" onClick={submitStatusReset}>
+							검색창 초기화
 						</Button>
+					</ButtonToolbar>
 					</div>
 						<hr />
 
-						<div className="addTabel">
-						{isSearched && searchResultList.length === 0 ? (
-							<div style={{ padding: '20px', textAlign: 'center', fontSize: '16px', color: 'gray' }}>
-								검색한 정보로 조회되는 리스트가 없습니다.
-							</div>
-						) : (
-						<Table 
-							height={400} 
-							// data={statusData}
-							data={isSearched ? searchResultList : statusData}
-								// 검색 결과가 있으면 해당 데이터 보여주고, 없으면 전체 목록 보여주기
-						>	
+					<div className="addTabel">
+							{isSearched && searchResultList.length === 0 ? (
+								<div style={{ padding: '20px', textAlign: 'center', fontSize: '16px', color: 'gray' }}>
+									해당 정보로 조회되는 리스트가 없습니다.
+								</div>
+							) : (
+							<Table 
+								height={400} 
+								// data={statusData}
+								data={isSearched ? searchResultList : statusData}
+									// 검색 결과가 있으면 해당 데이터 보여주고, 없으면 전체 목록 보여주기
+							>	
 
-						<Column width={150}>
-							<HeaderCell>등록일자_No.</HeaderCell>
-							<Cell>
-								{(rowData) => `${rowData.order_date}_${rowData.date_no}`}
-							</Cell>
-						</Column>
+							<Column width={150}>
+								<HeaderCell>등록일자_No.</HeaderCell>
+								<Cell>
+									{(rowData) => `${rowData.order_date}_${rowData.date_no}`}
+								</Cell>
+							</Column>
 
-						<Column width={200}>
-							<HeaderCell>품목명</HeaderCell>
-							<Cell>
-								{(rowData) => rowData.item_display}
-							</Cell>
-						</Column>
+							<Column width={200}>
+								<HeaderCell>품목명</HeaderCell>
+								<Cell>
+									{(rowData) => rowData.item_display}
+								</Cell>
+							</Column>
 
-						<Column width={100}>
-							<HeaderCell>수량</HeaderCell>
-							<Cell>
-								{(rowData) => rowData.quantity}
-							</Cell>
-						</Column>
+							<Column width={100}>
+								<HeaderCell>수량</HeaderCell>
+								<Cell>
+									{(rowData) => rowData.quantity}
+								</Cell>
+							</Column>
 
-						<Column width={150}>
-							<HeaderCell>단가</HeaderCell>
-							<Cell>
-								{(rowData) => new Intl.NumberFormat().format(rowData.price)}
-								{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
-							</Cell>
-						</Column>
+							<Column width={150}>
+								<HeaderCell>단가</HeaderCell>
+								<Cell>
+									{(rowData) => new Intl.NumberFormat().format(rowData.price)}
+									{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
+								</Cell>
+							</Column>
 
-						<Column width={150}>
-							<HeaderCell>공급가액</HeaderCell>
-							<Cell>
-								{(rowData) => new Intl.NumberFormat().format(rowData.supply)}
-								{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
-							</Cell>
-						</Column>
+							<Column width={150}>
+								<HeaderCell>공급가액</HeaderCell>
+								<Cell>
+									{(rowData) => new Intl.NumberFormat().format(rowData.supply)}
+									{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
+								</Cell>
+							</Column>
 
-						<Column width={150}>
-							<HeaderCell>부가세</HeaderCell>
-							<Cell>
-								{(rowData) => new Intl.NumberFormat().format(rowData.vat)}
-								{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
-							</Cell>
-						</Column>
+							<Column width={150}>
+								<HeaderCell>부가세</HeaderCell>
+								<Cell>
+									{(rowData) => new Intl.NumberFormat().format(rowData.vat)}
+									{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
+								</Cell>
+							</Column>
 
-						<Column width={150}>
-							<HeaderCell>금액합계</HeaderCell>
-							<Cell>
-								{(rowData) => new Intl.NumberFormat().format(rowData.total)}
-								{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
-							</Cell>
-						</Column>
+							<Column width={150}>
+								<HeaderCell>금액합계</HeaderCell>
+								<Cell>
+									{(rowData) => new Intl.NumberFormat().format(rowData.total)}
+									{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
+								</Cell>
+							</Column>
 
-						<Column width={150}>
-							<HeaderCell>거래처명</HeaderCell>
-							<Cell>
-								{(rowData) => rowData.client_name}
-							</Cell>
-						</Column>
-					</Table>)}
+							<Column width={150}>
+								<HeaderCell>거래처명</HeaderCell>
+								<Cell>
+									{(rowData) => rowData.client_name}
+								</Cell>
+							</Column>
+							
+							<Column width={100} className="all_text">
+								<HeaderCell>출하여부</HeaderCell>
+								<Cell>
+									{(rowData) => rowData.income_confirm === null ? 'N' : rowData.income_confirm}
+								</Cell>
+							</Column>
+
+						</Table>)}
 					</div>
 
 					<div className="resultBtn">
-					<ButtonToolbar >
-						<Button appearance="primary" className="status_btn">인쇄</Button>
-						<Button appearance="primary" className="status_btn" onClick={statusList_btn}>초기화</Button>
-					</ButtonToolbar>
+						<ButtonToolbar>
+							<Button appearance="primary">인쇄</Button>
+							<Button appearance="primary" onClick={statusList_btn}>내역 초기화</Button>
+						</ButtonToolbar>
 					</div>
+
 					<hr></hr>
 					<SellEmployeeSearchModal
-						title="담당자 선택"
-						confirm="확인"
-						cancel="취소"
 						onInchargeSelect={handleInchargeSelect}	// e_id, e_name 받기
 						handleOpen={isInchargeModalOpen}
-						handleColse={() => setInchargeModalOpen(false)}
+						handleClose={() => setInchargeModalOpen(false)}
 					/>
 
 					<SellClientSearchModal
-						title="거래처 선택"
-						confirm="확인"
-						cancel="취소"
 						onClientSelect={handleClientSelect}	// client_code, client_name 받기
 						handleOpen={isClientModalOpen}
-						handleColse={() => setClientModalOpen(false)}
+						handleClose={() => setClientModalOpen(false)}
 					/>
 
 					<SellStorageSearchModal
-						title="창고 선택"
-						confirm="확인"
-						cancel="취소"
 						onStorageSelect={handleStorageSelect}	// storage_code, storage_name 받기
 						handleOpen={isStorageModalOpen}
-						handleColse={() => setStorageModalOpen(false)}
+						handleClose={() => setStorageModalOpen(false)}
 					/>
 
 					<SellItemSearchModal
-						title="물품 선택"
-						confirm="확인"
-						cancel="취소"
 						onItemSelect={handleItemSelect}
 						handleOpen={isItemModalOpen}
-						handleColse={() => setItemModalOpen(false)}
+						handleClose={() => setItemModalOpen(false)}
 					/>
 				</Form>
 			</div>

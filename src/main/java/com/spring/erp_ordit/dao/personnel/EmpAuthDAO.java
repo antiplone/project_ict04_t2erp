@@ -6,11 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
-/**
- * 사원인증을 데이터베이스와 연동합니다.
- * 
- * @author YD.전
- */
 @Mapper
 @Repository
 public interface EmpAuthDAO {

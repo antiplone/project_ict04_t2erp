@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useSearchParams } from '@remix-run/react';
+import { Link, useParams} from '@remix-run/react';
 import { Card, Container, Message } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
 import "#components/common/css/common.css";
 
 const OrderItemDetail = () => { 
-
-    const { order_id, item_code, order_type } = useParams();
     const fetchURL = Appconfig.fetch['mytest']
+    const { order_id, item_code, order_type } = useParams();
 
     console.log("OrderItemDetail order_id:", order_id);
     console.log("OrderItemDetail item_code:", item_code);

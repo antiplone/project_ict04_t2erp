@@ -1,10 +1,11 @@
-// 구매팀 - 구매상세 조회 페이지
+// 구매팀 - 상세조회 페이지
 /* eslint-disable react/react-in-jsx-scope */
 import AppConfig from "#config/AppConfig.json";
-import * as rs from 'rsuite';
-import Table from 'rsuite/Table';
+import { Table } from 'rsuite';
 import React, { useEffect, useState } from "react";
+import "../styles/buy.css";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { Button, Container, Divider, Message } from "rsuite";
 
 export function meta() {
   return [
@@ -17,7 +18,7 @@ const { Column, HeaderCell, Cell } = Table;
 
 export default function BuySelectDetail() {
 
-  const { order_id } = useParams();
+  const { order_id } = useParams(); // URL에서 전달된 파라미터들을 객체 형태로 반환 ex) order_id -> '1' 문자열로 출력됨
 
   const navigate = useNavigate();
 
@@ -29,48 +30,35 @@ export default function BuySelectDetail() {
 
   const fetchURL = AppConfig.fetch['mytest']
 
-  // fecth()를 통해 톰캣서버에세 데이터를 요청
+  // 컴포넌트가 처음 마운트 될때, 또는 order_id가 바뀔 때마다 주문 상세 데이터를 요청
   useEffect(() => {
-    if (!order_id) return;
+    if (!order_id) return; // order_id가 null 이면 종료
 
+    // fecth()를 통해 톰캣서버에세 데이터를 요청
     fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrderDetail/${order_id}`, {
       method: "GET"
     })
-      .then(async (res) => {
-        if (!res.ok) throw new Error(`서버 응답 오류: ${res.status}`);
-        const text = await res.text();
-        if (!text) throw new Error("응답 본문이 비어 있음");
-
-        const json = JSON.parse(text);
-        console.log("📦 응답 확인:", json);
-
+      .then(res => { // 서버의 응답을 받았을 때 실행
+        if (!res.ok) throw new Error(`buyOrderDetail 응답 오류: ${res.status}`);
+        return res.json();  // 응답 받은 내용을 json 형식으로 파싱
+      })
+      .then(json => {
+        console.log("buyOrderDetail 응답 확인:", json);
         if (Array.isArray(json) && json.length > 0) {
-          setOrderInfo(json[0]); // 주문 정보
-
-          // item 정보만 따로 추출
-          const items = json.map(order => ({
-            item_code: order.item_code,
-            item_name: order.item_name,
-            quantity: order.quantity,
-            price: order.price,
-            supply: order.supply,
-            vat: order.vat,
-            total: order.total
-          }));
-          setOrderItems(json[0].items); // 물품 목록
+          setOrderInfo(json[0]);  // 주문정보
+          setOrderItems(json[0].items || []); // 물품 목록
         } else {
           setOrderInfo({});
           setOrderItems([]);
         }
       })
       .catch(error => {
-        console.error("데이터 가져오기 오류:", error);
-        setOrderInfo({});
+        console.error("buyOrderDetail 가져오기 오류:", error);
+        setOrderInfo({}); // 상태값 초기화
         setOrderItems([]);
       });
-  }, [order_id]);
-  // []은 디펜던시인데, setBuyOrderDetail()로 렌더링될때 실행되면 안되고, 1번만 실행하도록 빈배열을 넣어둔다.
-  // CORS 오류 : Controller 진입 직전에 적용된다. 외부에서 자바스크립트 요청이 오는 것을
+  }, [order_id]); // 컴포넌트 처음 렌더링될 때 또는 order_id가 바뀔 때마다 이 로직이 실행
+
 
   // 삭제
   const deleteOrderItem = (order_id) => {
@@ -84,8 +72,6 @@ export default function BuySelectDetail() {
         if (res === "ok") {
           alert('삭제 성공!');
           navigate("/main/buy-select");
-          // setBuyOrderAllList(buyOrderAllList.filter(order => order.order_id !== order_id)); // UI 업데이트
-          
         } else {
           alert('삭제 실패');
         }
@@ -99,13 +85,14 @@ export default function BuySelectDetail() {
 
   return (
     <>
-      <rs.Container>
+      <Container>
 
-        <rs.Message type="info" style={{ width: 1500 }}>
-          <strong>구매 상세페이지 - 주문번호: {order_id}</strong>
-        </rs.Message>
+        <Message type="info" style={{ width: 1500 }}>
+          <strong> 구매 상세페이지 - 주문번호: {order_id} </strong>
+        </Message>
         <br />
-        <>
+
+        <> {/* data={[orderInfo]} 여기만 대괄호를 준 이유는 orderInfo는 하나의 객체 단일 주문 정보이기 때문에 배열로 감싸줬음 => rsuite의 <Table data={...}>는 배열형태의 데이터를 요구함*/}
           <Table height={100} width={1350} data={[orderInfo]} onRowClick={OrderData => console.log(OrderData)}>
             <Column width={150}><HeaderCell style={styles}>발주번호</HeaderCell><Cell dataKey="order_id" /></Column>
             <Column width={150}><HeaderCell style={styles}>발주일자</HeaderCell><Cell dataKey="order_date" /></Column>
@@ -120,7 +107,7 @@ export default function BuySelectDetail() {
           </Table>
         </>
 
-        <rs.Divider style={{maxWidth: 1200}}/>
+        <Divider style={{ maxWidth: 1200 }} />
         <>
           <Table height={400} width={1200} data={orderItems} onRowClick={itemData => console.log(itemData)}>
             <Column width={150}><HeaderCell style={styles}>물품코드</HeaderCell><Cell dataKey="item_code" /></Column>
@@ -133,25 +120,25 @@ export default function BuySelectDetail() {
           </Table>
         </>
 
-      </rs.Container>
+      </Container>
 
-      <rs.Divider style={{maxWidth: 1200}}/>
+      <Divider style={{ maxWidth: 1200 }} />
 
       <div className="buyUpdateBtnBox">
         <Link to={`/main/buy-order-update/${order_id}`}>
-          <rs.Button appearance="ghost" color="blue" className="buyUpdateBtn">
+          <Button appearance="ghost" color="blue" className="buyUpdateBtn">
             수정
-          </rs.Button>
+          </Button>
         </Link>
 
-        <rs.Button appearance="ghost" color="red" className="buyUpdateBtn" onClick={() => deleteOrderItem(orderInfo.order_id)}>
+        <Button appearance="ghost" color="red" className="buyUpdateBtn" onClick={() => deleteOrderItem(orderInfo.order_id)}>
           삭제
-        </rs.Button>
+        </Button>
 
         <Link to={`/main/buy-select`}>
-          <rs.Button appearance="ghost" color="cyan" className="buyUpdateBtn">
+          <Button appearance="ghost" color="cyan" className="buyUpdateBtn">
             목록
-          </rs.Button>
+          </Button>
         </Link>
       </div>
 

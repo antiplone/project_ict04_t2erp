@@ -5,7 +5,6 @@ import { Container, Tabs, Message, Badge, Button, InputGroup, Input } from "rsui
 import React, { useEffect, useState } from 'react';
 import BuySelectTabAll from "#components/buy/BuySelectTabAll.jsx";
 import "../styles/buy.css";
-import BuySelectTabUnchk from "#components/buy/BuySelectTabUnchk.jsx";
 import BuySelectTabCheck from "#components/buy/BuySelectTabCheck.jsx";
 import BuySelectTabPaing from "#components/buy/BuySelectTabPaing.jsx";
 
@@ -19,22 +18,22 @@ export function meta() {
 
 export default function BuySelect() {
 
-    // 미확인 건수
-    const [uncheckedCount, setUnCheckedCount] = useState(0);
+    // // 미확인 건수
+    // const [uncheckedCount, setUnCheckedCount] = useState(0);
 
-    // 키워드 검색
-    const [searchKeyword, setSearchKeyword] = useState("");
+    // 결재중인 건수
+    const [payingCount, setPayingCount] = useState(0);
 
     const fetchURL = AppConfig.fetch["mytest"];
 
-    // 미확인 건수 조회
+    // 결재중 건수 조회
     useEffect(() => {
-        fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrderUnchkCount`, {
+        fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrderPayingCount`, {
             method: "GET"
         })
             .then((res) => res.json())
             .then(res => {
-                setUnCheckedCount(res);
+                setPayingCount(res);
             });
     }, []);
 
@@ -49,11 +48,11 @@ export default function BuySelect() {
 
                 {/* 검색바 */}
                 <div style={{ display: 'flex', gap: 20, marginBottom: 20 }}>
-                    <Badge content={uncheckedCount}>
-                        <Button>미확인건</Button>
+                    <Badge content={payingCount}>
+                        <Button>결재중</Button>
                     </Badge>
                 </div>
-
+                
                 {/* 전체 / 결재중 /미확인 / 확인 탭 */}
                 <Tabs defaultActiveKey="1" style={{ maxWidth: 1500 }}>
                     <Tabs.Tab eventKey="1" title="전체">
@@ -67,14 +66,14 @@ export default function BuySelect() {
                             <BuySelectTabPaing />
                         </Container>
                     </Tabs.Tab>
-
+{/* 판매팀 구매요청 프로세스 보류로 인해 주석처리
                     <Tabs.Tab eventKey="3" title="미확인">
                         <Container>
                             <BuySelectTabUnchk />
                         </Container>
                     </Tabs.Tab>
-
-                    <Tabs.Tab eventKey="4" title="확인">
+ */}
+                    <Tabs.Tab eventKey="3" title="확인">
                         <Container>
                             <BuySelectTabCheck />
                         </Container>

@@ -1,15 +1,11 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
 import { useEffect, useState } from "react";
-import { useNavigate } from "@remix-run/react";
 import {
   Button,
   Form,
   Modal,
-  Radio,
-  RadioGroup,
   Schema,
-  SelectPicker,
 } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 
@@ -17,54 +13,41 @@ const { StringType } = Schema.Types;
 
 // Schema
 const model = Schema.Model({
-  a_code: StringType()
+  v_code: StringType()
     .isRequired("휴가코드를 입력해주세요")
     .pattern(/^2\d{4}$/, "휴가코드는 20000~29999 형식이어야 합니다."),
+  
+  v_name: StringType()
+    .isRequired("휴가명을 입력해주세요")
+    .minLength(2, "2글자 이상 입력해주세요"),
+    
+  v_note: StringType().maxLength(100, "100자 이내로 작성해주세요"),
 });
 
 const VacaModal = ({ open, onClose, onReloading }) => {
   const fetchURL = AppConfig.fetch['mytest'];
+  const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
 
   const [formError, setFormError] = useState({});
-  const [vacationList, setVacationList] = useState([]);
-  const [att, setAtt] = useState({
-    a_code: "",
-    a_name: "",
-    a_type: "기본",
-    a_use: "",
-    a_note: "",
+  const [vaca, setVaca] = useState({
+    v_code: "",
     v_name: "",
+    v_period: "",
+    v_use: "",
+    v_note: "",
   });
 
-  const handleChange = (formValue) => {
-    setAtt(formValue);
+  const vacaChange = (formValue) => {
+    setVaca(formValue);
     const check = model.check(formValue);
     setFormError(check);
   };
 
-  const vacaNameChange = (value) => {
-    const updated = { ...att, a_type: value, v_name: "" };
-    setAtt(updated);
-    if (value === "휴가") {
-      setVacationList([
-        { v_name: "연차" },
-        { v_name: "병가" },
-        { v_name: "경조사" },
-      ]);
-    } else {
-      setVacationList([]);
-    }
-  };
-
-  const handleVacationChange = (value) => {
-    setAtt((prev) => ({ ...prev, v_name: value }));
-  };
-
   const insertAtt = async () => {
-    const response = await fetch(`${fetchURL.protocol}${fetchURL.url}/attendance/addAttItems`, {
+    const response = await fetch(`${attURL}/addAttItems`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(att), // form 상태
+      body: JSON.stringify(vaca), // form 상태
     });
   
     if (response.status === 201) {
@@ -79,7 +62,7 @@ const VacaModal = ({ open, onClose, onReloading }) => {
 
   useEffect(() => {
     if (!open) {
-      setAtt({
+      setVaca({
         a_code: "",
         a_name: "",
         a_type: "기본",
@@ -97,25 +80,26 @@ const VacaModal = ({ open, onClose, onReloading }) => {
         <Modal.Title>휴가항목등록</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form model={model} formValue={att} onChange={handleChange} fluid>
-          <Form.Group controlId="a_code">
+        <Form model={model} formValue={vaca} onChange={vacaChange} fluid>
+          <Form.Group controlId="v_code">
             <Form.ControlLabel>휴가코드 *</Form.ControlLabel>
-            <Form.Control name="a_code" />
-            <Form.HelpText>근태코드는 30000부터 시작합니다.</Form.HelpText>
+            <Form.Control name="v_code" />
+            <Form.HelpText>휴가코드는 20000부터 시작합니다.</Form.HelpText>
           </Form.Group>
 
-          <Form.Group controlId="a_name">
+          <Form.Group controlId="v_name">
             <Form.ControlLabel>휴가명</Form.ControlLabel>
-            <Form.Control name="a_name" />
+            <Form.Control name="v_name" />
           </Form.Group>
 
-          <Form.Group controlId="a_type">
-            <Form.ControlLabel>휴가기간</Form.ControlLabel>
+          <Form.Group controlId="v_period">
+            <Form.ControlLabel>휴가 기간</Form.ControlLabel>
+            <Form.Control name="v_period" />
           </Form.Group>
 
-          <Form.Group controlId="a_note">
+          <Form.Group controlId="v_note">
             <Form.ControlLabel>비고</Form.ControlLabel>
-            <Form.Control name="a_note" />
+            <Form.Control name="v_note" />
           </Form.Group>
         </Form>
       </Modal.Body>

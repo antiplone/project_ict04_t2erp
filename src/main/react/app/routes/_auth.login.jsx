@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
 import { forwardRef, useState, useEffect } from "react";
@@ -18,16 +19,16 @@ import AppConfig from "#config/AppConfig.json"
 
 const { StringType } = Schema.Types;
 const model = Schema.Model({
-	eID: StringType().isRequired("'사번'을 입력해주세요."),
-	password: StringType().isRequired("'비밀번호'를 입력해주세요.")
+   eID: StringType().isRequired("'사번'을 입력해주세요."),
+   password: StringType().isRequired("'비밀번호'를 입력해주세요.")
 });
 
 // @Remix:모듈함수 - <html>의 <head>의 내용
 export function meta() {
-	return [
-		{ title: `${AppConfig.meta.title} : 로그인` },
-		{ name: "description", content: "로그인 인증을 시도합니다." },
-	];
+   return [
+      { title: `${AppConfig.meta.title} : 로그인` },
+      { name: "description", content: "로그인 인증을 시도합니다." },
+   ];
 };
 
 let handleAuthData, handleLoading;
@@ -73,14 +74,29 @@ export async function clientAction({ request }) { // non-GET
 
 // @Remix:url(/login) - 사원로그인 페이지
 export default function Login() {
+	
+	const handleLogout = async () => {
+		try {
+			await fetch("/auth/logout", {
+				method: "GET",
+				credentials: "include" // 세션 쿠키 인증 시 필요
+			});
+	      	localStorage.clear();
+			   sessionStorage.clear(); // 출퇴근쪽 세션
+			window.location.href = "/login"; // 혹은 navigate("/login")
+		} catch (error) {
+			alert("로그아웃에 실패했습니다.");
+			console.error(error);
+		}
+	};
 
-	const location = useLocation();
-	const nav = useNavigate();
-	const submit = useSubmit();
-	const [authData, setAuthData] = useState();
-	handleAuthData = setAuthData;
-	const [isLoading, checkLoading] = useState(false);
-	handleLoading = checkLoading;
+   const location = useLocation();
+   const nav = useNavigate();
+   const submit = useSubmit();
+   const [authData, setAuthData] = useState();
+   handleAuthData = setAuthData;
+   const [isLoading, checkLoading] = useState(false);
+   handleLoading = checkLoading;
 
 	console.log(location.pathname);
 
@@ -127,20 +143,23 @@ export default function Login() {
 						/>
 					</Form.Group>
 
-					<VStack spacing={10}>
-						<Button style={{color: "#333333", fontWeight: "bold"}} type='submit' appearance="primary" loading={isLoading} block>
-							로그인
-						</Button>
-						<a href="#">비밀번호를 잊으셨나요?</a>
-					</VStack>
-				</Form>
+               <VStack spacing={10}>
+				   <Button style={{ color: "#333333", fontWeight: "bold" }} type='submit' appearance="primary" loading={isLoading} block>
+					   로그인
+				   </Button>
+				   <Button onClick={handleLogout}>
+					   로그아웃
+				   </Button>
+				   <a href="#">비밀번호를 잊으셨나요?</a>
+               </VStack>
+            </Form>
 
-				{/*				<Divider>OR</Divider>
+            {/*            <Divider>OR</Divider>
 
-				<Button block href="https://github.com/rsuite/rsuite">
-					Continue with Github
-				</Button>
-*/}			</Panel>
-		</Stack>
-	);
+            <Button block href="https://github.com/rsuite/rsuite">
+               Continue with Github
+            </Button>
+*/}         </Panel>
+      </Stack>
+   );
 }

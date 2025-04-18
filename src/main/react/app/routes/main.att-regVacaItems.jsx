@@ -11,8 +11,7 @@ import AppConfig from "#config/AppConfig.json";
 
 <MetaBox title="휴가 항목 등록" content="기본 항목 등록 - 휴가 항목 등록 페이지" />
 
-// @Remix:url(/main/Att_regVacaItems)
-export default function Att_regVacaItems() {
+export default function RegVacaItems() {
   const fetchURL = AppConfig.fetch['mytest'];
 
   // 테이블에 들어갈 항목들의 제목을 미리 정해둔다.

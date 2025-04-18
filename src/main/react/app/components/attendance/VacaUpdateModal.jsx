@@ -56,7 +56,7 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow }) => {
       .then((res) => {
         if (res === "1") {
           alert(`근태코드 ${att.a_code}가 수정되었습니다.`);
-          navigate("/main/att_regAttItems"); // true라면, 게시글 목록으로 이동
+          navigate("/main/att-regAttItems"); // true라면, 게시글 목록으로 이동
           window.location.reload();
         } else {
           alert("수정에 실패했습니다.");

@@ -10,8 +10,24 @@ import { useLocation, useNavigate } from "@remix-run/react";
 import { Image, Breadcrumb, Header, Nav, Navbar } from "rsuite";
 
 import ToImage from "#components/res/ToImage";
+import AppConfig from "#config/AppConfig.json";
 
 const HeaderMenu = () => {
+	const fetchURL = AppConfig.fetch["mytest"];
+
+	// 로그아웃
+	const handleLogout = async () => {
+		try {
+		   await fetch(`${fetchURL.protocol}${fetchURL.url}/auth/logout`, {
+			  method: "POST",
+			  credentials: "include" // 세션 쿠키 인증 시 필요
+		   });
+		   window.location.href = "/login"; // 혹은 navigate("/login")
+		} catch (error) {
+		   alert("로그아웃에 실패했습니다.");
+		   console.error(error);
+		}
+	 };
 
 	const location = useLocation();
 	let crumbs = location.pathname.split('/');
@@ -84,6 +100,7 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => alert("한국")}>전표관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="문의">
+						<Nav.Item onClick={handleLogout}>로그아웃</Nav.Item>
 						<Nav.Item>Company</Nav.Item>
 						<Nav.Item>Team</Nav.Item>
 						<Nav.Item onClick={() => handleOpen("right")}>

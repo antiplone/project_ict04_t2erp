@@ -13,8 +13,8 @@ import AppConfig from "#config/AppConfig.json";
 
 <MetaBox title="근태 항목 등록" content="기본 항목 등록 - 근태 항목 등록 페이지" />
 
-// @Remix:url(/main/att_regAttItems)
-export default function Att_regAttItems() {
+// @Remix:url(/main/att-regAttItems)
+export default function RegAttItems() {
   const fetchURL = AppConfig.fetch['mytest'];
 
   // 등록 버튼을 누르면 AttModal 을 보여줌.
@@ -53,14 +53,14 @@ export default function Att_regAttItems() {
           url={`${fetchURL.protocol}${fetchURL.url}/attendance/regAttItems`}
           data={attData}
           columns={attColumns}
-          onReloading={() => fetcher.load("/main/att_regAttItems")}
+          onReloading={() => fetcher.load("/main/att-regAttItems")}
         />
         <Button className="btn" onClick={() => setModalOpen(true)}>추가</Button>
       </Container>
       
       <AttModal open={modalOpen} onClose={() => setModalOpen(false)} 
         onReloading={() => {
-          fetcher.load("/main/att_regAttItems");
+          fetcher.load("/main/att-regAttItems");
           setModalOpen(false);
         }} />
     </Container>

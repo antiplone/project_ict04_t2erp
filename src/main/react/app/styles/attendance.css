@@ -7,3 +7,22 @@
     width: 80px;
     padding: 10px;
 }
+
+/* 출퇴근 관리 */
+.co_area {
+    display: flex;
+    flex-direction: row;
+    width: 800px;
+}
+.co_area_box1 {
+    border: 1px solid red;
+    width: 300px;
+    height: 400px;
+}
+.co_area_box2 {
+    border: 1px solid blue;
+    width: 300px;
+    height: 400px;
+}
+
+  

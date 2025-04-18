@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 import mainIcon from "#images/common/main.png";
 import settingIcon from "#images/common/setting.png";
+import logout from "#images/common/logout.png";
 import arrow from "#images/common/arrow.png";
 
 import "#components/common/css/common.css";
@@ -40,6 +41,12 @@ const HeaderMenu = () => {
 		setPlacement(key);
 	};
 
+	const handleLogout = () => {
+		localStorage.clear();
+		console.log("세션만료.");
+		navigate("/");
+	};
+
 	if (crumbs.length > 0)
 		prevPage = crumbs.shift();
 
@@ -53,7 +60,11 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("basic_client") }}>거래처등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_item") }}>상품등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("att_management") }}>근태관리</Nav.Item>
+					</Nav.Menu>
+					<Nav.Menu title="근태관리">
+						<Nav.Item onSelect={() => { navigate("att-regAttItems") }}>근태항목등록</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("att-regVacaItems") }}>휴가항목등록</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("att-management") }}>근태관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="구매관리">
 						<Nav.Item onSelect={() => { navigate("buy-select") }}>구매조회</Nav.Item>
@@ -66,7 +77,7 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("sell_all_list") }}>판매조회</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_insert") }}>판매입력</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("sell_status_select") }}>판매현황</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_request_client") }}>거래처 관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("sell_request_client_list") }}>거래처 관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu
 						title="물류"
@@ -93,11 +104,12 @@ const HeaderMenu = () => {
 					</Nav.Menu>
 				</Nav>
 				<Nav pullRight>
-					<Nav.Item icon={<ToImage src={settingIcon} width={20} height={20} />}>설정</Nav.Item>
+					<Nav.Item icon={<ToImage src={logout} width={20} height={20} />} onSelect={handleLogout}>로그아웃</Nav.Item>
+					{/*<Nav.Item icon={<ToImage src={settingIcon} width={20} height={20} />}>설정</Nav.Item>*/}
 				</Nav>
 			</Navbar>
 
-			<Breadcrumb style={{margin: 8}} separator={arrow ? <Image width={12} height={12} src={arrow} /> : ">"}>
+			<Breadcrumb style={{ margin: 8 }} separator={arrow ? <Image width={12} height={12} src={arrow} /> : ">"}>
 				<Breadcrumb.Item href="/main" ><ToImage src={mainIcon} fbtext="Main" width={16} height={16} /></Breadcrumb.Item>
 				{crumbs[0] != null && crumbs[0].length > 0 ? crumbs.map((value, index) =>
 					<Breadcrumb.Item key={index} href={value}>{value}</Breadcrumb.Item>

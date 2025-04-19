@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
 		 InputGroup, Input, Table, InputPicker,
-		 Divider, InputNumber } from "rsuite";
+		 Divider, toaster } from "rsuite";
 import { useParams } from "react-router-dom";
 import "#styles/sell.css";
 import SellClientSearchModal from "#components/sell/SellClientSearchModal.jsx";
@@ -34,6 +34,7 @@ const sell_all_list_update = (props) => {
 
 	const propsparam = useParams();
 	const order_id = propsparam.order_id;
+	const [originalItems, setOriginalItems] = useState([]);	// 원본 데이터를 따로 저장할 상태 변수 
 
 	// 현재 편집중인 셀
 	const [currentEditIndex, setCurrentEditIndex] = useState(null);
@@ -109,6 +110,32 @@ const sell_all_list_update = (props) => {
         });
 	};
 
+	// 행 추가 시 행마다 id 부여
+	const handleAddRow = () => {
+		const validIds = sellAdd
+			.map(item => item.id)
+			.filter(id => typeof id === 'number' && !isNaN(id));
+	
+		const newId = validIds.length > 0
+			? Math.max(...validIds) + 1
+			: 1;
+	
+		const newItem = {
+			id: newId,
+			item_code: '',
+			item_name: '',
+			item_standard: '',
+			quantity: 0,
+			price: 0,
+			supply: 0,
+			vat: 0,
+			total: 0,
+			status: 'EDIT'
+		};
+	
+		setSellAdd(prev => [newItem, ...prev]);
+	};
+
 	// 행 삭제
     const handleDeleteRow = (id) => {
         setSellAdd(prev => prev.filter(item => item.id !== id));
@@ -126,9 +153,17 @@ const sell_all_list_update = (props) => {
 		.then(res => res.json())
 		.then(res => {
 			console.log(1, res);
-			setSellAdd(res);
+
+			const fixedRes = res.map((item, idx) => ({
+				...item,
+				id: Number(item.id) || idx + 1  // id가 숫자면 그대로, 아니면 고유 id 부여
+			}));
+
+			setSellAdd(fixedRes);
+			setOriginalItems(fixedRes);
+
 			// 상단 입력값 세팅
-			if (res.length > 0) {
+			if (fixedRes.length > 0) {
 				const firstRow = res[0];
 				
 				setShipmentOrderDate(new Date(firstRow.shipment_order_date)); // 날짜는 Date로 변환 필요
@@ -143,9 +178,53 @@ const sell_all_list_update = (props) => {
 			});
 	}, [order_id]);
 
+	// 수정 중 삭제한 항목 추리기
+	const deletedItemIds = originalItems
+		.filter(ori => !sellAdd.find(cur => cur.order_item_id === ori.order_item_id))
+		.map(item => item.order_item_id);
+
 	// 수정 입력한 값을 백엔드로 전달
 	const submitSellUpInsert = (e) => {
 		e.preventDefault();
+
+		// 상단 필수 항목 체크
+		if (
+			!shipmentOrderDate ||
+			!selectedIncharge ||
+			!selectedInchargeName ||
+			!selectedClient ||
+			!selectedClientName ||
+			!transactionType ||
+			!selectedStorage ||
+			!selectedStorageName ||
+			sellAdd.length === 0
+		) {
+			toaster.push(
+				<Message showIcon type="warning">
+					판매 입력이 완료되지 않았습니다. <br />
+					빈 항목을 입력해주세요.
+				</Message>,
+				{ placement: "topCenter" }
+			);
+			return;
+		}
+
+		// 하위 항목 필수 체크 (수량, 단가)
+		const hasInvalidItem = sellAdd.some(item =>
+			item.quantity === null || item.quantity === undefined || item.quantity <= 0 ||
+			item.price === null || item.price === undefined || item.price <= 0
+		);
+
+		if (hasInvalidItem) {
+			toaster.push(
+				<Message showIcon type="warning">
+					판매 입력이 완료되지 않았습니다. <br />
+					수량과 단가는 0보다 커야 합니다.
+				</Message>,
+				{ placement: "topCenter" }
+			);
+			return;
+		}
 		const filteredSellAdd = sellAdd.map(({ status, id, ...rest }) => rest);
 
 		const payload = {
@@ -158,6 +237,7 @@ const sell_all_list_update = (props) => {
 			storage_code: selectedStorage,
 			storage_name: selectedStorageName,
 			orderItemList: filteredSellAdd,
+			deletedItemIds: deletedItemIds
 		};
 
 		console.log("제출할 전체 데이터:", payload); // 확인용
@@ -349,28 +429,7 @@ const sell_all_list_update = (props) => {
 				</div>
 
 					<ButtonToolbar>
-						<Button appearance="primary"
-							onClick={() => {
-								const newId = sellAdd.length > 0
-											? Math.max(...sellAdd.map(item => item.id)) + 1
-											: 1;
-								const newItem = {
-									id: newId,
-									item_code: '',
-									item_name: '',
-									item_standard: '',
-									quantity: 0,
-									price: 0,
-									supply: 0,
-									vat: 0,
-									total: 0,
-									status: 'EDIT'
-								};
-							
-								setSellAdd(prev => [newItem, ...prev]);
-								// setEditingRowId(newId);
-							}}
-						>
+					<Button appearance="primary" onClick={handleAddRow}>
 							입력 추가하기
 						</Button>
 
@@ -396,7 +455,6 @@ const sell_all_list_update = (props) => {
                                 <Form.ControlLabel className="updateLabel">물품코드</Form.ControlLabel>
                                 <Form.Control
                                     name="item_code"
-									placeholder="물품코드"
                                     plaintext={false}
                                     value={item.item_code}
                                     onDoubleClick={() => {
@@ -411,7 +469,6 @@ const sell_all_list_update = (props) => {
                                 <Form.ControlLabel className="updateLabel">물품명</Form.ControlLabel>
                                 <Form.Control 
 									name="item_name" 
-									placeholder="물품명" 
 									className="updateBox"
 									onDoubleClick={() => {
                                         setCurrentEditIndex(index);  // 현재 행 ID 저장
@@ -424,7 +481,6 @@ const sell_all_list_update = (props) => {
                                 <Form.ControlLabel className="updateLabel">규격</Form.ControlLabel>
                                 <Form.Control 
 									name="item_standard" 
-									placeholder="규격" 
 									className="updateBox" 
 									onDoubleClick={() => {
                                         setCurrentEditIndex(index);  // 현재 행 ID 저장
@@ -435,12 +491,32 @@ const sell_all_list_update = (props) => {
 
                             <Form.Group>
                                 <Form.ControlLabel className="updateLabel">수량</Form.ControlLabel>
-                                <Form.Control name="quantity" type="number" placeholder="수량" className="updateBox" />
+                                <Form.Control 
+									name="quantity" 
+									type="number" 
+									className="updateBox" 
+									min={1}
+									onChange={(value) => {
+										// 수기로 0이나 음수 입력하면 무시
+										if (Number(value) < 1) return;
+										setQuantity(Number(value));
+									}}
+								/>
                             </Form.Group>
 
                             <Form.Group>
                                 <Form.ControlLabel className="updateLabel">단가</Form.ControlLabel>
-                                <Form.Control name="price" type="number" placeholder="단가" className="updateBox" />
+                                <Form.Control 
+									name="price" 
+									type="number" 
+									className="updateBox" 
+									min={1}
+									onChange={(value) => {
+										// 수기로 0이나 음수 입력하면 무시
+										if (Number(value) < 1) return;
+										setQuantity(Number(value));
+									}}
+								/>
                             </Form.Group>
 
                             <Form.Group>
@@ -449,6 +525,7 @@ const sell_all_list_update = (props) => {
 								name="supply"
 								plaintext
 								className="updateBox_price"
+								value={String(item.supply ?? '')}	// item.supply가 null 또는 undefined이면 ''(빈 문자열)로 대체
 							/>
 						</Form.Group>
 
@@ -458,7 +535,7 @@ const sell_all_list_update = (props) => {
 								name="vat"
 								plaintext
 								className="updateBox_price"
-								
+								value={String(item.vat ?? '')}
 							/>
 						</Form.Group>
 
@@ -467,6 +544,7 @@ const sell_all_list_update = (props) => {
 							<Form.Control className="updateBox_price"
 								name="total"
 								plaintext
+								value={String(item.total ?? '')}
 							/>
 						</Form.Group>
 
@@ -482,10 +560,11 @@ const sell_all_list_update = (props) => {
                             </Button>
                         </div>
                     </Form>
-                ))}
+                ))} </div>
 
-					</div>
 					<Divider style={{ maxWidth: 1500 }} />
+					
+					<div className="updateItem">
 						<div className="resultContainer">
 							<div className="resultBtn">
 							<ButtonToolbar >
@@ -498,7 +577,7 @@ const sell_all_list_update = (props) => {
 								총액: {totalSum.toLocaleString()} 원
 							</div>
 						</div>
-					<hr></hr>
+					</div>
 				
 				<SellClientSearchModal
 					onClientSelect={handleClientSelect}	// client_code, client_name 받기

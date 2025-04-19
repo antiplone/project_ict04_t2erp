@@ -90,34 +90,45 @@ public class SellAllListServiceImpl implements SellAllListService {
 	public int updateAllList(int order_id, SellOrderDTO dto) {
 		System.out.println("서비스 - updateAllList");
 
-		// 입력받지 못한 order_id를 dto에 넣기
-		dto.setOrder_id(order_id);
+			dto.setOrder_id(order_id);
 
-		// 1. order_tbl에 update
-		int orderResult = Mapper.updateAllList_order(dto);
-		System.out.println("서비스 - orderResult: " + orderResult);
-		
-		// update 실패 시 바로 false 리턴
-		if (orderResult == 0) {
-			
-			return 0;
-		}
-		else {
+			int orderResult = Mapper.updateAllList_order(dto);
+			System.out.println("서비스 - orderResult: " + orderResult);
+
+			if (orderResult == 0) {
+				return 0;
+			}
+
 			int itemResult = 0;
 
-			// 2. order_item_tbl에 update
+			// ✅ 1. 삭제 처리 먼저 (루프 밖에서)
+			if (dto.getDeletedItemIds() != null) {
+			    for (Integer deletedId : dto.getDeletedItemIds()) {
+			        System.out.println("삭제 대상 ID: " + deletedId);
+			        Mapper.deleteOrderItem(deletedId);
+			    }
+			}
+
+			// ✅ 2. 추가/수정 루프
 			for (SellOrderItemDTO item : dto.getOrderItemList()) {
 				item.setOrder_id(order_id);
-				System.out.println("서비스 - item : " + item);
-				
-				itemResult += Mapper.updateAllList_item(item);  // update 성공 시마다 +1
+				System.out.println("서비스 - item, order_id : " + item + order_id);
+
+				// 추가 (새로운 항목)
+				if (item.getOrder_item_id() == null 
+					    || item.getOrder_item_id().equals(0)) {
+					itemResult += Mapper.sell_itemInsert(item);
+				}
+				// 수정 (기존 항목)
+				else {
+					itemResult += Mapper.updateAllList_item(item);
+				}
+			
 			}
-			
+
 			System.out.println("서비스 - itemResult: " + itemResult);
-			
-			// 총 insert된 row 수 리턴 (order 1건 + item n건)
+
 			return 1 + itemResult;
-		}
 	}
 	
 	// 판매 조회 - 삭제

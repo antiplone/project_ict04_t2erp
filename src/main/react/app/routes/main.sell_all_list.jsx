@@ -11,10 +11,6 @@ import AppConfig from "#config/AppConfig.json";
 
 const { Column, HeaderCell, Cell } = Table;
 
-// const confirm = ['미확인', '결재중', '완료'].map(
-// 	confirmChk => ({ label: confirmChk, value: confirmChk })
-//   );
-
   /* 결재 여부 - 선택 데이터 */
 const confirm = ['미확인', '결재중', '완료'].map(
 	(confirmChk) => ({ // 이렇게 하면, 둘다 같게 들어가서, 라벨따로 값따로 안넣어줘도 됩니다.
@@ -26,11 +22,6 @@ const confirm = ['미확인', '결재중', '완료'].map(
 const sell_all_list = () => {
 
 	const navigate = useNavigate();
-
-	// '거래명세서' 모달
-	const [open1, setOpen1] = React.useState(false);
-	const handleOpen1 = () => setOpen1(true);
-	const handleClose1 = () => setOpen1(false);
 
 	// '불러온 전표' 모달
 	const [open2, setOpen2] = React.useState(false);
@@ -129,8 +120,7 @@ const sell_all_list = () => {
 			>
 				<Tabs.Tab eventKey="1" title={`전체 (${allList.length})`} />
 				<Tabs.Tab eventKey="2" title={`결재중 (${allList.filter(r => r.order_status === '진행중').length})`} />
-				<Tabs.Tab eventKey="3" title={`미확인 (${allList.filter(r => r.order_status === '미확인').length})`} />
-				<Tabs.Tab eventKey="4" title={`확인 (${allList.filter(r => r.order_status === '승인').length})`} />
+				<Tabs.Tab eventKey="3" title={`확인 (${allList.filter(r => r.order_status === '승인').length})`} />
 			</Tabs>
 
 			<Table 
@@ -186,7 +176,7 @@ const sell_all_list = () => {
 			<Column width={100} className="all_text">
 				<HeaderCell>금액 합계</HeaderCell>
 				<Cell>
-					{(rowData) => new Intl.NumberFormat().format(rowData.total)}
+					{(rowData) => new Intl.NumberFormat().format(rowData.total_sum)}
 					{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
 				</Cell>
 			</Column>
@@ -226,23 +216,6 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 			</Table>
-
-			<Modal open={open1} onClose={handleClose1} style={{ width:800 }}>
-				<Modal.Header>
-				<Modal.Title>거래명세서</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					<SellSalesInvoice />
-				</Modal.Body>
-				<Modal.Footer>
-				<Button onClick={handleClose1} appearance="primary">
-					인쇄
-				</Button>
-				<Button onClick={handleClose1} appearance="subtle">
-					닫기
-				</Button>
-				</Modal.Footer>
-			</Modal>
 
 			<Modal open={open2} onClose={handleClose2} style={{ width:800 }}>
 				<Modal.Header>

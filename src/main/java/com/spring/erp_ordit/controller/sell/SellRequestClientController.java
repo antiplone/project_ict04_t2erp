@@ -72,4 +72,13 @@ public class SellRequestClientController {
 		
 	}
 	
+	// http://localhost:8081/sell/reqClientBizNum/{c_biz_num}
+	// 판매_거래처 관리 - 사업자등록번호 중복 체크
+	@GetMapping("/reqClientBizNum/{c_biz_num}")
+	public ResponseEntity<Integer> check_ReqClientBizNum(@PathVariable String c_biz_num) {
+		System.out.println("<<< check_ReqClientBizNum >>>");
+		
+		return new ResponseEntity<>(service.sellCheckReqClientBizNum(c_biz_num), HttpStatus.OK);
+	}
+		
 }

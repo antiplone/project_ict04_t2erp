@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
 		InputGroup, Input, Table, InputPicker,
-		InputNumber } from "rsuite";
+		InputNumber, toaster } from "rsuite";
 import "#styles/sell.css";
 import SellClientSearchModal from "#components/sell/SellClientSearchModal.jsx";
 import SellEmployeeSearchModal from "#components/sell/SellEmployeeSearchModal.jsx";
@@ -45,6 +45,7 @@ const EditableNumberCell = ({ rowData, dataKey, onChange, editable, ...props }) 
 			<InputNumber
 				size="xs"
 				value={rowData[dataKey] || 0}
+				min={0} // 0보다 작을 수 없게 설정
 				onChange={(value) => onChange(rowData.id, dataKey, value)}
 			/>
 		) : (
@@ -53,13 +54,15 @@ const EditableNumberCell = ({ rowData, dataKey, onChange, editable, ...props }) 
 	</Cell>
 );
 
-const sell_insert = () => {
+const Sellinsert = () => {
 
 	// 현재 편집중인 셀
 	const [currentEditId, setCurrentEditId] = useState(null);
 	
 	// 입력한 내역 저장
 	const [sellAdd, setSellAdd] = useState([]);
+	// 경고 메세지창
+	const [warning, setWarning] = useState("");
 
 	// 백엔드로 전달하기 위해 출하창고 저장
 	const [shipmentOrderDate, setShipmentOrderDate] = useState(null);
@@ -100,7 +103,7 @@ const sell_insert = () => {
     };
 
 	// 물품 검색 모달 관리
-	const [isItemModalOpen, setItemModalOpen] = useState(null);
+	const [isItemModalOpen, setItemModalOpen] = useState(false);
 
 	const handleChange = (id, key, value) => {
 		const nextData = [...sellAdd];
@@ -137,6 +140,46 @@ const sell_insert = () => {
 	// 입력한 값을 백엔드로 전달
 	const submitSellInsert = (e) => {
 		e.preventDefault();
+		
+		// 상단 필수 항목 체크
+		if (
+			!shipmentOrderDate ||
+			!selectedIncharge ||
+			!selectedInchargeName ||
+			!selectedClient ||
+			!selectedClientName ||
+			!transactionType ||
+			!selectedStorage ||
+			!selectedStorageName ||
+			sellAdd.length === 0
+		) {
+			toaster.push(
+				<Message showIcon type="warning">
+					판매 입력이 완료되지 않았습니다. <br />
+					빈 항목을 입력해주세요.
+				</Message>,
+				{ placement: "topCenter" }
+			);
+			return;
+		}
+
+		// 하위 항목 필수 체크 (수량, 단가)
+		const hasInvalidItem = sellAdd.some(item =>
+			item.quantity === null || item.quantity === undefined || item.quantity <= 0 ||
+			item.price === null || item.price === undefined || item.price <= 0
+		);
+
+		if (hasInvalidItem) {
+			toaster.push(
+				<Message showIcon type="warning">
+					판매 입력이 완료되지 않았습니다. <br />
+					수량과 단가는 0보다 커야 합니다.
+				</Message>,
+				{ placement: "topCenter" }
+			);
+			return;
+		}
+
 		const filteredSellAdd = sellAdd.map(({ status, id, ...rest }) => rest);
 
 		const payload = {
@@ -173,9 +216,9 @@ const sell_insert = () => {
 			// 등록 성공 시 페이지 새로고침
 			if(res != 0) { 
 				window.location.reload();
-				alert("등록 성공!");
+				alert("등록이 완료되었습니다.");
 			}
-			else alert("등록 실패");
+			else alert("등록에 실패했습니다.");
 		})
 		// 예외처리
 		.catch(error => {
@@ -364,9 +407,9 @@ const sell_insert = () => {
 							입력 추가
 						</Button>
 
-					<Button appearance="primary" type="submit" onClick={searchStatusReset}>
-						검색창 초기화
-					</Button>
+						<Button appearance="primary" type="submit" onClick={searchStatusReset}>
+							검색창 초기화
+						</Button>
 					</ButtonToolbar>
 				</div>
 
@@ -380,12 +423,12 @@ const sell_insert = () => {
 								<HeaderCell>물품코드</HeaderCell>
 								<EditableCell
 								dataKey="item_code"
+								editable
 								onDoubleClickCell={(id) => {
 									setCurrentEditId(id); // 현재 편집 중인 행 저장
 									setItemModalOpen(true);
 								}} 
 								onChange={handleChange}
-								editable
 								>
 								</EditableCell>
 							</Column>
@@ -517,6 +560,7 @@ const sell_insert = () => {
 						setItemModalOpen(false);
 					}}
 				/>
+
 			{/* <hr></hr> */}
 			</Form>
 		</div>
@@ -524,4 +568,4 @@ const sell_insert = () => {
 	);
 };
 
-export default sell_insert;
+export default Sellinsert;

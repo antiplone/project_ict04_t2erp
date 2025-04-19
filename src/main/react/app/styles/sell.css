@@ -92,14 +92,22 @@
 }
 .sellUpdateFrom {
     display: flex;
-    /* flex-wrap: wrap; */
-    gap: 5px;
+    flex-wrap: wrap;
+    gap: 10px;
     align-items: flex-start;
-    padding: 0px;
   }
-
+  .sellUpdateFrom .rs-form-group {
+    flex: 1 1 100px;        /* 기본 너비 200px 정도로 설정*/
+    min-width: 140px;        /* 너무 좁아지는 거 방지 */
+}
+.updateLabel {
+    text-align: left !important;
+    display: block;       /* 중요! */
+    /* width: 120px !important;          또는 원하는 너비 지정 */
+    margin-bottom: 4px;   /* 아래 여백 있으면 보기 좋음 */
+}
 .updateBox_price {
-    margin-top: 20px !important;;
+    margin-top: 20px !important;
 }
 
 .inputBox {
@@ -118,12 +126,12 @@
     gap: 20px;
 }
 
-/* 
+
 .updateBox {
-    width: 150px !important;
+    margin-right: 20px !important;
     /* !important : rsuite <Form.Control> 컴포넌트일 경우 CSS 적용이 까다로울 수 있음.
-                    !important를 붙여줘야 rsuite 기본 스타일을 덮을 수 있다 
-} */
+                    !important를 붙여줘야 rsuite 기본 스타일을 덮을 수 있다*/ 
+}
 
 
 /* sell_insert.jsx - 판매 입력 */
@@ -197,7 +205,7 @@
 }
 
 
-/* sell_insert 저장, 초기화 - 버튼 */
+/* sell_insert, sell_all_list_update 저장, 초기화 - 버튼 */
 .resultContainer {
     display: flex;
     justify-content: space-between;

@@ -3,7 +3,7 @@
      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.spring.erp_ordit.dao.buy.BuyStatusMapper"> <!-- 구매 물품정보 입력 -->
+<mapper namespace="com.spring.erp_ordit.dao.buy.BuyStatusMapper"> <!-- 구매 주문상태 -->
 
 	<!-- 구매팀 - 구매입력시 자동으로 주문상태 '진행중'으로 입력 -->
 	<insert id="insertOrderStatus" parameterType="com.spring.erp_ordit.dto.buy.BuyStatusDTO">
@@ -17,12 +17,10 @@
 	    SELECT COUNT(*) FROM order_status_tbl WHERE order_id = #{order_id}
 	</select>
 	
-	<!-- 주문상태 수정 -->
-	<update id="updateOrderStatus">
-	    UPDATE order_status_tbl
-	    SET order_status = #{order_status}
-	    WHERE order_id = #{order_id}
-	</update>
+	<!-- 주문상태 삭제 -->
+	<delete id="deleteOrderStatus">
+	    DELETE FROM order_status_tbl WHERE order_id = #{order_id}
+	</delete>
 	
 	 <!-- 주문상태 입력 -->
 	<insert id="insertOrderStatus2">

@@ -1,6 +1,7 @@
 package com.spring.erp_ordit.service.buy;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,12 @@ import com.spring.erp_ordit.dto.buy.BuyOrderDTO;
 import com.spring.erp_ordit.dto.buy.BuyOrderDetailDTO;
 import com.spring.erp_ordit.dto.buy.BuyOrderItemDTO;
 import com.spring.erp_ordit.dto.buy.BuyOrderRequest;
+import com.spring.erp_ordit.dto.buy.BuyStockStatusDTO;
 import com.spring.erp_ordit.dto.buy.BuyStatusDTO;
 
 @Service
 @Transactional  // 트랜잭션 적용
-public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결재중,미확인,확인), 구매 입력, 구매현황 조회 service
+public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결재중,미확인,확인), 상세조회, 구매수정, 구매 입력, 구매삭제, 구매현황 조회, 입고현황 service
 	
 	@Autowired
 	private BuyOrderMapper buyOrderMapper;
@@ -32,10 +34,11 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 	@Autowired
 	private BuyStatusMapper buyStatusMapper;
 	
+	// -------------  구매조회 페이지 --------------------------------------------------------------------------------------
 	// 구매조회 탭 <전체> 목록
 	public List<BuyOrderDTO> getBuyOrderAllList() {
 		
-		System.out.println("<<< BuyOrderServiceImpl - buyOrderAllList >>>");
+		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderAllList >>>");
 		
 		return buyOrderMapper.buyOrderAllList();
 	}
@@ -48,30 +51,39 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 		return buyOrderMapper.buyOrderPayingList();
 	}
 	
-	// 구매조회 탭 <미확인> 목록
-	public List<BuyOrderDTO> getBuyOrderUnchkList() {
+	// 구매조회 탭 <결재중> "건수" 조회
+	public List<BuyOrderDTO> getBuyOrderPayingCount() {
 		
-		System.out.println("<<< BuyOrderServiceImpl - buyOrderUnchkList >>>");
+		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderPayingCount >>>");
 		
-		return buyOrderMapper.buyOrderUnchkList();
+		return buyOrderMapper.buyOrderPayingCount();
 	}
 	
-	// 구매조회 탭 <미확인> "건수" 조회
-	public List<BuyOrderDTO> getBuyOrderUnchkCount() {
-		
-		System.out.println("<<< BuyOrderServiceImpl - buyOrderUnchkCount >>>");
-		
-		return buyOrderMapper.buyOrderUnchkCount();
-	}
+//	// 구매조회 탭 <미확인> 목록
+//	public List<BuyOrderDTO> getBuyOrderUnchkList() {
+//		
+//		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderUnchkList >>>");
+//		
+//		return buyOrderMapper.buyOrderUnchkList();
+//	}
+//	
+//	// 구매조회 탭 <미확인> "건수" 조회
+//	public List<BuyOrderDTO> getBuyOrderUnchkCount() {
+//		
+//		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderUnchkCount >>>");
+//		
+//		return buyOrderMapper.buyOrderUnchkCount();
+//	}
 	
 	// 구매조회 탭 <확인> 목록
 	public List<BuyOrderDTO> getBuyOrderCheckList() {
 		
-		System.out.println("<<< BuyOrderServiceImpl - buyOrderCheckList >>>");
+		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderCheckList >>>");
 		
 		return buyOrderMapper.buyOrderCheckList();
 	}
 	
+	// -------------  구매 상세 페이지 --------------------------------------------------------------------------------------
 	// 구매 내역 <상세> 조회
 	public List<BuyOrderDetailDTO> getBuyOrderDetail(Long order_id) {
 			
@@ -80,6 +92,7 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 		return buyOrderMapper.buyOrderDetail(order_id);
 	}
 	
+	// -------------  구매 수정 페이지 --------------------------------------------------------------------------------------
 	// 구매 내역 수정
 	@Transactional
 	public int buyOrderUpdate(int order_id, BuyOrderRequest request) {
@@ -112,26 +125,22 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 	    buyOrderMapper.buyInsertOrderItems(items);
 	    
 	    // 4. 상태 정보 업데이트 (order_status_tbl)
-	    BuyStatusDTO updateStatus = request.getStatus(); // 프론트에서 넘긴 status
-	    if (updateStatus == null) {
-	        updateStatus = new BuyStatusDTO();
-	    }
+	    BuyStatusDTO updateStatus = Optional.ofNullable(request.getStatus()).orElse(new BuyStatusDTO()); // request.getStatus()가 null이면 새 객체를 생성해서 사용하겠다는 의미
 	    updateStatus.setOrder_id((long) order_id);
-	    
-	    // order_status 기본값 보완
+
+	    // 상태값이 없으면 기본값 보완
 	    if (updateStatus.getOrder_status() == null || updateStatus.getOrder_status().trim().isEmpty()) {
 	        updateStatus.setOrder_status("미확인");
 	    }
-	        // 기존 상태가 있으면 UPDATE, 없으면 INSERT
-	        if (buyStatusMapper.existsStatus((long)order_id) > 0) {
-	            buyStatusMapper.updateOrderStatus(updateStatus);
-	        } else {
-	            buyStatusMapper.insertOrderStatus2(updateStatus);
-	        }
+
+	    // 기존 상태 삭제 후 새로 등록 (중복 방지)
+	    buyStatusMapper.deleteOrderStatus(updateStatus);
+	    buyStatusMapper.insertOrderStatus2(updateStatus);
 
 	    return 1; // 성공 반환 (또는 처리된 row 수 반환 가능)
 	}
 	
+	// -------------  구매입력 페이지 --------------------------------------------------------------------------------------
 	// 구매 입력 <한건의 주문정보 + 다건의 물품정보>
 	@Transactional
 	public void setBuyInsertAll(BuyOrderRequest request) {
@@ -172,34 +181,31 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 		}
 	}
 	
+	// -------------  구매삭제 --------------------------------------------------------------------------------------
 	// 구매내역 삭제
 	public String buyOrderDelete(int order_id) {	
 		buyOrderMapper.buyOrderDelete(order_id);
 		return "ok";
 	}
 
+	// -------------  구매현황 페이지 --------------------------------------------------------------------------------------
 	// 구매 현황 조회 
 	public List<BuyStatusDTO> getBuyStatusSearch(String start_date, String end_date, String client_code, String e_id,
-            								 String storage_code, String item_code, String transaction_type) {
-		System.out.println("<<< BuyOrderServiceImpl - buyStatusSearch >>>");
+            								 	 String storage_code, String item_code, String transaction_type) {
+		System.out.println("<<< BuyOrderServiceImpl - getBuyStatusSearch >>>");
 		
 		 return buyOrderMapper.buyStatusSearch(start_date, end_date, client_code, e_id, storage_code, item_code, transaction_type);
 	}
 	
-//	// 전표 등록
-//	@Transactional
-//    public int saveBuyOrder(OrderDTO dto) {
-//        // 1. order_tbl에 저장
-//		buyOrderMapper.saveBuyOrder(dto);
-//
-//        // 2. 방금 생성된 order_id 가져오기
-//        int order_id = buyOrderMapper.getLastInsertedOrderId();
-//
-//        // 3. 각 품목 저장
-//        for (OrderItemDTO item : dto.getItems()) {
-//        	buyOrderMapper.saveOrderItem(order_id, item);
-//        }
-//        return buyOrderMapper.saveBuyOrder(dto);
-//    }
+	// -------------  구매관리 - 입고조회 페이지 --------------------------------------------------------------------------------------
+	// 입고현황 조회
+	public List<BuyStockStatusDTO> getBuyStockStatusSearch(String start_date, String end_date, String order_id, String client_code,
+			String item_code, String storage_code, String stock_amount, String safe_stock, String last_date) {
+		
+		System.out.println("<<< BuyOrderServiceImpl - getBuyStockStatusSearch >>>");
+		
+		return buyOrderMapper.buyStockStatusSearch(start_date, end_date, order_id, client_code, item_code, storage_code, stock_amount, safe_stock, last_date);
+	}
+	
 	
 }

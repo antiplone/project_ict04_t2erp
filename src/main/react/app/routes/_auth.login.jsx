@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
 import { useState, useEffect } from "react";
@@ -8,10 +9,12 @@ import {
 	Stack,
 	Panel,
 	VStack,
-//	Divider,
+	//	Divider
 } from "rsuite";
 
 import AppConfig from "#config/AppConfig.json"
+
+import "#components/common/css/common.css";
 
 const { StringType } = Schema.Types;
 const model = Schema.Model({
@@ -36,7 +39,6 @@ export async function clientAction({ request }) { // non-GET
 		entity[pair[0]] = pair[1];
 	}
 	//console.log(entity);
-
 	if (localStorage.length < 1) {
 		handleLoading(true); // 로딩의 시작
 
@@ -74,18 +76,21 @@ export async function clientAction({ request }) { // non-GET
 						}
 					);
 				}
+				else {
+					alert("로그인을 실패했습니다.");
+				}
 			})
 			.finally(() => { // 통신실패시 예외처리
 				handleLoading(false);
 			});
 	}
 	else {
-		alert("세션이 남아있습니다.");
+		alert("세션이 남아있습니다. 세션을 만료합니다.");
 		localStorage.clear();
 	}
 
 	return redirect("");
-};
+}
 
 // @Remix:url(/login) - 사원로그인 페이지
 export default function Login() {
@@ -98,10 +103,10 @@ export default function Login() {
 	const [isLoading, checkLoading] = useState(false);
 	handleLoading = checkLoading;
 
-//	console.log(location.pathname);
+	console.log(location.pathname);
 
 	useEffect(() => {
-		if (authData != null) // redirect로 페이지로 다시 돌아왔을때 인증정보가 있으면,
+		if (authData != null)
 			nav("/main", { replace: true });
 	}, [authData, isLoading]);
 
@@ -131,19 +136,19 @@ export default function Login() {
 					</Form.Group>
 
 					<VStack spacing={10}>
-						<Button style={{color: "#333333", fontWeight: "bold"}} type='submit' appearance="primary" loading={isLoading} block>
+						<Button type='submit' appearance="primary" loading={isLoading} block>
 							로그인
 						</Button>
 						<a href="#">비밀번호를 잊으셨나요?</a>
 					</VStack>
 				</Form>
 
-				{/*				<Divider>OR</Divider>
+				{/*            <Divider>OR</Divider>
 
-				<Button block href="https://github.com/rsuite/rsuite">
-					Continue with Github
-				</Button>
-*/}			</Panel>
+            <Button block href="https://github.com/rsuite/rsuite">
+               Continue with Github
+            </Button>
+*/}         </Panel>
 		</Stack>
 	);
 }

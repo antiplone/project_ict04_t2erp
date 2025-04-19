@@ -21,21 +21,12 @@ const SideMenu_attendance = () => {
       </Sidenav.Header>
       <Sidenav expanded={expand} defaultOpenKeys={["1"]} appearance="subtle">
         <Sidenav.Body>
-          <Nav defaultActiveKey="1" align="left">
-            <Nav.Menu eventKey="1" trigger="hover" title="기본항목등록" placement="rightStart" style={{ fontWeight: "500" }}>
-              <Nav.Item eventKey="1-1" as={Link} to="/main/att_regAttItems">근태항목등록</Nav.Item>	{/* 스타일 깨짐 방지를 위해 as 속성 사용함 */}
-              <Nav.Item eventKey="1-2" as={Link} to="/main/att_regVacaItems">휴가항목등록</Nav.Item>
+          <Nav defaultActiveKey="2" align="left">
+            <Nav.Menu eventKey="1" trigger="hover" title="기본 항목 관리" placement="rightStart" style={{ fontWeight: "500" }}>
+              <Nav.Item eventKey="1-1" as={Link} to="/main/att-regAttItems">근태 항목 등록</Nav.Item>	{/* 스타일 깨짐 방지를 위해 as 속성 사용함 */}
+              <Nav.Item eventKey="1-2" as={Link} to="/main/att-regVacaItems">휴가 항목 등록</Nav.Item>
             </Nav.Menu>
-            <Nav.Menu eventKey="2" trigger="hover" title="근태" placement="rightStart" style={{ fontWeight: "500" }}>
-              <Nav.Item eventKey="2-1" as={Link} to="/main/att_attendance">근태</Nav.Item>
-              <Nav.Item eventKey="2-2" as={Link} to="/main/att_attendanceList">근태현황</Nav.Item>
-            </Nav.Menu>
-            <Nav.Menu eventKey="3" trigger="hover" title="출/퇴근" placement="rightStart" style={{ fontWeight: "500" }}>
-              <Nav.Item eventKey="3-1" as={Link} to="/main/att_commuteRecords">출/퇴근기록부</Nav.Item>
-              <Nav.Item eventKey="3-3" as={Link} to="/main/att_commuStatus">출/퇴근현황</Nav.Item>
-              <Nav.Item eventKey="3-4" as={Link} to="/main/att_commuLate">지각현황</Nav.Item>
-              <Nav.Item eventKey="3-5" as={Link} to="/main/att_commuAttStatus">출퇴근/근태현황</Nav.Item>
-            </Nav.Menu>
+            <Nav.Item eventKey="2" as={Link} to="/main/att_management" style={{ fontWeight: "500" }}>근태관리</Nav.Item>
           </Nav>
         </Sidenav.Body>
       </Sidenav>

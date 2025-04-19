@@ -16,11 +16,17 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@fullcalendar/core": "^6.1.17",
+		"@fullcalendar/daygrid": "^6.1.17",
+		"@fullcalendar/react": "^6.1.17",
 		"@remix-run/node": "^2.16.4",
 		"@remix-run/react": "^2.16.4",
+		"axios": "^1.8.4",
 		"isbot": "^4.1.0",
+		"node-sass": "^9.0.0",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
+		"react-icons": "^5.5.0",
 		"rsuite": "^5.79.0"
 	},
 	"devDependencies": {

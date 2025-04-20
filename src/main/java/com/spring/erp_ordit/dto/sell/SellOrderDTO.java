@@ -33,4 +33,5 @@ public class SellOrderDTO {	// 판매입력 _ 주문 정보 DTO
 //    private BigDecimal total;			// 총액
 	
 	private List<SellOrderItemDTO> orderItemList;  // 입력받은 주문 아이템 리스트(상세 목록)
+	private List<Integer> deletedItemIds; 	// 삭제 항목(수정 작업 시 삭제하는 항복 체크)
 }

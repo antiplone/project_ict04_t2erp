@@ -448,13 +448,20 @@ const sell_status_select = () => {
 									{(rowData) => rowData.income_confirm === null ? 'N' : rowData.income_confirm}
 								</Cell>
 							</Column>
+							
+							<Column width={100} className="all_text">
+								<HeaderCell>인쇄</HeaderCell>
+								<Cell>
+									<Button color="green" appearance="ghost" size="xs" >인쇄</Button>
+								</Cell>
+							</Column>
 
 						</Table>)}
 					</div>
 
 					<div className="resultBtn">
 						<ButtonToolbar>
-							<Button appearance="primary">인쇄</Button>
+							{/* <Button appearance="primary">인쇄</Button> */}
 							<Button appearance="primary" onClick={statusList_btn}>내역 초기화</Button>
 						</ButtonToolbar>
 					</div>

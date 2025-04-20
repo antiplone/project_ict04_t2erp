@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+     
+<mapper namespace="com.spring.erp_ordit.dao.hr.HrDepartmentMapper">
+
+<!-- 인사카드 목록 조회 -->
+<select id="hrDeptList" resultType="com.spring.erp_ordit.dto.hr.HrDepartmentDTO">
+	SELECT * FROM department_tbl
+	ORDER BY d_code
+</select>
+
+<!-- 인사카드 등록 -->
+<insert id="hrDeptInsert" parameterType="com.spring.erp_ordit.dto.hr.HrDepartmentDTO">
+	INSERT INTO department_tbl (
+	  d_code,
+	  d_name,
+	  d_tel,
+	  d_address,
+	  d_manager
+	) VALUES (
+	  #{d_code},
+	  #{d_name},
+	  #{d_tel},
+	  #{d_address},
+	  #{d_manager}
+	)
+</insert>
+
+<!-- 인사카드 수정 -->
+<update id="hrDeptUpdate" parameterType="com.spring.erp_ordit.dto.hr.HrDepartmentDTO">
+	UPDATE department_tbl
+	SET
+	  d_name = #{d_name},
+	  d_tel = #{d_tel},
+	  d_address = #{d_address},
+	  d_manager = #{d_manager}
+	WHERE d_code = #{d_code}
+</update>
+
+<!-- 인사카드 삭제 -->
+<delete id="hrDeptDelete" parameterType="com.spring.erp_ordit.dto.hr.HrDepartmentDTO">
+	DELETE FROM department_tbl
+	 WHERE d_code=#{d_code}
+</delete>
+
+</mapper>

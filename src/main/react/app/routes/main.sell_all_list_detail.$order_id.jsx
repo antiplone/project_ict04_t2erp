@@ -133,7 +133,7 @@ const sell_all_list_detail = () => {
           삭제
         </Button>
 
-        <Button appearance="ghost" color="cyan" className="sell_DetailBtn" onClick={() => allList}>
+        <Button appearance="ghost" color="cyan" className="sell_DetailBtn" onClick={() => allList()}>
             목록
         </Button>
       </div>

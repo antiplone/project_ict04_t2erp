@@ -5,10 +5,10 @@ import { Modal, Button } from 'rsuite';
 const HrModal = ({ open, handleClose, title, children, onRegister }) => {
   return (
     <Modal
-      open={open}
+      open={open}   // 모달 열기(true일 때)
       onClose={handleClose}
-      backdrop={false} // backdrop을 false로 설정
-      keyboard={false} // 키보드 이벤트 비활성화 (선택 사항)
+      backdrop={false}  // backdrop을 false로 설정
+      keyboard={false}  // 키보드 이벤트 비활성화 (선택 사항)
     >
       <Modal.Header>
         <Modal.Title style={{ fontSize: '24px', fontWeight: 'bold' }}>{title}</Modal.Title>

@@ -24,9 +24,12 @@ export default function Management() {
 
   const toggleRefresh = () => setRefresh(prev => !prev); // true ↔ false 토글
 
-  const raw_id = sessionStorage.getItem("e_id");
+  // const raw_id = sessionStorage.getItem("e_id");
+  // const e_id = raw_id && !isNaN(Number(raw_id)) ? Number(raw_id) : null;
+  // const e_name = sessionStorage.getItem("e_name") || null;  // 사원명도 세션에서 불러옴
+  const raw_id = localStorage.getItem("e_id");
   const e_id = raw_id && !isNaN(Number(raw_id)) ? Number(raw_id) : null;
-  const e_name = sessionStorage.getItem("e_name") || null;  // 사원명도 세션에서 불러옴
+  const e_name = localStorage.getItem("e_name") || null;  // 사원명도 세션에서 불러옴
 
   console.log("📌 Management - e_id:", e_id);
   console.log("📌 Management - e_name:", e_name);
@@ -37,7 +40,7 @@ export default function Management() {
       <MessageBox text="근태관리" />
       <CurrentDateTime />
       <TodayCommuteInfo e_id={e_id} e_name={e_name} attURL={attURL} onRefresh={toggleRefresh} />
-      <CommuteTable data={record} loading={loading} attURL={attURL} refresh={refresh} />
+      <CommuteTable e_id={e_id} data={record} loading={loading} attURL={attURL} refresh={refresh} />
     </Container>
   );
 }

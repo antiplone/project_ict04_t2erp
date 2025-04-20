@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
 import { useEffect, useState } from "react";
-import { Modal, Form, Radio, RadioGroup, Button, ButtonGroup, Schema } from "rsuite";
+import { Modal, Form, Radio, RadioGroup, Schema, DateRangePicker } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 import Btn from "./Btn";
 
@@ -27,23 +27,29 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
   });
   const [formError, setFormError] = useState({});
 
-  // editingRow 가 변경되면 useEffect 를 통해 모달 내부 폼을 초기화한다.
   useEffect(() => {
     if (editingRow) {
-      setVaca(editingRow);
+      setVaca({
+        ...editingRow,
+        v_period: [
+          new Date(editingRow.v_start),
+          new Date(editingRow.v_end),
+        ],
+      });
       setFormError({});
     }
   }, [editingRow]);
+  
 
-  // 사용자가 입력을 변경하면 handleChange 함수가 실행되어 입력값과 유효성 검사결과가 상태에 반영된다.
-  const handleChange = (formValue) => {
+  // 사용자가 입력을 변경하면 vacaChange 함수가 실행되어 입력값과 유효성 검사결과가 상태에 반영된다.
+  const vacaChange = (formValue) => {
     setVaca(formValue);
     const check = model.check(formValue);
     setFormError(check);
   };
 
   // 저장버튼을 누르면 서버에 PUT 요청을 보내고, 성공 시 onReloading 실행.
-  const handleSubmit = async () => {
+  const updateVaca = async () => {
     if (!vaca.v_code) return alert("수정할 항목이 없습니다.");
 
     const check = model.check(vaca);
@@ -52,13 +58,25 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
       return;
     }
 
+    const [startDate, endDate] = vaca.v_period || [];
+    const formatDate = (date) =>
+      date?.toLocaleDateString("sv-SE");  // "yyyy-MM-dd"
+
+    const payload = {
+      ...vaca,
+      v_start: formatDate(startDate),
+      v_end: formatDate(endDate),
+    };
+
     try {
       const res = await fetch(`${attURL}/updateVacaItems/${vaca.v_code}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json;charset=utf-8" },
-        body: JSON.stringify(vaca),
+        body: JSON.stringify(payload),
       });
+
       const result = await res.text();
+
       if (result === "1") {
         alert("수정 완료되었습니다.");
         onClose();
@@ -79,7 +97,7 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
         <Modal.Title>근태 항목 수정</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form fluid model={model} formValue={vaca} onChange={handleChange}>
+        <Form fluid model={model} formValue={vaca} onChange={vacaChange}>
           <Form.Group controlId="v_code">
             <Form.ControlLabel>휴가코드</Form.ControlLabel>
             <Form.Control name="v_code" value={vaca.v_code} disabled readOnly />
@@ -92,7 +110,12 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
 
           <Form.Group controlId="v_period">
             <Form.ControlLabel>휴가기간</Form.ControlLabel>
-            <Form.Control name="v_period" />
+            <Form.Control
+              name="v_period"
+              accepter={DateRangePicker}
+              format="yyyy-MM-dd"  // 원하는 날짜 형식 (옵션)
+              placeholder="날짜를 선택하세요"
+              style={{ width: 300 }}/>
           </Form.Group>
 
           <Form.Group controlId="v_use">
@@ -115,7 +138,7 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Btn text="저장" onClick={handleSubmit} size="sm" />
+        <Btn text="저장" onClick={updateVaca} size="sm" />
         <Btn text="취소" onClick={onClose} size="sm" style={{ color: "grey", borderColor: "grey" }} />
       </Modal.Footer>
     </Modal>

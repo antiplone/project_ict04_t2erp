@@ -36,44 +36,72 @@ const AttModal = ({ open, onClose, onReloading }) => {
     a_code: "",
     a_name: "",
     a_type: "기본",
-    a_use: "",
+    a_use: "Y",
     a_note: "",
-    v_name: "",
+    v_code: null,
+    // v_name: "",
   });
 
+  // 값 변경 핸들링
   const attChange = (formValue) => {
     setAtt(formValue);
     const check = model.check(formValue);
     setFormError(check);
   };
 
-  const vNameChange = (value) => {
-    const updated = { ...att, a_type: value, v_name: "" };
+  // 근태유형이 '휴가'일 때 휴가 목록 설정
+  const vNameChange = async (value) => {
+    const updated = { ...att, a_type: value, v_code: null };
     setAtt(updated);
+    
     if (value === "휴가") {
-      setVacationList([
-        { v_name: "연차" },
-        { v_name: "병가" },
-        { v_name: "경조사" },
-      ]);
+      try {
+        const res = await fetch(`${attURL}/regVacaItems`);
+        const data = await res.json();
+
+        if (!Array.isArray(data)) {
+          throw new Error("서버에서 배열을 반환하지 않았습니다.");
+        }
+
+        // 백엔드에서 받아온 데이터로 리스트 설정
+        const formatted = data.map(item => ({
+          v_code: item.v_code,
+          // v_name: item.v_name
+        }));
+
+        setVacationList(formatted);
+      } catch (error) {
+        console.error("휴가 목록 불러오기 실패:", error);
+        setVacationList([]);
+      }
     } else {
       setVacationList([]);
     }
   };
 
-  const handleVacationChange = (value) => {
-    setAtt((prev) => ({ ...prev, v_name: value }));
+  // 휴가코드 선택 시 휴가명 자동 설정
+  const VacaCodeChange = (value) => {
+    // const selected = vacationList.find((item) => item.v_code === parseInt(value));
+
+    // if (selected) {
+      setAtt((prev) => ({
+        ...prev,
+        v_code: value,
+        // v_code: selected.v_code,
+        // v_name: selected.v_name,
+      }));
+    // }
   };
 
   const insertAtt = async () => {
-    const response = await fetch(`${attURL}/addAttItems`, {
+    const res = await fetch(`${attURL}/addAttItems`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(att), // form 상태
     });
   
-    if (response.status === 201) {
-      alert("등록 성공");
+    if (res.status === 201) {
+      // alert("등록 성공");
       onClose();
       // onReloading();    // 테이블 리로딩
       window.location.reload();
@@ -88,9 +116,10 @@ const AttModal = ({ open, onClose, onReloading }) => {
         a_code: "",
         a_name: "",
         a_type: "기본",
-        a_use: "",
+        a_use: "Y",
         a_note: "",
-        v_name: "",
+        v_code: null,
+        // v_name: "",
       });
       setFormError({});
     }
@@ -124,17 +153,27 @@ const AttModal = ({ open, onClose, onReloading }) => {
           </Form.Group>
 
           {/* {att.a_type === "휴가" && (
-            <Form.Group controlId="v_name">
-              <Form.ControlLabel>휴가명</Form.ControlLabel>
-              <Form.Control
-                accepter={SelectPicker}
-                name="v_name"
-                data={vacationList}
-                labelKey="v_name"
-                valueKey="v_name"
-                placeholder="휴가명을 선택하세요"
-              />
-            </Form.Group>
+            <>
+              <Form.Group controlId="v_code">
+                <Form.ControlLabel>휴가코드</Form.ControlLabel>
+                <Form.Control
+                  name="v_code"
+                  accepter="select"
+                  data={vacationList.map(item => ({
+                    label: `${item.v_code} (${item.v_name})`,
+                    value: item.v_code
+                  }))}
+                  // data={[
+                  //   { label: 20190, value: 20190 },
+                  //   { label: 20191, value: 20191 },
+                  //   { label: 20192, value: 20192 },
+                  // ]}
+                  onChange={VacaCodeChange}
+                  value={att.v_code}
+                  placeholder="휴가코드를 선택하세요"
+                />
+              </Form.Group>
+            </>
           )} */}
 
           <Form.Group controlId="a_note">

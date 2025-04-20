@@ -8,13 +8,27 @@
     <!-- 기본사항등록 -->
 	<!-- 근태항목 리스트 -->
 	<select id="regAttList" resultType="com.spring.erp_ordit.dto.attendance.AttItemsDTO">
-		SELECT * FROM attendance_view
+		SELECT 
+		  a.a_list_no,
+		  a.a_code,
+		  a.a_name,
+		  a.a_type,
+		  a.a_use,
+		  a.a_note,
+		  v.v_code,
+		  v.v_name AS v_name,
+		  v.v_start,
+		  v.v_end,
+		  a.rn
+		FROM attendance_view a
+		LEFT JOIN vacation_view v
+		  ON a.v_code = v.v_code
 	</select>
     <!-- 근태항목 등록 -->
-    <insert id="insertAttItems" parameterType="com.spring.erp_ordit.dto.attendance.AttItemsDTO">
-        insert into attendance_tbl(a_code,a_name,a_type,a_note)
-        values(#{a_code},#{a_name},#{a_type},#{a_note})
-    </insert>
+	<insert id="insertAttItems" parameterType="com.spring.erp_ordit.dto.attendance.AttItemsDTO">
+	  insert into attendance_tbl(a_code, a_name, a_type, a_note, v_code)
+	  values(#{a_code}, #{a_name}, #{a_type}, #{a_note}, #{v_code})
+	</insert>
     <!-- 근태항목 삭제 -->
     <delete id="deleteAttItems" parameterType="int">
         DELETE FROM attendance_tbl
@@ -27,8 +41,10 @@
 			     , a_type = #{a_type}
 			     , a_use = #{a_use}
 			     , a_note = #{a_note}
+			     , v_code = #{v_code}
 			 WHERE a_code = #{a_code}
     </update>
+    
     
 	<!-- 휴가항목 리스트 -->
 	<select id="regVacaList" resultType="com.spring.erp_ordit.dto.attendance.VacaItemsDTO">
@@ -36,8 +52,8 @@
 	</select>
     <!-- 휴가항목 등록 -->
     <insert id="insertVacaItems" parameterType="com.spring.erp_ordit.dto.attendance.VacaItemsDTO">
-        insert into vacation_tbl(v_code, v_name, v_period, v_note)
-        values(#{v_code},#{v_name},#{v_period},#{v_note})
+        insert into vacation_tbl(v_code, v_name, v_start, v_end, v_note)
+        values(#{v_code},#{v_name},#{v_start}, #{v_end},#{v_note})
     </insert>
     <!-- 휴가항목 삭제 -->
     <delete id="deleteVacaItems" parameterType="int">
@@ -48,7 +64,8 @@
     <update id="updateVacaItems" parameterType="com.spring.erp_ordit.dto.attendance.VacaItemsDTO">
         UPDATE vacation_tbl
 			   SET v_name = #{v_name}
-			     , v_period = #{v_period}
+			     , v_start = #{v_start}
+			     , v_end = #{v_end}
 			     , v_use = #{v_use}
 			     , v_note = #{v_note}
 			 WHERE v_code = #{v_code}

@@ -6,16 +6,24 @@ import {
   Form,
   Modal,
   Schema,
+  DatePicker,
+  DateRangePicker,
 } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 
 const { StringType } = Schema.Types;
 
+// pattern 메서드: 단순한 문자열 형식 검사
+// addRule 메서드: 숫자 크기, 범위, 조건식 등 로직 포함 검사
 // Schema
 const model = Schema.Model({
   v_code: StringType()
     .isRequired("휴가코드를 입력해주세요")
-    .pattern(/^2\d{4}$/, "휴가코드는 20000~29999 형식이어야 합니다."),
+    .pattern(/^2\d{4}$/, "휴가코드는 20190 이상 29999 이하의 숫자여야 합니다")
+    .addRule((value) => {
+      const num = parseInt(value, 10);
+      return num >= 20190 && num <= 29999;
+    }, "휴가코드는 20190 이상 29999 이하의 숫자여야 합니다"),
   
   v_name: StringType()
     .isRequired("휴가명을 입력해주세요")
@@ -24,7 +32,7 @@ const model = Schema.Model({
   v_note: StringType().maxLength(100, "100자 이내로 작성해주세요"),
 });
 
-const VacaModal = ({ open, onClose, onReloading }) => {
+const VacaModal = ({ open, onClose }) => {
   const fetchURL = AppConfig.fetch['mytest'];
   const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
 
@@ -43,15 +51,26 @@ const VacaModal = ({ open, onClose, onReloading }) => {
     setFormError(check);
   };
 
+  // 저장 버튼을 눌렀을 때
   const insertVaca = async () => {
-    const response = await fetch(`${attURL}/addVacaItems`, {
+    const [startDate, endDate] = vaca.v_period || [];
+    const formatDate = (date) =>
+      date?.toLocaleDateString("sv-SE");  // "yyyy-MM-dd"
+
+    const payload = {
+      ...vaca,
+      v_start: formatDate(startDate),
+      v_end: formatDate(endDate),
+    };
+
+    const res = await fetch(`${attURL}/addVacaItems`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(vaca), // form 상태
+      body: JSON.stringify(payload), // form 상태
     });
   
-    if (response.status === 201) {
-      alert("등록 성공");
+    if (res.status === 201) {
+      // alert("등록 성공");
       onClose();
       // onReloading();    // 테이블 리로딩
       window.location.reload();
@@ -81,7 +100,7 @@ const VacaModal = ({ open, onClose, onReloading }) => {
       <Modal.Body>
         <Form model={model} formValue={vaca} onChange={vacaChange} fluid>
           <Form.Group controlId="v_code">
-            <Form.ControlLabel>휴가코드 *</Form.ControlLabel>
+            <Form.ControlLabel>휴가코드 <span style={{ color: "red" }}>*</span></Form.ControlLabel>
             <Form.Control name="v_code" />
             <Form.HelpText>휴가코드는 20000부터 시작합니다.</Form.HelpText>
           </Form.Group>
@@ -93,7 +112,13 @@ const VacaModal = ({ open, onClose, onReloading }) => {
 
           <Form.Group controlId="v_period">
             <Form.ControlLabel>휴가기간</Form.ControlLabel>
-            <Form.Control name="v_period" />
+            {/* <Form.Control name="v_period" /> */}
+            <Form.Control
+              name="v_period"
+              accepter={DateRangePicker}
+              format="yyyy-MM-dd"  // 원하는 날짜 형식 (옵션)
+              placeholder="날짜를 선택하세요"
+              style={{ width: 300 }}/>
           </Form.Group>
 
           <Form.Group controlId="v_note">

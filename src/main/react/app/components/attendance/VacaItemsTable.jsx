@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
-import { useState } from "react";
+import React, { useState } from "react";
 import { Table } from "rsuite";
 import VacaUpdateModal from "./VacaUpdateModal";
 import AppConfig from "#config/AppConfig.json";
@@ -17,12 +17,12 @@ const VacaItemsTable = ({ data, columns, onReloading }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRow, setEditingRow] = useState(null);
 
-  const deleteVaca = async (v_code) => {
+  const deleteVaca = async (v_code, v_name) => {
 
     // 만약 휴가코드가 없다면 alert창을 반환.
     if (!v_code) return alert("삭제할 항목이 없습니다.");
 
-    const isDel = confirm(`삭제하면 되돌릴 수 없습니다.\n휴가코드 ${v_code}, 삭제하시겠습니까?`);
+    const isDel = confirm(`삭제하면 되돌릴 수 없습니다.\n휴가명 '${v_name}'를 삭제하시겠습니까?`);
     if (!isDel) return alert("삭제가 취소되었습니다.");
 
     try {
@@ -57,15 +57,30 @@ const VacaItemsTable = ({ data, columns, onReloading }) => {
       <Table
         autoHeight
         style={{ marginBottom: "24px" }}
-        width={860}
+        width={900}
         data={data ?? []}
         cellBordered
       >
-        {columns.map(col => (
-          <Column key={col.dataKey} width={col.width} align="center">
-            <HeaderCell>{col.label}</HeaderCell>
-            <Cell dataKey={col.dataKey} />
-          </Column>
+        {/* React.Fragment: 가상 컴포넌트. <></> 와 같은 역할임. key 객체를 쓰기 위해서 가상컴포넌트를 사용함. */}
+        {columns
+          .filter(col => !["v_start", "v_end"].includes(col.dataKey)) // 기존 start, end 컬럼 제거
+          .map(col => (
+          <React.Fragment key={col.dataKey}>
+            <Column key={col.dataKey} width={col.width} align="center">
+              <HeaderCell>{col.label}</HeaderCell>
+              <Cell dataKey={col.dataKey} />
+            </Column>
+
+          {/* ✅ '휴가명' 뒤에만 휴가기간 컬럼 끼워넣기 */}
+          {col.dataKey === "v_name" && (
+            <Column width={250} align="center">
+              <HeaderCell>휴가기간</HeaderCell>
+              <Cell>
+                {(rowData) => `${rowData.v_start} ~ ${rowData.v_end}`}
+              </Cell>
+            </Column>
+          )}
+          </React.Fragment>
         ))}
 
         <Column width={110} align="center">
@@ -75,7 +90,7 @@ const VacaItemsTable = ({ data, columns, onReloading }) => {
               <>
                 <Btn text="수정" color="blue" style={{ marginRight: "5px" }}
                    onClick={() => {setEditingRow(rowData); setIsModalOpen(true);}} />
-                <Btn text="삭제" color="red" onClick={() => deleteVaca(rowData.v_code)} />
+                <Btn text="삭제" color="red" onClick={() => deleteVaca(rowData.v_code, rowData.v_name)} />
               </>
             )}
           </Cell>

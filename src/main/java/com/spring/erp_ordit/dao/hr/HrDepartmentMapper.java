@@ -14,9 +14,9 @@ public interface HrDepartmentMapper {
 	public List<HrDepartmentDTO> hrDeptList();	// 부서 목록
 	
 	public int hrDeptInsert(HrDepartmentDTO dto);	// 부서 등록
-//
-//	public int hrDeptUpdate(HrDepartmentDTO dto);	// 부서 수정
-//	
-//	public int hrDeptDelete(int e_id);	// 부서 삭제
+
+	public int hrDeptUpdate(HrDepartmentDTO dto);	// 부서 수정
+	
+	public int hrDeptDelete(String d_code);	// 부서 삭제
 	
 }

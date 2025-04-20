@@ -2,17 +2,16 @@ import React from 'react';
 import { Dropdown } from 'rsuite';
 import PropTypes from 'prop-types';
 
-export default function HrDropdown({ title, items, onSelect, style = {} }) {
+export default function HrDropdown({ title, items, onSelect, style, menuStyle, toggleStyle = {} }) {
   return (
-    <Dropdown
-      title={title}
-      onSelect={onSelect}
-      style={{ width: '100%', ...style }}           // 버튼 영역 너비 조절
-      menuStyle={{ minWidth: 200 }}                 // 펼쳐지는 메뉴 너비 조절
-    >
+    <Dropdown 
+      title={title} 
+      onSelect={onSelect} 
+      style={style} 
+      menuStyle={menuStyle}>
       {items.map((item, idx) => (
-        <Dropdown.Item key={idx} eventKey={item}>
-          {item}
+        <Dropdown.Item key={idx} eventKey={item.value || item}>
+          {item.label || item}
         </Dropdown.Item>
       ))}
     </Dropdown>
@@ -23,5 +22,7 @@ HrDropdown.propTypes = {                // value props를 사용하고 있는데
   title: PropTypes.string,              // 경고가 뜰 수 있기 때문에 PropTypes 선언
   items: PropTypes.array.isRequired,
   onSelect: PropTypes.func.isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
+  menuStyle: PropTypes.object,
+  toggleStyle: PropTypes.object,
 };

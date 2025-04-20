@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link, useParams } from '@remix-run/react';
 import PropTypes from 'prop-types';
 import { Input, Grid, Col, Button } from 'rsuite';
 import HrModal from '#components/hr/HrModal';
@@ -6,11 +7,13 @@ import ErrorText from '#components/hr/ErrorText';
 import HrDropdown from '#components/hr/HrDropdown';
 import HrRadio from '#components/hr/HrRadio.jsx';
 
-export default function HrEmpCardDetail({ e_id, onBack }) {
+const  HrEmpCardDetail = () => {
+  const { e_id } = useParams();
   const [detail, setDetail] = useState(null);
   const [open, setOpen] = useState(false); // 수정 모달
   const [editData, setEditData] = useState({});
   const [errors, setErrors] = useState({});
+  const [deptList, setDeptList] = useState([]); // 부서명 리스트
 
   const positionList = ['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무'];    // 직위 dropdown 리스트
 
@@ -25,9 +28,23 @@ export default function HrEmpCardDetail({ e_id, onBack }) {
       .catch(err => console.error("상세 조회 실패:", err));
   }, [e_id]);
 
+  // 부서 목록 불러오기
+  useEffect(() => {
+    fetch('http://localhost:8081/hrDept/hrDeptList')
+      .then(res => res.json())
+      .then(data => {
+        const mapped = data.map(dept => ({
+          label: dept.d_name,
+          value: dept.d_code
+        }));
+        setDeptList(mapped);
+      })
+      .catch(err => console.error('부서 목록 조회 실패:', err));
+  }, []);
+
   if (!detail) return <div>로딩 중...</div>;
 
-  // 유효성 검사
+  // trim 앞뒤 공백 제거
   const validate = () => {
     const newErrors = {};
     if (!editData.e_name?.trim()) newErrors.e_name = "이름은 필수입니다.";
@@ -46,6 +63,7 @@ export default function HrEmpCardDetail({ e_id, onBack }) {
   const handleUpdate = () => {
     if (!validate()) return;
 
+    // 수정 요청
     fetch(`http://localhost:8081/hrCard/hrCardUpdate/${e_id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -76,9 +94,6 @@ export default function HrEmpCardDetail({ e_id, onBack }) {
         if (!res.ok) throw new Error('삭제 실패');
         return res.text();
       })
-      .then(() => {
-        onBack(); // 목록으로 이동
-      })
       .catch(err => {
         alert('삭제 중 오류 발생: ' + err.message);
       });
@@ -92,6 +107,7 @@ export default function HrEmpCardDetail({ e_id, onBack }) {
       <p>사원 번호: {detail.e_id}</p>
       <p>사원 이름: {detail.e_name}</p>
       <p>전화번호: {detail.e_tel}</p>
+      <p>부서: {detail.d_name}</p>
       <p>직위: {detail.e_position}</p>
       <p>재직 상태: {detail.e_status}</p>
       <p>이메일: {detail.e_email}</p>
@@ -108,7 +124,7 @@ export default function HrEmpCardDetail({ e_id, onBack }) {
       <div style={{ marginTop: '20px' }}>
         <Button appearance="ghost" onClick={() => setOpen(true)}>수정</Button>{' '}
         <Button appearance="ghost" color="red" onClick={handleDelete}>삭제</Button>{' '}
-        <Button appearance="ghost" style={{ color: 'black', borderColor: 'black' }} onClick={onBack}>← 목록으로</Button>
+        <Link to={`/main/hr_emp_card/`} > 목록으로 </Link>
       </div>
 
       {/* 수정 모달 */}
@@ -123,7 +139,23 @@ export default function HrEmpCardDetail({ e_id, onBack }) {
           <Col xs={24}><label>전화번호 *</label><Input value={editData.e_tel} onChange={v => setEditData({ ...editData, e_tel: v })} /><ErrorText message={errors.e_tel} /></Col>
           <Col xs={24}><label>이메일 *</label><Input value={editData.e_email} onChange={v => setEditData({ ...editData, e_email: v })} /><ErrorText message={errors.e_email} /></Col>
           <Col xs={24}><label>생년월일 *</label><Input type="date" value={editData.e_birth} onChange={v => setEditData({ ...editData, e_birth: v })} /><ErrorText message={errors.e_birth} /></Col>
-          <Col xs={24}><label>직위 *</label><HrDropdown title={editData.e_position || '직위를 선택하세요'} items={positionList} onSelect={(v) => setEditData({ ...editData, e_position: v })} style={{ width: '100%' }} /><ErrorText message={errors.e_position} /></Col>
+          <Col xs={24}>
+            <label>부서 *</label>
+            <HrDropdown
+              title={deptList.find(dept => dept.value === editData.d_code)?.label || '부서를 선택하세요'}
+              items={deptList}
+              onSelect={(val) => setEditData({ ...editData, d_code: val })}
+              style={{ width: '100%' }}
+              menuStyle={{ width: 200 }}
+            />
+          </Col>
+          <Col xs={24}><label>직위 *</label><HrDropdown
+            title={editData.e_position || "직위를 선택하세요"}
+            items={['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무']}
+            onSelect={(val) => setEditData({ ...editData, e_position: val })}
+            style={{ width: '100%' }}
+            menuStyle={{ width: 120 }}
+          /><ErrorText message={errors.e_position} /></Col>
           <Col xs={24}><label>재직 상태 *</label><Input value={editData.e_status} onChange={v => setEditData({ ...editData, e_status: v })} /><ErrorText message={errors.e_status} /></Col>
           <Col xs={24}><label>입사 구분</label><HrRadio value={editData.e_entry} onChange={(val) => setEditData({ ...editData, e_entry: val })} options={['신입', '경력']} /></Col>
           <Col xs={24}><label>주소</label><Input value={editData.e_address || ''} onChange={v => setEditData({ ...editData, e_address: v })} /></Col>
@@ -138,7 +170,10 @@ export default function HrEmpCardDetail({ e_id, onBack }) {
   );
 }
 
-HrEmpCardDetail.propTypes = {
-  e_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  onBack: PropTypes.func.isRequired,
-};
+// HrEmpCardDetail.propTypes = {
+//   e_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+//   onBack: PropTypes.func.isRequired,
+// };
+
+
+export default HrEmpCardDetail;

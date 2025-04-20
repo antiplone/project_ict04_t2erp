@@ -35,37 +35,40 @@ const HeaderMenu = () => {
 
 	useEffect(() => {
 
-		const fetchURL = AppConfig.fetch['mytest'];
-		fetch(`${fetchURL.protocol}${fetchURL.url}/hrCard/hrCardDetail/${localStorage.getItem('e_id')}`, {
-			method: "GET",
-			mode: "cors",
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			}
-		})
-			.then((res) => {
+		if (myInfo === "") {
 
-				if (res.ok) {
-
-					let entity = res.json();
-					entity.then(
-						res => {
-
-							localStorage.setItem('e_name', res.e_name);
-							localStorage.setItem('e_position', res.e_position);
-							setMyInfo(localStorage.getItem('e_name') + ' ' + localStorage.getItem('e_position') + '님');
-							console.log("Promise 완료:", res);
-						}
-					);
-				}
-				else {
-					alert("로그인을 실패했습니다.");
+			const fetchURL = AppConfig.fetch['mytest'];
+			fetch(`${fetchURL.protocol}${fetchURL.url}/hrCard/hrCardDetail/${localStorage.getItem('e_id')}`, {
+				method: "GET",
+				mode: "cors",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
 				}
 			})
-			.finally(() => { // 통신실패시 예외처리
-				
-			});
+				.then((res) => {
+	
+					if (res.ok) {
+	
+						let entity = res.json();
+						entity.then(
+							res => {
+	
+								localStorage.setItem('e_name', res.e_name);
+								localStorage.setItem('e_position', res.e_position);
+								setMyInfo(localStorage.getItem('e_name') + ' ' + localStorage.getItem('e_position') + '님');
+								console.log("Promise 완료:", res);
+							}
+						);
+					}
+					else {
+						alert("로그인을 실패했습니다.");
+					}
+				})
+				.finally(() => { // 통신실패시 예외처리
+					
+				});
+		}
 
 		if (open)
 			console.log("상담시작");

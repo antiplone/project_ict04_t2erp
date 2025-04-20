@@ -8,6 +8,7 @@ import {
   Radio,
   RadioGroup,
   Schema,
+  SelectPicker,
 } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 
@@ -59,14 +60,13 @@ const AttModal = ({ open, onClose, onReloading }) => {
         const res = await fetch(`${attURL}/regVacaItems`);
         const data = await res.json();
 
-        if (!Array.isArray(data)) {
-          throw new Error("서버에서 배열을 반환하지 않았습니다.");
-        }
+        if (!Array.isArray(data)) throw new Error("리스트가 배열이 아닙니다.");
 
         // 백엔드에서 받아온 데이터로 리스트 설정
         const formatted = data.map(item => ({
-          v_code: item.v_code,
-          // v_name: item.v_name
+          label: `${item.v_code} (${item.v_name})`,
+          value: item.v_code
+          // v_code: item.v_code,
         }));
 
         setVacationList(formatted);
@@ -77,6 +77,7 @@ const AttModal = ({ open, onClose, onReloading }) => {
     } else {
       setVacationList([]);
     }
+    // setVacationList([]);
   };
 
   // 휴가코드 선택 시 휴가명 자동 설정
@@ -94,6 +95,18 @@ const AttModal = ({ open, onClose, onReloading }) => {
   };
 
   const insertAtt = async () => {
+    const check = model.check(att);
+    if (check.hasError) {
+      setFormError(check);
+      return;
+    }
+  
+    if (att.a_type === "휴가" && !att.v_code) {
+      alert("휴가유형을 선택한 경우, 휴가코드를 반드시 선택해야 합니다.");
+      return;
+    }
+
+    // 등록
     const res = await fetch(`${attURL}/addAttItems`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -118,7 +131,7 @@ const AttModal = ({ open, onClose, onReloading }) => {
         a_type: "기본",
         a_use: "Y",
         a_note: "",
-        v_code: null,
+        // v_code: null,
         // v_name: "",
       });
       setFormError({});
@@ -152,29 +165,25 @@ const AttModal = ({ open, onClose, onReloading }) => {
             </RadioGroup>
           </Form.Group>
 
-          {/* {att.a_type === "휴가" && (
+          {att.a_type === "휴가" && (
             <>
               <Form.Group controlId="v_code">
                 <Form.ControlLabel>휴가코드</Form.ControlLabel>
                 <Form.Control
                   name="v_code"
-                  accepter="select"
-                  data={vacationList.map(item => ({
-                    label: `${item.v_code} (${item.v_name})`,
-                    value: item.v_code
-                  }))}
-                  // data={[
-                  //   { label: 20190, value: 20190 },
-                  //   { label: 20191, value: 20191 },
-                  //   { label: 20192, value: 20192 },
-                  // ]}
+                  accepter={SelectPicker}
+                  // data={vacationList.map(item => ({
+                  //   label: `${item.v_code} (${item.v_name})`,
+                  //   value: item.v_code
+                  // }))}
+                  data={vacationList}
                   onChange={VacaCodeChange}
                   value={att.v_code}
                   placeholder="휴가코드를 선택하세요"
                 />
               </Form.Group>
             </>
-          )} */}
+          )}
 
           <Form.Group controlId="a_note">
             <Form.ControlLabel>비고</Form.ControlLabel>

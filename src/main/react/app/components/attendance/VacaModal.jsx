@@ -11,7 +11,7 @@ import {
 } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 
-const { StringType } = Schema.Types;
+const { StringType, ArrayType } = Schema.Types;
 
 // pattern 메서드: 단순한 문자열 형식 검사
 // addRule 메서드: 숫자 크기, 범위, 조건식 등 로직 포함 검사
@@ -28,7 +28,11 @@ const model = Schema.Model({
   v_name: StringType()
     .isRequired("휴가명을 입력해주세요")
     .minLength(2, "2글자 이상 입력해주세요"),
-    
+
+  v_period: ArrayType()
+  .isRequired("휴가기간을 선택해주세요")
+  .addRule((value) => value.length === 2, "시작일과 종료일을 모두 선택해주세요"),
+
   v_note: StringType().maxLength(100, "100자 이내로 작성해주세요"),
 });
 
@@ -95,23 +99,23 @@ const VacaModal = ({ open, onClose }) => {
   return (
     <Modal open={open} onClose={onClose}>
       <Modal.Header>
-        <Modal.Title>휴가항목등록</Modal.Title>
+        <Modal.Title>휴가항목 등록</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form model={model} formValue={vaca} onChange={vacaChange} fluid>
           <Form.Group controlId="v_code">
             <Form.ControlLabel>휴가코드 <span style={{ color: "red" }}>*</span></Form.ControlLabel>
             <Form.Control name="v_code" />
-            <Form.HelpText>휴가코드는 20000부터 시작합니다.</Form.HelpText>
+            <Form.HelpText>휴가코드는 20190부터 시작합니다.</Form.HelpText>
           </Form.Group>
 
           <Form.Group controlId="v_name">
-            <Form.ControlLabel>휴가명</Form.ControlLabel>
+            <Form.ControlLabel>휴가명 <span style={{ color: "red" }}>*</span></Form.ControlLabel>
             <Form.Control name="v_name" />
           </Form.Group>
 
           <Form.Group controlId="v_period">
-            <Form.ControlLabel>휴가기간</Form.ControlLabel>
+            <Form.ControlLabel>휴가기간 <span style={{ color: "red" }}>*</span></Form.ControlLabel>
             {/* <Form.Control name="v_period" /> */}
             <Form.Control
               name="v_period"

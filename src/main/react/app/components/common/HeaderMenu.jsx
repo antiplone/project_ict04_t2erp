@@ -107,8 +107,8 @@ const HeaderMenu = () => {
 					</Nav.Menu>
 					{position === "관리" ? (
 					<Nav.Menu title="근태관리">
-						<Nav.Item onSelect={() => navigate("att-regAttItems")}>근태항목등록</Nav.Item>
 						<Nav.Item onSelect={() => navigate("att-regVacaItems")}>휴가항목등록</Nav.Item>
+						<Nav.Item onSelect={() => navigate("att-regAttItems")}>근태항목등록</Nav.Item>
 						<Nav.Item onSelect={() => navigate("att-management")}>근태관리</Nav.Item>
 					</Nav.Menu>
 					) : (

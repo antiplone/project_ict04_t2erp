@@ -94,7 +94,7 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Modal.Header>
-        <Modal.Title>근태 항목 수정</Modal.Title>
+        <Modal.Title>휴가항목 수정</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form fluid model={model} formValue={vaca} onChange={vacaChange}>

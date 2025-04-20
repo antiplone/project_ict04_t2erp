@@ -50,15 +50,15 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
   ];
   
   // 테이블 컬럼 정의
-  // const myAttColumns = [
-  //   { label: "사원명", dataKey: "e_name", width: 100 },
-  //   { label: "오늘날짜", dataKey: "co_work_date", width: 100 },
-  //   { label: "출근시간", dataKey: "co_start_time", width: 100 },
-  //   { label: "퇴근시간", dataKey: "co_end_time", width: 100 },
-  //   { label: "근무시간", dataKey: "co_total_work_time", width: 100 },
-  //   { label: "상태", dataKey: "co_status", width: 100 },
-  //   { label: "상태비고", dataKey: "co_status_note", width: 240 },
-  // ];
+  const myAttColumns = [
+    { label: "사원명", dataKey: "e_name", width: 100 },
+    { label: "오늘날짜", dataKey: "co_work_date", width: 100 },
+    { label: "출근시간", dataKey: "co_start_time", width: 100 },
+    { label: "퇴근시간", dataKey: "co_end_time", width: 100 },
+    { label: "근무시간", dataKey: "co_total_work_time", width: 100 },
+    { label: "상태", dataKey: "co_status", width: 100 },
+    { label: "상태비고", dataKey: "co_status_note", width: 240 },
+  ];
 
   return (
     <>

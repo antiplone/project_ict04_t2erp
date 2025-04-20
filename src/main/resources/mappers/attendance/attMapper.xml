@@ -48,7 +48,7 @@
     
 	<!-- 휴가항목 리스트 -->
 	<select id="regVacaList" resultType="com.spring.erp_ordit.dto.attendance.VacaItemsDTO">
-		SELECT * FROM vacation_view
+		SELECT * FROM vacation_view ORDER BY v_code DESC
 	</select>
     <!-- 휴가항목 등록 -->
     <insert id="insertVacaItems" parameterType="com.spring.erp_ordit.dto.attendance.VacaItemsDTO">

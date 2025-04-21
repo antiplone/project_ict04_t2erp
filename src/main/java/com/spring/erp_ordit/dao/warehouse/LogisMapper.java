@@ -41,9 +41,9 @@ public interface LogisMapper {
 		
 		public LogisOrderItemDTO findByOrderItem(int order_id, int item_code, int order_type);
 		
-		// 입고 확정
+		// 재고 입고 확정
 		public int updateStock(LogisStockDTO stockDTO);
-		
+		// 주문 품목 입고 확정
 		public int updateOrderStock(LogisOrderItemDTO orderDTO);
 		
 		// 출고 목록
@@ -58,6 +58,11 @@ public interface LogisMapper {
 		public LogisSalesItemDTO findBySalesItem(int order_id, int item_code, int order_type);
 		
 		public int updateSales(int item_code, int stock_amount, int order_id);
+		
+		// 재고 출고 확정
+		public int updateSellStock(LogisStockDTO orderDTO);
+		// 주문 품목 입고 확정
+		public int updateSellItem(LogisSalesItemDTO orderDTO);
 		
 		
 		// 재고관련

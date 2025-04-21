@@ -148,7 +148,7 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 		BuyOrderDTO order = request.getOrder();
 		List<BuyOrderItemDTO> items = request.getItems();
 		
-		// 구매팀은 주무입력시 자동으로 '진행중' 상태로 지정
+		// 구매팀은 주문입력시 자동으로 '진행중' 상태로 지정
 		order.setOrder_status("진행중");
 		
 		buyOrderMapper.buyOrderInsert(order);	// 구매주문 입력 - order_id가 자동주입 => MyBatis에서 useGeneratedKeys="true" 설정해서 자동 주입됨.

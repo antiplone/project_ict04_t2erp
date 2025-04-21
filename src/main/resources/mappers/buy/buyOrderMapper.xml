@@ -120,7 +120,7 @@
   	</select>
   	
   	<!-- 구매 상세 조회 매핑 -->
-		<resultMap id="BuyOrderDetailMap" type="com.spring.erp_ordit.dto.buy.BuyOrderDetailDTO">
+	<resultMap id="BuyOrderDetailMap" type="com.spring.erp_ordit.dto.buy.BuyOrderDetailDTO">
 	    <result property="order_id" column="order_id"/>
 	    <result property="order_type" column="order_type"/>
 	    <result property="order_date" column="order_date"/>
@@ -134,17 +134,17 @@
 	    <result property="storage_name" column="storage_name"/>
 	    <result property="transaction_type" column="transaction_type"/>
 	    <result property="order_status" column="order_status"/>
-	
-	    <!-- items 리스트 collection으로 매핑 -->
-	    <collection property="items" ofType="com.spring.erp_ordit.dto.buy.BuyOrderItemDTO">
-	        <result property="item_code" column="item_code"/>
-	        <result property="item_name" column="item_name"/>
-	        <result property="quantity" column="quantity"/>
-	        <result property="price" column="price"/>
-	        <result property="supply" column="supply"/>
-	        <result property="vat" column="vat"/>
-	        <result property="total" column="total"/>
-	    </collection>
+
+    <!-- items 리스트 collection으로 매핑 -->
+    <collection property="items" ofType="com.spring.erp_ordit.dto.buy.BuyOrderItemDTO">
+        <result property="item_code" column="item_code"/>
+        <result property="item_name" column="item_name"/>
+        <result property="quantity" column="quantity"/>
+        <result property="price" column="price"/>
+        <result property="supply" column="supply"/>
+        <result property="vat" column="vat"/>
+        <result property="total" column="total"/>
+    </collection>
 	</resultMap>
 	
 	<!-- 구매 상세 조회  -->

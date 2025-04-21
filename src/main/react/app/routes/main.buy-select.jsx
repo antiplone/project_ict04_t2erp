@@ -1,7 +1,7 @@
 // 구매팀 - 구매조회 페이지 
 /* eslint-disable react/react-in-jsx-scope */
 import AppConfig from "#config/AppConfig.json";
-import { Container, Tabs, Message, Badge, Button, InputGroup, Input } from "rsuite";
+import { Container, Tabs, Message, Badge, Button } from "rsuite";
 import React, { useEffect, useState } from 'react';
 import BuySelectTabAll from "#components/buy/BuySelectTabAll.jsx";
 import "../styles/buy.css";

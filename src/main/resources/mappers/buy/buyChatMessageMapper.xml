@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.spring.erp_ordit.dao.buy.BuyChatMessageMapper"> <!-- 채팅 -->
+
+	<insert id="insertMessage" parameterType="com.spring.erp_ordit.dto.buy.BuyChatMessageDTO">
+        INSERT INTO chat_message_tbl (room_id, sender, content, created_at)
+        VALUES (#{room_id}, #{sender}, #{content}, NOW())
+    </insert>
+
+    <select id="selectMessagesByRoomId" parameterType="String" resultType="com.spring.erp_ordit.dto.buy.BuyChatMessageDTO">
+        SELECT * FROM chat_message_tbl
+        WHERE room_id = #{room_id}
+        ORDER BY created_at ASC
+    </select>
+
+</mapper>   

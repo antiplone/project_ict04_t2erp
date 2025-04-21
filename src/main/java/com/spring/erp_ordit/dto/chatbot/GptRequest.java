@@ -1,4 +1,4 @@
-package com.spring.erp_ordit.dto.email;
+package com.spring.erp_ordit.dto.chatbot;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +11,8 @@ import lombok.ToString;
 @NoArgsConstructor		// 디폴트 생성자
 @ToString				// toString
 @Builder
-public class EmailDTO {
-	
-	private String to;
-	private String subject;
-	private String body;
-	private String attachment;
-
+public class GptRequest {
+	private String text;
+ // getter/setter
 }
+

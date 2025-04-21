@@ -1,0 +1,8 @@
+{
+  "fetch": {
+    "mytest": {
+      "protocol": "http://",
+      "url": "localhost:5000"
+    }
+  }
+}

@@ -22,6 +22,7 @@ export default function Index() {
 	const nav = useNavigate();
 
 	useEffect(() => { // 세션이 없으면, 로그인 페이지로
+		console.log("로그인");
 		if (localStorage.length < 1) {
 			nav("/login", { replace: true });
 		}

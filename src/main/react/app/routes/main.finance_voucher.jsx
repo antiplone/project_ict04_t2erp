@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from "@remix-run/react";
 import { Container, Message } from "rsuite";
 
-import RefTable from "#components/finance/RefTable"
+import VoucherTable from "#components/finance/VoucherTable"
 
 import AppConfig from "#config/AppConfig.json"
 
@@ -21,7 +21,7 @@ export const links = () => [
 ];
 
 
-// @Remix:url(/main/finance_main) - 회계 메인
+// @Remix:url(/main/finance_main) - 회계 전표관리
 export default function FinanceVoucher() {
 
 	let location = useLocation();
@@ -29,11 +29,11 @@ export default function FinanceVoucher() {
 
 	return (
 		<Container>
-			<Message type="info" className="main_title">
+			<Message type="success" className="main_title">
 				회계-전표관리
 			</Message>
 			{/*<Outlet />*/}
-			<RefTable />
+			<VoucherTable />
 		</Container>
 	);
 }

@@ -30,7 +30,7 @@ const SideMenu = () => {
 			>
 				<Sidenav.Body>
 					<Nav defaultActiveKey="1">
-						<Nav.Item eventKey="1">
+{/*						<Nav.Item eventKey="1">
 							<Text>대시보드</Text>
 						</Nav.Item>
 						<Nav.Item
@@ -62,7 +62,7 @@ const SideMenu = () => {
 							<Nav.Item eventKey="4-4">Tags</Nav.Item>
 							<Nav.Item eventKey="4-5">Versions</Nav.Item>
 						</Nav.Menu>
-					</Nav>
+*/}					</Nav>
 				</Sidenav.Body>
 			</Sidenav>
 			<NavToggle expand={expand} onChange={() => setExpand(!expand)} />

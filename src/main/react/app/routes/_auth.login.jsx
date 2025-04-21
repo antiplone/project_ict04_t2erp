@@ -112,43 +112,46 @@ export default function Login() {
 
 	return (
 		<Stack
+			direction="row"
 			alignItems="center"
 			justifyContent="center"
-			style={{ height: "100%" }}
+			style={{ height: window.innerHeight * 0.75 }}
 		>
-			<Panel header="사원정보를 입력해주세요" bordered style={{ width: 400 }}>
-				<Form fluid
-					onSubmit={(formValue) => submit(formValue, { method: "POST" })}
-					model={model}
-				>
-					<Form.Group>
-						<Form.ControlLabel>사번</Form.ControlLabel>
-						<Form.Control name="eID" />
-					</Form.Group>
-					<Form.Group>
-						<Form.ControlLabel>비밀번호</Form.ControlLabel>
-						<Form.Control
-							name="password"
-							autoComplete="off"
-							type="password"
-						//accepter={Password}
-						/>
-					</Form.Group>
+			<Stack.Item alignSelf="center">
+				<Panel header="사원정보를 입력해주세요" bordered style={{ width: 400 }}>
+					<Form fluid
+						onSubmit={(formValue) => submit(formValue, { method: "POST" })}
+						model={model}
+					>
+						<Form.Group>
+							<Form.ControlLabel>사번</Form.ControlLabel>
+							<Form.Control name="eID" />
+						</Form.Group>
+						<Form.Group>
+							<Form.ControlLabel>비밀번호</Form.ControlLabel>
+							<Form.Control
+								name="password"
+								autoComplete="off"
+								type="password"
+							//accepter={Password}
+							/>
+						</Form.Group>
+	
+						<VStack spacing={10}>
+							<Button type='submit' appearance="primary" loading={isLoading} block>
+								로그인
+							</Button>
+							<a href="#">비밀번호를 잊으셨나요?</a>
+						</VStack>
+					</Form>
 
-					<VStack spacing={10}>
-						<Button type='submit' appearance="primary" loading={isLoading} block>
-							로그인
-						</Button>
-						<a href="#">비밀번호를 잊으셨나요?</a>
-					</VStack>
-				</Form>
-
-				{/*            <Divider>OR</Divider>
-
-            <Button block href="https://github.com/rsuite/rsuite">
-               Continue with Github
-            </Button>
-*/}         </Panel>
+{/*					<Divider>OR</Divider>
+	
+		            <Button block href="https://github.com/rsuite/rsuite">
+		               Continue with Github
+		            </Button>
+*/}         	</Panel>
+			</ Stack.Item>
 		</Stack>
 	);
 }

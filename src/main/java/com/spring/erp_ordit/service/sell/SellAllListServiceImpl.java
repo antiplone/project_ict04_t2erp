@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.erp_ordit.dao.sell.SellAllListMapper;
 import com.spring.erp_ordit.dto.sell.SellAllListDTO;
@@ -18,6 +19,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 	
 	// 판매 입력 - 등록
 	@Override
+	@Transactional
 	public int sellInsert(SellOrderDTO dto) {
 	System.out.println("서비스 - sellInsert");
 	System.out.println("서비스 - dto: " + dto);
@@ -59,6 +61,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 		
 	// 판매 조회, 판매 현황 - 판매 입력한 전체 리스트
 	@Override
+	@Transactional(readOnly=true)
 	public List<SellAllListDTO> sellAllList() {
 		System.out.println("서비스 - sellAllList");
 		
@@ -67,6 +70,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 	
 	// 판매 현황 - 검색 후 나오는 전체 리스트
 	@Override
+	@Transactional(readOnly=true)
 	public List<SellAllListDTO> sellStatusSearchList(SellAllListDTO dto) {
 		System.out.println("서비스 - sellStatusSearchList");
 		
@@ -76,6 +80,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 	
 	// 판매 조회 - 1건 상세 조회
 	@Override
+	@Transactional(readOnly=true)
 	public List<SellAllListDTO> detailAllList(int order_id) {
 		System.out.println("서비스 - detailAllList");
 		
@@ -87,6 +92,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 	
 	// 판매 조회 - 수정
 	@Override
+	@Transactional
 	public int updateAllList(int order_id, SellOrderDTO dto) {
 		System.out.println("서비스 - updateAllList");
 
@@ -101,7 +107,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 
 			int itemResult = 0;
 
-			// ✅ 1. 삭제 처리 먼저 (루프 밖에서)
+			//  1. 삭제 처리 먼저 (루프 밖에서)
 			if (dto.getDeletedItemIds() != null) {
 			    for (Integer deletedId : dto.getDeletedItemIds()) {
 			        System.out.println("삭제 대상 ID: " + deletedId);
@@ -109,7 +115,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 			    }
 			}
 
-			// ✅ 2. 추가/수정 루프
+			//  2. 추가/수정 루프
 			for (SellOrderItemDTO item : dto.getOrderItemList()) {
 				item.setOrder_id(order_id);
 				System.out.println("서비스 - item, order_id : " + item + order_id);
@@ -133,6 +139,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 	
 	// 판매 조회 - 삭제
 	@Override
+	@Transactional
 	public String deleteAllList(int order_id) {
 		System.out.println("서비스 - deleteAllList");
 		System.out.println("서비스 - order_id : " + order_id);

@@ -22,6 +22,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	
 	// 판매 물품 검색 - 물품 리스트
 	@Override
+	@Transactional(readOnly=true)
 	public List<SellSearchDTO> sellSearchList() {
 		System.out.println("서비스 - sellSearchList");
 		
@@ -30,6 +31,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	
 	// 판매 물품 검색 - 원하는 품목 선택 검색한 물품 리스트
 	@Override
+	@Transactional(readOnly=true)
 	public List<SellSearchDTO> sellSearchResultList(SellSearchDTO dto) {
 		System.out.println("서비스 - sellSearchResultList");
 		
@@ -38,6 +40,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	
 	// 판매 입력 - 품목명 리스트 모달(키워드로 검색)
 	@Override
+	@Transactional
 	public List<SellSearchDTO> sellSearchItemDetailList(String keyword) {
 		System.out.println("서비스 - sellSearchResultList");
 		
@@ -46,6 +49,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 
 	// 판매 - 품목명 리스트 모달
 	@Override
+	@Transactional(readOnly=true)
 	public List<SellSearchDTO> sellItemList() {
 		System.out.println("서비스 - sellItemList");
 		
@@ -54,6 +58,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	
 	// 판매 - 거래처 검색 모달(키워드로 검색)
 	@Override
+	@Transactional(readOnly=true)
 	public List<SellSearchClientDTO> sellSearchClientDetailList(String keyword) {
 		System.out.println("서비스 - sellSearchClientDetailList");
 
@@ -62,6 +67,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	
 	// 판매 - 거래처 검색 모달
 	@Override
+	@Transactional(readOnly=true)
 	public List<SellSearchClientDTO> sellClientList() {
 		System.out.println("서비스 - sellClientList");
 		
@@ -70,6 +76,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	
 	// 판매 - 담당자 검색 모달(키워드로 검색)
 	@Override
+	@Transactional(readOnly=true)
 	public List<SellSearchEmployeeDTO> sellSearchEmployeeDetailList(String keyword) {
 		System.out.println("서비스 - sellSearchEmployeeDetailList");
 		
@@ -78,6 +85,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	
 	// 판매 - 담당자 검색 모달
 	@Override
+	@Transactional(readOnly=true)
 	public List<SellSearchEmployeeDTO> sellEmployeeList() {
 		System.out.println("서비스 - sellEmployeeList");
 		
@@ -86,6 +94,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	
 	// 판매 - 창고 검색 모달(키워드로 검색)
 	@Override
+	@Transactional(readOnly=true)
 	public List<SellSearchStorageDTO> sellWarehouseDetailList(String keyword) {
 		System.out.println("서비스 - sellWarehouseDetailList");
 		
@@ -94,6 +103,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	
 	// 판매 - 창고 검색 모달
 	@Override
+	@Transactional(readOnly=true)
 	public List<SellSearchStorageDTO> sellWarehouseList() {
 		System.out.println("서비스 - sellWarehouseList");
 		

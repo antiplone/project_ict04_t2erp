@@ -1,5 +1,6 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { Outlet, useLocation } from "@remix-run/react";
+import React, { useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "@remix-run/react";
 import { Container, Content } from "rsuite";
 
 import AppConfig from "#config/AppConfig.json"
@@ -25,6 +26,8 @@ export async function clientLoader({ request/* or params */ }) {
 	const pageName = urls[urls.length - 1]; // 현재 페이지명
 	console.log("현재 페이지는", pageName);
 
+	//	console.log(localStorage.getItem("e_auth_id"));
+
 	/*	const fetchURL = AppConfig.fetch['mytest'];
 		console.log(`${fetchURL.protocol}${fetchURL.url}/api/`);
 		fetch(`${fetchURL.protocol}${fetchURL.url}/auth/get`, { method: "GET" }) // fetcher
@@ -35,19 +38,25 @@ export async function clientLoader({ request/* or params */ }) {
 	*/
 	return null;
 };
+clientLoader.hydrate = true;
 
 // @Remix:url(/main) - 메인화면을 구성하는 페이지
 export default function Main() {
 
 	const location = useLocation();      // 현재 브라우저 주소창(URL)의 위치 정보를 locatcion 객체에 담는다.
-   const pathname = location.pathname;   // 현재 URL 경로를 문자열로 가져와(=location.pathname) pathname 객체에 가져온 값을 저장한다.
+	const nav = useNavigate();
+	const pathname = location.pathname;   // 현재 URL 경로를 문자열로 가져와(=location.pathname) pathname 객체에 가져온 값을 저장한다.
 
-	// 경로가 /main/att 또는 그 하위 경로면 AttSideMenu 사용
-	const isAttPage = pathname.startsWith("/main/hr");
+	useEffect(() => {
+		if (localStorage.length < 1) // 세션이 없으면, 로그인으로
+			nav("/", { replace: true });
+		else console.log(localStorage.getItem("e_auth_id")); // 세션정보출력
+	}, []);
 
 	return (
 		<Container>
-			{isAttPage ? <SideMenu_hr /> : <SideMenu />}
+
+			<SideMenu />
 
 			<Container>
 				<HeaderMenu />

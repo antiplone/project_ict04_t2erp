@@ -27,7 +27,10 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
       
     // 내 근태 현황
     fetch(`${attURL}/myAttList/${e_id}`)
-    .then((res) => res.json())
+    .then((res) => {
+      if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
+      return res.json();
+    })
     .then((data) => {
       setMyData(data);
     })
@@ -63,7 +66,7 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
   return (
     <>
       <Tabs defaultActiveKey="1">
-        <Tabs.Tab eventKey="1" title="전체">
+        <Tabs.Tab eventKey="1" title="전체 출퇴근 조회">
           <Table autoHeight data={record} cellBordered width={910}>
             {attColumns.map((col) => (
               <Column key={col.dataKey} width={col.width} align="center">
@@ -86,7 +89,7 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
           </Table>
         </Tabs.Tab>
 
-        <Tabs.Tab eventKey="2" title="내 출퇴근 내역">
+        <Tabs.Tab eventKey="2" title="내 출퇴근 조회">
           <Table autoHeight data={myData} cellBordered width={840}>
             {myAttColumns.map((col) => (
               <Column key={col.dataKey} width={col.width} align="center">

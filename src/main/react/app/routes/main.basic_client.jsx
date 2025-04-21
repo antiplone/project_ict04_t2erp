@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { HrTable } from '#components/hr/HrTable';  // 테이블 컴포넌트
 import HrButton from '#components/hr/HrButton'; // 버튼 컴포넌트
 import HrModal from '#components/hr/HrModal'; // 모달 컴포넌트
-import { Input, Grid, Col } from 'rsuite'; // UI 컴포넌트
+import { Input, Grid, Col, Message } from 'rsuite'; // UI 컴포넌트
 import { useNavigate } from 'react-router-dom'; // react-router-dom에서 useNavigate 가져오기
+import MessageBox from '#components/common/MessageBox';
 
 export default function Basic_client() {
   const [open, setOpen] = useState(false);
@@ -35,9 +36,8 @@ export default function Basic_client() {
   ];
 
   return (
-    <div style={{ padding: '30px', borderRadius: '10px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
-      <h4>기초 등록</h4>
-      <h5>거래처 등록</h5>
+    <div style={{ padding: '30px', borderRadius: '10px' }}>
+      <MessageBox type="info" text="기초 등록 - 거래처 등록" />
 
       {/* 거래처 목록 테이블 렌더링 */}
       <HrTable

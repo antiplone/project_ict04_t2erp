@@ -19,17 +19,22 @@ select * from sell_searchItemList_view;
 
 ===========================
 -- 판매 조회 (sell_all_list.jsx)
+drop view sell_allList_view;  
 
 create view sell_allList_view as
 select 
    ot.order_id as order_id, -- 주문 번호
+   oi.order_item_id as order_item_id, -- 아이템 테이블 주문번호
    ot.order_type as order_type, -- 판매 1 / 구매 2
+   ot.e_id as e_id,   -- 담당자 사번
+   et.e_name as e_name, -- 담당자명
    ot.order_date as order_date, -- 등록일자
    ot.shipment_order_date as shipment_order_date, -- 출하지시일
    ot.client_code as client_code, -- 거래처코드 fk
    cl.client_name as client_name, -- 거래처명
    oi.item_code as item_code, -- 물품코드
    it.item_name as item_name, -- 물품명
+   it.item_standard as item_standard, -- 물품 규격
    oi.quantity as quantity, -- 수량
    oi.price as price,    -- 단가
    oi.supply as supply,    -- 공급가액
@@ -37,7 +42,10 @@ select
    oi.vat as vat,   -- 부가세
    ot.transaction_type as transaction_type, -- 거래유형
    ot.storage_code as storage_code, -- 창고코드
-   wt.storage_name as storage_name -- 창고명
+   wt.storage_name as storage_name, -- 창고명
+   oi.income_confirm as income_confirm, -- 출하여부
+   os.order_status as order_status, -- 결재 상태
+   ot.order_show as order_show -- 보여짐 유무 (삭제는 N)
 from
    order_tbl as ot 
 inner join
@@ -48,10 +56,15 @@ inner join
    item_tbl as it ON it.item_code = oi.item_code
 inner join
    client_tbl as cl ON cl.client_code = ot.client_code
+inner join
+   employee_tbl as et ON et.e_id = ot.e_id
+inner join (
+    select distinct order_id, order_status
+    from order_status_tbl
+   ) os on os.order_id = ot.order_id
 WHERE ot.order_type=1
+AND order_show='Y'
 ORDER BY ot.order_id DESC;
-
-SELECT * FROM sell_allList_view;
 
 ============================
 

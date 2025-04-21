@@ -22,3 +22,14 @@ create table employee_tbl(
    on update cascade   -- 참조되는 테이블이 컬럼값이 변경되면 똑같이 값이 변경되도록 설정
 );
 select * from employee_tbl;   -- 테이블 확인
+
+
+-- [인사카드]
+CREATE VIEW empCard_view AS
+SELECT 
+  e.*, 
+  d.d_name 
+FROM employee_tbl e
+LEFT JOIN department_tbl d ON e.d_code = d.d_code;
+
+select * from empCard_view;

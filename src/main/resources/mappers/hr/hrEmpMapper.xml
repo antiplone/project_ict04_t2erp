@@ -8,8 +8,8 @@
 
 <!-- 인사카드 목록 조회 -->
 <select id="hrEmpCardList" resultType="com.spring.erp_ordit.dto.hr.HrEmpCardDTO">
-	SELECT * FROM employee_tbl
-	ORDER BY e_id
+	SELECT *
+  	  FROM empCard_view
 </select>
 
 <!-- 인사카드 등록 -->
@@ -27,7 +27,8 @@
     e_salary_account_bank,
     e_salary_account_num,
     e_salary_account_owner,
-    e_note
+    e_note,
+    d_code
   )
   VALUES (
     #{e_name},
@@ -42,13 +43,14 @@
     #{e_salary_account_bank},
     #{e_salary_account_num},
     #{e_salary_account_owner},
-    #{e_note}
+    #{e_note},
+    #{d_code}
   )
 </insert>
 
 <!-- 인사카드 상세보기 -->
 <select id="hrEmpCardDetail" resultType="com.spring.erp_ordit.dto.hr.HrEmpCardDTO">
-   SELECT * FROM employee_tbl
+   SELECT * FROM empCard_view
     WHERE e_id=#{e_id} 
 </select>
 

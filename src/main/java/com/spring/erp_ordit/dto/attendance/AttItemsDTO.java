@@ -20,4 +20,5 @@ public class AttItemsDTO {
 	private String a_type;			// 근태유형
 	private String a_use;			// 근태 사용여부(Y/N)
 	private String a_note;		// 비고
+	private int v_code;			// 휴가코드
 }

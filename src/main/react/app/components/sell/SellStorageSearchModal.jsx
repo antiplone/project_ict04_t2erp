@@ -79,7 +79,14 @@ const SellStorageSearchModal = ({ title, confirm, cancel, onStorageSelect, handl
 	}, [handleOpen]);
 
 	return (
-		<Modal open={handleOpen} onClose={handleClose} size="xs">
+		<Modal open={handleOpen} onClose={handleClose}
+			style={{
+				width: 400,
+				margin: 'auto',
+				position: 'fixed',
+				left: '40%'
+			}}
+			>
 			<Modal.Header>
 				<Modal.Title>{title}</Modal.Title>
 			</Modal.Header>

@@ -46,8 +46,8 @@ export default function Basic_client() {
         onEditClick={(rowData) => {
           console.log("수정:", rowData);
         }}
-        onDeleteClick={(client_code) => {
-          console.log("삭제:", client_code);
+        onDeleteClick={(rowData) => {
+          console.log("삭제:", rowData.client_code);
         }}
       />
 

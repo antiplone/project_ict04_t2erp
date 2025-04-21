@@ -1,5 +1,7 @@
 package com.spring.erp_ordit.dto.attendance;
 
+import java.sql.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +19,8 @@ public class VacaItemsDTO {
 	private int v_code;			// 휴가코드, PK
 	private int v_list_no;		// 휴가 게시글번호(자동증가)
 	private String v_name;		// 휴가명, UK
-	private String v_period;			// 휴가 사용기간
+	private Date v_start;			// 휴가기간 시작일
+	private Date v_end;			// 휴가기간 마지막일
 	private String v_use;			// 휴가 사용여부(Y/N)
 	private String v_note;		// 비고
 }

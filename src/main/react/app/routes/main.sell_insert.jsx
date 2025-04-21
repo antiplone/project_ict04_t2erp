@@ -210,20 +210,20 @@ const Sellinsert = () => {
 			if(res.status === 201) return res.json();   // 정상(201)이면 ture 리턴
 			else return null;
 		})
-		.then((res) => {
-			console.log('정상', res);
-
-			// 등록 성공 시 페이지 새로고침
-			if(res != 0) { 
-				window.location.reload();
+		.then((result) => {
+			console.log('등록 결과:', result);
+		
+			if (typeof result === 'number' && result > 0) {
 				alert("등록이 완료되었습니다.");
+				window.location.reload();
+			} else {
+				alert("등록에 실패했습니다.");
 			}
-			else alert("등록에 실패했습니다.");
 		})
-		// 예외처리
 		.catch(error => {
 			console.log('실패', error);
-		})
+			alert("서버 오류가 발생했습니다.");
+		});
 	}
 
 	// 리셋을 위해 공통인 부분 묶기

@@ -1,0 +1,233 @@
+# workspace_ict04_t2erp
+
+# E-mail 전송
+
+1. DTO 생성
+	import lombok.AllArgsConstructor;
+	import lombok.Builder;
+	import lombok.Data;
+	import lombok.NoArgsConstructor;
+	import lombok.ToString;
+
+	@Data					// @Getters + @Setters 
+	@AllArgsConstructor	// 매개변수 생성자 
+	@NoArgsConstructor	// 디폴트 생성자
+	@ToString				// toString
+	@Builder
+	public class EmailDTO {
+		private String to;
+		private String subject;
+		private String body;
+		private String attachment; // 파일 전송을 하지 않을거면 필요없음
+		
+	}
+	
+2. SERVICE 생성
+	import com.spring.erp_ordit.dto.email.EmailDTO;
+	
+	public interface EmailService {
+	    void sendEmail(EmailDTO emailRequest);
+	}
+	
+3. ServiceImpl 생성
+	import com.spring.erp_ordit.dto.email.EmailDTO;
+	
+	import org.springframework.beans.factory.annotation.Autowired;
+	import org.springframework.mail.javamail.JavaMailSender;
+	import org.springframework.mail.javamail.MimeMessageHelper;
+	import org.springframework.mail.javamail.MimeMessagePreparator;
+	import org.springframework.stereotype.Service;
+	
+	@Service
+	public class EmailServiceImpl implements EmailService {
+	
+	    @Autowired
+	    private JavaMailSender javaMailSender;
+	
+	    @Override
+	    public void sendEmail(EmailDTO emailDTO) {  // 변경된 DTO 사용
+	        MimeMessagePreparator messagePreparator = mimeMessage -> {
+	            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+	            // 파일 첨부 기능을 넣으려면 true로 하면 된다ㅁ
+	            messageHelper.setTo(emailDTO.getTo());
+	            messageHelper.setSubject(emailDTO.getSubject());
+	            messageHelper.setText(emailDTO.getBody(), true);
+	            messageHelper.setFrom("your-email@example.com");
+	        };
+	        javaMailSender.send(messagePreparator);
+	    }
+	}
+	
+4. Controller 생성
+
+	import javax.mail.internet.MimeMessage;
+	import org.springframework.beans.factory.annotation.Autowired;
+	import org.springframework.http.ResponseEntity;
+	import org.springframework.mail.javamail.JavaMailSender;
+	import org.springframework.mail.javamail.MimeMessageHelper;
+	import org.springframework.web.bind.annotation.CrossOrigin;
+	import org.springframework.web.bind.annotation.PostMapping;
+	import org.springframework.web.bind.annotation.RequestMapping;
+	import org.springframework.web.bind.annotation.RequestParam;
+	import org.springframework.web.bind.annotation.RestController;
+	import org.springframework.web.multipart.MultipartFile;
+	
+	//EmailController.java by M.D
+	@RestController
+	@RequestMapping("/email")
+	@CrossOrigin(origins = "*") // React 개발 서버 주소
+	public class EmailController {
+	
+    @Autowired
+    private JavaMailSender mailSender;
+    
+    private static final String EMAIL_SUCCESS_MESSAGE = "이메일 발송 성공!";
+    private static final String EMAIL_FAILURE_MESSAGE = "이메일 발송 실패!!";
+    
+    @PostMapping("/send")
+    public ResponseEntity<String> sendEmail(
+    		@RequestParam("to") String to,
+    		@RequestParam("subject") String subject,
+    		@RequestParam("text") String text,
+    		@RequestParam(value = "files", required = false) MultipartFile[] files
+            // 파일을 2개 이상 첨부하기 위해서는 file 대신 files를 추가해야 한다.
+    	) {
+    		try {
+    			MimeMessage message = mailSender.createMimeMessage();
+    			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+    			helper.setTo(to);
+    			helper.setSubject(subject);
+    			helper.setText(text, false);
+
+    			if (files != null) {
+    				for (MultipartFile file : files) {
+    					if (!file.isEmpty()) {
+    						helper.addAttachment(file.getOriginalFilename(), file);
+    					}
+    				}
+    			}
+
+    			mailSender.send(message);
+    			return ResponseEntity.ok("이메일 발송 성공!");
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    			return ResponseEntity.status(500)
+    					.body("이메일 발송 실패!! 오류: " + e.getMessage());
+    		}
+    	}
+	}
+	
+5. React
+
+** axios 꼭 설치해야된다~!!!! 
+-- npm install axios
+
+	import React, { useState } from "react";
+	import { Button, Modal } from "rsuite";
+	import AppConfig from "#config/AppConfig.json";
+	import axios from "axios";
+	
+	const EmailFormModal = ({ open, onClose }) => {
+	const rawFetchURL = AppConfig.fetch["mytest"];
+	const fetchURL =
+		typeof rawFetchURL === "string"
+			? rawFetchURL
+			: `${rawFetchURL.protocol}${rawFetchURL.url}`;
+
+	const [to, setTo] = useState("");
+	const [subject, setSubject] = useState("");
+	const [text, setText] = useState("");
+	const [file, setFile] = useState(null);
+	const [message, setMessage] = useState("");
+	const [loading, setLoading] = useState(false);
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setLoading(true);
+		setMessage("");
+
+		const formData = new FormData();
+		formData.append("to", to);
+		formData.append("subject", subject);
+		formData.append("text", text);
+		if (file) formData.append("files", file);
+
+		try {
+			await axios.post(`${fetchURL}/email/send`, formData, {
+				headers: {
+					"Content-Type": "multipart/form-data"
+				}
+			});
+			alert("이메일이 전송되었습니다!");
+			handleClose();
+		} catch (error) {
+			setMessage("메일 발송 오류: " + (error.response?.data?.message || error.message));
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleClose = () => {
+		setTo("");
+		setSubject("");
+		setText("");
+		setFile(null);
+		setMessage("");
+		onClose?.();
+	};
+
+	return (
+		<Modal open={open} onClose={handleClose} size="xs">
+			<Modal.Header>
+				<Modal.Title>이메일 발송</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				<form onSubmit={handleSubmit}>
+					<div style={{ marginBottom: 10 }}>
+						<label>수신:</label>
+						<input
+							type="email"
+							value={to}
+							onChange={(e) => setTo(e.target.value)}
+							required
+							style={{ width: "100%" }}
+						/>
+					</div>
+					<div style={{ marginBottom: 10 }}>
+						<label>제목:</label>
+						<input
+							type="text"
+							value={subject}
+							onChange={(e) => setSubject(e.target.value)}
+							required
+							style={{ width: "100%" }}
+						/>
+					</div>
+					<div style={{ marginBottom: 10 }}>
+						<label>본문:</label>
+						<textarea
+							value={text}
+							onChange={(e) => setText(e.target.value)}
+							required
+							style={{ width: "100%" }}
+						/>
+					</div>
+					<div style={{ marginBottom: 10 }}>
+						<label>첨부파일:</label>
+						<input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
+					</div>
+					<Button type="submit" appearance="primary" loading={loading} style={{ marginRight: 8 }}>
+						메일 보내기
+					</Button>
+					<Button onClick={handleClose} appearance="subtle">
+						취소
+					</Button>
+				</form>
+				{message && <p style={{ marginTop: 10, color: "red" }}>{message}</p>}
+			</Modal.Body>
+		</Modal>
+		);
+	};
+	
+	export default EmailFormModal;

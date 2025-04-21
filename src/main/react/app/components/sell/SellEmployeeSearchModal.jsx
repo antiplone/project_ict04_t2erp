@@ -79,7 +79,14 @@ const SellEmployeeSearchModal = ({ title, confirm, cancel, onInchargeSelect, han
 		}, [handleOpen]);
 
 	return (
-		<Modal open={handleOpen} onClose={handleClose} size="xs">
+		<Modal open={handleOpen} onClose={handleClose}
+			style={{
+				width: 550,
+				margin: 'auto',
+				position: 'fixed',
+				left: '40%'
+			}}
+			>
 			
 			<Modal.Header>
 				<Modal.Title>{title}</Modal.Title>

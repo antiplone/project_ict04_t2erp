@@ -28,37 +28,41 @@ export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActi
 
       <Column width={250} align="center">
         <HeaderCell>작업</HeaderCell>
-        <Cell style={{ display: 'flex', alignContent: 'center' }}>
-          {(rowData) =>
-            renderActionButtons ? (
-              renderActionButtons(rowData)
-            ) : (
-              <>
-                <Button
-                  color="blue"
-                  appearance="ghost"
-                  size="xs"
-                  style={{ marginRight: '5px' }}
-                  onClick={() => onEditClick(rowData)}
-                >
-                  수정
-                </Button>
-                <Button
-                  color="red"
-                  appearance="ghost"
-                  size="xs"
-                  onClick={() => onDeleteClick(rowData.client_code || rowData.item_code)}
-                >
-                  삭제
-                </Button>
-              </>
-            )
-          }
+        <Cell>
+          {(rowData) => (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '5px' }}>
+              <Button
+                type="button"
+                color="blue"
+                appearance="ghost"
+                size="xs"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onEditClick(rowData);
+                }}
+              >
+                수정
+              </Button>
+              <Button
+                type="button"
+                color="red"
+                appearance="ghost"
+                size="xs"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onDeleteClick(rowData);
+                }}
+              >
+                삭제
+              </Button>
+            </div>
+          )}
         </Cell>
       </Column>
     </Table>
   );
 };
+
 
 export const HrAppointTable = ({ items, selectedIds, onSelectChange, columns }) => {
   const handleRowCheck = (e_id) => {
@@ -146,3 +150,44 @@ export const HrReadOnlyTable = ({ items, columns }) => {
     </Table>
   );
 };
+
+export const EmployeeSelectTable = ({ data, selectedId, onSelect }) => {
+  return (
+    <Table autoHeight data={data} bordered cellBordered>
+      <Column width={80} align="center">
+        <HeaderCell>선택</HeaderCell>
+        <Cell>
+          {rowData => (
+            <Checkbox
+              checked={selectedId === rowData.e_id}
+              onChange={() => onSelect(rowData.e_id)}
+            />
+          )}
+        </Cell>
+      </Column>
+
+      <Column width={120} align="center">
+        <HeaderCell>사번</HeaderCell>
+        <Cell dataKey="e_id" />
+      </Column>
+
+      <Column width={120} align="center">
+        <HeaderCell>이름</HeaderCell>
+        <Cell dataKey="e_name" />
+      </Column>
+
+      <Column width={120} align="center">
+        <HeaderCell>직위</HeaderCell>
+        <Cell dataKey="e_status" />
+      </Column>
+
+      <Column width={150} align="center">
+        <HeaderCell>부서</HeaderCell>
+        <Cell dataKey="d_name" />
+      </Column>
+    </Table>
+  );
+};
+
+
+

@@ -24,7 +24,7 @@ public interface SellAllListMapper {
 		
 	// 판매 조회, 판매 현황 - 판매 입력한 전체 리스트
 	public List<SellAllListDTO> sellAllList();
-	
+
 	// 판매 현황 - 검색 후 나오는 전체 리스트
 	public List<SellAllListDTO> sellStatusSearchList(SellAllListDTO dto);
 	
@@ -36,6 +36,9 @@ public interface SellAllListMapper {
 	
 	// 판매 조회 - 입력건 수정_물품정보
 	public int updateAllList_item(SellOrderItemDTO itemDto);
+	
+	// 판매 조회 - 입력 건 수정_물품 삭제
+	public int deleteOrderItem(int order_item_id);
 	
 	// 판매 조회 - 삭제
 	public int deleteAllList(int order_id);

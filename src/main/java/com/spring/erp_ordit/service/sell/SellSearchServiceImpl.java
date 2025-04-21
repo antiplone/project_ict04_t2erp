@@ -99,5 +99,4 @@ public class SellSearchServiceImpl implements SellSearchService {
 		
 		return SearchMapper.sellWarehouseList();
 	}
-
 }

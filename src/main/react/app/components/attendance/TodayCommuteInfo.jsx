@@ -5,14 +5,15 @@ import { Button } from "rsuite";
 
 export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
   // onRefresh : 새로고침용 콜백함수
-  console.log("🔥 현재 e_id:", e_id, ", e_name:", e_name);
+  // console.log("🔥 현재 e_id:", e_id, ", e_name:", e_name);
 
   // 상태 관리
   const [record, setRecord] = useState(null);     // 출퇴근 데이터 객체
   const [loading, setLoading] = useState(true);   // 데이터 로딩 여부
+  const [eName, setEName] = useState("");   // 사원명
 
   const fetchTodayRecord = () => {
-    fetch(`${attURL}/todayRecord?e_id=${e_id}`)
+    fetch(`${attURL}/todayRecord/${e_id}`)
       .then(res => res.json())
       .then(data => {
         setRecord(data);    // recode 상태에 저장
@@ -35,9 +36,17 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
   }, [e_id]);
 
   // 추가
+  // useEffect(() => {
+  //   console.log("🧪 출퇴근 기록 상태:", record);
+  // }, [record]);
+
+  // 처음에 저장된 이름 불러오기
   useEffect(() => {
-    console.log("🧪 출퇴근 기록 상태:", record);
-  }, [record]);
+    const storedName = localStorage.getItem("e_name");
+    if (storedName) {
+      setEName(storedName);
+    }
+  }, []);
 
   // 출근 버튼을 누르면 처리되는 함수
   const startWork = async () => {
@@ -78,9 +87,10 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
   return (
     <div style={{ marginTop: 20 }}>
       <h6>오늘의 출퇴근 정보</h6>
-      <div>사원명: {record?.e_name || "-"}</div>
+      {/* <div>사원명: {eName}</div> */}
       <div>출근시간: {record?.co_start_time || "-"}</div>
       <div>퇴근시간: {record?.co_end_time || "-"}</div>
+      <div>상태: {record?.co_status || "-"}</div>
 
       {/* fetchTodayRecord()로 오늘 기록을 받아오기 전까지는 버튼이 렌더링x */}
       {/* {!loading && ( */}

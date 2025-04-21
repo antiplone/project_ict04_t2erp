@@ -20,7 +20,24 @@
 		FROM commute_tbl c
 		JOIN employee_tbl e ON c.e_id = e.e_id
 		ORDER BY c.co_work_date DESC, co_start_time DESC, e.e_name ASC
-		
+	</select>
+	
+	<!-- 내 출퇴근 리스트 -->
+	<select id="selectMyAttList" resultType="com.spring.erp_ordit.dto.attendance.CommuteDTO" parameterType="int">
+		SELECT 
+			c.co_list_no,
+			c.co_work_date,
+			c.co_start_time,
+			c.co_end_time,
+			c.co_total_work_time,
+			c.co_status,
+			c.co_status_note,
+			e.e_id,
+			e.e_name
+		FROM commute_tbl c
+		JOIN employee_tbl e ON c.e_id = e.e_id
+		WHERE c.e_id = #{e_id}
+		ORDER BY c.co_work_date DESC, co_start_time DESC
 	</select>
 	
 	<!-- 오늘자 출퇴근 1건만 조회 -->

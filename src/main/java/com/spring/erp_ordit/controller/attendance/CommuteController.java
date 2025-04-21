@@ -1,6 +1,9 @@
 package com.spring.erp_ordit.controller.attendance;
 
 import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.erp_ordit.dto.attendance.CommuteDTO;
@@ -34,9 +36,27 @@ public class CommuteController {			// 근태관리-출퇴근 관리
 	@GetMapping("/attList")
 	public ResponseEntity<List<CommuteDTO>> attList() {
 		log.info("▶ CommuteController - 출퇴근 리스트");
-
 		return new ResponseEntity<>(service.attendanceList(), HttpStatus.OK);		// 200 리턴(select)
 	}
+	// 내 근태 리스트 ⇒ http://localhost:8081/attendance/myAttList
+//	@GetMapping("/myAttList")
+//	public ResponseEntity<List<CommuteDTO>> myAttList() {
+//		log.info("▶ CommuteController - 내 출퇴근 리스트");
+//		return new ResponseEntity<>(service.myAttendanceList(), HttpStatus.OK);		// 200 리턴(select)
+//	}
+	@GetMapping("/myAttList/{e_id}")
+	public List<CommuteDTO> myAttList(HttpSession session) {
+		log.info("▶ CommuteController - 내 출퇴근 리스트");
+	    Object idObj = session.getAttribute("e_id");
+
+	    if (idObj == null) {
+	        throw new IllegalStateException("로그인이 필요한 서비스입니다.");
+	    }
+
+	    int e_id = (Integer) idObj;
+	    return service.myAttendanceList(e_id);
+	}
+
 
 	// 출근 시간 저장 처리 ⇒ http://localhost:8081/attendance/startTime
 	@PostMapping("/startTime")

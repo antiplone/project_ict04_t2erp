@@ -24,6 +24,9 @@ const HeaderMenu = () => {
 
 	const navigate = useNavigate();
 
+	// ✅ 로그인 시 저장해둔 사용자 직급 가져오기
+	const position = localStorage.getItem("e_position");  // 예: '관리자' 또는 '사원'
+
 	const chatState = {
 		show: useState(false),  /* state, setter */
 		placement: useState('')  /* state, setter */
@@ -99,11 +102,17 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("basic_client") }}>거래처등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_item") }}>상품등록</Nav.Item>
 					</Nav.Menu>
+					{position === "관리" ? (
 					<Nav.Menu title="근태관리">
-						<Nav.Item onSelect={() => { navigate("att-regAttItems") }}>근태항목등록</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("att-regVacaItems") }}>휴가항목등록</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("att-management") }}>근태관리</Nav.Item>
+						<Nav.Item onSelect={() => navigate("att-regVacaItems")}>휴가항목등록</Nav.Item>
+						<Nav.Item onSelect={() => navigate("att-regAttItems")}>근태항목등록</Nav.Item>
+						<Nav.Item onSelect={() => navigate("att-management")}>근태관리</Nav.Item>
 					</Nav.Menu>
+					) : (
+					<Nav.Menu title="근태관리">
+						<Nav.Item onSelect={() => navigate("att-management")}>근태관리</Nav.Item>
+					</Nav.Menu>
+					)}
 					<Nav.Menu title="구매관리">
 						<Nav.Item onSelect={() => { navigate("buy-select") }}>구매조회</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("buy-insert") }}>구매입력</Nav.Item>

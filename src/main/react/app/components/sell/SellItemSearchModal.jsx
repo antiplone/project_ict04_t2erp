@@ -79,7 +79,14 @@ const SellItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen,
 	}, [handleOpen]);
 
 	return (
-		<Modal open={handleOpen} onClose={handleClose} size="xs">
+		<Modal open={handleOpen} onClose={handleClose}
+			style={{
+				width: 700,
+				margin: 'auto',
+				position: 'fixed',
+				left: '40%'
+			}}
+			>
 
 			<Modal.Header>
 				<Modal.Title>{title}</Modal.Title>
@@ -117,7 +124,7 @@ const SellItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen,
 				data={itemList}
 			>
 
-				<Column width={100} align="center" fixed>
+				<Column width={50} align="center" fixed>
 					<HeaderCell>선택</HeaderCell>
 					
 					<Cell>{(rowData) => (
@@ -136,7 +143,7 @@ const SellItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen,
 					<Cell>{(rowData) => rowData.item_code}</Cell>
 				</Column>
 
-				<Column width={250}>
+				<Column width={200}>
 					<HeaderCell>물품명</HeaderCell>
 					<Cell>{(rowData) => rowData.item_name}</Cell>
 				</Column>

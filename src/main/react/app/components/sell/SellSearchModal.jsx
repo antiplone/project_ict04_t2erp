@@ -84,11 +84,12 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleClose, onSe
 	}, [handleOpen]);
 
 	return (
-		<Modal open={handleOpen} onClose={handleClose} style={{width: 700}}>
+		<Modal open={handleOpen} onClose={handleClose} >
 			<Modal.Header>
 				<Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
-			<Modal.Body>
+			{/* overflowX: 'hidden' => 가로 스크롤 없애기 (넘치는 영역 제거) */}
+			<Modal.Body style={{ overflowX: 'hidden' }}>
 			<Form className="addForm" layout="inline">
 
 				<div className="form_div">

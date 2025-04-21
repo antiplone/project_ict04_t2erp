@@ -11,6 +11,52 @@ export default function BuySelectTabPaing() {
 
     const [buyOrderPayingList, setBuyOrderPayingList] = useState([]); // 초기값을 모르므로 빈배열로 buyList에 대입
 
+    const getNumberedList = (data) => {
+		let result = [];
+		let groupedByDate = {};
+	
+		// 날짜별로 그룹핑
+		data.forEach(item => {
+			if (!groupedByDate[item.order_date]) {
+				groupedByDate[item.order_date] = [];
+			}
+			groupedByDate[item.order_date].push(item);
+		});
+	
+		// 날짜별로 처리
+		Object.keys(groupedByDate).forEach(date => { 
+			// groupedByDate : 날짜별로 데이터를 묶어둔 객체
+			 // ex: { '2025-04-10': [item1, item2, ...], '2025-04-11': [item3, ...] }
+			let orders = groupedByDate[date];	// 해당 날짜(date)의 전체 주문 데이터 배열
+			let seenOrderIds = new Set();	// 중복된 주문(order_id)을 한 번만 처리하기 위해 사용
+			let count = 1;
+	
+			orders.forEach(item => {
+				if (seenOrderIds.has(item.order_id)) return;	 // 이미 처리한 주문번호(order_id)는 무시
+				seenOrderIds.add(item.order_id);
+	
+				// 같은 order_id의 품목 모으기
+				const sameOrderItems = orders.filter(x => x.order_id === item.order_id);
+													// 주문번호와 item 주문번호가 같은 걸 배열로 만들기
+				const firstItemName = sameOrderItems[0].item_name;
+				const displayName = sameOrderItems.length > 1
+					? `${firstItemName} 외 ${sameOrderItems.length - 1}건`
+					: firstItemName;
+	
+				// 한 줄만 push
+				result.push({
+					...item,
+					date_no: count,
+					item_display: displayName
+				});
+	
+				count++;
+			});
+		});
+
+		return result;
+	};
+
     const fetchURL = AppConfig.fetch["mytest"];
 
     // fecth()를 통해 톰캣서버에세 데이터를 요청
@@ -22,7 +68,8 @@ export default function BuySelectTabPaing() {
             )
             .then(res => {
                 console.log(1, res);
-                setBuyOrderPayingList(res || []); // 처음에는 비어있으므로 못가져온다. setBoardList(res);
+                const numbered = getNumberedList(res);
+                setBuyOrderPayingList(numbered);
             }
             )
             .catch(error => {
@@ -42,7 +89,15 @@ export default function BuySelectTabPaing() {
 
                 <Column width={120}>
                     <HeaderCell style={styles}>등록일자</HeaderCell>
-                    <Cell dataKey="order_date" />
+                    <Cell> 
+                        {(orderDate) => (
+                            <span
+                                onClick={() =>  buyOrderUnchkList(orderDate.order_id)}
+                            >
+                                {`${orderDate.order_date}_${orderDate.date_no}`}
+                            </span>    
+                        )}
+                    </Cell>
                 </Column>
 
                 <Column width={120}>
@@ -57,7 +112,7 @@ export default function BuySelectTabPaing() {
 
                 <Column width={250}>
                     <HeaderCell style={styles}>품목명</HeaderCell>
-                    <Cell dataKey="item_name" />
+                    <Cell dataKey="item_display" />
                 </Column>
 
                 <Column width={150}>

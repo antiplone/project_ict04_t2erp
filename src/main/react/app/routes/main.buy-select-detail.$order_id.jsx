@@ -110,13 +110,48 @@ export default function BuySelectDetail() {
         <Divider style={{ maxWidth: 1200 }} />
         <>
           <Table height={400} width={1200} data={orderItems} onRowClick={itemData => console.log(itemData)}>
-            <Column width={150}><HeaderCell style={styles}>물품코드</HeaderCell><Cell dataKey="item_code" /></Column>
-            <Column width={300}><HeaderCell style={styles}>물품명</HeaderCell><Cell dataKey="item_name" /></Column>
-            <Column width={150}><HeaderCell style={styles}>수량</HeaderCell><Cell dataKey="quantity" /></Column>
-            <Column width={150}><HeaderCell style={styles}>단가</HeaderCell><Cell dataKey="price" /></Column>
-            <Column width={150}><HeaderCell style={styles}>공급가액</HeaderCell><Cell dataKey="supply" /></Column>
-            <Column width={150}><HeaderCell style={styles}>부가세</HeaderCell><Cell dataKey="vat" /></Column>
-            <Column width={150}><HeaderCell style={styles}>총액</HeaderCell><Cell dataKey="total" /></Column>
+            <Column width={150}>
+              <HeaderCell style={styles}>물품코드</HeaderCell>
+              <Cell dataKey="item_code" />
+            </Column>
+
+            <Column width={300}>
+              <HeaderCell style={styles}>물품명</HeaderCell>
+              <Cell dataKey="item_name" />
+            </Column>
+
+            <Column width={150}>
+              <HeaderCell style={styles}>수량</HeaderCell>
+              <Cell dataKey="quantity" />
+            </Column>
+
+            <Column width={150}>
+              <HeaderCell style={styles}>단가</HeaderCell>
+              <Cell>
+                {priceData => new Intl.NumberFormat().format(priceData.price)}
+              </Cell>
+            </Column>
+
+            <Column width={150}>
+              <HeaderCell style={styles}>공급가액</HeaderCell>
+              <Cell>
+                {supplyData => new Intl.NumberFormat().format(supplyData.supply)}
+              </Cell>
+            </Column>
+
+            <Column width={150}>
+              <HeaderCell style={styles}>부가세</HeaderCell>
+              <Cell>
+                {vatData => new Intl.NumberFormat().format(vatData.vat)}
+              </Cell>
+            </Column>
+
+            <Column width={150}>
+              <HeaderCell style={styles}>총액</HeaderCell>
+              <Cell>
+                {totalData => new Intl.NumberFormat().format(totalData.total)}
+              </Cell>
+            </Column>
           </Table>
         </>
 

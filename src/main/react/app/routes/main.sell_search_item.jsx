@@ -110,6 +110,7 @@ const sell_search_item = () => {
 			</div>
 			
 			<SellSearchModal
+				style={{ width: 500, margin: 'auto' }}
 				handleOpen={isSearchModalOpen}
 				handleClose={() => setSearchModalOpen(false)}
 				onSearchResult={(resultList) => {

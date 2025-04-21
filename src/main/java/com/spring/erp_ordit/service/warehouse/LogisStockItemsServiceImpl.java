@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.erp_ordit.dao.warehouse.LogisMapper;
 import com.spring.erp_ordit.dto.warehouse.LogisOrderItemDTO;
+import com.spring.erp_ordit.dto.warehouse.LogisSalesItemDTO;
 import com.spring.erp_ordit.dto.warehouse.LogisStatusDTO;
 import com.spring.erp_ordit.dto.warehouse.LogisStockDTO;
 
@@ -49,6 +50,31 @@ public class LogisStockItemsServiceImpl {
 		            .build();
 	    int result2 = logisMapper.updateOrderStock(orderDTO);
 	    System.out.println("result2 => " + result2);
+		return result1 + result2;
+	}
+	
+	// 입고 확정(stock_table 수정) 
+	@Transactional  // 
+	public int updateSellStock(int stock_amount, int item_code, int storage_code, int order_id){ 
+		System.out.println("LogisStockItemsServiceImpl - updateStock");
+		
+		System.out.println("updateStock 성공");
+		// stock_tbl 업데이트
+		LogisStockDTO stockDTO = LogisStockDTO.builder()
+				.stock_amount(stock_amount)
+				.item_code(item_code)
+				.storage_code(storage_code)
+				.build();
+		int result1 = logisMapper.updateSellStock(stockDTO);
+		System.out.println("result1 => " + result1);
+		
+		// order_item_tbl 업데이트
+		LogisSalesItemDTO orderDTO = LogisSalesItemDTO.builder()
+				.item_code(item_code)
+				.order_id(order_id)
+				.build();
+		int result2 = logisMapper.updateSellItem(orderDTO);
+		System.out.println("result2 => " + result2);
 		return result1 + result2;
 	}
 	

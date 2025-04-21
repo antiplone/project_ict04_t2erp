@@ -138,8 +138,11 @@ const SellRequestClient = () => {
     return; // 중복 체크가 안되면 등록하지 않음
     }
 
+    // Object.entries(requiredFields) : requiredFields 객체를 배열의 배열 형태로 바꿔준다.
     const emptyFields = Object.entries(requiredFields).filter(([key]) => {
         return clientAdd[key].trim() === "";
+        // 빈 문자열인지 확인하고, 공백만 입력된 것도 빈 값으로 간주하려고 .trim()으로 앞뒤 공백을 제거함
+        // 이 조건에 만족하는 항목들(빈 값인 항목들)만 있는 배열을 emptyFields에 넣음
       });
     
         if (emptyFields.length > 0) {

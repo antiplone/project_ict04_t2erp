@@ -81,11 +81,18 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 		}, [handleOpen]);
 
 	return (
-		<Modal open={handleOpen} onClose={handleClose} size="xs">
+		<Modal open={handleOpen} onClose={handleClose} 
+			style={{
+				width: 400,
+				margin: 'auto',
+				position: 'fixed',
+    			left: '40%'
+			  }}
+			  >
 			<Modal.Header>
 				<Modal.Title>{title}</Modal.Title>
 			</Modal.Header>
-			<Modal.Body>
+			<Modal.Body style={{ overflowX: 'hidden' }}>
 
 			<InputGroup>
 				<InputGroup.Addon style={{ width: 90 }}>
@@ -118,7 +125,7 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 				data={clientList}
 			>
 
-				<Column width={100} align="center" fixed>
+				<Column width={50} align="center" fixed>
 					<HeaderCell>선택</HeaderCell>
 					
 					<Cell>{(rowData) => (
@@ -136,7 +143,7 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 					<Cell>{(rowData) => rowData.client_code}</Cell>
 				</Column>
 
-				<Column width={250}>
+				<Column width={150}>
 					<HeaderCell>거래처명</HeaderCell>
 					<Cell>{(rowData) => rowData.client_name}</Cell>
 				</Column>

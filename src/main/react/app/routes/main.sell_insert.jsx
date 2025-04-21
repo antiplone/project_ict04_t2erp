@@ -530,12 +530,14 @@ const Sellinsert = () => {
 					<hr></hr>
 				
 				<SellClientSearchModal
+					style={{ margin: 'auto' }}
 					onClientSelect={handleClientSelect}	// client_code, client_name 받기
 					handleOpen={isClientModalOpen}
 					handleClose={() => setClientModalOpen(false)}
 				/>
 
 				<SellEmployeeSearchModal
+					style={{ width: 700, margin: 'auto' }}
 					onInchargeSelect={handleInchargeSelect}	// e_id, e_name 받기
 					handleOpen={isInchargeModalOpen}
 					handleClose={() => setInchargeModalOpen(false)}

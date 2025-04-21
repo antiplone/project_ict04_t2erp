@@ -13,6 +13,8 @@ public interface CommuteMapper {
 
 	// 출퇴근 리스트
 	public List<CommuteDTO> selectAttList();
+	// 내 출퇴근 리스트
+	public List<CommuteDTO> selectMyAttList(int e_id);
 
 	// 오늘자 출퇴근 1건만 조회
 	public CommuteDTO selectTodayRecord(int e_id);

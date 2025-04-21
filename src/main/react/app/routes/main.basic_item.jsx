@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { HrTable } from '#components/hr/HrTable';
-import HrButton from '#components/hr/HrButton';
-import HrModal from '#components/hr/HrModal';
-import { Input, Grid, Col, RadioGroup, Radio, Message } from 'rsuite';
+import { HrTable } from '#components/hr/HrTable';  // 테이블 컴포넌트
+import HrButton from '#components/hr/HrButton'; // 버튼 컴포넌트
+import HrModal from '#components/hr/HrModal'; // 모달 컴포넌트
+import { Input, Grid, Col, RadioGroup, Radio, Message } from 'rsuite'; // UI 컴포넌트
 
 export default function Item() {
   const [open, setOpen] = useState(false);
@@ -23,7 +23,7 @@ export default function Item() {
     setStatus('Y');       // 상품 상태 기본값 'Y'
     setIsEditMode(false); // 등록 모드
     setOpen(true);
-  }
+  };
 
   // 모달 닫기
   const handleClose = () => {
@@ -40,7 +40,7 @@ export default function Item() {
     fetch('http://localhost:8081/basic/itemList')
       .then(response => response.json())
       .then(data => setItems(data))
-      .catch(error => console.error('데이터를 불러오지 못했습니다:', error));
+      .catch(error => console.error('데이터를 불러오지 못했습니다:', error)); // 요청 실패하면 console에 에러메세지 출력
   };
 
   useEffect(() => {
@@ -53,6 +53,7 @@ export default function Item() {
     }
   }, [message]);
 
+  // 등록 버튼 클릭 시 호출
   const handleRegister = () => {
     const newItem = {
       item_code: itemCode,
@@ -86,18 +87,18 @@ export default function Item() {
       });
   };
 
-    // 수정 클릭시 호출 되는 함수
+  // 수정 버튼 클릭 시 호출
   const handleEditClick = (rowData) => {
-    // 수정할 상품 정보
     setItemCode(rowData.item_code);
     setItemName(rowData.item_name);
     setItemStandard(rowData.item_standard);
     setStatus(rowData.item_status);
     setRegDate(rowData.item_reg_date); // 기존 등록일 저장
     setIsEditMode(true); // 수정 모드
-    setOpen(true);  // 수정 모달 열기
+    setOpen(true); // 수정 모달 열기
   };
-  
+
+  // 수정 저장 버튼 클릭 시 호출
   const handleEditSubmit = () => {
     const editedItem = {
       item_code: itemCode,
@@ -107,50 +108,52 @@ export default function Item() {
       item_reg_date: regDate,
     };
 
-  // 기초 등록 - 상품 수정
-  fetch(`http://localhost:8081/basic/itemUpdate/${itemCode}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(editedItem),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('서버에서 오류가 발생했습니다.');
-      }
-      return response.json();
+    // 기초 등록 - 상품 수정
+    fetch(`http://localhost:8081/basic/itemUpdate/${itemCode}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(editedItem),
     })
-    .then((data) => {
-      if (data === 1 || data.success === true) {
-        handleClose();
-        fetchItems(); // 수정 후 목록 갱신
-      }
-    })
-    .catch((error) => {
-      setMessage('상품 수정 중 오류 발생: ' + error.message);
-    });
-};
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('서버에서 오류가 발생했습니다.');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data === 1 || data.success === true) {
+          handleClose();
+          fetchItems(); // 수정 후 목록 갱신
+        }
+      })
+      .catch((error) => {
+        setMessage('상품 수정 중 오류 발생: ' + error.message);
+      });
+  };
 
-  // 삭제 버튼 클릭 시 상품 삭제
-  const handleDeleteClick = (item_code) => {
+  // 삭제 버튼 클릭 시 호출
+  const handleDeleteClick = (rowData) => {
+    const item_code = rowData.item_code;
     console.log('삭제 요청한 item_code:', item_code);
 
     fetch(`http://localhost:8081/basic/itemDelete/${item_code}`, {
-        method: 'DELETE',
+      method: 'DELETE',
     })
-    .then((response) => {
-      if (!response.ok) throw new Error('삭제 실패');
-      return response.text();
-    })
-    .then((text) => {
+      .then((response) => {
+        if (!response.ok) throw new Error('삭제 실패');
+        return response.text();
+      })
+      .then((text) => {
         console.log('삭제 성공:', text);
-        fetchItems();  // 삭제 후 목록 갱신
-    })
-    .catch((error) => {
+        setItems([]);
+        fetchItems(); // 삭제 후 목록 갱신
+      })
+      .catch((error) => {
         console.error('삭제 중 오류 발생:', error);
-        alert("삭제에 실패했습니다.");
-    });
+        alert('삭제에 실패했습니다.');
+      });
   };
 
   const columns = [
@@ -166,28 +169,30 @@ export default function Item() {
       <Message><h5>기초 등록 - 상품 등록</h5></Message>
 
       <div style={{ maxWidth: '1450px' }}>
+        {/* 테이블 렌더링 */}
         <HrTable columns={columns} items={items} onEditClick={handleEditClick} onDeleteClick={handleDeleteClick}/> 
 
+        {/* 상품 등록 버튼 */}
         <div style={{ display: 'flex', justifyContent: 'flex-end'}}>
-        <HrButton hrBtn="상품 등록" onClick={handleOpen} />
+          <HrButton hrBtn="상품 등록" onClick={handleOpen} />
         </div>
       </div>
 
+      {/* 등록/수정 시 메시지 */}
       {message && !message.includes('상품 등록 성공') && (
         <div style={{ color: 'green' }}>
           {message}
         </div>
       )}
 
-      {/* 기초 등록 - 상품 등록, 수정 */}
+      {/* 상품 등록/수정 모달 */}
       <HrModal
-        title={isEditMode ? "상품 수정" : "상품 등록"} 
+        title={isEditMode ? "상품 수정" : "상품 등록"}
         open={open}
         handleClose={handleClose}
-        onRegister={isEditMode ? handleEditSubmit : handleRegister} // 상품 수정(handleEditSubmit)일 때 실행(true면 수정 false면 등록)
+        onRegister={isEditMode ? handleEditSubmit : handleRegister}
         onDeleteClick={handleDeleteClick}
-        backdrop="static"  // 배경 클릭 시 모달이 닫히지 않도록 설정
-        onBackdropClick={(e) => e.stopPropagation()} // 배경 클릭 시 모달 닫히지 않게 설정
+        backdrop="static"
       >
         <Grid fluid>
           <Col xs={24}>

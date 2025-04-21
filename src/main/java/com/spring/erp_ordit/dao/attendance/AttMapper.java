@@ -25,6 +25,12 @@ public interface AttMapper {
 	// [ 기본사항등록 ]
 	// 휴가 항목 리스트
 	public List<VacaItemsDTO> regVacaList();
+	// 근태 항목 등록
+	public int insertVacaItems(VacaItemsDTO dto);
+	// 근태 항목 삭제
+	public int deleteVacaItems(int v_code);
+	// 근태 항목 수정
+	public int updateVacaItems(VacaItemsDTO dto);
 	// 휴가 항목 리스트: 휴가명
 	public List<String> vacaName();
 

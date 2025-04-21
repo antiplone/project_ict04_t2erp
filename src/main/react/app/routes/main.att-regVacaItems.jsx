@@ -33,7 +33,8 @@ export default function RegAttItems() {
   const vacaColumns = [
     { label: "휴가코드", dataKey: "v_code", width: 100 },
     { label: "휴가명", dataKey: "v_name", width: 150 },
-    { label: "휴가기간", dataKey: "v_period", width: 200 },
+    { label: "시작", dataKey: "v_start", width: 120 },
+    { label: "끝", dataKey: "v_end", width: 120 },
     { label: "사용유무", dataKey: "v_use", width: 70 },
     { label: "비고", dataKey: "v_note", width: 230 },
   ];

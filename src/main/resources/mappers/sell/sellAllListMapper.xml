@@ -32,8 +32,8 @@
     <select id="sellAllList" resultType="com.spring.erp_ordit.dto.sell.SellAllListDTO">
       SELECT *, SUM(total) AS total_sum FROM sell_allList_view
       WHERE order_show = 'Y'
-      AND order_date
       GROUP BY order_id
+     ORDER BY order_date DESC
     </select>
     
     <!-- 판매 현황 - 검색 후 나오는 전체 리스트 -->

@@ -67,6 +67,7 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 	}
 	
 	// 판매_거래처 관리 - 수정
+	@Override
 	@Transactional
     public int updateClient(int sc_id, SellRequestClientDTO dto) {	// BoardDTO 리턴: 상세페이지로 리턴하기 위해
 		System.out.println("서비스 - SellRequestClientDTO");

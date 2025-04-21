@@ -11,16 +11,32 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
   const [record, setRecord] = useState(null);     // 출퇴근 데이터 객체
   const [loading, setLoading] = useState(true);   // 데이터 로딩 여부
   const [eName, setEName] = useState("");   // 사원명
+  const today = new Date().toISOString().split("T")[0]; // '2025-04-21'
 
+  // 오늘자 기록
   const fetchTodayRecord = () => {
-    fetch(`${attURL}/todayRecord/${e_id}`)
-      .then(res => res.json())
-      .then(data => {
-        setRecord(data);    // recode 상태에 저장
+    fetch(`${attURL}/todayRecord/${e_id}/${today}`)
+      // .then(res => res.json())
+      // .then(data => {
+      //   setRecord(data);    // recode 상태에 저장
+      //   setLoading(false);
+      // })
+      .then(res => {
+        if (!res.ok) throw new Error(`서버 응답 오류: ${res.status}`);
+        return res.text();  // 일단 텍스트로 받기
+      })
+      .then(text => {
+        if (!text) {
+          setRecord(null); // 아무것도 안 온 경우
+          return;
+        }
+        const data = JSON.parse(text);  // 수동 파싱
+        setRecord(data);
         setLoading(false);
       })
       .catch(err => {
         console.error("불러오기 실패:", err);
+        setRecord(null);
         setLoading(false);
       });
   };
@@ -51,10 +67,15 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
   // 출근 버튼을 누르면 처리되는 함수
   const startWork = async () => {
     try {
+      const today = new Date().toISOString().split("T")[0];  // 날짜 생성
       const res = await fetch(`${attURL}/startTime`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ e_id, e_name }),
+        body: JSON.stringify({
+          e_id,
+          e_name,
+          co_work_date: today,
+        }),
       });
       alert(await res.text());
       onRefresh();          // 부모 쪽 UI 업데이트 유도

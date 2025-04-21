@@ -93,12 +93,13 @@ const sell_all_list_update = (props) => {
             const current = { ...updated[index], ...newData };
 			
 			// Number(...) || 0는 null, undefined, '' 등의 경우에도 숫자 계산 가능하게 처리
-			const quantity = Number(current.quantity) || 0;
+			const quantity = Number(current.quantity) || 0; 	// null, undefined, '', NaN일 경우 0 처리
 			const price = Number(current.price) || 0;
 			const supply = quantity * price;
 			const vat = Math.floor(supply * 0.1);
 			const total = supply + vat;
 
+			// 계산된 값들을 포함한 새로운 항목으로 업데이트
 			updated[index] = {
                 ...current,
                 supply,
@@ -112,10 +113,12 @@ const sell_all_list_update = (props) => {
 
 	// 행 추가 시 행마다 id 부여
 	const handleAddRow = () => {
+		// 현재까지 사용된 id 중 유효한 숫자들만 모음
 		const validIds = sellAdd
 			.map(item => item.id)
 			.filter(id => typeof id === 'number' && !isNaN(id));
-	
+		
+		// 가장 큰 id를 기준으로 +1한 새로운 id 생성, 없으면 1부터 시작
 		const newId = validIds.length > 0
 			? Math.max(...validIds) + 1
 			: 1;
@@ -139,6 +142,7 @@ const sell_all_list_update = (props) => {
 	// 행 삭제
     const handleDeleteRow = (id) => {
         setSellAdd(prev => prev.filter(item => item.id !== id));
+		// 해당 id를 제외한 배열로 상태 업데이트
     };
 
 	const fetchURL = AppConfig.fetch['mytest'];
@@ -159,10 +163,10 @@ const sell_all_list_update = (props) => {
 				id: Number(item.id) || idx + 1  // id가 숫자면 그대로, 아니면 고유 id 부여
 			}));
 
-			setSellAdd(fixedRes);
-			setOriginalItems(fixedRes);
+			setSellAdd(fixedRes);	// 수정 가능한 배열로 저장
+			setOriginalItems(fixedRes);	// 원본 백업 (삭제 비교용)
 
-			// 상단 입력값 세팅
+			// 첫 번째 항목을 기준으로 상단 입력값 세팅
 			if (fixedRes.length > 0) {
 				const firstRow = res[0];
 				
@@ -180,6 +184,7 @@ const sell_all_list_update = (props) => {
 
 	// 수정 중 삭제한 항목 추리기
 	const deletedItemIds = originalItems
+		// originalItems 중 sellAdd에 존재하지 않는 항목만 필터링
 		.filter(ori => !sellAdd.find(cur => cur.order_item_id === ori.order_item_id))
 		.map(item => item.order_item_id);
 

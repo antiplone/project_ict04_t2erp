@@ -26,37 +26,37 @@ export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActi
         </Column>
       ))}
 
-      <Column width={250} align="center">
+      <Column width={180} align="center">
         <HeaderCell>작업</HeaderCell>
-        <Cell>
-          {(rowData) => (
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '5px' }}>
-              <Button
-                type="button"
-                color="blue"
-                appearance="ghost"
-                size="xs"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onEditClick(rowData);
-                }}
-              >
-                수정
-              </Button>
-              <Button
-                type="button"
-                color="red"
-                appearance="ghost"
-                size="xs"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onDeleteClick(rowData);
-                }}
-              >
-                삭제
-              </Button>
-            </div>
-          )}
+        <Cell style={{ display: 'flex', alignContent: 'center' }}>
+          {(rowData) =>
+            renderActionButtons ? (
+              renderActionButtons(rowData)
+            ) : (
+              <>
+                <Button
+                  color="blue"
+                  appearance="ghost"
+                  size="xs"
+                  style={{ marginRight: '5px' }}
+                  onClick={() => onEditClick(rowData)}
+                >
+                  수정
+                </Button>
+                <Button
+                  color="red"
+                  appearance="ghost"
+                  size="xs"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onDeleteClick(rowData);
+                  }}
+                >
+                  삭제
+                </Button>
+              </>
+            )
+          }
         </Cell>
       </Column>
     </Table>

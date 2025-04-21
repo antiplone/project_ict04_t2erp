@@ -7,7 +7,7 @@ import "#components/common/css/common.css";
 const SalesItemList = () => {
 	const fetchURL = Appconfig.fetch['mytest']
     const { order_id } = useParams();
-    const [salesItemList, setSalesItemList] = useState([]); // 초기값을 모르므로 빈배열로 orderItemList에 대입
+    const [salesItemList, setSalesItemList] = useState([]); // 초기값을 모르므로 빈배열로 salesItemList에 대입
     const [salesAmounts, setSalesAmounts] = useState({}); // 주문 수량 저장
 	const [selectedItems, setSelectedItems] = useState(new Set()); // 선택한 품목들 저장
     console.log("OderItemList sales_id : ", order_id)
@@ -89,10 +89,10 @@ const SalesItemList = () => {
 		
 		Promise.all(
 			itemsToSubmit.map((item_code) => {
-				const item = orderItemList.find(item => item.item_code === item_code);
+				const item = salesItemList.find(item => item.item_code === item_code);
 				if (!item) return Promise.resolve(); // 아무 작업도 하지 않음
 
-				const updatedOrderAmount = orderAmounts[item_code] || item.quantity;
+				const updatedOrderAmount = salesAmounts[item_code] || item.quantity;
 
 				const query = new URLSearchParams({
 					stock_amount: updatedOrderAmount,
@@ -103,7 +103,7 @@ const SalesItemList = () => {
 
 				console.log("query => ", query);
 
-				return fetch(`http://localhost:8081/logisstock/stockSellUpdate?${query.toString()}`, {
+				return fetch(`http://localhost:8081/logisstock/sellStockUpdate?${query.toString()}`, {
 					method: "PUT",
 					headers: {
 						"Content-Type": "application/json"
@@ -161,7 +161,7 @@ const SalesItemList = () => {
 								onChange={toggleSelectAll}
 								checked={
 									selectedItems.size > 0 &&
-									selectedItems.size === orderItemList.filter(item => item.income_confirm !== 'Y').length
+									selectedItems.size === salesItemList.filter(item => item.income_confirm !== 'Y').length
 								}
 							/>
 						</Table.HeaderCell>

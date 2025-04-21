@@ -41,6 +41,15 @@ public class LogisStockController {
 
 		return new ResponseEntity<>(logisstockService.updateOrderStock(stock_amount, item_code, storage_code, order_id), HttpStatus.OK); // 200
 	}
+	
+	// 입고 확정
+	@PutMapping("/sellStockUpdate")
+	public ResponseEntity<?> sellStockUpdate(@RequestParam(required = false) Integer stock_amount, @RequestParam(required =false) Integer item_code, @RequestParam(required = false) Integer storage_code, @RequestParam(required = false) Integer order_id){
+		System.out.println("<<< stockUpdate - Controller >>>");
+		System.out.println("item_code : " + item_code + ", stock_amount : " + stock_amount + ", order_id : " + order_id + ", storage_code : " + storage_code);
+
+		return new ResponseEntity<>(logisstockService.updateSellStock(stock_amount, item_code, storage_code, order_id), HttpStatus.OK); // 200
+	}
 
 	@GetMapping("/logisStockSearch")
 	public ResponseEntity<List<LogisStockDTO>> logisStockSearch(	// ?를 주면 자동으로 적용된다. T 와 같은 의미, 데이터가 아직 결정되지 않았다는 뜻 => Integer 또는 ? 를 주면 된다. 

@@ -31,8 +31,7 @@ export default function Management() {
   const e_id = raw_id && !isNaN(Number(raw_id)) ? Number(raw_id) : null;
   const e_name = localStorage.getItem("e_name") || null;  // 사원명도 세션에서 불러옴
 
-  console.log("📌 Management - e_id:", e_id);
-  console.log("📌 Management - e_name:", e_name);
+  console.log("📌 로그인 정보- e_id:", e_id, ", e_name:", e_name);
 
 
   return (

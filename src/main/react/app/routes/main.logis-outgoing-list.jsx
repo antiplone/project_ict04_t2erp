@@ -27,7 +27,7 @@ const OutgoingList = () => {
 			}
 		).catch(error => {
 			console.error("logissalesList : ", error);
-			setSalesList([]); // 오류 시 빈 배열 설정
+			setSalesList([]); // 오류 시 빈 orderItemList배열 설정
 		});
 	}, []);
 

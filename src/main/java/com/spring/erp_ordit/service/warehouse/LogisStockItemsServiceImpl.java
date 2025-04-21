@@ -1,5 +1,6 @@
 package com.spring.erp_ordit.service.warehouse;
 
+import java.sql.Date;
 //	import java.util.HashMap;
 import java.util.List;
 
@@ -79,10 +80,16 @@ public class LogisStockItemsServiceImpl {
 	}
 	
 	// 재고 목록 조건 조회
-	public List<LogisStockDTO> logisStockSearch(String start_date, String end_date, Integer item_code, Integer client_code, Integer storage_code) {
+	public List<LogisStockDTO> logisStockSearch(String start_date, String end_date, Integer item_code, Integer storage_code) {
 		System.out.println("LogisOrderServiceImpl - logisStockSearch");
-		System.out.println(start_date+ " " + end_date + " " +  item_code + " " +  client_code + " " +  storage_code);
-		return logisMapper.logisStockSearch(start_date, end_date, item_code, client_code, storage_code);
+		System.out.println(start_date+ " " + end_date + " " +  item_code + " " + " " +  storage_code);
+		return logisMapper.logisStockSearch(start_date, end_date, item_code, storage_code);
+	}
+	
+	// 재고 excel 출력
+	public List<LogisStockDTO> getExcelPrint(String start_date, String end_date, Integer item_code, Integer storage_code) {
+		System.out.println("LogisStockServiceImpl - getExcelPrint");
+		return logisMapper.logisStockSearch(start_date, end_date, item_code, storage_code);
 	}
 	
 }

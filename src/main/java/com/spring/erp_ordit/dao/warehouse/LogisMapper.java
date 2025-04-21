@@ -70,9 +70,11 @@ public interface LogisMapper {
 		public List<LogisStockDTO> logisStockList();
 		
 //		// 재고 조건 조회
-		public List<LogisStockDTO> logisStockSearch(@Param("start_date") String start_date,
-		@Param("end_date") String end_date, @Param("item_code") Integer item_code,
-		@Param("client_code") Integer client_code, @Param("storage_code") Integer storage_code);
+		public List<LogisStockDTO> logisStockSearch(
+				@Param("start_date") String start_date,
+				@Param("end_date") String end_date,
+				@Param("item_code") Integer item_code,
+				@Param("storage_code") Integer storage_code);
 //		
 //		// 창고 삭제
 //		public Integer deleteStock(int storage_code);

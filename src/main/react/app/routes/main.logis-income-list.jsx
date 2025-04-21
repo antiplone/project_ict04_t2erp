@@ -10,11 +10,15 @@ import StorageSearchModal from "#components/logis/StorageSearchModal.jsx";
 import EmailFormModal from "#components/email/EmailFormModal.jsx";
 import MessageBox from '../components/common/MessageBox';
 
+{/* 챗봇 */}
+/*import TextClassifier from '#components/chatbot/chatbot';*/
+
+
 const OrderIncomeList = () => {
     const fetchURL = Appconfig.fetch['mytest']
     const [orderList, setOrderList] = useState([]); // 초기값을 모르므로 빈배열로 Warehousingist에 대입
     
-     const [modalOpen, setModalOpen] = useState(false); // modal visibility state
+    const [modalOpen, setModalOpen] = useState(false); // modal visibility state
     
     // Handle modal open/close
     const handleOpenModal = () => setModalOpen(true);
@@ -62,6 +66,7 @@ const OrderIncomeList = () => {
     const [selectedStorage, setSelectedStorage] = useState(null);
     const [selectedStorageName, setSelectedStorageName] = useState(null);
     const [isStorageModalOpen, setStorageModalOpen] = useState(false);
+
 	/*const [to, setTo] = useState('');
 	const [subject, setSubject] = useState('');
 	const [body, setBody] = useState('');
@@ -212,7 +217,8 @@ const OrderIncomeList = () => {
 				</div>
 
 				{/* EmailFormModal Component */}
-				<EmailFormModal open={modalOpen} onClose={() => setModalOpen(false)} />
+				<EmailFormModal open={modalOpen} onClose={() => handleCloseModal(false)} />
+				{/*<TextClassifier />*/}
              </Container>
         </div>
     );

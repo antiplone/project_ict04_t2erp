@@ -403,7 +403,7 @@
 		LEFT JOIN stock_tbl st ON it.item_code = st.item_code
 		<where> 
 	   		it.item_code > 0
-	    <if test="start_date != null and end_date != null">
+	    <if test="start_date != null and start_date != '' and end_date != null and end_date != ''">
 		    AND st.last_date BETWEEN #{start_date} AND #{end_date}
 		</if>
 	    <if test="item_code != null and item_code != ''">

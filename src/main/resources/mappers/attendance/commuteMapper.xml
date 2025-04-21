@@ -41,23 +41,21 @@
 	</select>
 	
 	<!-- 오늘자 출퇴근 1건만 조회 -->
-	<select id="selectTodayRecord" parameterType="int" resultType="com.spring.erp_ordit.dto.attendance.CommuteDTO">
-		SELECT 
-			c.*,
-			e.e_id,
-			e.e_name
+	<select id="selectTodayRecord" parameterType="java.util.Map" resultType="com.spring.erp_ordit.dto.attendance.CommuteDTO">
+		SELECT c.*, e.e_id
 		FROM commute_tbl c
-		  JOIN employee_tbl e ON c.e_id = e.e_id
-	 WHERE c.e_id = #{e_id}
-		   AND c.co_work_date = CURRENT_DATE()
-         LIMIT 1
+		JOIN employee_tbl e ON c.e_id = e.e_id
+		WHERE c.e_id = #{e_id}
+		     AND DATE(c.co_work_date) = #{date}
+		ORDER BY c.co_start_time ASC
+		LIMIT 1
 	</select>
 	<!-- selectOne() 썼는데 결과가 여러 개라 오류날 때, DB에서 한 건만 나오게 수정(LIMIT 1) -->
 	
 	<!-- 출근 시간 저장 처리 -->
 	<insert id="insertStartTime" parameterType="com.spring.erp_ordit.dto.attendance.CommuteDTO">
-		INSERT INTO commute_tbl (co_work_date, co_start_time, e_id, co_status)
-		VALUES (#{co_work_date}, #{co_start_time}, #{e_id}, #{co_status})
+		INSERT INTO commute_tbl (e_id, co_work_date, co_start_time, co_status_note, co_status)
+		VALUES (#{e_id}, #{co_work_date}, #{co_start_time}, #{co_status_note}, #{co_status})
 	</insert>
 	<!-- 퇴근 시간 저장 처리 -->
 	<update id="updateEndTime" parameterType="com.spring.erp_ordit.dto.attendance.CommuteDTO">

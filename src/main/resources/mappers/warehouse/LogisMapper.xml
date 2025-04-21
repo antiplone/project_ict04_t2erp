@@ -207,38 +207,38 @@
 	
 	<!-- 판매주문별 목록 상세조회 -->
 	<select id="findByLogisSalesId" resultType="com.spring.erp_ordit.dto.warehouse.LogisSalesDTO">
-		select
-		    ot.order_id as 'order_id',
-		    ot.order_date as 'order_date',
-		    ot.shipment_order_date as 'shipment_order_date',
-		    ot.order_type as 'order_type',
-		    ot.transaction_type as 'transaction_type',
-		    wt.storage_code  as 'storage_code',
-		    wt.storage_name  as 'storage_name',
-		    wt.storage_location  as 'storage_location',
-		    oit.item_code as 'item_code',
-		    oit.quantity as 'quantity',
-		    it.item_name as 'item_name',
-		    it.item_standard as 'item_standard',
-		    ct.client_code as 'client_code',
-		    ct.client_name as 'client_name',
-   		    oit.income_confirm as 'income_confirm'
-		from
-		    order_tbl as ot
-		inner join
-		    order_item_tbl oit on oit.order_id = ot.order_id
-		inner join
-		    item_tbl it on oit.item_id = it.item_id
-		inner join
-		    warehouse_tbl wt on wt.storage_code
-		inner join
-		    client_tbl ct on ct.client_code
-		where
-		    ot.order_id = #{order_id}
-		AND 
-			ot.order_type = 1
-		group BY
-		    oit.item_code
+	select
+		ot.order_id as 'order_id',
+		ot.order_date as 'order_date',
+		ot.shipment_order_date as 'shipment_order_date',
+		ot.order_type as 'order_type',
+		ot.transaction_type as 'transaction_type',
+		wt.storage_code as 'storage_code',
+		wt.storage_name as 'storage_name',
+		wt.storage_location as 'storage_location',
+		oit.item_code as 'item_code',
+		oit.quantity as 'quantity',
+		it.item_name as 'item_name',
+		it.item_standard as 'item_standard',
+		ct.client_code as 'client_code',
+		ct.client_name as 'client_name',
+		oit.income_confirm as 'income_confirm'
+	from
+		order_tbl as ot
+	inner join
+		order_item_tbl oit on oit.order_id = ot.order_id
+	inner join
+		item_tbl it on oit.item_id = it.item_id
+	left join
+		warehouse_tbl wt on wt.storage_code = ot.storage_code
+	inner join
+		client_tbl ct on ct.client_code
+	where
+		ot.order_id = #{order_id}
+	AND
+		ot.order_type = 1
+	group BY
+		oit.item_code
 	</select>
 	
 	<select id="findBySalesItem" parameterType="map" resultType="com.spring.erp_ordit.dto.warehouse.LogisSalesItemDTO">
@@ -370,16 +370,23 @@
 		WHERE
 			item_code = #{item_code}
 		AND
-			storage_code= #{storage_code};
-	
-		UPDATE 
-			order_item_tbl
-		SET 
-			income_confirm = 'Y'
-		WHERE 
-			item_code = #{item_code}
-		AND order_id = #{order_id};
+			storage_code= #{storage_code}
 	</update>
+
+	<update id="updateSellItem" parameterType="com.spring.erp_ordit.dto.warehouse.LogisSalesItemDTO">
+
+		UPDATE
+		order_item_tbl
+		SET
+		income_confirm = 'Y'
+		WHERE
+		item_code = #{item_code}
+		AND
+		order_id = #{order_id}
+		AND income_confirm = 'N' || income_confirm IS NULL
+
+	</update>
+	
 	
 	<select id="logisStockSearch" resultType="com.spring.erp_ordit.dto.warehouse.LogisStockDTO">
 		SELECT 

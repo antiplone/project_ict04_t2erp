@@ -102,8 +102,7 @@ const sell_all_list = () => {
 	const filteredList = allList.filter(row => {
 		if (activeTab === "1") return true; // 전체
 		if (activeTab === "2") return row.order_status === "진행중";
-		if (activeTab === "3") return row.order_status === "미확인";
-		if (activeTab === "4") return row.order_status === "승인";
+		if (activeTab === "3") return row.order_status === "승인";
 		return false;
 	  });
 	

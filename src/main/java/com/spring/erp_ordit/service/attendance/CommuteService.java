@@ -27,30 +27,34 @@ public class CommuteService {
 	// 내 근태 리스트
 	public List<CommuteDTO> myAttendanceList(int e_id) {
 	    System.out.println("▶ CommuteService - 내 출퇴근 리스트");
+	    CommuteDTO dto = new CommuteDTO();
+	    System.out.println("1건 조회: "+ dto);
+	    
 	    return dao.selectMyAttList(e_id);
 	}
 
 	// 오늘자 출퇴근 1건만 조회
-	public CommuteDTO getTodayRecordByEmp(int e_id) {
-		System.out.println("▶ CommuteService - 오늘자 출퇴근 1건 조회");
-		return dao.selectTodayRecord(e_id);
+	public CommuteDTO getRecordByDate(int e_id, String date) {
+		System.out.println("▶ CommuteService - 오늘자 출퇴근 1건 조회, e_id: " + e_id + ", date: " + date);
+		return dao.selectTodayRecord(e_id, date);
 	}
 
-	// 근태관리 - 출근 시간 저장 처리
+	// 근태관리 - 출근 시간 저장 처리 => 시간 변조를 방지하기 위해 서버 시간 기준으로 출근 처리하는 방식
 	public String insertStartTime(CommuteDTO dto) {
 	    System.out.println("▶ CommuteService - 출근 시간 저장 처리");
 	    
-	    // 현재 날짜와 시간
-	    LocalDate today = LocalDate.now();
-	    LocalTime now = LocalTime.now();
+	    // 브라우저에서 보이는 시계와는 무관하게 Spring Boot 가 설치된 서버 시간 기준임.
+	    LocalDate today = LocalDate.now();		// 서버 기준의 '오늘 날짜'
+	    LocalTime now = LocalTime.now();			// 서버 기준의 '현재 시간'
 	    
-	    // 현재 날짜, 시간 설정
-	    dto.setCo_work_date(Date.valueOf(today));
-	    dto.setCo_start_time(Time.valueOf(now));
+	    // DB의 co_work_date, co_start_time 컬럼에 들어갈 값을 지정하는 부분임.
+	    dto.setCo_work_date(Date.valueOf(today));		// java.sql.Date로 변환하여 DB에 저장함.
+	    dto.setCo_start_time(Time.valueOf(now));		// java.sql.Time으로 변환함.
 	    
-	    // ✅ 지각 기준 시간 설정 (오전 9시)
+	    // 지각 기준을 오전 9시로 설정 => 09:00
 	    LocalTime lateLimit = LocalTime.of(9, 0);
 
+	    // 오전 9시보다 늦으면 '지각', 아니면 '정상' => DB의 co_status, co_status_note 컬럼에 저장함.
 	    if (now.isAfter(lateLimit)) {
 	        dto.setCo_status("지각");
 	        dto.setCo_status_note("09시 이후 출근");
@@ -67,13 +71,15 @@ public class CommuteService {
 	// 근태관리 - 퇴근 시간 저장 처리 + 자동 근무시간 계산
 	public String updateEndTime(CommuteDTO dto) {
 	    System.out.println("▶ CommuteService - 퇴근 시간 저장 처리");
+	    LocalDate today = LocalDate.now();
+	    String todayStr = today.toString(); // "2025-04-21" 이런 식
 	    dto.setCo_work_date(Date.valueOf(LocalDate.now())); // 필수!
 	    
         Time endTime = Time.valueOf(LocalTime.now());
         dto.setCo_end_time(endTime);
 	    
 	    // DB에서 오늘 출근기록 가져오기
-	    CommuteDTO record = dao.selectTodayRecord(dto.getE_id());
+	    CommuteDTO record = dao.selectTodayRecord(dto.getE_id(), todayStr);
 	    if (record == null || record.getCo_start_time() == null) {
 	    	return "출근 기록이 없습니다.";
 	    }
@@ -98,7 +104,7 @@ public class CommuteService {
 
         if (start == null || end == null) {
             dto.setCo_status("결근");
-        } else if (totalMinutes < 30) {
+        } else if (totalMinutes < 540) {		// 9시간 미만이면
             dto.setCo_status("근무시간 부족");
         } else {
             dto.setCo_status("정상");

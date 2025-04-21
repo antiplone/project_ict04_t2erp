@@ -21,4 +21,7 @@ public interface SellRequestClientService {
 	
 	// 판매_거래처 관리 - 삭제
 	public String deleteClient(int sc_no);
+
+	// 판매_거래처 관리 - 사업자등록번호 중복 체크
+	public int sellCheckReqClientBizNum(String c_biz_num);
 }

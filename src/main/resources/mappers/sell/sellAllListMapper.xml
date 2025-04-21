@@ -30,8 +30,10 @@
     
 	<!-- 판매 조회, 판매 현황 - 전체 리스트 -->
     <select id="sellAllList" resultType="com.spring.erp_ordit.dto.sell.SellAllListDTO">
-      SELECT * FROM sell_allList_view
+      SELECT *, SUM(total) AS total_sum FROM sell_allList_view
       WHERE order_show = 'Y'
+      AND order_date
+      GROUP BY order_id
     </select>
     
     <!-- 판매 현황 - 검색 후 나오는 전체 리스트 -->
@@ -82,6 +84,12 @@
 		 WHERE order_id = #{order_id}
 	       AND order_item_id = #{order_item_id}
 	</update>
+	
+	<!-- 일부 아이템 삭제할 경우 -->
+	<delete id="deleteOrderItem" parameterType="int">
+	    DELETE FROM order_item_tbl
+	     WHERE order_item_id = #{order_item_id}
+	</delete>
     <!-- 판매 입력 - 등록 끝 -->
     
     <!-- 판매 조회 - 삭제 요청 -->

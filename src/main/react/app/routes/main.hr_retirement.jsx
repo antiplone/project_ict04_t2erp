@@ -1,14 +1,18 @@
 /* eslint-disable react/react-in-jsx-scope */
 import Tables from "#components/attendance/Tables.jsx";
 import MessageBox from "#components/common/MessageBox";
-import MetaBox from "#components/common/MetaBox";
 import { useState } from "react";
 import { Container } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 
-<MetaBox title="인사 관리" content="인사 관리 - 퇴직 관리 페이지" />
+export function meta() {
+  return [
+      { title: `${AppConfig.meta.title} : 인사관리` },
+      { name: "description", content: "인사관리: 퇴직관리 페이지" },
+  ];
+};
 
-export default function Per_retirement() {
+export default function Hr_retirement() {
   const fetchURL = AppConfig.fetch['mytest'];
   
   const [resiData, setResiData] = useState([]); // 퇴사자 데이터를 저장하는 상태 변수.

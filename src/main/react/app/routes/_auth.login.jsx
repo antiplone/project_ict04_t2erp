@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
 import { useState, useEffect } from "react";
@@ -12,6 +13,8 @@ import {
 } from "rsuite";
 
 import AppConfig from "#config/AppConfig.json"
+
+import "#components/common/css/common.css";
 
 const { StringType } = Schema.Types;
 const model = Schema.Model({
@@ -104,7 +107,7 @@ export default function Login() {
 
 	useEffect(() => {
 		if (authData != null)
-			nav("/main");
+			nav("/main", { replace: true });
 	}, [authData, isLoading]);
 
 	return (
@@ -133,19 +136,19 @@ export default function Login() {
 					</Form.Group>
 
 					<VStack spacing={10}>
-						<Button style={{ color: "#333333", fontWeight: "bold" }} type='submit' appearance="primary" loading={isLoading} block>
+						<Button type='submit' appearance="primary" loading={isLoading} block>
 							로그인
 						</Button>
 						<a href="#">비밀번호를 잊으셨나요?</a>
 					</VStack>
 				</Form>
 
-				{/*				<Divider>OR</Divider>
+				{/*            <Divider>OR</Divider>
 
-				<Button block href="https://github.com/rsuite/rsuite">
-					Continue with Github
-				</Button>
-*/}			</Panel>
+            <Button block href="https://github.com/rsuite/rsuite">
+               Continue with Github
+            </Button>
+*/}         </Panel>
 		</Stack>
 	);
 }

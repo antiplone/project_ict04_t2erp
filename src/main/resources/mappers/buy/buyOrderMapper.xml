@@ -46,7 +46,7 @@
 			LEFT JOIN warehouse_tbl wt ON ot.storage_code = wt.storage_code
 			LEFT JOIN order_status_tbl ost ON ost.order_id = ot.order_id
 			WHERE order_show='Y'
-			  AND ost.order_status='진행중'
+			  AND ost.order_status='결재중'
 			  AND ot.order_type = 2
   	</select>
   	
@@ -55,9 +55,21 @@
 			SELECT COUNT(DISTINCT os.order_id) AS buyOrderUnchkCount
 			  FROM order_status_tbl os
 			  JOIN order_tbl o ON os.order_id = o.order_id
-			  WHERE os.order_status = '진행중'
+			  WHERE os.order_status = '결재중'
 			    AND o.order_show = 'Y'
 			    AND o.order_type = 2
+  	</select>
+  	
+  	<!-- 구매조회 진행상태별 "건수" 조회 -->
+  	<select id="buyOrderStatusCount" resultType="map">
+			 SELECT 
+			    COUNT(*) AS total,
+			    COUNT(CASE WHEN ost.order_status = '결재중' THEN 1 END) AS paying,
+			    COUNT(CASE WHEN ost.order_status = '승인' THEN 1 END) AS approved
+			   FROM order_tbl ot
+			   LEFT JOIN order_status_tbl ost ON ot.order_id = ost.order_id
+			  WHERE ot.order_show = 'Y'
+			    AND ot.order_type = 2
   	</select>
 
 <!-- 	

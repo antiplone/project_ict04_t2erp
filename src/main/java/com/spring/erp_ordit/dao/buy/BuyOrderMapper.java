@@ -1,6 +1,7 @@
 package com.spring.erp_ordit.dao.buy;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -24,6 +25,9 @@ public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 상세조�
 	
 	// 구매조회 탭 <결재중 "건수"> 조회
 	public List<BuyOrderDTO> buyOrderPayingCount();	
+	
+	// 구매조회 탭 진행상태별 "건수" 조회
+	public Map<String, Long> buyOrderStatusCount();	
 	
 //	// 구매 조회 탭 <미확인> 목록
 //	public List<BuyOrderDTO> buyOrderUnchkList();	

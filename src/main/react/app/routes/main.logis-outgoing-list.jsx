@@ -8,6 +8,8 @@ import InchargeSearchModal from "#components/logis/InchargeSearchModal.jsx";
 import ClientSearchModal from "#components/logis/ClientSearchModal.jsx";
 import StorageSearchModal from "#components/logis/StorageSearchModal.jsx";
 import MessageBox from '#components/common/MessageBox';
+{/* 판매 추이 차트 */}
+import DBChartModal from '#components/chart/DBChartModal.jsx'; // 
 
 const OutgoingList = () => {
 	const fetchURL = Appconfig.fetch['mytest']
@@ -54,9 +56,10 @@ const OutgoingList = () => {
 	const [selectedStorage, setSelectedStorage] = useState(null);
 	const [selectedStorageName, setSelectedStorageName] = useState(null);
 	const [isStorageModalOpen, setStorageModalOpen] = useState(false);
+	/* 차트 보기 모달 버튼 */
+	const [isChartModalOpen, setChartModalOpen] = useState(false);
 
 	/* 검색 조건*/
-
 	const handleSearch = async () => {
 		let startDate = '';
 		let endDate = '';
@@ -191,6 +194,16 @@ const OutgoingList = () => {
 						<Table.Cell dataKey="storage_name" />
 					</Table.Column>
 				</Table>
+				<div>
+					<Button appearance="primary" onClick={() => setChartModalOpen(true)}>
+						차트 보기
+					</Button>
+
+					<DBChartModal
+						open={isChartModalOpen}
+						onClose={() => setChartModalOpen(false)}
+					/>
+				</div>
 			</Container>
 		</div>
 	);

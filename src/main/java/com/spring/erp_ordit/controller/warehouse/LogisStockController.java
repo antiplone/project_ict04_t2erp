@@ -57,7 +57,6 @@ public class LogisStockController {
 		@RequestParam(required = false) String start_date, 
 		@RequestParam(required = false) String end_date, 
 	    @RequestParam(required = false) Integer item_code,
-	    @RequestParam(required = false) Integer client_code,
 	    @RequestParam(required = false) Integer storage_code
 	) {
 	    System.out.println("<<< logisStockSearch - Controller >>>");
@@ -65,12 +64,35 @@ public class LogisStockController {
 	    System.out.println("start_date: " + start_date);
 	    System.out.println("end_date: " + end_date);
 	    System.out.println("item_code: " + item_code);
-	    System.out.println("client_code: " + client_code);
 	    System.out.println("storage_code: " + storage_code);
 	    
 	    // 서비스 메서드 호출 (파라미터 전달)
 	    List<LogisStockDTO> result = logisstockService.logisStockSearch(
-	    		start_date, end_date, item_code, client_code, storage_code
+	    		start_date, end_date, item_code, storage_code
+	    );
+	    
+	    
+	    return new ResponseEntity<>(result, HttpStatus.OK); // 200 OK
+	}
+	
+	@GetMapping("/exportStockExcel")
+	public ResponseEntity<List<LogisStockDTO>> logisExcelPrint(	// ?를 주면 자동으로 적용된다. T 와 같은 의미, 데이터가 아직 결정되지 않았다는 뜻 => Integer 또는 ? 를 주면 된다. 
+		// required = false: 선택적인 파라미터 → 안 보내도 null로 들어가게 하려고 씀.
+		@RequestParam(required = false) String start_date, 
+		@RequestParam(required = false) String end_date, 
+	    @RequestParam(required = false) Integer item_code,
+	    @RequestParam(required = false) Integer storage_code
+	) {
+	    System.out.println("<<< logisStockSearch - Controller >>>");
+
+	    System.out.println("start_date: " + start_date);
+	    System.out.println("end_date: " + end_date);
+	    System.out.println("item_code: " + item_code);
+	    System.out.println("storage_code: " + storage_code);
+	    
+	    // 서비스 메서드 호출 (파라미터 전달)
+	    List<LogisStockDTO> result = logisstockService.logisStockSearch(
+	    		start_date, end_date, item_code, storage_code
 	    );
 	    
 	    

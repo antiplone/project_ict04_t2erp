@@ -1,91 +1,119 @@
 import React, { useState } from "react";
-import { Button, Modal } from "rsuite";
+import { Modal } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 import axios from "axios";
+import styles from "#styles/emailstyle.module.css"; // email style import
 
 const EmailFormModal = ({ open, onClose }) => {
-  const fetchURL = AppConfig.fetch["mytest"];
-  const [to, setTo] = useState("");
-  const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+	const rawFetchURL = AppConfig.fetch["mytest"];
+	const fetchURL =
+		typeof rawFetchURL === "string"
+			? rawFetchURL
+			: `${rawFetchURL.protocol}${rawFetchURL.url}`;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-    try {
-      const response = await axios.post(
-        `${fetchURL.protocol}${fetchURL.url}/email/send`,
-        { to, subject, body }
-      );
-      setMessage(response.data?.message || "메일이 성공적으로 발송되었습니다.");
-      setTo("");
-      setSubject("");
-      setBody("");
-    } catch (error) {
-      setMessage("메일 발송 오류: " + (error.response?.data?.message || error.message));
-    } finally {
-      setLoading(false);
-    }
-  };
+	const [to, setTo] = useState("");
+	const [subject, setSubject] = useState("");
+	const [text, setText] = useState("");
+	const [file, setFile] = useState(null);
+	const [message, setMessage] = useState("");
+	const [loading, setLoading] = useState(false);
 
-  const handleClose = () => {
-    setTo("");
-    setSubject("");
-    setBody("");
-    setMessage("");
-    onClose?.(); // Trigger the parent's onClose callback to close the modal
-  };
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setLoading(true);
+		setMessage("");
 
-  return (
-    <Modal open={open} onClose={handleClose} size="xs">
-      <Modal.Header>
-        <Modal.Title>이메일 발송</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: 10 }}>
-            <label>To:</label>
-            <input
-              type="email"
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              required
-              style={{ width: "100%" }}
-            />
-          </div>
-          <div style={{ marginBottom: 10 }}>
-            <label>Subject:</label>
-            <input
-              type="text"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              required
-              style={{ width: "100%" }}
-            />
-          </div>
-          <div style={{ marginBottom: 10 }}>
-            <label>Body:</label>
-            <textarea
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              required
-              style={{ width: "100%" }}
-            />
-          </div>
-          <Button type="submit" appearance="primary" loading={loading} style={{ marginRight: 8 }}>
-            메일 보내기
-          </Button>
-          <Button onClick={handleClose} appearance="subtle">
-            취소
-          </Button>
-        </form>
-        {message && <p style={{ marginTop: 10 }}>{message}</p>}
-      </Modal.Body>
-    </Modal>
-  );
+		const formData = new FormData();
+		formData.append("to", to);
+		formData.append("subject", subject);
+		formData.append("text", text);
+		if (file) formData.append("files", file);
+
+		try {
+			await axios.post(`${fetchURL}/email/send`, formData, {
+				headers: {
+					"Content-Type": "multipart/form-data"
+				}
+			});
+			alert("이메일이 전송되었습니다!");
+			handleClose();
+		} catch (error) {
+			setMessage("메일 발송 오류: " + (error.response?.data?.message || error.message));
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleClose = () => {
+		setTo("");
+		setSubject("");
+		setText("");
+		setFile(null);
+		setMessage("");
+		onClose?.();
+	};
+
+	return (
+		<Modal open={open} onClose={handleClose} size="md">
+			<Modal.Header>
+				<Modal.Title className={styles.modalTitle}>이메일 발송</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				<form onSubmit={handleSubmit}>
+					<div className={styles.formGroup}>
+						<label className={styles.label}>수신:</label>
+						<input
+							type="email"
+							value={to}
+							onChange={(e) => setTo(e.target.value)}
+							required
+							className={`${styles.input}`}
+						/>
+					</div>
+					<div className={styles.formGroup}>
+						<label className={styles.label}>제목:</label>
+						<input
+							type="text"
+							value={subject}
+							onChange={(e) => setSubject(e.target.value)}
+							required
+							className={styles.input}
+						/>
+					</div>
+					<div className={styles.formGroup}>
+						<label className={styles.label}>본문:</label>
+						<textarea
+							value={text}
+							onChange={(e) => setText(e.target.value)}
+							required
+							className={styles.textarea}
+						/>
+					</div>
+					<div className={styles.formGroup}>
+						<label className={styles.label}>첨부파일:</label>
+						<input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} className={styles.fileInput} />
+					</div>
+					<div className={styles.buttonContainer}>
+						<button
+							type="submit"
+							className={styles.primaryButton}
+							disabled={loading}
+						>
+							메일 보내기
+						</button>
+						<button
+							type="button"
+							onClick={handleClose}
+							className={styles.secondaryButton}
+						>
+							취소
+						</button>
+					</div>
+				</form>
+				{message && <p className={styles.errorMessage}>{message}</p>}
+			</Modal.Body>
+		</Modal>
+	);
 };
 
 export default EmailFormModal;

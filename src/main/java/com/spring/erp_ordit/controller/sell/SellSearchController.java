@@ -63,6 +63,24 @@ public class SellSearchController {
 		return new ResponseEntity<>(service.sellItemList(), HttpStatus.OK);
 	}
 	
+	// http://localhost:8081/sell/searchItemCount/{storage_code}/{keyword}
+	// 판매 입력 - 창고 선택 시 조회되는 품목 리스트 모달 (키워드로 검색)
+	@GetMapping("/searchItemCount/{storage_code}/{keyword}")
+	public ResponseEntity<List<SellSearchDTO>> storage_itemListKey(@PathVariable int storage_code, @PathVariable String keyword) {
+		System.out.println("<<< storage_itemListKey >>>");
+
+		return new ResponseEntity<>(service.storage_itemListKey(storage_code, keyword), HttpStatus.OK);
+	}
+	
+	// http://localhost:8081/sell/searchItemCode/{storage_code}
+	// 판매 입력 - 창고 선택 시 조회되는 품목 리스트 모달
+	@GetMapping("/searchItemCode/{storage_code}")
+	public ResponseEntity<List<SellSearchDTO>> storage_itemList(@PathVariable int storage_code) {
+		System.out.println("<<< storage_itemList >>>");
+		
+		return new ResponseEntity<>(service.storage_itemList(storage_code), HttpStatus.OK);
+	}
+	
 	// http://localhost:8081/sell/searchDetailClient/{keyword}
 	// 판매 - 거래처 조회 모달(키워드로 검색)
 	@GetMapping("/searchDetailClient/{keyword}")

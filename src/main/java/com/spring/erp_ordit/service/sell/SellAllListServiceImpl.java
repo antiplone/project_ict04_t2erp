@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.erp_ordit.dao.sell.SellAllListMapper;
 import com.spring.erp_ordit.dto.sell.SellAllListDTO;
+import com.spring.erp_ordit.dto.sell.SellInvocieDTO;
 import com.spring.erp_ordit.dto.sell.SellOrderDTO;
 import com.spring.erp_ordit.dto.sell.SellOrderItemDTO;
 
@@ -84,9 +85,6 @@ public class SellAllListServiceImpl implements SellAllListService {
 	public List<SellAllListDTO> detailAllList(int order_id) {
 		System.out.println("서비스 - detailAllList");
 		
-		
-		System.out.println("서비스 - SellAllListDTO" + Mapper.detailAllList(order_id));
-		
 		return Mapper.detailAllList(order_id);
 	}
 	
@@ -146,6 +144,17 @@ public class SellAllListServiceImpl implements SellAllListService {
 		Mapper.deleteAllList(order_id);
 		
 		return "ok";
+	}
+	
+	// 판매 조회 - 거래명세서 조회
+	@Override
+	@Transactional
+	public List<SellInvocieDTO> detailInvocie(int order_id) {
+		System.out.println("서비스 - detailInvocie");
+		
+		System.out.println("서비스 - order_id: " + order_id);
+		
+		return Mapper.detailInvocie(order_id);
 	}
 
 	

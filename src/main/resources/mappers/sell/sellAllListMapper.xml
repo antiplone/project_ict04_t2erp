@@ -30,10 +30,8 @@
     
 	<!-- 판매 조회, 판매 현황 - 전체 리스트 -->
     <select id="sellAllList" resultType="com.spring.erp_ordit.dto.sell.SellAllListDTO">
-      SELECT *, SUM(total) AS total_sum FROM sell_allList_view
-      WHERE order_show = 'Y'
-      GROUP BY order_id
-     ORDER BY order_date DESC
+      SELECT * FROM sell_allList_view
+      ORDER BY order_date DESC
     </select>
     
     <!-- 판매 현황 - 검색 후 나오는 전체 리스트 -->
@@ -66,7 +64,6 @@
     <select id="detailAllList" resultType="com.spring.erp_ordit.dto.sell.SellAllListDTO">
       SELECT * FROM sell_allList_view
       WHERE order_id = #{order_id}
-      AND order_show = 'Y'
     </select>
     
     <!-- 판매 조회 - 수정 시작 -->
@@ -99,4 +96,10 @@
  		 WHERE order_id = #{order_id}
     </update>
    
+   <!-- 판매 조회 - 거래명세서 조회 -->
+    <select id="detailInvocie" resultType="com.spring.erp_ordit.dto.sell.SellInvocieDTO">
+      SELECT * FROM sell_invoice_view
+	   WHERE order_id= #{order_id}
+    </select>
+    
 </mapper>

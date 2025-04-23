@@ -77,21 +77,21 @@ const SellRequestClient = () => {
     }
 
 
-    //다음 우편번호 찾기 API사용
+    // 다음 우편번호 찾기 API사용
     const scriptUrl =
     "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
-      const open = useDaumPostcodePopup(scriptUrl);
+      const open = useDaumPostcodePopup(scriptUrl);   // 위 스크립트를 기반으로 주소 검색 팝업을 띄울 수 있는 함수를 가져옴
 
       const handleComplete = (data) => {
         let baseAddress = data.address;
         let extraAddress = "";
         let Addresszonecode = data.zonecode;
 
-        if (data.addressType === "R") {
-          if (data.bname !== "") {
+        if (data.addressType === "R") {   // R은 도로명 주소일 때만 실행 (지번 주소는 예외 처리)
+          if (data.bname !== "") {  // bname: 동/로/가 이름
             extraAddress += data.bname;
           }
-          if (data.buildingName !== "") {
+          if (data.buildingName !== "") { // buildingName: 건물명
             extraAddress +=
               extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
           }

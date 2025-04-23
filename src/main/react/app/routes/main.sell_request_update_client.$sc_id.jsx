@@ -199,56 +199,61 @@ useEffect(() => {
         );
         return; // 중복 체크가 안되면 등록하지 않음
         }
-        
-        // 빈 칸 체크
-        const emptyFields = Object.entries(requiredFields).filter(([key]) => {
-            return clientAdd[key].trim() === "";
-          });
-    
-        if (emptyFields.length > 0) {
-            const fieldNames = emptyFields.map(([_, label]) => label).join(", ");
-            toaster.push(
-                <Message showIcon type="warning">
-                    다음 항목을 입력해주세요!<br />
-                    : {fieldNames}
-                </Message>,
-                { placement: "topCenter" }
-            );
-            return;
-        }
-    
-        const finalClientAdd = {
-            ...clientAdd,
-            sc_email: getFullEmail()  // 이메일을 합쳐서 최종 값으로 설정
-        };
-    
-        e.preventDefault();
-        console.log("폼 제출됨! 데이터:", finalClientAdd);
-    
-        fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientUpdate/` + sc_id, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json;charset=utf-8"
-            },
-            body: JSON.stringify(finalClientAdd)
-        })
-        .then((res) => {
-            if (res.status === 200) return res.json();
-            else return null;
-        })
-        .then((res) => {
-            if (res !== 0) {
-                alert("수정이 완료되었습니다.");
-                // window.location.href = "/main/sell_request_client_list";
-                navigate("/main/sell_request_client_list");
-            } else {
-                alert("수정에 실패하였습니다.");
-            }
-        })
-        .catch(error => {
-            console.log('실패', error);
-        });
+
+    // 리스트로 이동
+    const listReqClient = () =>  {
+      navigate('/main/sell_request_client_list/');
     }
+
+    // 빈 칸 체크
+    const emptyFields = Object.entries(requiredFields).filter(([key]) => {
+        return clientAdd[key].trim() === "";
+      });
+
+    if (emptyFields.length > 0) {
+        const fieldNames = emptyFields.map(([_, label]) => label).join(", ");
+        toaster.push(
+            <Message showIcon type="warning">
+                다음 항목을 입력해주세요!<br />
+                : {fieldNames}
+            </Message>,
+            { placement: "topCenter" }
+        );
+        return;
+    }
+  
+      const finalClientAdd = {
+          ...clientAdd,
+          sc_email: getFullEmail()  // 이메일을 합쳐서 최종 값으로 설정
+      };
+  
+      e.preventDefault();
+      console.log("폼 제출됨! 데이터:", finalClientAdd);
+  
+      fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientUpdate/` + sc_id, {
+          method: "PUT",
+          headers: {
+              "Content-Type": "application/json;charset=utf-8"
+          },
+          body: JSON.stringify(finalClientAdd)
+      })
+      .then((res) => {
+          if (res.status === 200) return res.json();
+          else return null;
+      })
+      .then((res) => {
+          if (res !== 0) {
+              alert("수정이 완료되었습니다.");
+              // window.location.href = "/main/sell_request_client_list";
+              navigate("/main/sell_request_client_list");
+          } else {
+              alert("수정에 실패하였습니다.");
+          }
+      })
+      .catch(error => {
+          console.log('실패', error);
+      });
+  }
 
     // 리스트로 이동
     const listReqClient = () =>  {
@@ -429,7 +434,7 @@ useEffect(() => {
                         <Col xs={24} style={{ textAlign: "center" }}>
                             <ButtonToolbar style={{ display: "inline-block" }}>
                             <Button appearance="primary" onClick={submitclientAdd} style={{ marginRight: 10 }}>수정</Button>
-                            <Button appearance="default">취소</Button>
+                            <Button appearance="default" onClick={listReqClient}>취소</Button>
                           </ButtonToolbar>
                         </Col>
                       </Row>

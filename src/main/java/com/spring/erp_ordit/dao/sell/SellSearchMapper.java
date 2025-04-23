@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.spring.erp_ordit.dto.sell.SellSearchClientDTO;
@@ -26,6 +27,16 @@ public interface SellSearchMapper {
 	
 	// 판매 - 물품 리스트 모달
 	public List<SellSearchDTO> sellItemList();
+	
+	// 판매 입력 - 창고 선택 시 조회되는 품목 리스트 모달(키워드로 검색)
+	public List<SellSearchDTO> storage_itemListKey(
+		// 여러 파라미터를 받을 때 @Param을 사용하여 명시적으로 이름을 지정 (mapper에서 parameterType은 map)
+		@Param("storage_code") int storage_code, 
+	    @Param("keyword") String keyword
+	);
+	
+	// 판매 입력 - 창고 선택 시 조회되는 품목 리스트 모달
+	public List<SellSearchDTO> storage_itemList(int storage_code);
 	
 	// 판매 - 거래처 검색 모달(키워드로 검색)
 	public List<SellSearchClientDTO> sellSearchClientDetailList(String keyword);

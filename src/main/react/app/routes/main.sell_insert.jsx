@@ -6,10 +6,10 @@ import "#styles/sell.css";
 import SellClientSearchModal from "#components/sell/SellClientSearchModal.jsx";
 import SellEmployeeSearchModal from "#components/sell/SellEmployeeSearchModal.jsx";
 import SellStorageSearchModal from "#components/sell/SellStorageSearchModal.jsx";
-import SellItemSearchModal from "#components/sell/SellItemSearchModal.jsx";
 import AppConfig from "#config/AppConfig.json";
 import readingGlasses from "#images/common/readingGlasses.png";
 import ashBn from "#images/common/ashBn.png";
+import SellItemSearchCountModal from "#components/sell/SellItemSearchCountModal.jsx";
 
 // sell_insert => 판매 입력 페이지
 
@@ -112,20 +112,34 @@ const Sellinsert = () => {
 			target[key] = value;
 
 			// Number(...) || 0는 null, undefined, '' 등의 경우에도 숫자 계산 가능하게 처리
-			const quantity = Number(target.quantity) || 0;
 			const price = Number(target.price) || 0;
+			const quantity = Number(target.quantity) || 0;
+			const stock = Number(target.stock_amount) || 0;
 
-			// 수량 또는 단가 바뀌었을 때 계산
-			if (key === 'quantity' || key === 'price') {
-				const supply = quantity * price;
-				const vat = Math.floor(supply * 0.1); // 10% 부가세
-				const total = supply + vat;
-
-				target.supply = supply;
-				target.vat = vat;
-				target.total = total;
+			// 수량 입력 시 또는 재고가 바뀌었을 때도 검사
+			if (key === "quantity" || key === "stock_amount") {
+				if (quantity > stock) {
+					toaster.push(
+						<Message showIcon type="warning">
+							재고보다 많은 수량을 입력할 수 없습니다.
+						</Message>,
+						{ placement: "topCenter" }
+					);
+					// alert("재고보다 많은 수량을 입력할 수 없습니다.");
+					target.quantity = stock; // 최대 재고로 자동 수정
+				}
 			}
-		setSellAdd(nextData);
+			
+			// 수량 또는 단가 바뀌었을 때 계산
+			const supply = quantity * price;
+			const vat = Math.floor(supply * 0.1); // 부가세 10%
+			const total = supply + vat;
+
+			target.supply = supply;
+			target.vat = vat;
+			target.total = total;
+
+			setSellAdd(nextData);
 		}
 	};
 	
@@ -226,8 +240,8 @@ const Sellinsert = () => {
 		});
 	}
 
-	// 리셋을 위해 공통인 부분 묶기
-	const resetCommon = () => {
+	// '초기화' 버튼 - 전체 내용 리셋
+	const handleResetForm = () => {
 		setShipmentOrderDate(null);
 		setTransactionType(null);
 	
@@ -242,16 +256,7 @@ const Sellinsert = () => {
 		setSelectedStorage(null);
 		setSelectedStorageName(null);
 		setStorageModalOpen(false);
-	};
 
-	// '검색초기화' 버튼 - 검색 필터 초기화
-	const searchStatusReset = () => {
-		resetCommon(); // 공통 리셋만
-	}
-
-	// '다시 작성' 버튼 - 전체 내용 리셋
-	const handleResetForm = () => {
-		resetCommon(); // 공통 리셋
 		setSellAdd([]); // 하위 테이블 초기화만 추가
 	};
 
@@ -407,8 +412,8 @@ const Sellinsert = () => {
 							입력 추가
 						</Button>
 
-						<Button appearance="primary" type="submit" onClick={searchStatusReset}>
-							검색창 초기화
+						<Button appearance="primary" type="submit" onClick={handleResetForm}>
+							초기화
 						</Button>
 					</ButtonToolbar>
 				</div>
@@ -458,6 +463,13 @@ const Sellinsert = () => {
 								editable
 								/>
 							</Column>
+						
+						<Column width={100}>
+							<HeaderCell>재고</HeaderCell>
+							<EditableCell
+							dataKey="stock_amount"
+							/>
+						</Column>
 
 						<Column width={100}>
 							<HeaderCell>수량</HeaderCell>
@@ -518,7 +530,7 @@ const Sellinsert = () => {
 						<div className="resultBtn">
 							<ButtonToolbar>
 								<Button appearance="primary" onClick={submitSellInsert}>저장</Button>
-								<Button appearance="primary" onClick={handleResetForm}>다시 작성</Button>
+								{/* <Button appearance="primary" onClick={handleResetForm}>다시 작성</Button> */}
 							</ButtonToolbar>
 						</div>
 
@@ -549,16 +561,15 @@ const Sellinsert = () => {
 					handleClose={() => setStorageModalOpen(false)}
 				/>
 
-				<SellItemSearchModal
-					handleOpen={isItemModalOpen}
+				<SellItemSearchCountModal
+					isOpen={isItemModalOpen}
 					handleClose={() => setItemModalOpen(false)}
-					onItemSelect={(item_code, item_name, item_standard) => {
-						setSellAdd(prev =>
-							prev.map(row => row.id === currentEditId
-								? { ...row, item_code, item_name, item_standard }
-								: row
-							)
-						);
+					storage_code={selectedStorage}
+					onItemSelect={(item_code, item_name, item_standard, stock_amount) => {
+						handleChange(currentEditId, "item_code", item_code);
+						handleChange(currentEditId, "item_name", item_name);
+						handleChange(currentEditId, "item_standard", item_standard);
+						handleChange(currentEditId, "stock_amount", stock_amount); 
 						setItemModalOpen(false);
 					}}
 				/>

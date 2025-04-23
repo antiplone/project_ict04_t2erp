@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.erp_ordit.dto.sell.SellAllListDTO;
+import com.spring.erp_ordit.dto.sell.SellInvocieDTO;
 import com.spring.erp_ordit.dto.sell.SellOrderDTO;
 import com.spring.erp_ordit.service.sell.SellAllListServiceImpl;
 
@@ -82,6 +83,16 @@ public class SellAllListController {
 		
 		return new ResponseEntity<>(service.deleteAllList(order_id), HttpStatus.OK);	// 200
 		
+	}
+	
+	// http://localhost:8081/sell/invocie
+	// 판매 조회 - 거래명세서 조회
+	@GetMapping("/invocie/{order_id}")
+	public ResponseEntity<List<SellInvocieDTO>> detail_invocie(@PathVariable int order_id) {
+		System.out.println("<<< detail_invocie >>>");
+		System.out.println("<<< detail_invocie order_id : >>>" + order_id);
+		
+		return new ResponseEntity<List<SellInvocieDTO>>(service.detailInvocie(order_id), HttpStatus.OK);
 	}
 		
 }

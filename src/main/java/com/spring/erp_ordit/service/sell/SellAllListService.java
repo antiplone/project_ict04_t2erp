@@ -3,6 +3,7 @@ package com.spring.erp_ordit.service.sell;
 import java.util.List;
 
 import com.spring.erp_ordit.dto.sell.SellAllListDTO;
+import com.spring.erp_ordit.dto.sell.SellInvocieDTO;
 import com.spring.erp_ordit.dto.sell.SellOrderDTO;
 
 public interface SellAllListService {
@@ -25,4 +26,6 @@ public interface SellAllListService {
 	// 판매 조회 - 삭제
 	public String deleteAllList(int order_id);
 	
+	// 판매 조회 - 거래명세서 조회
+	public List<SellInvocieDTO> detailInvocie(int order_id);
 }

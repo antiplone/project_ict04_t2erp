@@ -56,6 +56,26 @@ public class SellSearchServiceImpl implements SellSearchService {
 		return SearchMapper.sellItemList();
 	}
 	
+	// 판매 입력 - 창고 선택 시 조회되는 품목 리스트 모달(키워드로 검색)
+	@Override
+	@Transactional(readOnly=true)
+	public List<SellSearchDTO> storage_itemListKey(int storage_code, String keyword) {
+		System.out.println("서비스 - storage_itemList");
+		System.out.println("서비스 - storage_code, keyword : " + storage_code + ", " + keyword);
+
+		return SearchMapper.storage_itemListKey(storage_code, keyword);
+	}
+	
+	// 판매 입력 - 창고 선택 시 조회되는 품목 리스트 모달
+	@Override
+	@Transactional(readOnly=true)
+	public List<SellSearchDTO> storage_itemList(int storage_code) {
+		System.out.println("서비스 - storage_itemList");
+		System.out.println("서비스 - storage_code : " + storage_code);
+		
+		return SearchMapper.storage_itemList(storage_code);
+	}
+	
 	// 판매 - 거래처 검색 모달(키워드로 검색)
 	@Override
 	@Transactional(readOnly=true)
@@ -109,4 +129,5 @@ public class SellSearchServiceImpl implements SellSearchService {
 		
 		return SearchMapper.sellWarehouseList();
 	}
+
 }

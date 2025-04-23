@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import com.spring.erp_ordit.dto.sell.SellAllListDTO;
+import com.spring.erp_ordit.dto.sell.SellInvocieDTO;
 import com.spring.erp_ordit.dto.sell.SellOrderDTO;
 import com.spring.erp_ordit.dto.sell.SellOrderItemDTO;
 
@@ -43,4 +44,6 @@ public interface SellAllListMapper {
 	// 판매 조회 - 삭제
 	public int deleteAllList(int order_id);
 	
+	// 판매 조회 - 거래명세서 조회
+	public List<SellInvocieDTO> detailInvocie(int order_id);
 }

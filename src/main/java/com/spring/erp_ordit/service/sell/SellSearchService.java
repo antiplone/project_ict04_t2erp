@@ -21,6 +21,12 @@ public interface SellSearchService {
 	// 판매 - 품목명 리스트 모달
 	public List<SellSearchDTO> sellItemList();
 	
+	// 판매 입력 - 창고 선택 시 조회되는 품목 리스트 모달(키워드로 검색)
+	public List<SellSearchDTO> storage_itemListKey(int storage_code, String keyword);
+	
+	// 판매 입력 - 창고 선택 시 조회되는 품목 리스트 모달
+	public List<SellSearchDTO> storage_itemList(int storage_code);
+	
 	// 판매 - 거래처 검색 모달(키워드로 검색)
 	public List<SellSearchClientDTO> sellSearchClientDetailList(String keyword);
 		

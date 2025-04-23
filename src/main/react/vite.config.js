@@ -14,4 +14,7 @@ export default defineConfig({
 			},
 		}),
 	],
-});
+	define: {
+		global: 'window' // SockJS의 global 오류 방지!
+	  }
+	});

@@ -7,11 +7,11 @@ import "#styles/sell.css";
 import SellClientSearchModal from "#components/sell/SellClientSearchModal.jsx";
 import SellEmployeeSearchModal from "#components/sell/SellEmployeeSearchModal.jsx";
 import SellStorageSearchModal from "#components/sell/SellStorageSearchModal.jsx";
-import SellItemSearchModal from "#components/sell/SellItemSearchModal.jsx";
 import AppConfig from "#config/AppConfig.json";
 import readingGlasses from "#images/common/readingGlasses.png";
 import ashBn from "#images/common/ashBn.png";
 import { useNavigate } from "@remix-run/react";
+import SellItemSearchCountModal from "#components/sell/SellItemSearchCountModal.jsx";
 
 // sell_all_list_update => 판매 입력건 수정 페이지
 
@@ -41,6 +41,8 @@ const sell_all_list_update = (props) => {
 	
 	// 입력한 내역 저장
 	const [sellAdd, setSellAdd] = useState([]);
+	// 경고 메세지창
+	const [warning, setWarning] = useState("");
 
 	// 백엔드로 전달하기 위해 출하창고 저장
 	const [shipmentOrderDate, setShipmentOrderDate] = useState(null);
@@ -84,31 +86,47 @@ const sell_all_list_update = (props) => {
 	const [orderItemId, setOrderItemId] = useState(null);
 
 	// 물품 검색 모달 관리
-	const [isItemModalOpen, setItemModalOpen] = useState(null);
+	const [isItemModalOpen, setItemModalOpen] = useState(false);
 
 	// 물품 수정 핸들러
 	const updateItem = (index, newData) => {
 		setSellAdd(prev => {
-            const updated = [...prev];
-            const current = { ...updated[index], ...newData };
-			
-			// Number(...) || 0는 null, undefined, '' 등의 경우에도 숫자 계산 가능하게 처리
-			const quantity = Number(current.quantity) || 0; 	// null, undefined, '', NaN일 경우 0 처리
+			const updated = [...prev];
+			const oldItem = updated[index];
+			const current = { ...oldItem, ...newData };
+	
+			// 숫자 변환
+			const stock = Number(current.stock_amount) || 0;
+			let quantity = Number(current.quantity) || 0;
 			const price = Number(current.price) || 0;
+	
+			// 재고 초과 검사
+			if (quantity > stock) {
+				toaster.push(
+					<Message showIcon type="warning">
+						재고보다 많은 수량을 입력할 수 없습니다.
+					</Message>,
+					{ placement: "topCenter" }
+				);
+				quantity = stock; // 자동 수정
+			}
+	
+			// 계산
 			const supply = quantity * price;
 			const vat = Math.floor(supply * 0.1);
 			const total = supply + vat;
-
-			// 계산된 값들을 포함한 새로운 항목으로 업데이트
+	
+			// 업데이트
 			updated[index] = {
-                ...current,
-                supply,
-                vat,
-                total,
-            };
-
-            return updated;
-        });
+				...current,
+				quantity, // 수정된 수량 반영
+				supply,
+				vat,
+				total,
+			};
+	
+			return updated;
+		});
 	};
 
 	// 행 추가 시 행마다 id 부여
@@ -128,6 +146,7 @@ const sell_all_list_update = (props) => {
 			item_code: '',
 			item_name: '',
 			item_standard: '',
+			stock_amount: 0,
 			quantity: 0,
 			price: 0,
 			supply: 0,
@@ -136,7 +155,12 @@ const sell_all_list_update = (props) => {
 			status: 'EDIT'
 		};
 	
-		setSellAdd(prev => [newItem, ...prev]);
+		// 상태 업데이트 시 불변성을 유지하며 새로운 행을 추가
+		setSellAdd(prev => {
+			const updatedSellAdd = [newItem, ...prev];
+			console.log(updatedSellAdd);  // 상태 변경 후 값 확인
+			return updatedSellAdd;
+		  });
 	};
 
 	// 행 삭제
@@ -279,8 +303,8 @@ const sell_all_list_update = (props) => {
 		})
 	}
 
-	// 리셋을 위해 공통인 부분 묶기
-	const resetCommon = () => {
+	// '초기화' 버튼 - 전체 내용 리셋
+	const handleResetForm = () => {
 		setShipmentOrderDate(null);
 		setTransactionType(null);
 
@@ -295,18 +319,14 @@ const sell_all_list_update = (props) => {
 		setSelectedStorage(null);
 		setSelectedStorageName(null);
 		setStorageModalOpen(false);
-	};
 
-	// '검색초기화' 버튼 - 검색 필터 초기화
-	const searchStatusReset = () => {
-		resetCommon(); // 공통 리셋만
-	}
-
-	// '다시 작성' 버튼 - 전체 내용 리셋
-	const handleResetForm = () => {
-		resetCommon(); // 공통 리셋
 		setSellAdd([]); // 하위 테이블 초기화만 추가
 	};
+
+	// 목록 버튼
+	const allList = () => {
+		navigate('/main/sell_all_list');
+	}
 
 	// 총액 계산
 	const totalSum = useMemo(() => {
@@ -434,12 +454,12 @@ const sell_all_list_update = (props) => {
 				</div>
 
 					<ButtonToolbar>
-					<Button appearance="primary" onClick={handleAddRow}>
+						<Button appearance="primary" onClick={handleAddRow}>
 							입력 추가하기
 						</Button>
 
-						<Button appearance="primary" type="submit" onClick={searchStatusReset}>
-							검색창 초기화
+						<Button appearance="primary" type="submit" onClick={handleResetForm}>
+							초기화
 						</Button>
 					</ButtonToolbar>
 
@@ -491,6 +511,16 @@ const sell_all_list_update = (props) => {
                                         setCurrentEditIndex(index);  // 현재 행 ID 저장
                                         setItemModalOpen(true);     // 모달 열기
                                     }}
+								/>
+                            </Form.Group>
+							
+							<Form.Group>
+                                <Form.ControlLabel className="updateLabel">재고</Form.ControlLabel>
+                                <Form.Control 
+									name="stock_amount"
+									plaintext
+									value={String(item.stock_amount ?? '')}
+									className="updateBox"
 								/>
                             </Form.Group>
 
@@ -575,6 +605,7 @@ const sell_all_list_update = (props) => {
 							<ButtonToolbar >
 								<Button appearance="primary" onClick={submitSellUpInsert}>저장</Button>
 								<Button appearance="primary" onClick={handleResetForm}>다시 작성</Button>
+								<Button appearance="primary" onClick={allList}>목록</Button>
 							</ButtonToolbar>
 							</div>
 
@@ -602,13 +633,23 @@ const sell_all_list_update = (props) => {
 					handleClose={() => setStorageModalOpen(false)}
 				/>
 
-				<SellItemSearchModal
-					handleOpen={isItemModalOpen}
-					handleClose={() => setItemModalOpen(false)}
-					onItemSelect={(item_code, item_name, item_standard) => {
-						if (currentEditIndex !== null) {
-							updateItem(currentEditIndex, { item_code, item_name, item_standard });
-						}
+				<SellItemSearchCountModal
+					isOpen={isItemModalOpen}
+					handleClose={() => {
+						console.log("모달 닫기 실행됨"); // 로그 확인용
+						setItemModalOpen(false);
+					  }}
+					storage_code={selectedStorage}
+					onItemSelect={(item_code, item_name, item_standard, stock_amount) => {
+						// 새 데이터 객체를 만들고, 이를 한 번에 업데이트
+						const newData = {
+							item_code,
+							item_name,
+							item_standard,
+							stock_amount
+						};
+				
+						updateItem(currentEditIndex, newData);  // 한 번에 새로운 데이터 전달
 						setItemModalOpen(false);
 					}}
 				/>

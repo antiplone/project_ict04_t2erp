@@ -2,10 +2,10 @@ import { Table, Button, Tabs, Message, ButtonToolbar,
 	Checkbox, Modal } from 'rsuite';
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate  } from "react-router-dom";
-import SellSalesInvoice from '#components/sell/SellSalesInvoice.jsx';
 import SellSlipAll from '#components/sell/SellSlipAll';
 import "#styles/sell.css";
 import AppConfig from "#config/AppConfig.json";
+import SellInvoice from '#components/sell/SellInvoice.jsx';
 
 // sell_all_list => 판매 조회 페이지
 
@@ -22,6 +22,14 @@ const confirm = ['미확인', '결재중', '완료'].map(
 const sell_all_list = () => {
 
 	const navigate = useNavigate();
+
+	// 거래명세서 클릭 시 전달할 order_id, 등록일자_No 값을 저장
+	const [selectedOrderInfo, setSelectedOrderInfo] = useState(null);
+
+	// '불러온 전표' 모달
+	const [open1, setOpen1] = React.useState(false);
+	const handleOpen1 = () => setOpen1(true);
+	const handleClose1 = () => setOpen1(false);
 
 	// '불러온 전표' 모달
 	const [open2, setOpen2] = React.useState(false);
@@ -55,16 +63,23 @@ const sell_all_list = () => {
 				// 같은 order_id의 품목 모으기
 				const sameOrderItems = orders.filter(x => x.order_id === item.order_id);
 													// 주문번호와 item 주문번호가 같은 걸 배열로 만들기
-				const firstItemName = sameOrderItems[0].item_name;
+													console.log("현재 처리 중인 order_id:", item.order_id);
+													console.log("해당 order_id로 묶인 품목 수:", sameOrderItems.length);
+													console.log("묶인 품목 목록:", sameOrderItems.map(x => x.item_name));
+													const firstItemName = sameOrderItems[0].item_name;
 				const displayName = sameOrderItems.length > 1
 					? `${firstItemName} 외 ${sameOrderItems.length - 1}건`
 					: firstItemName;
-	
+				
+					// total_sum 계산 (동일 주문번호에 대한 합산)
+			const totalSum = sameOrderItems.reduce((sum, curr) => sum + curr.total, 0);
+
 				// 한 줄만 push
 				result.push({
 					...item,
 					date_no: count,
-					item_display: displayName
+					item_display: displayName,
+					total_sum: totalSum // 총합을 추가
 				});
 	
 				count++;
@@ -101,7 +116,7 @@ const sell_all_list = () => {
 	// 결재 상태에 따라 필터링 만들기
 	const filteredList = allList.filter(row => {
 		if (activeTab === "1") return true; // 전체
-		if (activeTab === "2") return row.order_status === "진행중";
+		if (activeTab === "2") return row.order_status === "결재중";
 		if (activeTab === "3") return row.order_status === "승인";
 		return false;
 	  });
@@ -118,8 +133,8 @@ const sell_all_list = () => {
 				className="all_title"
 			>
 				<Tabs.Tab eventKey="1" title={`전체 (${allList.length})`} />
-				<Tabs.Tab eventKey="2" title={`결재중 (${allList.filter(r => r.order_status === '진행중').length})`} />
-				<Tabs.Tab eventKey="3" title={`확인 (${allList.filter(r => r.order_status === '승인').length})`} />
+				<Tabs.Tab eventKey="2" title={`결재중 (${allList.filter(r => r.order_status === '결재중').length})`} />
+				<Tabs.Tab eventKey="3" title={`승인 (${allList.filter(r => r.order_status === '승인').length})`} />
 			</Tabs>
 
 			<Table 
@@ -130,11 +145,6 @@ const sell_all_list = () => {
 					console.log(rowData);
 				}}
 			>	
-			
-			{/* <Column width={50} className="all_text">
-				<HeaderCell>선택</HeaderCell>
-				<Cell><Checkbox className="all_checkbox" /></Cell>
-			</Column> */}
 			
 			<Column width={130} className="all_text">
 				<HeaderCell>등록일자_No.</HeaderCell>
@@ -165,7 +175,7 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 
-			<Column width={200}  className="all_text">
+			<Column width={250}  className="all_text">
 				<HeaderCell>품목명</HeaderCell>
 				<Cell>
 					{(rowData) => rowData.item_display}
@@ -194,39 +204,87 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 
-			<Column width={100} className="all_text">
+			{/* <Column width={100} className="all_text">
 				<HeaderCell>회계반영 여부</HeaderCell>
 				<Cell />
-			</Column>
+			</Column> */}
 
 			<Column width={100} className="all_text">
 				<HeaderCell>출하여부</HeaderCell>
 				<Cell>
-					{(rowData) => rowData.income_confirm === null ? 'N' : rowData.income_confirm}
+					{(rowData) => {
+						if (rowData.income_confirm === null || rowData.income_confirm === 'N') {
+							return '미완료'; // null 또는 'N'이면 미완료 표시
+						} else if (rowData.income_confirm === 'Y') {
+							return '완료'; // 'Y'이면 완료 표시
+						}
+					}}
+				</Cell>
+			</Column>
+			
+			<Column width={100} className="all_text">
+				<HeaderCell>거래명세서</HeaderCell>
+				<Cell>
+				{(rowData) => (
+					<Button
+					color="yellow"
+					appearance="ghost"
+					size="xs"
+					onClick={() => {
+						setSelectedOrderInfo({
+							order_id: rowData.order_id,
+							order_date: rowData.order_date,
+							date_no: rowData.date_no
+						  });  // 선택한 order_id, 등록일자_No 저장
+						handleOpen1();                         // 모달 열기
+					}}
+					>
+					조회
+					</Button>
+				)}
 				</Cell>
 			</Column>
 
 			<Column width={100} className="all_text">
 				<HeaderCell>불러온 전표</HeaderCell>
 				<Cell>
-					<Button appearance="link" onClick={handleOpen2}>
-					조회
-					</Button>
+					<Button color="green" appearance="ghost" size="xs" onClick={handleOpen2}>조회</Button>
 				</Cell>
 			</Column>
 			</Table>
 
+			<Modal open={open1} onClose={handleClose1} style={{ width:1000 }}>
+				<Modal.Header>
+					<Modal.Title>거래명세서</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					{/* selectedOrderInfo가 null이 아닐 때만 SellInvoice 컴포넌트를 렌더링하게 조건문을 추가 */}
+					{selectedOrderInfo && (
+						<SellInvoice 
+							order_id={selectedOrderInfo.order_id}
+							order_date={selectedOrderInfo.order_date}
+							date_no={selectedOrderInfo.date_no}
+						/>
+					)}
+				</Modal.Body>
+				<Modal.Footer>
+					<Button onClick={handleClose1} appearance="default">
+						닫기
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
 			<Modal open={open2} onClose={handleClose2} style={{ width:800 }}>
 				<Modal.Header>
-				<Modal.Title>불러온 전표</Modal.Title>
+					<Modal.Title>전표</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<SellSlipAll />
 				</Modal.Body>
 				<Modal.Footer>
-				<Button onClick={handleClose2} appearance="subtle">
-					닫기
-				</Button>
+					<Button onClick={handleClose2} appearance="default">
+						닫기
+					</Button>
 				</Modal.Footer>
 			</Modal>
 

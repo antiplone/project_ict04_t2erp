@@ -3,7 +3,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import AppConfig from "#config/AppConfig.json";
 import React, { useState } from "react";
-import { Button, Container, DatePicker, Divider, Input, InputGroup, InputNumber, InputPicker, Message, Table, IconButton } from "rsuite";
+import { Button, Container, DatePicker, Divider, Input, InputGroup, InputNumber, InputPicker, Message, Table } from "rsuite";
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import { useNavigate } from "@remix-run/react";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
@@ -141,7 +141,7 @@ export default function BuyInsert() {
     };
 
     // 총액 합계 계산 
-    // reduce는 배열의 각 항목을 순차적으로 처리 => 하나의 결과 값을 받환 (acc: 누적값, item: 현재 항목) / null 일 경우 0으로 대체
+    // reduce는 배열의 각 항목을 순차적으로 처리 => 하나의 결과 값을 받환 (acc: 누적값, order: 현재 항목) / null 일 경우 0으로 대체
     const totalSum = orderItems.reduce((acc, order) => acc + (order.total || 0), 0); 
 
     const fetchURL = AppConfig.fetch["mytest"];

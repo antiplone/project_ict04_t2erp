@@ -4,6 +4,7 @@ import { Container, Message, /* Form, */ Table } from 'rsuite';
 import '#components/common/css/common.css'
 import Appconfig from "#config/AppConfig.json";
 
+
 const WareHouseList = () => {
     const [storageList, setStorageList] = useState([]); // 초기값을 모르므로 빈배열로 Warehousingist에 대입
 

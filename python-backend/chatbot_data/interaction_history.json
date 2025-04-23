@@ -1,0 +1,788 @@
+[
+  {
+    "timestamp": "2025-04-22T22:07:12.816134",
+    "question": "안녕",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:07:39.201957",
+    "question": "인사",
+    "response": "Hi there! What can I do for you?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:07:55.169734",
+    "question": "하이룽",
+    "response": "Hi there! What can I do for you?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:08:38.108516",
+    "question": "farewell",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:08:43.316651",
+    "question": "help",
+    "response": "Hi there! What can I do for you?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:08:52.839522",
+    "question": "erp",
+    "response": "Glad I could help!",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:08:59.538421",
+    "question": "sales",
+    "response": "Hi there! What can I do for you?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:09:04.398213",
+    "question": "안냐세요",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:09:10.247795",
+    "question": "bye",
+    "response": "Hi there! What can I do for you?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:09:32.873316",
+    "question": "하이",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:09:37.373908",
+    "question": "안냥",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:10:05.444073",
+    "question": "안냥",
+    "response": "Hi there! What can I do for you?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:10:14.848442",
+    "question": "인사",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:10:23.814007",
+    "question": "good",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:10:29.877578",
+    "question": "thank",
+    "response": "Glad I could help!",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:10:33.814110",
+    "question": "erp",
+    "response": "You're welcome!",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:10:36.475624",
+    "question": "erp",
+    "response": "Glad I could help!",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:10:38.120088",
+    "question": "erp",
+    "response": "Glad I could help!",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:10:39.356246",
+    "question": "erp",
+    "response": "You're welcome!",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:10:42.700266",
+    "question": "system",
+    "response": "Hi there! What can I do for you?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:10:49.268963",
+    "question": "software",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:11:30.816649",
+    "question": "erp",
+    "response": "You're welcome!",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:11:35.698453",
+    "question": "inventory",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:11:40.738542",
+    "question": "items",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:11:43.992235",
+    "question": "customers",
+    "response": "Glad I could help!",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:11:51.645052",
+    "question": "transactions",
+    "response": "Glad I could help!",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:14:54.862499",
+    "question": "shit",
+    "response": "Hi there! What can I do for you?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-22T22:14:58.070672",
+    "question": "안녕",
+    "response": "Hi there! What can I do for you?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-23T15:44:55.187313",
+    "question": "hello",
+    "response": "Hi there! What can I do for you?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-23T15:44:58.561308",
+    "question": "야",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-23T15:45:02.066156",
+    "question": "안녕",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-23T16:11:19.855752",
+    "question": "한국",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-23T16:11:24.751189",
+    "question": "KOREA",
+    "response": "Hello! How can I help you today?",
+    "feedback": null
+  },
+  {
+    "timestamp": "2025-04-23T16:16:49.942754",
+    "question": "한글",
+    "response": "I'm not sure I understand. Could you please rephrase your question?",
+    "metadata": {
+      "confidence": 0.16019417345523834,
+      "category": "greetings"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T16:17:11.350592",
+    "question": "한국어",
+    "response": "I'm not sure I understand. Could you please rephrase your question?",
+    "metadata": {
+      "confidence": 0.16063354909420013,
+      "category": "greetings"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T16:17:14.717954",
+    "question": "sales",
+    "response": "I'm not sure I understand. Could you please rephrase your question?",
+    "metadata": {
+      "confidence": 0.16855360567569733,
+      "category": "greetings"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T16:17:54.453584",
+    "question": "한글",
+    "response": "I'm not sure I understand. Could you please rephrase your question?",
+    "metadata": {
+      "confidence": 0.16019417345523834,
+      "category": "greetings"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T16:17:56.870105",
+    "question": "한국어",
+    "response": "I'm not sure I understand. Could you please rephrase your question?",
+    "metadata": {
+      "confidence": 0.16063354909420013,
+      "category": "greetings"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T16:17:58.499833",
+    "question": "hello",
+    "response": "I'm not sure I understand. Could you please rephrase your question?",
+    "metadata": {
+      "confidence": 0.1739213466644287,
+      "category": "greetings"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T16:18:20.892051",
+    "question": "see ya",
+    "response": "I'm not sure I understand. Could you please rephrase your question?",
+    "metadata": {
+      "confidence": 0.16755495965480804,
+      "category": "greetings"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T16:18:41.557726",
+    "question": "stock",
+    "response": "I'm not sure I understand. Could you please rephrase your question?",
+    "metadata": {
+      "confidence": 0.16698941588401794,
+      "category": "greetings"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:41:24.874048",
+    "question": "한글",
+    "response": "한국은 한국어 정식 명칭은 '대한민국' 영어로는 'KOREA'입니다.",
+    "metadata": {
+      "confidence": 0.16019417345523834,
+      "category": "한국어",
+      "matched_pattern": "한글"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:41:38.315738",
+    "question": "국어",
+    "response": "한국은 한국어 정식 명칭은 '대한민국' 영어로는 'KOREA'입니다.",
+    "metadata": {
+      "confidence": 0.16055499017238617,
+      "category": "한국어",
+      "matched_pattern": "국어"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:41:40.922354",
+    "question": "sales",
+    "response": "The sales module manages customer orders, transactions, and customer relationships.",
+    "metadata": {
+      "confidence": 0.16855360567569733,
+      "category": "sales",
+      "matched_pattern": "sales"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:41:44.182935",
+    "question": "stock",
+    "response": "The inventory management module helps track products, stock levels, and movements.",
+    "metadata": {
+      "confidence": 0.16698941588401794,
+      "category": "inventory",
+      "matched_pattern": "stock"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:49:01.693708",
+    "question": "판매 주문 취소해 주세요",
+    "response": "I'm not sure I understand. Could you please rephrase your question or ask about something specific?",
+    "metadata": {
+      "confidence": 0.15940897166728973,
+      "category": "greetings"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:49:28.812607",
+    "question": "구매 주문을 생성합니다",
+    "response": "I'm not sure I understand. Could you please rephrase your question or ask about something specific?",
+    "metadata": {
+      "confidence": 0.15920579433441162,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:49:34.097076",
+    "question": "구매 주문을 생성합니다.",
+    "response": "I'm not sure I understand. Could you please rephrase your question or ask about something specific?",
+    "metadata": {
+      "confidence": 0.15935951471328735,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:49:43.420715",
+    "question": "제품 1234의 재고를 확인해 주세요",
+    "response": "재고를 확인 중입니다.",
+    "metadata": {
+      "confidence": 0.1574355959892273,
+      "category": "inventory_check",
+      "matched_pattern": "제품 1234의 재고를 확인해 주세요"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:49:52.034257",
+    "question": "새로운 판매 주문을 생성해 주세요",
+    "response": "새로운 판매 주문을 생성합니다.",
+    "metadata": {
+      "confidence": 0.15886999666690826,
+      "category": "create_sales_order",
+      "matched_pattern": "새로운 판매 주문을 생성해 주세요"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:49:57.576651",
+    "question": "배송 상태 알려주세요",
+    "response": "배송 상태를 확인 중입니다.",
+    "metadata": {
+      "confidence": 0.1590837985277176,
+      "category": "delivery_status",
+      "matched_pattern": "배송 상태 알려주세요"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:50:03.656452",
+    "question": "구매 주문 상태를 확인해 주세요",
+    "response": "구매 주문 상태를 확인 중입니다.",
+    "metadata": {
+      "confidence": 0.15818123519420624,
+      "category": "purchase_order_status",
+      "matched_pattern": "구매 주문 상태를 확인해 주세요"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:50:09.504550",
+    "question": "직원 정보 보여 주세요",
+    "response": "직원 상세 정보를 불러오는 중입니다.",
+    "metadata": {
+      "confidence": 0.15843406319618225,
+      "category": "employee_info",
+      "matched_pattern": "직원 정보 보여 주세요"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:50:13.513739",
+    "question": "승인 대기 중인 휴가 확인",
+    "response": "휴가 신청을 승인 중입니다.",
+    "metadata": {
+      "confidence": 0.1576489806175232,
+      "category": "approve_leave",
+      "matched_pattern": "승인 대기 중인 휴가 확인"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T17:50:21.116999",
+    "question": "1분기 재무 보고서를 보여 주세요",
+    "response": "재무 보고서를 보여 드리겠습니다.",
+    "metadata": {
+      "confidence": 0.1583753526210785,
+      "category": "financial_report",
+      "matched_pattern": "1분기 재무 보고서를 보여 주세요"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T18:05:44.425184",
+    "question": "물류",
+    "response": "I'm not sure I understand. Could you please rephrase your question or ask about something specific?",
+    "metadata": {
+      "confidence": 0.15890967845916748,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T18:05:52.234700",
+    "question": "신규 직원",
+    "response": "I'm not sure I understand. Could you please rephrase your question or ask about something specific?",
+    "metadata": {
+      "confidence": 0.15948452055454254,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T18:06:00.458281",
+    "question": "고객 정보 조회",
+    "response": "관리운영 > 거래처 등록 에서 확인 가능합니다.",
+    "metadata": {
+      "confidence": 0.16115906834602356,
+      "category": "customer_info",
+      "matched_pattern": "고객 정보 조회"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T18:08:52.581338",
+    "question": "관리",
+    "response": "I'm not sure I understand. Could you please rephrase your question or ask about something specific?",
+    "metadata": {
+      "confidence": 0.16126728057861328,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T18:10:24.331663",
+    "question": "관리",
+    "response": "I'm not sure I understand. Could you please rephrase your question or ask about something specific?",
+    "metadata": {
+      "confidence": 0.16126728057861328,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T18:10:26.224223",
+    "question": "인사",
+    "response": "I'm not sure I understand. Could you please rephrase your question or ask about something specific?",
+    "metadata": {
+      "confidence": 0.16299869120121002,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T18:10:41.709099",
+    "question": "인사",
+    "response": "인사관리 부서로 연락하세요.",
+    "metadata": {
+      "confidence": 0.16299869120121002,
+      "category": "management",
+      "matched_pattern": "인사"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T18:10:43.789445",
+    "question": "관리",
+    "response": "인사관리 부서로 연락하세요.",
+    "metadata": {
+      "confidence": 0.16126728057861328,
+      "category": "management",
+      "matched_pattern": "관리"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:27:08.653116",
+    "question": "yo",
+    "response": "해당 내용에 대해서는 제가 답변드리지 못해 죄송합니다.",
+    "metadata": {
+      "confidence": 0.16891472041606903,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:27:14.117047",
+    "question": "물류",
+    "response": "해당 내용에 대해서는 제가 답변드리지 못해 죄송합니다.",
+    "metadata": {
+      "confidence": 0.15890967845916748,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:27:17.161697",
+    "question": "입고",
+    "response": "해당 내용에 대해서는 제가 답변드리지 못해 죄송합니다.",
+    "metadata": {
+      "confidence": 0.1625545173883438,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:27:19.292690",
+    "question": "입고 관리",
+    "response": "인사관리 부서로 연락하세요.",
+    "metadata": {
+      "confidence": 0.16009283065795898,
+      "category": "management",
+      "matched_pattern": "관리"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:31:39.861105",
+    "question": "물류",
+    "response": "해당 내용에 대해서는 제가 답변드리지 못해 죄송합니다.",
+    "metadata": {
+      "confidence": 0.15890967845916748,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:46:28.830282",
+    "question": "창고",
+    "response": "해당 내용에 대해서는 제가 답변드리지 못해 죄송합니다.",
+    "metadata": {
+      "confidence": 0.16162127256393433,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:46:31.834440",
+    "question": "입고",
+    "response": "해당 내용에 대해서는 제가 답변드리지 못해 죄송합니다.",
+    "metadata": {
+      "confidence": 0.1625545173883438,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:46:34.232216",
+    "question": "관리",
+    "response": "인사관리 부서로 연락하세요.",
+    "metadata": {
+      "confidence": 0.16126728057861328,
+      "category": "management",
+      "matched_pattern": "관리"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:46:38.145015",
+    "question": "입고 관리",
+    "response": "인사관리 부서로 연락하세요.",
+    "metadata": {
+      "confidence": 0.16009283065795898,
+      "category": "management",
+      "matched_pattern": "관리"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:46:42.725989",
+    "question": "입고관리",
+    "response": "인사관리 부서로 연락하세요.",
+    "metadata": {
+      "confidence": 0.15950240194797516,
+      "category": "management",
+      "matched_pattern": "관리"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:46:51.738248",
+    "question": "물류",
+    "response": "해당 내용에 대해서는 제가 답변드리지 못해 죄송합니다.",
+    "metadata": {
+      "confidence": 0.15890967845916748,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:51:26.502643",
+    "question": "물류",
+    "response": "해당 내용에 대해서는 제가 답변드리지 못해 죄송합니다.",
+    "metadata": {
+      "confidence": 0.15890967845916748,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:51:56.920517",
+    "question": "물류",
+    "response": "입고관리에서 확인 후 구매 담당자에서 연락하십시오.",
+    "metadata": {
+      "confidence": 0.15890967845916748,
+      "category": "purchase_order_status",
+      "matched_pattern": "물류"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:52:08.291929",
+    "question": "입고",
+    "response": "입고관리에서 확인 후 구매 담당자에서 연락하십시오.",
+    "metadata": {
+      "confidence": 0.1625545173883438,
+      "category": "purchase_order_status",
+      "matched_pattern": "입고"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T19:52:12.267394",
+    "question": "입고 관리",
+    "response": "입고관리에서 확인 후 구매 담당자에서 연락하십시오.",
+    "metadata": {
+      "confidence": 0.16009283065795898,
+      "category": "purchase_order_status",
+      "matched_pattern": "입고"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:03:04.444523",
+    "question": "물류",
+    "response": "입고관리에서\\s*확인\\s*후\\s*구매\\s*담당자에서\\s*연락하십시오.",
+    "metadata": {
+      "confidence": 0.15890967845916748,
+      "category": "purchase_order_status",
+      "matched_pattern": "물류"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:06:48.103808",
+    "question": "물류관리",
+    "response": "입고관리에서\\s*확인\\s*후\\s*구매\\s*담당자에서\\s*연락하십시오.",
+    "metadata": {
+      "confidence": 0.1580827236175537,
+      "category": "purchase_order_status",
+      "matched_pattern": "물류"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:06:52.764048",
+    "question": "물류 관리",
+    "response": "입고관리에서\\s*확인\\s*후\\s*구매\\s*담당자에서\\s*연락하십시오.",
+    "metadata": {
+      "confidence": 0.15849147737026215,
+      "category": "purchase_order_status",
+      "matched_pattern": "물류"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:07:04.591685",
+    "question": "입고관리",
+    "response": "입고관리에서\\s*확인\\s*후\\s*구매\\s*담당자에서\\s*연락하십시오.",
+    "metadata": {
+      "confidence": 0.15950240194797516,
+      "category": "purchase_order_status",
+      "matched_pattern": "입고"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:07:06.481096",
+    "question": "입고 관리",
+    "response": "입고관리에서\\s*확인\\s*후\\s*구매\\s*담당자에서\\s*연락하십시오.",
+    "metadata": {
+      "confidence": 0.16009283065795898,
+      "category": "purchase_order_status",
+      "matched_pattern": "입고"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:07:14.826397",
+    "question": "판매",
+    "response": [
+      "죄송합니다. 정확히 이해하지 못했어요. 다시 말씀해 주시겠어요?",
+      "원하시는 업무가 무엇인지 조금 더 자세히 알려주세요."
+    ],
+    "metadata": {
+      "confidence": 0.16239315271377563,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:07:16.738129",
+    "question": "판매 주문",
+    "response": [
+      "죄송합니다. 정확히 이해하지 못했어요. 다시 말씀해 주시겠어요?",
+      "원하시는 업무가 무엇인지 조금 더 자세히 알려주세요."
+    ],
+    "metadata": {
+      "confidence": 0.16115111112594604,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:07:20.806228",
+    "question": "판매주문",
+    "response": [
+      "죄송합니다. 정확히 이해하지 못했어요. 다시 말씀해 주시겠어요?",
+      "원하시는 업무가 무엇인지 조금 더 자세히 알려주세요."
+    ],
+    "metadata": {
+      "confidence": 0.1608790159225464,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:07:27.828202",
+    "question": "재고",
+    "response": "재고관리에서\\s*확인가능합니다.",
+    "metadata": {
+      "confidence": 0.16262584924697876,
+      "category": "inventory_check",
+      "matched_pattern": "재고"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:07:31.443017",
+    "question": "재고 관리",
+    "response": "재고관리에서\\s*확인가능합니다.",
+    "metadata": {
+      "confidence": 0.16009128093719482,
+      "category": "inventory_check",
+      "matched_pattern": "재고"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:07:33.267595",
+    "question": "재고관리",
+    "response": "재고관리에서\\s*확인가능합니다.",
+    "metadata": {
+      "confidence": 0.15942233800888062,
+      "category": "inventory_check",
+      "matched_pattern": "재고"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:09:31.985429",
+    "question": "인사",
+    "response": "인사관리\\s*부서로\\s*연락하세요.",
+    "metadata": {
+      "confidence": 0.16299869120121002,
+      "category": "management",
+      "matched_pattern": "인사"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:09:33.393887",
+    "question": "신입",
+    "response": [
+      "죄송합니다. 정확히 이해하지 못했어요. 다시 말씀해 주시겠어요?",
+      "원하시는 업무가 무엇인지 조금 더 자세히 알려주세요."
+    ],
+    "metadata": {
+      "confidence": 0.16173085570335388,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:09:36.272140",
+    "question": "등록",
+    "response": [
+      "죄송합니다. 정확히 이해하지 못했어요. 다시 말씀해 주시겠어요?",
+      "원하시는 업무가 무엇인지 조금 더 자세히 알려주세요."
+    ],
+    "metadata": {
+      "confidence": 0.1610330194234848,
+      "category": "inventory_check"
+    }
+  },
+  {
+    "timestamp": "2025-04-23T20:09:38.753559",
+    "question": "신입등록",
+    "response": [
+      "죄송합니다. 정확히 이해하지 못했어요. 다시 말씀해 주시겠어요?",
+      "원하시는 업무가 무엇인지 조금 더 자세히 알려주세요."
+    ],
+    "metadata": {
+      "confidence": 0.16012704372406006,
+      "category": "inventory_check"
+    }
+  }
+]

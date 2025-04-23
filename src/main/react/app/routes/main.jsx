@@ -8,6 +8,7 @@ import AppConfig from "#config/AppConfig.json"
 import SideMenu from "#components/common/SideMenu";
 import HeaderMenu from "#components/common/HeaderMenu"
 import SideMenu_hr from "#components/hr/SideMenu_hr";
+import Chatbot from '#components/chatbot/chatbot';
 
 // @Remix:모듈함수 - <html>의 <head>의 내용
 export function meta() {
@@ -61,6 +62,7 @@ export default function Main() {
 			<Container>
 				<HeaderMenu />
 				<Outlet />
+                <Chatbot width={150} height={150} style={{padding:'6px'}}/>
 			</Container>
 
 		</Container>

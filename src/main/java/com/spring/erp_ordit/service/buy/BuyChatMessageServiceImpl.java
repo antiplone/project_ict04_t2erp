@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.erp_ordit.dao.buy.BuyChatMessageMapper;
 import com.spring.erp_ordit.dto.buy.BuyChatMessageDTO;
+import com.spring.erp_ordit.dto.buy.ChatEmployeeDTO;
 
 @Service
 @Transactional // 트랜잭션 적용
@@ -20,6 +21,14 @@ public class BuyChatMessageServiceImpl { // 작성자 - hjy, 1:1 채팅
 	@Autowired
 	private BuyChatMessageMapper buyChatMessageMapper;
 
+	// 직원 목록 조회
+	public List<ChatEmployeeDTO> getChatEmployeeList() {
+		
+		System.out.println("<<< BuyOrderServiceImpl - getChatEmployeeList >>>");
+		
+		return buyChatMessageMapper.chatEmployeeList();
+	}
+	
 	// 메시지 저장
 	public void saveMessage(BuyChatMessageDTO message) {
 		// JOIN 메시지는 저장하지 않음
@@ -45,11 +54,6 @@ public class BuyChatMessageServiceImpl { // 작성자 - hjy, 1:1 채팅
 		// CHAT 메시지만 저장
 		buyChatMessageMapper.insertMessage(message);
 	}
-
-//    // 채팅방 목록 조회
-//    public List<String> getRoomIdsByUser(String user_id) {
-//        return buyChatMessageMapper.findRoomIdsByUser(user_id);
-//    }
 
 	// 사용자의 e_auth_id를 기준으로 room_id 생성
 	public String generateRoomId(String eId1, String eId2) {

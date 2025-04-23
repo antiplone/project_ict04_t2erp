@@ -3,6 +3,8 @@ package com.spring.erp_ordit.controller.buy;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -38,12 +40,14 @@ public class BuyChatController {
 		buyChatMessageService.saveMessage(chatMessage); // DB 저장
 		return chatMessage; // 실시간 전송
 	}
-
-//	// 채팅방 목록 조회
-//	@GetMapping("/chat/rooms/{user_id}")
-//	public List<String> getRoomIdsForUser(@PathVariable String user_id) {
-//	    return buyChatMessageService.getRoomIdsByUser(user_id);
-//	}
+	
+	// 채팅 상대 선택시 직원 목록 조회 @GetMapping => http://localhost:8081/buy/chatEmployeeList
+	@GetMapping("/chatEmployeeList")
+	public ResponseEntity<?> chatEmployeeList() {	
+		System.out.println("<<< chatEmployeeList >>>");
+		
+		return new ResponseEntity<>(buyChatMessageService.getChatEmployeeList(), HttpStatus.OK); //200
+	}
 
 	// 사용자의 e_auth_id를 기준으로 room_id 생성
 	@GetMapping("/chat/room")

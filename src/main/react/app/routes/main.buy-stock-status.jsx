@@ -1,7 +1,7 @@
 // 구매팀 - 입고현황 페이지
 /* eslint-disable react/react-in-jsx-scope */
 import AppConfig from "#config/AppConfig.json";
-import { DateRangePicker, Input, InputGroup, InputPicker, Table } from 'rsuite';
+import { DateRangePicker, Input, InputGroup, Table } from 'rsuite';
 import React, { useState } from "react";
 import "../styles/buy.css";
 import { Button, Container, Divider, Message } from "rsuite";

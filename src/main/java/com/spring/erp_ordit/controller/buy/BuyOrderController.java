@@ -2,6 +2,7 @@ package com.spring.erp_ordit.controller.buy;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -67,6 +68,14 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		System.out.println("<<< buyOrderPayingCount >>>");
 		
 		return new ResponseEntity<>(buyOrderService.getBuyOrderPayingCount(), HttpStatus.OK); //200
+	}
+
+	// 구매조회 탭 진행상태별 "건수" 조회 GetMapping => http://localhost:8081/buy/buyOrderStatusCounts
+	@GetMapping("/buyOrderStatusCounts")
+	public ResponseEntity<Map<String, Long>> buyOrderStatusCount() {	
+		System.out.println("<<< buyOrderStatusCount >>>");
+		
+		return new ResponseEntity<>(buyOrderService.getBuyOrderStatusCount(), HttpStatus.OK); //200
 	}
 
 // 판매팀 구매요청 프로세스 보류로 인해 주석처리	

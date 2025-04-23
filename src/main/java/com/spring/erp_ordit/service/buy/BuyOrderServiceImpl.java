@@ -1,6 +1,7 @@
 package com.spring.erp_ordit.service.buy;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,14 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderPayingCount >>>");
 		
 		return buyOrderMapper.buyOrderPayingCount();
+	}
+	
+	// 구매조회 탭 진행상태별 "건수" 조회
+	public Map<String, Long> getBuyOrderStatusCount() {
+		
+		System.out.println("<<< BuyOrderServiceImpl - getBuyOrderStatusCount >>>");
+		
+		return buyOrderMapper.buyOrderStatusCount();
 	}
 	
 //	// 구매조회 탭 <미확인> 목록
@@ -148,8 +157,8 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 		BuyOrderDTO order = request.getOrder();
 		List<BuyOrderItemDTO> items = request.getItems();
 		
-		// 구매팀은 주무입력시 자동으로 '진행중' 상태로 지정
-		order.setOrder_status("진행중");
+		// 구매팀은 주문입력시 자동으로 '결재중' 상태로 지정
+		order.setOrder_status("결재중");
 		
 		buyOrderMapper.buyOrderInsert(order);	// 구매주문 입력 - order_id가 자동주입 => MyBatis에서 useGeneratedKeys="true" 설정해서 자동 주입됨.
 		Long order_id = order.getOrder_id();	// insert 후 자동 생성된 order_id 가져옴

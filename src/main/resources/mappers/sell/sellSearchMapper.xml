@@ -44,6 +44,34 @@
       FROM item_tbl
    </select>
 	
+   <!-- 판매 입력 - 창고 선택 시 조회되는 품목 리스트 모달(키워드로 검색) -->
+    <select id="storage_itemListKey" parameterType="map" resultType="com.spring.erp_ordit.dto.sell.SellSearchDTO">
+      SELECT s.item_code,
+		     i.item_name,
+		     i.item_standard,
+		     s.stock_amount
+	    FROM stock_tbl s
+	    JOIN item_tbl i
+       	  ON i.item_code=s.item_code
+	   WHERE storage_code = #{storage_code}
+	   AND (item_code LIKE CONCAT('%', #{keyword}, '%') 
+         OR item_name LIKE CONCAT('%', #{keyword}, '%') 
+         OR item_standard LIKE CONCAT('%', #{keyword}, '%'))
+   </select>
+	
+	
+   <!-- 판매 입력 - 창고 선택 시 조회되는 품목 리스트 모달 -->
+    <select id="storage_itemList" parameterType="int" resultType="com.spring.erp_ordit.dto.sell.SellSearchDTO">
+      SELECT s.item_code,
+		     i.item_name,
+		     i.item_standard,
+		     s.stock_amount
+	    FROM stock_tbl s
+	    JOIN item_tbl i
+       	  ON i.item_code=s.item_code
+	   WHERE storage_code = #{storage_code}
+   </select>
+	
 	   
 	<!-- 판매 - 거래처 검색 모달(키워드로 검색) -->
     <select id="sellSearchClientDetailList" parameterType="String" resultType="com.spring.erp_ordit.dto.sell.SellSearchClientDTO">

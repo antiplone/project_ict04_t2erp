@@ -46,7 +46,7 @@
 			LEFT JOIN warehouse_tbl wt ON ot.storage_code = wt.storage_code
 			LEFT JOIN order_status_tbl ost ON ost.order_id = ot.order_id
 			WHERE order_show='Y'
-			  AND ost.order_status='진행중'
+			  AND ost.order_status='결재중'
 			  AND ot.order_type = 2
   	</select>
   	
@@ -55,9 +55,21 @@
 			SELECT COUNT(DISTINCT os.order_id) AS buyOrderUnchkCount
 			  FROM order_status_tbl os
 			  JOIN order_tbl o ON os.order_id = o.order_id
-			  WHERE os.order_status = '진행중'
+			  WHERE os.order_status = '결재중'
 			    AND o.order_show = 'Y'
 			    AND o.order_type = 2
+  	</select>
+  	
+  	<!-- 구매조회 진행상태별 "건수" 조회 -->
+  	<select id="buyOrderStatusCount" resultType="map">
+			 SELECT 
+			    COUNT(*) AS total,
+			    COUNT(CASE WHEN ost.order_status = '결재중' THEN 1 END) AS paying,
+			    COUNT(CASE WHEN ost.order_status = '승인' THEN 1 END) AS approved
+			   FROM order_tbl ot
+			   LEFT JOIN order_status_tbl ost ON ot.order_id = ost.order_id
+			  WHERE ot.order_show = 'Y'
+			    AND ot.order_type = 2
   	</select>
 
 <!-- 	
@@ -120,7 +132,7 @@
   	</select>
   	
   	<!-- 구매 상세 조회 매핑 -->
-		<resultMap id="BuyOrderDetailMap" type="com.spring.erp_ordit.dto.buy.BuyOrderDetailDTO">
+	<resultMap id="BuyOrderDetailMap" type="com.spring.erp_ordit.dto.buy.BuyOrderDetailDTO">
 	    <result property="order_id" column="order_id"/>
 	    <result property="order_type" column="order_type"/>
 	    <result property="order_date" column="order_date"/>
@@ -134,17 +146,17 @@
 	    <result property="storage_name" column="storage_name"/>
 	    <result property="transaction_type" column="transaction_type"/>
 	    <result property="order_status" column="order_status"/>
-	
-	    <!-- items 리스트 collection으로 매핑 -->
-	    <collection property="items" ofType="com.spring.erp_ordit.dto.buy.BuyOrderItemDTO">
-	        <result property="item_code" column="item_code"/>
-	        <result property="item_name" column="item_name"/>
-	        <result property="quantity" column="quantity"/>
-	        <result property="price" column="price"/>
-	        <result property="supply" column="supply"/>
-	        <result property="vat" column="vat"/>
-	        <result property="total" column="total"/>
-	    </collection>
+
+    <!-- items 리스트 collection으로 매핑 -->
+    <collection property="items" ofType="com.spring.erp_ordit.dto.buy.BuyOrderItemDTO">
+        <result property="item_code" column="item_code"/>
+        <result property="item_name" column="item_name"/>
+        <result property="quantity" column="quantity"/>
+        <result property="price" column="price"/>
+        <result property="supply" column="supply"/>
+        <result property="vat" column="vat"/>
+        <result property="total" column="total"/>
+    </collection>
 	</resultMap>
 	
 	<!-- 구매 상세 조회  -->

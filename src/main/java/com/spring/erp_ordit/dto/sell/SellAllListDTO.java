@@ -25,6 +25,7 @@ public class SellAllListDTO {	// 판매 입력건 조회
 	private int quantity;				// 수량
 	private int storage_code;		  	// 창고코드
 	private String storage_name;		// 창고명
+	private int stock_amount;			// 창고명
 	private int e_id;		  			// 담당자 사번
 	private String e_name;				// 담당자명
 	private int client_code;			// 거래처코드

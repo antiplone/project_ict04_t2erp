@@ -12,42 +12,42 @@ import com.spring.erp_ordit.service.buy.BuySearchServiceImpl;
 
 @RestController // RestController는 리턴타입이 JSON
 @RequestMapping("/buy")
-@CrossOrigin	// 추가  
-public class BuySearchController { 	// 작성자: hjy - 모달 검색 관련 controller => 담당자,거래처,입고창고,물품 
-	
+@CrossOrigin // 추가
+public class BuySearchController { // 작성자: hjy - 모달 검색 관련 controller => 담당자,거래처,입고창고,물품
+
 	@Autowired
 	private BuySearchServiceImpl searchService;
 
-	// 담당자 목록 GetMapping =>  http://localhost:8081/buy/buyInchargeList
+	// 담당자 목록 GetMapping => http://localhost:8081/buy/buyInchargeList
 	@GetMapping("/buyInchargeList")
 	public ResponseEntity<?> buyInchargeList() {
 		System.out.println("<<< buyInchargeList >>>");
-		
-		return new ResponseEntity<>(searchService.buyInchargeList(), HttpStatus.OK);	//200
+
+		return new ResponseEntity<>(searchService.buyInchargeList(), HttpStatus.OK); // 200
 	}
-	
-	// 거래처 목록 GetMapping =>  http://localhost:8081/buy/buyClientList
+
+	// 거래처 목록 GetMapping => http://localhost:8081/buy/buyClientList
 	@GetMapping("/buyClientList")
 	public ResponseEntity<?> buyClientList() {
 		System.out.println("<<< buyClientList >>>");
-		
-		return new ResponseEntity<>(searchService.buyClientList(), HttpStatus.OK);	//200
+
+		return new ResponseEntity<>(searchService.buyClientList(), HttpStatus.OK); // 200
 	}
-	
-	// 입고창고 목록 GetMapping =>  http://localhost:8081/buy/buyStorageList
+
+	// 입고창고 목록 GetMapping => http://localhost:8081/buy/buyStorageList
 	@GetMapping("/buyStorageList")
 	public ResponseEntity<?> buyStorageList() {
 		System.out.println("<<< buyStorageList >>>");
-		
-		return new ResponseEntity<>(searchService.buyStorageList(), HttpStatus.OK);	//200
+
+		return new ResponseEntity<>(searchService.buyStorageList(), HttpStatus.OK); // 200
 	}
-	
-	// 물품 목록 GetMapping =>  http://localhost:8081/buy/buyItemList
+
+	// 물품 목록 GetMapping => http://localhost:8081/buy/buyItemList
 	@GetMapping("/buyItemList")
 	public ResponseEntity<?> buyItemList() {
 		System.out.println("<<< buyItemList >>>");
-		
-		return new ResponseEntity<>(searchService.buyItemList(), HttpStatus.OK);	//200
+
+		return new ResponseEntity<>(searchService.buyItemList(), HttpStatus.OK); // 200
 	}
-	
+
 }

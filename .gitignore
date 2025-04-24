@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/maven,java,react,node,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=maven,java,react,node,python
 
+### python-ml ###
+python-backend/chatbot_data/training_data.json
+python-backend/chatbot_data/interaction_history.json
 
 ### Spring-Boot ###
 src/main/resources/application.properties

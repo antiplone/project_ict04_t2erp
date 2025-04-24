@@ -10,7 +10,7 @@ const ChatRoom = () => {
   // 선택한 채팅 상대
   const [selectedPartner, setSelectedPartner] = useState(null);
 
-  // STOMP 클라이언트
+  // STOMP 클라이언트 => WebSocket을 통해 메시지를 주고받는 전체 과정(WebSocket 연결 생성, 연결 성공/실패 감지, 메시지 수신 구독, 메시지 전송, 연결끊기)
   const [stompClient, setStompClient] = useState(null);
 
   // 채팅 메시지 목록
@@ -21,9 +21,6 @@ const ChatRoom = () => {
 
   // 연결 상태
   const [isConnected, setIsConnected] = useState(false);
-
-  // 입장 메시지 여부
-  const [hasJoined, setHasJoined] = useState(false);
 
   // 채팅 상대 선택시 - 직원 목록 
   const [partners, setPartners] = useState([]);
@@ -38,27 +35,8 @@ const ChatRoom = () => {
   const fetchURL = AppConfig.fetch["mytest"];
 
   // 채팅방 ID 생성 => user1 + user2의 e_auth_id를 조합하여 생성
-  const generateRoomId = (id1, id2) => [id1, id2].sort().join("_");
+  const generateRoomId = (id1, id2) => [id1, id2].sort().join("_");  // sort()를 사용해서 두 사용자의 순서 상관없이 동일한 room_id 생성되도록 함.
   const room_id = generateRoomId(senderId, receiverId);
-
-  // mysql이 한국시간 기준이 아니라서 한국 시간 기준으로 포맷
-  const formatTime = (datetimeStr) => {
-    if (!datetimeStr) return "";
-
-    try {
-      const utc = new Date(datetimeStr.endsWith("Z") ? datetimeStr : datetimeStr + "Z");
-      if (isNaN(utc.getTime())) return "";
-
-      const kr = new Date(utc.getTime() + 7 * 60 * 60 * 1000);
-      const h = kr.getHours();
-      const m = kr.getMinutes().toString().padStart(2, "0");
-      const ampm = h >= 12 ? "오후" : "오전";
-      const hour = h % 12 === 0 ? 12 : h % 12;
-      return `${ampm} ${hour}:${m}`;
-    } catch {
-      return "";
-    }
-  };
 
   // 채팅 상대 선택시 지원 목록 불러오기
   useEffect(() => {
@@ -77,55 +55,38 @@ const ChatRoom = () => {
     fetchPartners();
   }, []);
 
-  // webSocket 연결 및 채팅 수신
+  // 채팅방에 입장하면 webSocket 연결 및 채팅 수신
   useEffect(() => {
-    if (!selectedPartner || !senderId || !receiverId) return;  // 채팅 상대 선택 안하면 종료
+    if (!selectedPartner || !senderId || !receiverId) return;  // 채팅 상대 선택 안하거나 로그인된 사용자 정보 없으면 종료
 
-    const socket = new SockJS(`${fetchURL.protocol}${fetchURL.url}/ws`);
-    const client = new Client({
+    const socket = new SockJS(`${fetchURL.protocol}${fetchURL.url}/ws`); // SockJS 브라우저가 WebSocket을 지원하지 않을 때 대체 프로토콜로 fallback 지원
+    const client = new Client({  // STOMP 클라이언트 => WebSocket을 이용해 메시지를 송수신할 수 있도록 도와주는 객체
       webSocketFactory: () => socket,
+      // 연결 성공하면
       onConnect: async () => {
-        setIsConnected(true);
-        setStompClient(client);
+        setIsConnected(true); // 연결상태 true 설정
+        setStompClient(client); // 전역에서 사용할 수 있도록 stompClient를 상태에 저장
 
         try {
+          // 과거 채팅 내역 조회
           const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/buy/chat/history/${room_id}`);
           const data = await res.json();
           const mapped = data.map(msg => ({
             ...msg,
-            sender: msg.sender === senderId ? senderName : receiverName
+            sender: msg.sender === senderId ? senderName : receiverName // 현재 로그인한 유저가 보낸 메시지면 senderName, 아니면 상대방 이름으로 표시
           }));
           setMessages(mapped);
 
-          if (!hasJoined && data.length === 0) {
-            client.publish({
-              destination: `/app/chat/${room_id}`,
-              body: JSON.stringify({
-                sender: senderId,
-                content: `${senderName}님이 입장하셨습니다.`,
-                type: "JOIN",
-                room_id,
-              }),
-            });
-            setHasJoined(true);
-          }
-
+          // 실시간 메시지 수신 설정(구독)
           client.subscribe(`/topic/chat/${room_id}`, (message) => {
             const msg = JSON.parse(message.body);
 
-            // created_at이 없으면 지금 시간으로 대체
-            const rawTime = msg.created_at || new Date().toISOString();
-
-            // UTC → 한국 시간으로 변환
-            const utcDate = new Date(rawTime.endsWith("Z") ? rawTime : rawTime + "Z");
-            const krDate = new Date(utcDate.getTime() + 7 * 60 * 60 * 1000);
-
-            setMessages(prev => [
+            setMessages(prev => [ // 새로 받은 메시지를 기존 메시지 리스트에 추가
               ...prev,
               {
                 ...msg,
                 sender: msg.sender === senderId ? senderName : msg.sender,
-                created_at: krDate.toISOString(), // 변환된 값 저장
+                created_at: msg.created_at, 
               }
             ]);
           });
@@ -136,25 +97,29 @@ const ChatRoom = () => {
       },
     });
 
-    client.activate();
-    return () => client.deactivate();
+    // WebSocket 연결 활성화 및 정리
+    client.activate();  // activate() -> WebSocket 연결 시작
+    return () => client.deactivate(); // deactivate() -> WebSocket 연결 정리
   }, [room_id]);
 
   // 메시지 보내기
   const sendMessage = () => {
     if (!input || !stompClient || !isConnected) return;
+    
+    const createdAt = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Seoul" }).replace(" ", "T");
 
     const msg = {
       sender: senderId,
       receiver: receiverId,
       content: input,
       type: "CHAT",
+      created_at: createdAt,  // 변수 사용 시에는 명시적으로 할당
       room_id,
     };
 
-    // 전송
+    // 서버로 메시지 전송
     stompClient.publish({
-      destination: `/app/chat/${room_id}`,
+      destination: `/app/chat/${room_id}`, // destination: STOMP 서버에서 처리할 경로
       body: JSON.stringify(msg),
     });
     setInput("");
@@ -178,6 +143,7 @@ const ChatRoom = () => {
         />
       </div>
 
+      {/* 상대방이 선택된 경우에만 채팅창과 입력창을 보여줌 */}
       {selectedPartner && (
         <>
           <div className="chatBox">
@@ -185,30 +151,30 @@ const ChatRoom = () => {
               let lastDate = "";
 
               return messages.map((msg, idx) => {
-                const isMe = msg.sender === senderName;
+                const isMe = msg.sender === senderName; // 보낸 사람 기준으로 메시지 스타일 다르게 설정
 
                 // 날짜 유효성 검사
                 if (!msg.created_at || isNaN(new Date(msg.created_at))) {
                   return null;
                 }
 
-                // 날짜 처리 안전하게
-                let krDate;
-                try {
-                  const utcDate = new Date(msg.created_at.endsWith("Z") ? msg.created_at : msg.created_at + "Z");
-                  krDate = new Date(utcDate.getTime() + 7 * 60 * 60 * 1000);
-                } catch (e) {
-                  return null; // 에러 나면 해당 메시지는 렌더링 X
-                }
-                const dateOnly = krDate.toISOString().split("T")[0];
+                // 기존 msg.created_at은 이미 'KST 기준'이므로 추가 보정 없이 바로 Date로 사용
+                const krDate = new Date(msg.created_at);
+
+                const dateOnly = krDate.toLocaleDateString("sv-SE", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                }); // ex) "2025-04-25"
 
                 const displayDate = krDate.toLocaleDateString("ko-KR", {
                   year: "numeric",
                   month: "2-digit",
                   day: "2-digit",
                   weekday: "short",
-                });
+                }); // ex) "2025. 04. 25. (금)"
 
+                // 날짜 구분선 (이전 메시지와 날짜가 다르면 날짜 표시)
                 const showDateLine = lastDate !== dateOnly;
                 lastDate = dateOnly;
 
@@ -218,19 +184,20 @@ const ChatRoom = () => {
                       <div className="dateLine"> {displayDate}</div>
                     )}
 
-                    <div className={`chat-row ${isMe ? "right" : "left"}`}>
-                      <div className={`chat-bubble ${isMe ? "mine" : "partner"}`}>
-                        {msg.type !== "JOIN" ? (
+                    <div className={`chat-row ${isMe ? "right" : "left"}`}>  {/* 내 메시지는 오른쪽 정렬 */}
+                      <div className={`chat-bubble ${isMe ? "mine" : "partner"}`}> {/* 상대 메시지는 왼쪽 정렬 */}
+                        
                           <>
                             <div className="chatSender">{msg.sender}</div>
                             <div>{msg.content}</div>
                             <div className="createAT">
-                              {formatTime(msg.created_at)}
+                              {new Date(msg.created_at).toLocaleTimeString("ko-KR", {
+                                hour: "numeric",
+                                minute: "2-digit", 
+                                hour12: true,
+                              })}
                             </div>
                           </>
-                        ) : (
-                          <div className="content">💡 {msg.content}</div>
-                        )}
                       </div>
                     </div>
                   </React.Fragment>
@@ -238,7 +205,8 @@ const ChatRoom = () => {
               });
             })()}
           </div>
-
+          
+          {/* 메시지 입력창 */}
           <div className="inputBox">
             <Input
               value={input}

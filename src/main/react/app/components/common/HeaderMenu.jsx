@@ -48,13 +48,13 @@ const HeaderMenu = () => {
 				}
 			})
 				.then((res) => {
-	
+
 					if (res.ok) {
-	
+
 						let entity = res.json();
 						entity.then(
 							res => {
-	
+
 								localStorage.setItem('e_name', res.e_name);
 								localStorage.setItem('e_position', res.e_position);
 								setMyInfo(localStorage.getItem('e_name') + ' ' + localStorage.getItem('e_position') + '님');
@@ -64,7 +64,7 @@ const HeaderMenu = () => {
 					}
 				})
 				.finally(() => { // 통신실패시 예외처리
-					
+
 				});
 		}
 
@@ -91,29 +91,28 @@ const HeaderMenu = () => {
 		<Header>
 			<Navbar style={{ fontSize: "large", backgroundColor: "#22284C" }}>
 				<Nav>
-					<Nav.Item style={{padding: 0}} icon={<ToImage style={{margin: 0}} src={brand} fbText="Logo" width={60} height={60} />} />
+					<Nav.Item style={{ padding: 0 }} icon={<ToImage style={{ margin: 0 }} src={brand} fbText="Logo" width={60} height={60} />} />
 					<Nav.Menu title="관리운영">
 						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_client") }}>거래처등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_item") }}>상품등록</Nav.Item>
 					</Nav.Menu>
 					{position === "관리" ? (
-					<Nav.Menu title="근태관리">
-						<Nav.Item onSelect={() => navigate("att-regVacaItems")}>휴가항목등록</Nav.Item>
-						<Nav.Item onSelect={() => navigate("att-regAttItems")}>근태항목등록</Nav.Item>
-						<Nav.Item onSelect={() => navigate("att-management")}>근태관리</Nav.Item>
-					</Nav.Menu>
+						<Nav.Menu title="근태관리">
+							<Nav.Item onSelect={() => navigate("att-regVacaItems")}>휴가항목등록</Nav.Item>
+							<Nav.Item onSelect={() => navigate("att-regAttItems")}>근태항목등록</Nav.Item>
+							<Nav.Item onSelect={() => navigate("att-management")}>근태관리</Nav.Item>
+						</Nav.Menu>
 					) : (
-					<Nav.Menu title="근태관리">
-						<Nav.Item onSelect={() => navigate("att-management")}>근태관리</Nav.Item>
-					</Nav.Menu>
+						<Nav.Menu title="근태관리">
+							<Nav.Item onSelect={() => navigate("att-management")}>근태관리</Nav.Item>
+						</Nav.Menu>
 					)}
 					<Nav.Menu title="구매관리">
 						<Nav.Item onSelect={() => { navigate("buy-select") }}>구매조회</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("buy-insert") }}>구매입력</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("buy-status-select") }}>구매현황</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("buy-stock-status") }}>입고현황</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("buy-chat") }}>1:1 채팅</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="판매관리">
 						<Nav.Item onSelect={() => { navigate("sell_search_item") }}>판매물품 검색</Nav.Item>
@@ -138,12 +137,8 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("finance_invoice") }}>전자계산서</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("finance_voucher") }}>전표관리</Nav.Item>
 					</Nav.Menu>
-					<Nav.Menu title="문의">
-						<Nav.Item>Company</Nav.Item>
-						<Nav.Item>Team</Nav.Item>
-						<Nav.Item onSelect={() => handleOpen("right")}>
-							상담하기
-						</Nav.Item>
+					<Nav.Menu title="1:1 채팅">
+						<Nav.Item onSelect={() => { navigate("buy-chat") }}>1:1 채팅</Nav.Item>
 					</Nav.Menu>
 				</Nav>
 				<Nav pullRight>

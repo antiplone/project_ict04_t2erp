@@ -189,17 +189,17 @@ export default function BuyOrderUpdate() {
                     <div className="BuyUpdateFrom">
                         <Form.Group>
                             <Form.ControlLabel>발주일자</Form.ControlLabel>
-                            <Form.Control name="order_date" style={{ width: 233 }} />
+                            <Form.Control name="order_date" className="updateInput"/>
                         </Form.Group>
 
                         <Form.Group>
                             <Form.ControlLabel>구매요청 부서</Form.ControlLabel>
-                            <Form.Control name="order_type" style={{ width: 233 }} />
+                            <Form.Control name="order_type" className="updateInput"/>
                         </Form.Group>
 
                         <Form.Group>
                             <Form.ControlLabel>납기일자</Form.ControlLabel>
-                            <Form.Control name="delivery_date" style={{ width: 233 }} />
+                            <Form.Control name="delivery_date" className="updateInput" />
                         </Form.Group>
 
                         <Form.Group>
@@ -209,7 +209,7 @@ export default function BuyOrderUpdate() {
                                 accepter={InputPicker}
                                 data={[{ label: '부과세율 적용', value: '부과세율 적용' },
                                 { label: '부가세율 미적용', value: '부가세율 미적용' }]}
-                                style={{ width: 233 }}
+                                className="updateInput"
                             />
                         </Form.Group>
 
@@ -219,61 +219,65 @@ export default function BuyOrderUpdate() {
                                 name="order_status"
                                 accepter={InputPicker}
                                 data={[
-                                { label: '진행중', value: '진행중' },
-                                { label: '승인', value: '승인' },
-                                { label: '반려', value: '반려' }]}
-                                style={{ width: 233 }}
+                                    { label: '진행중', value: '진행중' },
+                                    { label: '승인', value: '승인' },
+                                    { label: '반려', value: '반려' }]}
+                                className="updateInput"
                             />
                         </Form.Group>
                     </div>
 
                     <div className="inputBox">
-                        <InputGroup className="input">
-                            <InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
-                            <Input value={selectedIncharge || ""} readOnly onClick={() => setInchargeModalOpen(true)} />
-                            <InputGroup.Button tabIndex={-1}>
-                                <img
-                                    src={readingGlasses}
-                                    alt="돋보기"
-                                    width={20}
-                                    height={20}
-                                    style={{ cursor: "pointer" }}
-                                />
-                            </InputGroup.Button>
-                        </InputGroup>
-                        <Input value={selectedInchargeName || ""} readOnly className="input" />
+                        <div className="input">
+                            <InputGroup className="inputModal">
+                                <InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
+                                <Input value={selectedIncharge || ""} readOnly onClick={() => setInchargeModalOpen(true)} />
+                                <InputGroup.Button tabIndex={-1}>
+                                    <img
+                                        src={readingGlasses}
+                                        alt="돋보기"
+                                        width={20}
+                                        height={20}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                </InputGroup.Button>
+                            </InputGroup>
+                            <Input value={selectedInchargeName || ""} readOnly className="inputModalSide" />
+                        </div>
 
-                        <InputGroup className="input">
-                            <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
-                            <Input value={selectedClient || ""} readOnly onClick={() => setClientModalOpen(true)} />
-                            <InputGroup.Addon>
-                                <img
-                                    src={readingGlasses}
-                                    alt="돋보기"
-                                    width={20}
-                                    height={20}
-                                    style={{ cursor: "pointer" }}
-                                />
-                            </InputGroup.Addon>
-                        </InputGroup>
-                        <Input value={selectedClientName || ""} readOnly className="input" />
+                        <div className="input">
+                            <InputGroup className="inputModal">
+                                <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
+                                <Input value={selectedClient || ""} readOnly onClick={() => setClientModalOpen(true)} />
+                                <InputGroup.Addon>
+                                    <img
+                                        src={readingGlasses}
+                                        alt="돋보기"
+                                        width={20}
+                                        height={20}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                </InputGroup.Addon>
+                            </InputGroup>
+                            <Input value={selectedClientName || ""} readOnly className="inputModalSide" />
+                        </div>
 
-
-
-                        <InputGroup className="input">
-                            <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
-                            <Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
-                            <InputGroup.Addon>
-                                <img
-                                    src={readingGlasses}
-                                    alt="돋보기"
-                                    width={20}
-                                    height={20}
-                                    style={{ cursor: "pointer" }}
-                                />
-                            </InputGroup.Addon>
-                        </InputGroup>
-                        <Input value={selectedStorageName || ""} readOnly className="input" />
+                        <div className="input">
+                            <InputGroup className="inputModal">
+                                <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
+                                <Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
+                                <InputGroup.Addon>
+                                    <img
+                                        src={readingGlasses}
+                                        alt="돋보기"
+                                        width={20}
+                                        height={20}
+                                        style={{ cursor: "pointer" }}
+                                    />
+                                </InputGroup.Addon>
+                            </InputGroup>
+                            <Input value={selectedStorageName || ""} readOnly className="inputModalSide" />
+                        </div>
                     </div>
                 </Form>
                 <Divider style={{ maxWidth: 1500 }} />
@@ -399,7 +403,7 @@ export default function BuyOrderUpdate() {
                     <Button appearance="ghost" color="blue" className="buyBtn" onClick={submitOrder}>저장</Button>
                     <Button appearance="ghost" color="red" className="buyBtn" onClick={() => navigate(-1)}>취소</Button> {/* navigate(-1); 브라우저 history 뒤로 */}
                     <Link to={`/main/buy-select`}>
-                        <Button appearance="ghost" color="cyan" className="buyUpdateBtn">
+                        <Button appearance="primary" className="ListBtn">
                             목록
                         </Button>
                     </Link>

@@ -361,28 +361,28 @@ export default function BuyInsert() {
                     <EditableNumberCell dataKey="price" onChange={handleChange} editable />
                 </Column>
 
-                <Column width={160} align="center">
+                <Column width={160} align="right">
                     <HeaderCell>공급가액</HeaderCell>
                     <Cell>
                         {supplyData => new Intl.NumberFormat().format(supplyData.supply)}
                     </Cell>
                 </Column>
 
-                <Column width={160} align="center">
+                <Column width={160} align="right">
                     <HeaderCell>부가세</HeaderCell>
                     <Cell>
                         {vatData => new Intl.NumberFormat().format(vatData.vat)}
                     </Cell>
                 </Column>
 
-                <Column width={160}>
+                <Column width={160} align="right">
                     <HeaderCell>금액합계</HeaderCell>
                     <Cell>
                         {totalData => new Intl.NumberFormat().format(totalData.total)}
                     </Cell>
                 </Column>
 
-                <Column width={60} align="center">
+                <Column width={180} align="center">
                     <HeaderCell>삭제</HeaderCell>
                     <Cell>
                         {rowData => (

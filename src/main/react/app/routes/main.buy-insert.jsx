@@ -99,7 +99,7 @@ export default function BuyInsert() {
     const handleChange = (id, key, value) => {
         const updated = orderItems.map(order => {
             if (order.id === id) {
-               
+
                 const newItem = { ...order, [key]: value };
                 const quantity = Number(newItem.quantity) || 0;
                 const price = Number(newItem.price) || 0;
@@ -117,7 +117,7 @@ export default function BuyInsert() {
     const handleAdditem = () => {
         // 현재 입력된 모든 행의 id 값만 추출 ex) [{id:1}, {id:2}, {id:5}] → [1, 2, 5] / 현재 존재하는 id 중 가장 큰 값을 찾아서 +1을 한다.
         const newId = orderItems.length > 0
-            ? Math.max(...orderItems.map(d => d.id)) + 1  
+            ? Math.max(...orderItems.map(d => d.id)) + 1
             : 1;
         setOrderItems([
             ...orderItems, // 기존 물품정보에
@@ -142,7 +142,7 @@ export default function BuyInsert() {
 
     // 총액 합계 계산 
     // reduce는 배열의 각 항목을 순차적으로 처리 => 하나의 결과 값을 받환 (acc: 누적값, order: 현재 항목) / null 일 경우 0으로 대체
-    const totalSum = orderItems.reduce((acc, order) => acc + (order.total || 0), 0); 
+    const totalSum = orderItems.reduce((acc, order) => acc + (order.total || 0), 0);
 
     const fetchURL = AppConfig.fetch["mytest"];
 
@@ -197,55 +197,64 @@ export default function BuyInsert() {
 
     return (
         <Container >
-            <Message type="info" style={{ maxWidth: 1500 }}>
+            <Message type="info" style={{ maxWidth: 1500, fontSize: 16 }}>
                 <strong>구매입력</strong>
             </Message>
             <br />
 
             <div className="inputBox">
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>납기일자</InputGroup.Addon>
-                    <DatePicker
-                        value={deliveryDate}   // 현재 선택된 날짜
-                        onChange={setDeliveryDate} // 날짜가 변경될 때 상태 업데이트
-                        placeholder="날짜 선택"
-                    />
-                </InputGroup>
-
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
-                    <Input value={selectedIncharge || ""} readOnly  onClick={() => setInchargeModalOpen(true)}/> {/* 모달을 통해 입력하기 때문에 input에서는 수정불가하게 readOnly 처리 */}
-                    <InputGroup.Button tabIndex={-1} >
-                        <img
-                            src={readingGlasses}
-                            alt="돋보기"
-                            width={20}
-                            height={20}
-                            style={{ cursor: "pointer" }}
+                <div className="input">
+                    <InputGroup className="input_date_type">
+                        <InputGroup.Addon style={{ width: 90 }}>납기일자</InputGroup.Addon>
+                        <DatePicker
+                            value={deliveryDate}   // 현재 선택된 날짜
+                            onChange={setDeliveryDate} // 날짜가 변경될 때 상태 업데이트
+                            placeholder="날짜 선택"
+                            format="yyyy-MM-dd"
                         />
-                    </InputGroup.Button>
-                </InputGroup>
-                <Input value={selectedInchargeName || ""} readOnly style={{ width: 250 }} />
+                    </InputGroup>
+                </div>
 
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
-                    <Input value={selectedClient || ""} readOnly onClick={() => setClientModalOpen(true)}/>
-                    <InputGroup.Addon>
-                        <img
-                            src={readingGlasses}
-                            alt="돋보기"
-                            width={20}
-                            height={20}
-                            style={{ cursor: "pointer" }}
-                        />
-                    </InputGroup.Addon>
-                </InputGroup>
-                <Input value={selectedClientName || ""} readOnly style={{ width: 250 }} />
+                <div className="input">
+                    <InputGroup className="inputModal">
+                        <InputGroup.Addon style={{ width: 90 }}>담당자</InputGroup.Addon>
+                        <Input value={selectedIncharge || ""} readOnly onClick={() => setInchargeModalOpen(true)} /> {/* 모달을 통해 입력하기 때문에 input에서는 수정불가하게 readOnly 처리 */}
+                        <InputGroup.Button tabIndex={-1} >
+                            <img
+                                src={readingGlasses}
+                                alt="돋보기"
+                                width={20}
+                                height={20}
+                                style={{ cursor: "pointer" }}
+                            />
+                        </InputGroup.Button>
+                    </InputGroup>
+                    <Input value={selectedInchargeName || ""} readOnly className="inputModalSide" />
+                </div>
+
+                <div className="input">
+                    <InputGroup className="inputModal">
+                        <InputGroup.Addon style={{ width: 90 }}>거래처</InputGroup.Addon>
+                        <Input value={selectedClient || ""} readOnly onClick={() => setClientModalOpen(true)} />
+                        <InputGroup.Addon>
+                            <img
+                                src={readingGlasses}
+                                alt="돋보기"
+                                width={20}
+                                height={20}
+                                style={{ cursor: "pointer" }}
+                            />
+                        </InputGroup.Addon>
+                    </InputGroup>
+                    <Input value={selectedClientName || ""} readOnly className="inputModalSide" />
+                </div>
             </div>
 
+
             <div className="inputBox">
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>거래유형</InputGroup.Addon>
+                <div className="input">
+                <InputGroup className="input_date_type">
+                    <InputGroup.Addon style={{ width: 90 }}>거래유형</InputGroup.Addon>
                     <InputPicker
                         placeholder="거래유형 선택"
                         data={buyType} // 거래유형 리스트 
@@ -254,23 +263,26 @@ export default function BuyInsert() {
                         onChange={setSelectedType} // 사용자 선택값 업데이트
                     />
                 </InputGroup>
+                </div>
 
-                <InputGroup className="input">
-                    <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
-                    <Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)}/>
-                    <InputGroup.Addon>
-                        <img
-                            src={readingGlasses}
-                            alt="돋보기"
-                            width={20}
-                            height={20}
-                            style={{ cursor: "pointer" }}
-                        />
-                    </InputGroup.Addon>
-                </InputGroup>
-                <Input value={selectedStorageName || ""} readOnly style={{ width: 250 }} />
-
+                <div className="input">
+                    <InputGroup className="inputModal">
+                        <InputGroup.Addon style={{ width: 90 }}>입고창고</InputGroup.Addon>
+                        <Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
+                        <InputGroup.Addon>
+                            <img
+                                src={readingGlasses}
+                                alt="돋보기"
+                                width={20}
+                                height={20}
+                                style={{ cursor: "pointer" }}
+                            />
+                        </InputGroup.Addon>
+                    </InputGroup>
+                    <Input value={selectedStorageName || ""} readOnly className="inputModalSide" />
+                </div>
             </div>
+
             <Divider style={{ maxWidth: 1350 }} />
 
             {/* 거래처 모달 관리 */}

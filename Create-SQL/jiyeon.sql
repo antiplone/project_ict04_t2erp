@@ -64,5 +64,33 @@ CREATE TABLE order_status_tbl(
 
 SELECT * FROM order_status_tbl;
 
+-- [채팅 - 메시지 기록] ------------------------------------------------
+DROP TABLE chat_message_tbl;
+CREATE TABLE chat_message_tbl(
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    room_id VARCHAR(255),           -- 채팅방 ID (1:1이면 고정값 or 조합)
+    sender VARCHAR(50),             -- 보낸 사람
+    content TEXT,                   -- 메시지 내용
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 보낸 시간
+    type		VARCHAR(20),		-- 입장/퇴장
+    receiver	VARCHAR(20),			-- 받는 사람
+    CONSTRAINT fk_chat_room FOREIGN KEY (room_id) REFERENCES chat_room_tbl(room_id)
+    	ON DELETE CASCADE ON UPDATE cascade  
+)ENGINE=InnoDB;
 
+SELECT * FROM chat_message_tbl;
 
+-- [채팅 - 채팅방 정보] ------------------------------------------------
+DROP TABLE chat_room_tbl;
+CREATE TABLE IF NOT EXISTS chat_room_tbl (
+    room_id VARCHAR(255) PRIMARY KEY,
+    user1_id VARCHAR(24) NOT NULL,
+    user2_id VARCHAR(24) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_employee_cr FOREIGN KEY (user1_id) REFERENCES employee_auth_tbl(e_auth_id)
+    	ON DELETE CASCADE ON UPDATE cascade,
+    CONSTRAINT fk_employee_crt FOREIGN KEY (user2_id) REFERENCES employee_auth_tbl(e_auth_id)
+    	ON DELETE CASCADE ON UPDATE cascade
+)ENGINE=InnoDB;
+
+SELECT * FROM chat_room_tbl;

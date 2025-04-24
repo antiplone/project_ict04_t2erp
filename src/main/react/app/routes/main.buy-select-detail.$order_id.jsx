@@ -171,7 +171,7 @@ export default function BuySelectDetail() {
         </Button>
 
         <Link to={`/main/buy-select`}>
-          <Button appearance="ghost" color="cyan" className="buyUpdateBtn">
+          <Button appearance="primary" className="ListBtn">
             목록
           </Button>
         </Link>

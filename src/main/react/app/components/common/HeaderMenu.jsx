@@ -113,6 +113,7 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("buy-insert") }}>구매입력</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("buy-status-select") }}>구매현황</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("buy-stock-status") }}>입고현황</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("buy-chat") }}>1:1 채팅</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu title="판매관리">
 						<Nav.Item onSelect={() => { navigate("sell_search_item") }}>판매물품 검색</Nav.Item>
@@ -136,9 +137,6 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("finance_sales_resume") }}>매출매입거래</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("finance_invoice") }}>전자계산서</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("finance_voucher") }}>전표관리</Nav.Item>
-					</Nav.Menu>
-					<Nav.Menu title="1:1 채팅">
-						<Nav.Item onSelect={() => { navigate("buy-chat") }}>1:1 채팅</Nav.Item>
 					</Nav.Menu>
 				</Nav>
 				<Nav pullRight>

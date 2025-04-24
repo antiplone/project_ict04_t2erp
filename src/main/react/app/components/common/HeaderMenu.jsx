@@ -93,9 +93,14 @@ const HeaderMenu = () => {
 				<Nav>
 					<Nav.Item style={{ padding: 0 }} icon={<ToImage style={{ margin: 0 }} src={brand} fbText="Logo" width={60} height={60} />} />
 					<Nav.Menu title="관리운영">
-						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_client") }}>거래처등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_item") }}>상품등록</Nav.Item>
+					</Nav.Menu>
+					<Nav.Menu title="인사관리">
+						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사카드관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("hr_appointment") }}>인사발령</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("hr_department") }}>부서관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("hr_retirement") }}>퇴직관리</Nav.Item>
 					</Nav.Menu>
 					{position === "관리" ? (
 						<Nav.Menu title="근태관리">

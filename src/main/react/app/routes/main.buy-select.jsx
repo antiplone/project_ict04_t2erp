@@ -1,7 +1,7 @@
 // 구매팀 - 구매조회 페이지 
 /* eslint-disable react/react-in-jsx-scope */
 import AppConfig from "#config/AppConfig.json";
-import { Container, Tabs, Message, Badge, Button } from "rsuite";
+import { Container, Tabs, Message } from "rsuite";
 import React, { useEffect, useState } from 'react';
 import BuySelectTabAll from "#components/buy/BuySelectTabAll.jsx";
 import "../styles/buy.css";
@@ -17,12 +17,6 @@ export function meta() {
 };
 
 export default function BuySelect() {
-
-    // // 미확인 건수
-    // const [uncheckedCount, setUnCheckedCount] = useState(0);
-
-    // // 결재중인 건수
-    // const [payingCount, setPayingCount] = useState(0);
 
     const [statusCounts, setStatusCounts] = useState({ total: 0, paying: 0, approved: 0 });
 
@@ -45,18 +39,11 @@ export default function BuySelect() {
         <>
             <Container>
 
-                <Message type="info" style={{ maxWidth: 1500 }}>
+                <Message type="info" style={{ maxWidth: 1500, fontSize: 16 }}>
                     <strong>구매조회</strong>
                 </Message>
                 <br />
 
-                {/* 검색바 */}
-                {/* <div style={{ display: 'flex', gap: 20, marginBottom: 20 }}>
-                    <Badge content={payingCount}>
-                        <Button>결재중</Button>
-                    </Badge>
-                </div> */}
-                
                 {/* 전체 / 결재중 /미확인 / 승인 탭 */}
                 <Tabs defaultActiveKey="1" style={{ maxWidth: 1500 }}>
                     <Tabs.Tab eventKey="1" title={`전체 (${statusCounts.total})`}>

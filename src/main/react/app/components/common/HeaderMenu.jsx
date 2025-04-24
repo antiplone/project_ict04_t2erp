@@ -1,13 +1,11 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable react/prop-types */
+import brand from "#images/common/brand.png";
 import mainIcon from "#images/common/main.png";
-import settingIcon from "#images/common/setting.png";
 import logout from "#images/common/logout.png";
 import arrow from "#images/common/arrow.png";
 
 import AppConfig from "#config/AppConfig.json"
-
-import "#components/common/css/common.css";
 
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "@remix-run/react";
@@ -91,9 +89,9 @@ const HeaderMenu = () => {
 
 	return (
 		<Header>
-			<Navbar style={{ fontSize: "large" }} appearance="inverse">
+			<Navbar style={{ fontSize: "large", backgroundColor: "#22284C" }}>
 				<Nav>
-					{/* <Nav.Item icon={<ToImage src={mainIcon} fbText="Main" width={32} height={32} />} /> */}
+					<Nav.Item style={{padding: 0}} icon={<ToImage style={{margin: 0}} src={brand} fbText="Logo" width={60} height={60} />} />
 					<Nav.Menu title="관리운영">
 						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_client") }}>거래처등록</Nav.Item>

@@ -1,6 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable react/prop-types */
 import "rsuite/dist/rsuite.min.css";
+import "#styles/common.css";
 
 import {
 	Links,

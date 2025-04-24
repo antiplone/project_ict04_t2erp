@@ -115,7 +115,7 @@ export default function BuySelectTabPaing() {
                     <Cell dataKey="item_display" />
                 </Column>
 
-                <Column width={150}>
+                <Column width={150} align="right">
                     <HeaderCell style={styles}>금액합계</HeaderCell>
                     <Cell>
                         {(totalData) => new Intl.NumberFormat().format(totalData.total)}
@@ -123,7 +123,7 @@ export default function BuySelectTabPaing() {
                     </Cell>
                 </Column>
 
-                <Column width={150}>
+                <Column width={150} align="center">
                     <HeaderCell style={styles}>거래유형</HeaderCell>
                     <Cell dataKey="transaction_type" />
                 </Column>
@@ -133,12 +133,12 @@ export default function BuySelectTabPaing() {
                     <Cell dataKey="storage_name" />
                 </Column>
 
-                <Column width={120}>
+                <Column width={120} align="center">
                     <HeaderCell style={styles}>납기일자</HeaderCell>
                     <Cell dataKey="delivery_date" />
                 </Column>
 
-                <Column width={120}>
+                <Column width={120} align="center">
                     <HeaderCell style={styles}>진행상태</HeaderCell>
                     <Cell dataKey="order_status" />
                 </Column>

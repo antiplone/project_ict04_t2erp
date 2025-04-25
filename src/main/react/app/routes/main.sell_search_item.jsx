@@ -4,6 +4,7 @@ import SellSearchModal from '#components/sell/SellSearchModal';
 import AppConfig from "#config/AppConfig.json";
 import "#styles/sell.css";
 import "#styles/common.css";
+import MessageBox from '../components/common/MessageBox';
 
 // sell_search_item => 판매 물품 검색 페이지
 
@@ -45,10 +46,7 @@ const sell_search_item = () => {
 
 	return (
 		<div> 
-			 <Message type="warning" className="main_title">
-      			판매 물품 검색
-    		</Message>
-
+			<MessageBox type="warning" text="판매 물품 검색"/>
 
 			<Tabs defaultActiveKey="1" className="search_title">
 				<Tabs.Tab eventKey="1" title="전체" />

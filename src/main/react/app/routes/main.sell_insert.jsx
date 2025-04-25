@@ -163,7 +163,7 @@ const Sellinsert = () => {
 			sellAdd.length === 0
 		) {
 			toaster.push(
-				<Message showIcon type="warning">
+				<Message showIcon type="warning" closable >
 					판매 입력이 완료되지 않았습니다. <br />
 					빈 항목을 입력해주세요.
 				</Message>,
@@ -180,7 +180,7 @@ const Sellinsert = () => {
 
 		if (hasInvalidItem) {
 			toaster.push(
-				<Message showIcon type="warning">
+				<Message showIcon type="warning" closable>
 					판매 입력이 완료되지 않았습니다. <br />
 					수량과 단가는 0보다 커야 합니다.
 				</Message>,
@@ -224,15 +224,32 @@ const Sellinsert = () => {
 			console.log('등록 결과:', result);
 		
 			if (typeof result === 'number' && result > 0) {
-				alert("등록이 완료되었습니다.");
-				window.location.reload();
+				toaster.push(
+					<Message showIcon type="success" closable>
+						등록이 완료되었습니다.
+					</Message>,
+					{ placement: "topCenter" }
+				);
+				// 바로 새로고침하지 말고 약간의 delay
+					setTimeout(() => {
+						window.location.reload();
+					}, 1500);
 			} else {
-				alert("등록에 실패했습니다.");
+				toaster.push(
+					<Message showIcon type="error" closable>
+						등록에 실패했습니다.
+					</Message>,
+					{ placement: "topCenter" }
+				);
 			}
 		})
 		.catch(error => {
-			console.log('실패', error);
-			alert("서버 오류가 발생했습니다.");
+			toaster.push(
+				<Message showIcon type="error" closable>
+					서버에 오류가 발생했습니다.
+				</Message>,
+				{ placement: "topCenter" }
+			);
 		});
 	}
 

@@ -1,13 +1,13 @@
 /* 판매 페이지 CSS */
 
 
-/* 각 페이지 메인 타이틀 폰트 설정 */
+/* 각 페이지 메인 타이틀 폰트 설정
 .main_title {
     margin: 20px 20px 20px 0px;
     font-size: 16px;
     font-weight: bold;
     max-width: 1500px;
-}
+} */
 
 /* sell_search_item.jsx */
 /* 표 헤더 폰트 설정 */
@@ -300,9 +300,6 @@
     font-weight: bold;
   }
 
-
-
-  /*  */
   .invoice-table-bottom {
     width: 100%;
     margin-top: 20px;

@@ -107,14 +107,25 @@ useEffect(() => {
     // 사업자 등록번호 중복 체크
     const bizNumCheck = (sc_biz_num) => {
         if (!sc_biz_num.trim()) {
-            alert("사업자등록번호를 입력해주세요.");
+             toaster.push(
+                <Message showIcon type="warning" closable >
+                  사업자등록번호를 입력해주세요.
+                </Message>,
+                { placement: "topCenter" }
+              );
             return;
         }
 
         // 형식 검사 (사업자등록번호는 XXX-XX-XXXXX 형식)
         const bizNumPattern = /^\d{3}-\d{2}-\d{5}$/;
         if (!bizNumPattern.test(sc_biz_num)) {
-            alert("사업자등록번호 형식이 올바르지 않습니다. \n (예시: 123-45-67890)");
+            toaster.push(
+              <Message showIcon type="warning" closable >
+                사업자등록번호 형식이 올바르지 않습니다. <br />
+                (예시: 123-45-67890)
+              </Message>,
+              { placement: "topCenter" }
+            );
             return;
         }
 
@@ -125,14 +136,25 @@ useEffect(() => {
         .then((res) => {
             setIsBizNumChecked(true); // 체크는 했음
             if (res != 0) {
-                alert('이미 등록되어 있습니다. 재확인 후 입력해주세요.');
+                toaster.push(
+                  <Message showIcon type="warning" closable >
+                    사업자등록번호 형식이 올바르지 않습니다. <br />
+                    (예시: 123-45-67890)
+                  </Message>,
+                  { placement: "topCenter" }
+                );
                 setClientAdd({
                     ...clientAdd,
                     sc_biz_num: ""
                 });
                 setIsBizNumValid(false);
             } else {
-                alert('등록 가능한 사업자등록번호입니다.');
+                toaster.push(
+                  <Message showIcon type="success" closable >
+                    등록 가능한 사업자등록번호입니다.
+                  </Message>,
+                  { placement: "topCenter" }
+                );
                 setIsBizNumValid(true);
             }
         });
@@ -193,7 +215,7 @@ useEffect(() => {
         if (!isBizNumValid) {
         toaster.push(
             <Message showIcon type="warning">
-            사업자등록번호 중복체크를 먼저 해주세요.
+              사업자등록번호 중복체크를 먼저 해주세요.
             </Message>,
             { placement: "topCenter" }
         );
@@ -243,15 +265,30 @@ useEffect(() => {
       })
       .then((res) => {
           if (res !== 0) {
-              alert("수정이 완료되었습니다.");
-              // window.location.href = "/main/sell_request_client_list";
+              toaster.push(
+                <Message showIcon type="success" closable>
+                  수정이 완료되었습니다.
+                </Message>,
+                { placement: "topCenter" }
+              );
+
               navigate("/main/sell_request_client_list");
           } else {
-              alert("수정에 실패하였습니다.");
+              toaster.push(
+                <Message showIcon type="error" closable>
+                  수정에 실패했습니다.
+                </Message>,
+                { placement: "topCenter" }
+              );
           }
       })
       .catch(error => {
-          console.log('실패', error);
+          toaster.push(
+            <Message showIcon type="error" closable>
+              서버에 오류가 발생했습니다.
+            </Message>,
+            { placement: "topCenter" }
+          );
       });
   }
 

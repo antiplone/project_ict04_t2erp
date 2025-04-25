@@ -5,6 +5,7 @@ import SellSlipAll from '#components/sell/SellSlipAll';
 import "#styles/sell.css";
 import AppConfig from "#config/AppConfig.json";
 import SellInvoice from '#components/sell/SellInvoice.jsx';
+import MessageBox from '../components/common/MessageBox';
 
 // sell_all_list => 판매 조회 페이지
 
@@ -123,9 +124,7 @@ const sell_all_list = () => {
 
 	return (
 		<div>
-			<Message type="success" className="main_title">
-				판매조회
-			</Message>
+			<MessageBox type="success" text="판매조회"/>
 
 			<Tabs 
 				activeKey={activeTab}

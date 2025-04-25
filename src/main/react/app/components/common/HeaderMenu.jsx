@@ -92,13 +92,12 @@ const HeaderMenu = () => {
 					<Nav.Menu title="근태관리">
 						<Nav.Item onSelect={() => navigate("att-regVacaItems")}>휴가항목등록</Nav.Item>
 						<Nav.Item onSelect={() => navigate("att-regAttItems")}>근태항목등록</Nav.Item>
-						<Nav.Item onSelect={() => navigate("att-management")}>근태관리</Nav.Item>
 						<Nav.Item onSelect={() => navigate("att-schedule")}>일정관리</Nav.Item>
 					</Nav.Menu>
-					) : (
-						<Nav.Menu title="근태관리">
-							<Nav.Item onSelect={() => navigate("att-management")}>근태관리</Nav.Item>
-						</Nav.Menu>
+					):(
+					<Nav.Menu title="근태관리">
+						<Nav.Item onSelect={() => navigate("att-schedule")}>일정관리</Nav.Item>
+					</Nav.Menu>
 					)}
 					<Nav.Menu title="구매관리">
 						<Nav.Item onSelect={() => { navigate("buy-select") }}>구매조회</Nav.Item>

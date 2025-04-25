@@ -97,7 +97,7 @@ export default function RetireInsertForm({ e_id, e_name, e_position, d_name }) {
 
         <Form.Group>
           <Form.ControlLabel>퇴사 예정일</Form.ControlLabel>
-          <Form.Control name="re_date" accepter={DatePicker} format="yyyy-MM-dd" shouldDisableDate={(date) => date < new Date()} block />
+          <Form.Control name="re_date" accepter={DatePicker} format="yyyy-MM-dd" placeholder="날짜 선택" shouldDisableDate={(date) => date < new Date()} block />
         </Form.Group>
 
         <Form.Group>

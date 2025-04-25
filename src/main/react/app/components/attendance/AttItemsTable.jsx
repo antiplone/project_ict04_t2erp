@@ -63,13 +63,13 @@ const AttItemsTable = ({ data, columns, onReloading }) => {
       >
         {columns.map(col => (
           <Column key={col.dataKey} width={col.width} align="center">
-            <HeaderCell>{col.label}</HeaderCell>
+            <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
             <Cell dataKey={col.dataKey} />
           </Column>
         ))}
 
         <Column width={110} align="center">
-          <HeaderCell>작업</HeaderCell>
+          <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>작업</HeaderCell>
           <Cell>
             {(rowData) => (
               <>

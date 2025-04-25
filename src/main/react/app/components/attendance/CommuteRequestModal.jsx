@@ -10,7 +10,7 @@ const model = Schema.Model({
   co_end_time: StringType().isRequired("퇴근시간을 입력해주세요")
 });
 
-export default function CommuteUpdateModal({ open, onClose, rowData, attURL, onRefresh }) {
+export default function CommuteRequestModal({ open, onClose, rowData, attURL, onRefresh }) {
   const [formValue, setFormValue] = useState({});
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function CommuteUpdateModal({ open, onClose, rowData, attURL, onR
   return (
     <Modal open={open} onClose={onClose} size="sm">
       <Modal.Header>
-        <Modal.Title>근무 기록 수정</Modal.Title>
+        <Modal.Title>근무 기록 정정요청</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form fluid model={model} formValue={formValue} onChange={setFormValue}>
@@ -66,10 +66,6 @@ export default function CommuteUpdateModal({ open, onClose, rowData, attURL, onR
           <Form.Group>
             <Form.ControlLabel>퇴근 시간</Form.ControlLabel>
             <Form.Control name="co_end_time" type="time" />
-          </Form.Group>
-          <Form.Group>
-            <Form.ControlLabel>상태</Form.ControlLabel>
-            <Form.Control name="co_status" />
           </Form.Group>
           <Form.Group>
             <Form.ControlLabel>비고</Form.ControlLabel>

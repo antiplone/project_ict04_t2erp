@@ -67,14 +67,14 @@ const VacaItemsTable = ({ data, columns, onReloading }) => {
           .map(col => (
           <React.Fragment key={col.dataKey}>
             <Column key={col.dataKey} width={col.width} align="center">
-              <HeaderCell>{col.label}</HeaderCell>
+              <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
               <Cell dataKey={col.dataKey} />
             </Column>
 
           {/* ✅ '휴가명' 뒤에만 휴가기간 컬럼 끼워넣기 */}
           {col.dataKey === "v_name" && (
             <Column width={250} align="center">
-              <HeaderCell>휴가기간</HeaderCell>
+              <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>휴가기간</HeaderCell>
               <Cell>
                 {(rowData) => `${rowData.v_start} ~ ${rowData.v_end}`}
               </Cell>
@@ -84,7 +84,7 @@ const VacaItemsTable = ({ data, columns, onReloading }) => {
         ))}
 
         <Column width={110} align="center">
-          <HeaderCell>작업</HeaderCell>
+          <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>작업</HeaderCell>
           <Cell>
             {(rowData) => (
               <>

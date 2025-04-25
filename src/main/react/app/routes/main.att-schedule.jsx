@@ -20,7 +20,7 @@ export default function SchedulePage() {
       <div style={{ marginTop: "20px" }}>
         <HolidayCalendar />
       </div>
-      <WeatherBox />
+      {/* <WeatherBox /> */}
     </Container>
   );
 }

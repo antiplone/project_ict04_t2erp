@@ -94,16 +94,24 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
   const hasEnded = !!record?.co_end_time;     // 퇴근 시간 있으면 true
 
   return (
-    <div style={{ marginTop: 20 }}>
+    <div style={{ marginTop: 20, width: 130 }}>
       <h6>오늘의 출퇴근 정보</h6>
       {/* <div>사원명: {eName}</div> */}
-      <div>출근시간: {record?.co_start_time || "-"}</div>
-      <div>퇴근시간: {record?.co_end_time || "-"}</div>
-      <div>상태: {record?.co_status || "-"}</div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div>출근시간</div>
+        <div>{record?.co_start_time || "-"}</div>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div>퇴근시간</div>
+        <div>{record?.co_end_time || "-"}</div>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div>상태</div>
+        <div>{record?.co_status || "-"}</div>
+      </div>
 
       {/* fetchTodayRecord()로 오늘 기록을 받아오기 전까지는 버튼이 렌더링x */}
-      {/* {!loading && ( */}
-        <div style={{ marginBottom: 10 }}>
+        <div style={{ marginTop: 10, display: "flex", justifyContent: "center" }}>
           <Button appearance="primary" onClick={startWork} disabled={hasStarted} style={{ marginRight: 10 }}>
             출근
           </Button>
@@ -111,8 +119,6 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
             퇴근
           </Button>
         </div>
-      {/* )} */}
-
     </div>
   );
 }

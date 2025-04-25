@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
-import { Modal, Button, Form, Schema } from "rsuite";
+import { Modal, Button, Form, Schema, Notification } from "rsuite";
 import { useState, useEffect } from "react";
 
 const { StringType } = Schema.Types;
@@ -11,6 +11,15 @@ const model = Schema.Model({
 });
 
 export default function CommuteRequestModal({ open, onClose, rowData, attURL, onRefresh }) {
+  const showToster = (message, type, header) => {
+    toaster.push(
+      <Notification type={type} header={header} closable>
+        {message}
+      </Notification>,
+      { placement: 'topCenter' }
+    );
+  };
+
   const [formValue, setFormValue] = useState({});
 
   useEffect(() => {
@@ -22,6 +31,7 @@ export default function CommuteRequestModal({ open, onClose, rowData, attURL, on
     const { co_start_time, co_end_time } = formValue;
   
     if (!co_start_time || !co_end_time) {
+
       alert("출근/퇴근 시간을 모두 입력해주세요.");
       return;
     }

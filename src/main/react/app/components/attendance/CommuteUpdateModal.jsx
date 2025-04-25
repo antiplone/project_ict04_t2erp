@@ -22,6 +22,7 @@ export default function CommuteUpdateModal({ open, onClose, rowData, attURL, onR
     const { co_start_time, co_end_time } = formValue;
   
     if (!co_start_time || !co_end_time) {
+      
       alert("출근/퇴근 시간을 모두 입력해주세요.");
       return;
     }

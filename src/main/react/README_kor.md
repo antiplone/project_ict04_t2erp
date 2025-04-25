@@ -102,7 +102,7 @@ npm install @stomp/stompjs sockjs-client
 npm install print-js
 
 ### FullCalendar API
-npm install @fullcalendar/react @fullcalendar/core @fullcalendar/daygrid
+npm install @fullcalendar/react @fullcalendar/core @fullcalendar/daygrid @fullcalendar/interaction
 #### -현재 몇 버전으로 깔렸는지 확인할 수 있는 명령어
 #### -예시: @fullcalendar/react@6.x.xx 라고 나오면 됨
 npm ls @fullcalendar/react

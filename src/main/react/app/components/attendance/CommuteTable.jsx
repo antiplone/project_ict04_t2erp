@@ -111,7 +111,7 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
           </div>
 
           {activeKey === "1" && (
-            <Table autoHeight data={filteredRecord} cellBordered style={{ width: "100%", minWidth: 910 }}>
+            <Table height={500} data={filteredRecord} cellBordered style={{ minWidth: 910 }}>
               {attColumns.map((col) => (
                 <Column key={col.dataKey} width={col.width} align="center">
                   <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
@@ -122,7 +122,7 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
                 <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>작업</HeaderCell>
                 <Cell style={{ padding: '6px' }}>
                   {rowData => (
-                    <Btn text="수정" color="blue" onClick={() => { setSelectedRow(rowData); setModalOpen(true); }} />
+                    <Btn text="수정" color="blue" style={{ padding: "0 10px"}} onClick={() => { setSelectedRow(rowData); setModalOpen(true); }} />
                   )}
                 </Cell>
               </Column>
@@ -130,7 +130,7 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
           )}
 
           {activeKey === "2" && (
-            <Table autoHeight data={myData} cellBordered style={{ width: "100%", minWidth: 840 }}>
+            <Table height={500} data={myData} cellBordered style={{ minWidth: 840 }}>
               {attColumns.map((col) => (
                 <Column key={col.dataKey} width={col.width} align="center">
                   <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
@@ -169,7 +169,7 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
           </div>
 
           {activeKey === "1" && (
-            <Table autoHeight data={myData} cellBordered style={{ width: "100%", minWidth: 840 }}>
+            <Table height={500} data={myData} cellBordered style={{ minWidth: 840 }}>
               {attColumns.map((col) => (
                 <Column key={col.dataKey} width={col.width} align="center">
                   <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>

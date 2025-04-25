@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Button, Container, DatePicker, Form, Radio, RadioGroup, Schema, Grid, Row, Col, FlexboxGrid, Panel, Divider, ButtonToolbar, SelectPicker } from "rsuite";
 import MessageBox from "#components/common/MessageBox.jsx";
+import { useToast } from '#components/common/ToastProvider';
 
 const model = Schema.Model({
   re_type: Schema.Types.StringType().isRequired("퇴직 유형은 필수입니다"),
@@ -14,6 +15,7 @@ const model = Schema.Model({
 export default function HrRetirementDetail() {
   const fetchURL = AppConfig.fetch["mytest"];
   const hrURL = `${fetchURL.protocol}${fetchURL.url}/hr`;
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const { e_id } = useParams();     // URL에서 /hr/hrRetirementDetail/{e_id} 가져오기
@@ -73,11 +75,11 @@ export default function HrRetirementDetail() {
     })
     .then(res => res.json())
     .then(res => {
-      alert("수정이 완료되었습니다.");
+      showToast("수정이 완료되었습니다.", "success");
       navigate("/main/hr-retirement");
     })
     .catch(err => {
-      alert("수정 실패: " + err.message);
+      showToast("수정 실패: ", "error" + err.message);
     });
   }
 
@@ -90,7 +92,7 @@ export default function HrRetirementDetail() {
     <Container>
       <MessageBox text="퇴직 정보 검토"/>
 
-      <FlexboxGrid style={{ marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
+      <FlexboxGrid justify="center" align="middle" style={{ minHeight: "70vh", marginTop: 30, marginBottom: 50 }}>
         <FlexboxGrid.Item colspan={20} style={{ maxWidth: 700, width: "100%" }} >
           <Panel header={<div>📄 퇴직 정보 검토</div>} bordered style={{ background: "#fff" }} >
             <Form fluid model={model} formValue={retiData}    // => formValue={retiData} 에서 값을 전달받으므로 개별 value={...}를 사용안해도 됨
@@ -239,8 +241,8 @@ export default function HrRetirementDetail() {
                 <Row style={{ marginTop: 20 }}>
                   <Col xs={24} style={{ textAlign: "center" }}>
                     <ButtonToolbar>
-                      <Button appearance="ghost" onClick={retiList}>목록</Button>
-                      <Button appearance="primary" onClick={updateReti}>수정</Button>
+                      <Button appearance="ghost" style={{ color: "#22284c", border: "1px solid #22284c" }} onClick={retiList}>목록</Button>
+                      <Button appearance="ghost" color="blue" onClick={updateReti}>저장</Button>
                     </ButtonToolbar>
                   </Col>
                 </Row>

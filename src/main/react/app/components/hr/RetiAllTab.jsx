@@ -20,7 +20,7 @@ export default function RetiAllTab({ retiData, retiColumns }) {
 
   return (
     <Table
-      autoHeight
+      height={500}
       cellBordered
       data={retiData}
       tableLayout="fixed"   // ← 고정 레이아웃

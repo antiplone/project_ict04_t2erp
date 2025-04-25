@@ -112,10 +112,10 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
 
       {/* fetchTodayRecord()로 오늘 기록을 받아오기 전까지는 버튼이 렌더링x */}
         <div style={{ marginTop: 10, display: "flex", justifyContent: "center" }}>
-          <Button appearance="primary" onClick={startWork} disabled={hasStarted} style={{ marginRight: 10 }}>
+          <Button appearance="primary" onClick={startWork} disabled={hasStarted} style={{ marginRight: 10, backgroundColor: "#22284c" }}>
             출근
           </Button>
-          <Button appearance="primary" onClick={endWork} disabled={!hasStarted || hasEnded} style={{ marginRight: 10 }}>
+          <Button appearance="primary" onClick={endWork} disabled={!hasStarted || hasEnded} style={{ marginRight: 10, backgroundColor: "#22284c" }}>
             퇴근
           </Button>
         </div>

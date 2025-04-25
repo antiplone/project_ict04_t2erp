@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Table } from "rsuite";
 import AttUpdateModal from "./AttUpdateModal";
 import AppConfig from "#config/AppConfig.json";
 import Btn from "./Btn";
+import { useToast } from '#components/common/ToastProvider';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -13,6 +14,7 @@ const { Column, HeaderCell, Cell } = Table;
 const AttItemsTable = ({ data, columns, onReloading }) => {
   const fetchURL = AppConfig.fetch['mytest'];
   const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
+  const { showToast, showConfirmToast } = useToast();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRow, setEditingRow] = useState(null);
@@ -50,14 +52,13 @@ const AttItemsTable = ({ data, columns, onReloading }) => {
       alert("삭제 요청 중 오류가 발생했습니다.");
     }
   };
-  
 
   return (
     <>
       <Table
         autoHeight
-        style={{ marginBottom: "24px" }}
-        width={800}
+        maxHeight={500}
+        style={{ marginBottom: "24px", minWidth: 800 }}
         data={data ?? []}
         cellBordered
       >

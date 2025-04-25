@@ -56,8 +56,8 @@ const VacaItemsTable = ({ data, columns, onReloading }) => {
     <>
       <Table
         autoHeight
-        style={{ marginBottom: "24px" }}
-        width={900}
+        maxHeight={500}
+        style={{ marginBottom: "24px", minWidth: 910 }}
         data={data ?? []}
         cellBordered
       >

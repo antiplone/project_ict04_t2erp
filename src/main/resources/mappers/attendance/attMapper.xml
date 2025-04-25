@@ -27,8 +27,10 @@
     <!-- 근태항목 등록 -->
 	<insert id="insertAttItems" parameterType="com.spring.erp_ordit.dto.attendance.AttItemsDTO">
 	  insert into attendance_tbl(a_code, a_name, a_type, a_note, v_code)
-	  values(#{a_code}, #{a_name}, #{a_type}, #{a_note}, #{v_code})
+	  values(#{a_code}, #{a_name}, #{a_type}, #{a_note}, #{v_code, jdbcType=INTEGER})
 	</insert>
+	<!-- int → Integer로 바꾸면 null이 전송되어 외래키 제약을 피할 수 있음 -->
+	
     <!-- 근태항목 삭제 -->
     <delete id="deleteAttItems" parameterType="int">
         DELETE FROM attendance_tbl

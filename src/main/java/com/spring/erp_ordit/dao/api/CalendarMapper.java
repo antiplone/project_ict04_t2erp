@@ -13,5 +13,4 @@ public interface CalendarMapper {
 
 	// 캘린더 리스트
 	public List<CalendarDTO> getAllEvents();
-	
 }

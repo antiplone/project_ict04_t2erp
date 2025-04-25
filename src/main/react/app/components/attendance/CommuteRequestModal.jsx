@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
-import { Modal, Button, Form, Schema } from "rsuite";
+import { Modal, Button, Form, Schema, Notification } from "rsuite";
 import { useState, useEffect } from "react";
 
 const { StringType } = Schema.Types;
@@ -10,7 +10,16 @@ const model = Schema.Model({
   co_end_time: StringType().isRequired("퇴근시간을 입력해주세요")
 });
 
-export default function CommuteUpdateModal({ open, onClose, rowData, attURL, onRefresh }) {
+export default function CommuteRequestModal({ open, onClose, rowData, attURL, onRefresh }) {
+  const showToster = (message, type, header) => {
+    toaster.push(
+      <Notification type={type} header={header} closable>
+        {message}
+      </Notification>,
+      { placement: 'topCenter' }
+    );
+  };
+
   const [formValue, setFormValue] = useState({});
 
   useEffect(() => {
@@ -22,7 +31,7 @@ export default function CommuteUpdateModal({ open, onClose, rowData, attURL, onR
     const { co_start_time, co_end_time } = formValue;
   
     if (!co_start_time || !co_end_time) {
-      
+
       alert("출근/퇴근 시간을 모두 입력해주세요.");
       return;
     }
@@ -56,7 +65,7 @@ export default function CommuteUpdateModal({ open, onClose, rowData, attURL, onR
   return (
     <Modal open={open} onClose={onClose} size="sm">
       <Modal.Header>
-        <Modal.Title>근무 기록 수정</Modal.Title>
+        <Modal.Title>근무 기록 정정요청</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form fluid model={model} formValue={formValue} onChange={setFormValue}>
@@ -67,10 +76,6 @@ export default function CommuteUpdateModal({ open, onClose, rowData, attURL, onR
           <Form.Group>
             <Form.ControlLabel>퇴근 시간</Form.ControlLabel>
             <Form.Control name="co_end_time" type="time" />
-          </Form.Group>
-          <Form.Group>
-            <Form.ControlLabel>상태</Form.ControlLabel>
-            <Form.Control name="co_status" />
           </Form.Group>
           <Form.Group>
             <Form.ControlLabel>비고</Form.ControlLabel>

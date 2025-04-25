@@ -22,8 +22,6 @@ public class BuyChatMessageServiceImpl { // 작성자 - hjy, 1:1 채팅 서비�
 	// 채팅 상대 선택시 직원 목록 조회
 	public List<ChatEmployeeDTO> getChatEmployeeList() {
 		
-		System.out.println("<<< BuyOrderServiceImpl - getChatEmployeeList >>>");
-		
 		return buyChatMessageMapper.chatEmployeeList();
 	}
 	
@@ -50,8 +48,6 @@ public class BuyChatMessageServiceImpl { // 작성자 - hjy, 1:1 채팅 서비�
 			buyChatMessageMapper.insertRoom(paramMap);
 		}
 
-		System.out.println("CHAT 메시지 저장: "+ message);
-		
 		buyChatMessageMapper.insertMessage(message); // CHAT 메시지만 저장
 	}
 

@@ -85,7 +85,7 @@ export default function BuySelectTabCheck() {
 
     return (
         <>
-            <Table height={500} data={buyOrderCheckList} style={{ maxWidth: 1500 }}>
+            <Table height={500} data={buyOrderCheckList}>
 
                 <Column width={120} className='text_center'>
                     <HeaderCell style={styles} className='text_center'>등록일자</HeaderCell>

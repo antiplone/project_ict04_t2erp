@@ -3,7 +3,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import AppConfig from "#config/AppConfig.json";
 import React, { useState } from "react";
-import { Button, Container, DatePicker, Divider, Input, InputGroup, InputNumber, InputPicker, Message, Table } from "rsuite";
+import { Button, Container, DatePicker, Divider, Input, InputGroup, InputNumber, InputPicker, Message, Table, toaster } from "rsuite";
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import { useNavigate } from "@remix-run/react";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
@@ -13,6 +13,8 @@ import readingGlasses from "#images/common/readingGlasses.png";
 import ashBn from "#images/common/ashBn.png";
 import { Link } from "react-router-dom";
 import ItemSearchModal from "#components/buy/ItemSearchModal.jsx";
+import { useToast } from '#components/common/ToastProvider';
+import MessageBox from '../components/common/MessageBox';
 
 export function meta() {
     return [
@@ -61,6 +63,8 @@ const EditableNumberCell = ({ rowData, dataKey, onChange, editable, ...props }) 
 export default function BuyInsert() {
 
     const navigate = useNavigate();
+
+    const { showToast } = useToast();
 
     // 물품 입력 목록 저장
     const [orderItems, setOrderItems] = useState([
@@ -149,7 +153,7 @@ export default function BuyInsert() {
     // 입력한 정보 저장
     const handleSubmit = async () => {
         if (!selectedClient || !selectedIncharge || !selectedStorage || !selectedType) { // 거래처, 담당자, 입고창고, 거래유형 중 하나라도 선택하지 않으면 입력하라는 알림이 뜬다.
-            alert("주문 정보를 모두 입력해주세요.");
+            showToast("주문 정보를 모두 입력해주세요.", "warning");
             return;
         }
         // 필수 항목 누락된 물품 체크
@@ -157,7 +161,7 @@ export default function BuyInsert() {
             item.item_code === null || item.item_code === '' || isNaN(item.item_code)
         );
         if (isInvalidItem) {
-            alert("물품코드를 정확히 입력해주세요.");
+            showToast("물품코드를 정확히 입력해주세요.", "warning");
             return;
         }
 
@@ -183,23 +187,22 @@ export default function BuyInsert() {
             });
 
             if (!response.ok) {
-                alert("주문 저장에 실패했습니다.");
+                showToast("주문 저장을 실패했습니다.", "error");
                 return;
             }
+            showToast("주문이 정상 등록되었습니다.", "success");
 
-            alert("주문이 정상 등록되었습니다.");
             navigate("/main/buy-select");
+
         } catch (err) {
             console.error(err);
-            alert("오류 발생");
+            showToast("오류가 발생했습니다.", "error");
         }
     };
 
     return (
         <Container >
-            <Message type="info" style={{ maxWidth: 1500, fontSize: 16 }}>
-                <strong>구매입력</strong>
-            </Message>
+            <MessageBox type="info" text="구매입력" />
             <br />
 
             <div className="inputBox">
@@ -250,19 +253,18 @@ export default function BuyInsert() {
                 </div>
             </div>
 
-
             <div className="inputBox">
                 <div className="input">
-                <InputGroup className="input_date_type">
-                    <InputGroup.Addon style={{ width: 90 }}>거래유형</InputGroup.Addon>
-                    <InputPicker
-                        placeholder="거래유형 선택"
-                        data={buyType} // 거래유형 리스트 
-                        style={{ width: 224, border: 'none' }}
-                        value={selectedType} // 현재 선택된 값
-                        onChange={setSelectedType} // 사용자 선택값 업데이트
-                    />
-                </InputGroup>
+                    <InputGroup className="input_date_type">
+                        <InputGroup.Addon style={{ width: 90 }}>거래유형</InputGroup.Addon>
+                        <InputPicker
+                            placeholder="거래유형 선택"
+                            data={buyType} // 거래유형 리스트 
+                            style={{ width: 224, border: 'none' }}
+                            value={selectedType} // 현재 선택된 값
+                            onChange={setSelectedType} // 사용자 선택값 업데이트
+                        />
+                    </InputGroup>
                 </div>
 
                 <div className="input">

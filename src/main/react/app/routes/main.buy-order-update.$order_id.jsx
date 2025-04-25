@@ -4,13 +4,15 @@ import AppConfig from "#config/AppConfig.json";
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import "../styles/buy.css";
-import { Form, Button, Container, Message, Divider, InputGroup, Input, InputPicker } from 'rsuite';
+import { Form, Button, Container, Message, Divider, InputGroup, Input, InputPicker, toaster } from 'rsuite';
 import ashBn from "#images/common/ashBn.png";
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
 import StorageSearchModal from "#components/buy/StorageSearchModal.jsx";
 import readingGlasses from "#images/common/readingGlasses.png";
 import ItemSearchModal from "#components/buy/ItemSearchModal.jsx";
+import { useToast } from '#components/common/ToastProvider';
+import MessageBox from '../components/common/MessageBox';
 
 export function meta() {
     return [
@@ -22,6 +24,8 @@ export function meta() {
 export default function BuyOrderUpdate() {
 
     const navigate = useNavigate();
+
+    const { showToast } = useToast();
 
     const { order_id } = useParams(); // URL에서 전달된 파라미터들을 객체 형태로 반환 ex) order_id -> '1' 문자열로 출력됨
 
@@ -166,11 +170,16 @@ export default function BuyOrderUpdate() {
             })
         })
             .then(res => {
-                if (!res.ok) throw new Error();
-                alert("수정 완료");
+                if (!res.ok) {
+                    throw new Error("주문 수정 실패");
+                }
+                showToast("주문이 수정되었습니다.", "success");
+
                 navigate(`/main/buy-select`);
             })
-            .catch(() => alert("수정 실패"));
+            .catch(() => {
+                showToast("주문 수정을 실패했습니다.", "error");
+            });
     };
     //[]은 디펜던시인데, setBuyOrderDetail()로 렌더링될때 실행되면 안되고, 1번만 실행하도록 빈배열을 넣어둔다.
     //CO오류 : Controller 진입 직전에 적용된다. 외부에서 자바스크립트 요청이 오는 것을
@@ -178,10 +187,7 @@ export default function BuyOrderUpdate() {
     return (
         <>
             <Container style={{ padding: 20 }}>
-                <Message type="info" style={{ width: 1500 }}>
-                    <strong>구매 정보 수정페이지 - 발주번호:{order_id}</strong>
-                </Message>
-
+                <MessageBox type="info" text={`구매 정보 수정페이지 - 발주번호:${order_id}`} />
                 <br />
 
                 {/* 주문 정보 수정 */}

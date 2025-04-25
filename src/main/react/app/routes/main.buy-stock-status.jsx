@@ -9,6 +9,8 @@ import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import StorageSearchModal from "#components/buy/StorageSearchModal.jsx";
 import ItemSearchModal from "#components/buy/ItemSearchModal.jsx";
 import readingGlasses from "#images/common/readingGlasses.png";
+import { useToast } from '#components/common/ToastProvider';
+import MessageBox from '../components/common/MessageBox';
 
 export function meta() {
     return [
@@ -20,6 +22,8 @@ export function meta() {
 const { Column, HeaderCell, Cell } = Table;
 
 export default function BuyStockStatus() {
+
+    const { showToast } = useToast();
 
     // 발주 일자
     const [orderDate, setOrderDate] = useState(null);
@@ -86,7 +90,7 @@ export default function BuyStockStatus() {
             console.log("buyStockStatus:", result);
 
             if (result.length === 0) {
-                alert("선택한 조건에 해당하는 입고정보가 없습니다.");
+                showToast("선택한 조건에 해당하는 입고정보가 없습니다.", "warning");
             }
 
             setBuyStockStatus(result);
@@ -129,10 +133,7 @@ export default function BuyStockStatus() {
     return (
         <>
             <Container>
-
-                <Message type="info" style={{ width: 1500, fontSize: 16 }}>
-                    <strong>입고현황</strong>
-                </Message>
+                <MessageBox type="info" text="입고현황" />
                 <br />
 
                 <div className="inputBox">

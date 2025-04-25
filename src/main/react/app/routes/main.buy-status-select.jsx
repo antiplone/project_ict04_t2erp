@@ -9,7 +9,9 @@ import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import StorageSearchModal from "#components/buy/StorageSearchModal.jsx";
 import ItemSearchModal from "#components/buy/ItemSearchModal.jsx";
 import readingGlasses from "#images/common/readingGlasses.png";
-import { Button, Container, DateRangePicker, Input, InputGroup, InputPicker, Message } from "rsuite";
+import { Button, Container, DateRangePicker, Input, InputGroup, InputPicker, Message, toaster } from "rsuite";
+import { useToast } from '#components/common/ToastProvider';
+import MessageBox from '../components/common/MessageBox';
 
 export function meta() {
     return [
@@ -26,6 +28,8 @@ const buyType = ["부과세율 적용", "부가세율 미적용"].map(
 );
 
 export default function BuyStatusSelect() {
+
+    const { showToast } = useToast();
 
     // 발주일자
     const [orderDate, setOrderDate] = useState(null);
@@ -98,9 +102,8 @@ export default function BuyStatusSelect() {
             console.log("result:", result);
 
             if (result.length === 0) {
-                alert("선택한 조건에 해당하는 구매정보가 없습니다.");
+                showToast("선택한 조건에 해당하는 구매정보가 없습니다.", "warning");
             }
-
             setOrderstatus(result);
         } catch (err) {
             console.error("검색 실패:", err);
@@ -143,9 +146,7 @@ export default function BuyStatusSelect() {
     return (
         <Container>
             <>
-                <Message type="info" style={{ width: 1500, fontSize: 16 }}>
-                    <strong>구매현황</strong>
-                </Message>
+                <MessageBox type="info" text="구매현황" />
                 <br />
 
                 <div className="inputBox">

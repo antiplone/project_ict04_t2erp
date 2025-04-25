@@ -6,6 +6,7 @@ import '../../styles/common.css';
 import '../../styles/buy.css';
 import { Link } from 'react-router-dom';
 
+
 const { Column, HeaderCell, Cell } = Table;
 
 export default function BuySelectTabAll() {
@@ -87,7 +88,7 @@ export default function BuySelectTabAll() {
 
     return (
         <>
-            <Table height={500} data={buyOrderAllList} style={{ maxWidth: 1500 }}>
+            <Table height={500} data={buyOrderAllList}>
 
                 <Column width={120} className='text_center'>
                     <HeaderCell style={styles} className='text_center, cell_header'>등록일자_No.</HeaderCell>

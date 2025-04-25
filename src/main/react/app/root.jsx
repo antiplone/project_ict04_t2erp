@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 import "rsuite/dist/rsuite.min.css";
 import "#styles/common.css";
+import ToastProvider from "#components/common/ToastProvider";  // 경로 수정
 
 import {
 	Links,
@@ -29,7 +30,9 @@ export function Layout({ children }) {
 					{AppConfig.isDev ? <span style={{ textAlign: "center", fontWeight: "bold", color: "royalblue" }}>
 						개발버전입니다.
 					</span> : null}
-					{children}{/* 자식페이지들이 보여질부분 */}
+					<ToastProvider>
+						{children}{/* 자식페이지들이 보여질부분 */}
+					</ToastProvider>
 				</div>
 				<ScrollRestoration />
 				<Scripts />

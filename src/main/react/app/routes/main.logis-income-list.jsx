@@ -9,6 +9,7 @@ import ClientSearchModal from "#components/logis/ClientSearchModal.jsx";
 import StorageSearchModal from "#components/logis/StorageSearchModal.jsx";
 import EmailFormModal from "#components/email/EmailFormModal.jsx";
 import MessageBox from '../components/common/MessageBox';
+import { useToast } from '#components/common/ToastProvider';// Import useToast here
 
 {/* 챗봇 */}
 /*import TextClassifier from '#components/chatbot/chatbot';*/
@@ -67,13 +68,9 @@ const OrderIncomeList = () => {
     const [selectedStorageName, setSelectedStorageName] = useState(null);
     const [isStorageModalOpen, setStorageModalOpen] = useState(false);
 
-	/*const [to, setTo] = useState('');
-	const [subject, setSubject] = useState('');
-	const [body, setBody] = useState('');
-	const [message, setMessage] = useState('');*/
+	const { showToast } = useToast(); 
     
     /* 검색 조건*/
-
 	const handleSearch = async () => {
 		let startDate = '';
 		let endDate = '';
@@ -105,7 +102,7 @@ const OrderIncomeList = () => {
 			const validatedResult = Array.isArray(result) ? result : [];
 			setOrderList(validatedResult);
 			if (validatedResult.length === 0) {
-				alert("선택한 조건에 해당하는 구매정보가 없습니다.");
+				 showToast("선택한 조건에 해당하는 구매정보가 없습니다.", "info"); 
 			}
 
 		} catch (err) {

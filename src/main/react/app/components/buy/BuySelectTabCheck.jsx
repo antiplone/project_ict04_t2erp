@@ -138,7 +138,7 @@ export default function BuySelectTabCheck() {
                     <Cell dataKey="delivery_date" />
                 </Column>
 
-                <Column width={100} align="center">
+                <Column width={120} align="center">
                     <HeaderCell style={styles}>진행상태</HeaderCell>
                     <Cell dataKey="order_status" />
                 </Column>

@@ -30,6 +30,7 @@
 .BuyUpdateFrom {
     display: flex;
     justify-content: flex-start; /* 왼쪽 정렬로 고정 */
+    max-width: 1500px;
     gap: 20px;
 }
 

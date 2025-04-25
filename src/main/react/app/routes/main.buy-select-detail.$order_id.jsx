@@ -93,60 +93,102 @@ export default function BuySelectDetail() {
         <br />
 
         <> {/* data={[orderInfo]} 여기만 대괄호를 준 이유는 orderInfo는 하나의 객체 단일 주문 정보이기 때문에 배열로 감싸줬음 => rsuite의 <Table data={...}>는 배열형태의 데이터를 요구함*/}
-          <Table height={100} width={1350} data={[orderInfo]} onRowClick={OrderData => console.log(OrderData)}>
-            <Column width={150}><HeaderCell style={styles}>발주번호</HeaderCell><Cell dataKey="order_id" /></Column>
-            <Column width={150}><HeaderCell style={styles}>발주일자</HeaderCell><Cell dataKey="order_date" /></Column>
-            <Column width={150}><HeaderCell style={styles}>구매요청 부서</HeaderCell><Cell dataKey="order_type" /></Column>
-            <Column width={150}><HeaderCell style={styles}>담당자명</HeaderCell><Cell dataKey="e_name" /></Column>
-            <Column width={150}><HeaderCell style={styles}>거래처명</HeaderCell><Cell dataKey="client_name" /></Column>
-            <Column width={150}><HeaderCell style={styles}>거래유형</HeaderCell><Cell dataKey="transaction_type" /></Column>
-            <Column width={150}><HeaderCell style={styles}>입고창고</HeaderCell><Cell dataKey="storage_name" /></Column>
-            <Column width={150}><HeaderCell style={styles}>납기일자</HeaderCell><Cell dataKey="delivery_date" /></Column>
-            <Column width={150}><HeaderCell style={styles}>진행상태</HeaderCell><Cell dataKey="order_status" /></Column>
-            {/* <Column width={120}><HeaderCell>회계처리 여부</HeaderCell><Cell dataKey="" /></Column> */}
+          <Table height={100} width={1200} data={[orderInfo]} onRowClick={OrderData => console.log(OrderData)}>
+            
+            <Column width={120} align="center">
+            <HeaderCell style={styles}>발주번호</HeaderCell>
+            <Cell dataKey="order_id" />
+            </Column>
+
+            <Column width={120} align="center">
+            <HeaderCell style={styles}>발주일자</HeaderCell
+            ><Cell dataKey="order_date" />
+            </Column>
+
+            <Column width={120} align="center">
+            <HeaderCell style={styles}>구매요청 부서</HeaderCell>
+            <Cell dataKey="order_type" />
+            </Column>
+
+            <Column width={150} align="center">
+            <HeaderCell style={styles}>담당자명</HeaderCell>
+            <Cell dataKey="e_name" />
+            </Column>
+
+            <Column width={150}>
+            <HeaderCell style={styles}>거래처명</HeaderCell>
+            <Cell dataKey="client_name" />
+            </Column>
+
+            <Column width={150}>
+            <HeaderCell style={styles}>거래유형</HeaderCell>
+            <Cell dataKey="transaction_type" />
+            </Column>
+
+            <Column width={150}>
+            <HeaderCell style={styles}>입고창고</HeaderCell>
+            <Cell dataKey="storage_name" />
+            </Column>
+
+            <Column width={120} align="center">
+            <HeaderCell style={styles}>납기일자</HeaderCell>
+            <Cell dataKey="delivery_date" />
+            </Column>
+
+            <Column width={120} align="center">
+            <HeaderCell style={styles}>진행상태</HeaderCell>
+            <Cell dataKey="order_status" />
+            </Column>
+
+            {/* 
+            <Column width={120}>
+            <HeaderCell>회계처리 여부</HeaderCell>
+            <Cell dataKey="" />
+            </Column> 
+            */}
           </Table>
         </>
 
         <Divider style={{ maxWidth: 1200 }} />
         <>
           <Table height={400} width={1200} data={orderItems} onRowClick={itemData => console.log(itemData)}>
-            <Column width={150}>
+            <Column width={120} align="center">
               <HeaderCell style={styles}>물품코드</HeaderCell>
               <Cell dataKey="item_code" />
             </Column>
 
-            <Column width={300}>
+            <Column width={250}>
               <HeaderCell style={styles}>물품명</HeaderCell>
               <Cell dataKey="item_name" />
             </Column>
 
-            <Column width={150}>
+            <Column width={110}>
               <HeaderCell style={styles}>수량</HeaderCell>
               <Cell dataKey="quantity" />
             </Column>
 
-            <Column width={150}>
+            <Column width={180} align="right">
               <HeaderCell style={styles}>단가</HeaderCell>
               <Cell>
                 {priceData => new Intl.NumberFormat().format(priceData.price)}
               </Cell>
             </Column>
 
-            <Column width={150}>
+            <Column width={180} align="right">
               <HeaderCell style={styles}>공급가액</HeaderCell>
               <Cell>
                 {supplyData => new Intl.NumberFormat().format(supplyData.supply)}
               </Cell>
             </Column>
 
-            <Column width={150}>
+            <Column width={180} align="right">
               <HeaderCell style={styles}>부가세</HeaderCell>
               <Cell>
                 {vatData => new Intl.NumberFormat().format(vatData.vat)}
               </Cell>
             </Column>
 
-            <Column width={150}>
+            <Column width={180} align="right">
               <HeaderCell style={styles}>총액</HeaderCell>
               <Cell>
                 {totalData => new Intl.NumberFormat().format(totalData.total)}

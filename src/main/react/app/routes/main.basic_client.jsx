@@ -154,9 +154,7 @@ export default function Basic_client() {
       .then(res => res.json())
       .then(data => {
         setRequestClients(data); // 전체는 여기에 저장
-        setVisibleRequests(data.filter(item =>
-          item.sa_approval_status === "진행중" || !item.sa_approval_status
-        )); // 보이는 건 따로 관리
+        setVisibleRequests(data.filter(item => item.sa_approval_status === "진행중"));    // 진행중 상태인 요청만 보이도록
       });
   }, []);
 
@@ -211,11 +209,12 @@ export default function Basic_client() {
               { label: "승인", value: "승인" },
               { label: "반려", value: "반려" }
             ]}
-            value={rowData.sa_approval_status}
-            onChange={(val) => {
-              const updated = [...requestClients];
-              updated[rowIndex].sa_approval_status = val;
-              setRequestClients(updated);
+            value={rowData.sa_approval_status}     // 현재 셀렉트 박스에 선택되어 있는 값
+            onChange={(val) => {                   // 셀렉트 박스에서 값을 바꿨을 때 실행
+              const updated = [...requestClients]; // 전체 목록 데이터
+              const target = updated.find(item => item.sc_id === rowData.sc_id);    // 수정할 대상을 requestClients에서 찾음, find() 배열 안에서 조건에 맞는 첫번째 요소 하나를 찾아주는 메서드
+              if (target) target.sa_approval_status = val;          // 해당하는 행이 있으면 sa_approval_status 값을 바꿔줌
+              setRequestClients(updated);          // 수정한 복사본을 다시 저장
             }}
             placeholder="선택"
             cleanable={false}
@@ -289,11 +288,11 @@ export default function Basic_client() {
 
   // 요청 받은 당시 정보 저장
   const mergedData = visibleRequests.map(req => {
-    const original = requestClients.find(item => item.sc_id === req.sc_id);
+    const base = requestClients.find(item => item.sc_id === req.sc_id);
     return {
-      ...req,  // 요청 당시 정보 (깊은복사된 값)
-      sa_approval_comment: original?.sa_approval_comment || "",
-      sa_approval_status: original?.sa_approval_status || "진행중"
+      ...base,  // 요청 당시 전체 정보
+      sa_approval_comment: req.sa_approval_comment ?? base?.sa_approval_comment ?? "",
+      sa_approval_status: req.sa_approval_status ?? base?.sa_approval_status ?? "진행중"
     };
   });
   

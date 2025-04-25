@@ -167,15 +167,6 @@ export default function Hr_emp_card() {
 
   return (
     <>
-      {/*{selectedEid ? (
-        <HrEmpCardDetail
-          e_id={selectedEid}
-          onBack={() => {
-            setSelectedEid(null);   // 목록 화면으로 전환
-            fetchHrCardList();      // 목록 새로고침
-          }}
-        />
-      ) : (*/}
         <div style={{ padding: '30px', width: '100%' }}>
           <Message type="success" className="main_title">
               인사카드 등록
@@ -184,16 +175,7 @@ export default function Hr_emp_card() {
             <HrTable
               columns={columns}
               items={items}
-              renderActionButtons={(rowData) => (
-                // <Button
-                //   color="green"
-                //   appearance="ghost"
-                //   size="xs"
-                //   onClick={() => {
-                //     console.log("조회: 선택된 e_id:", rowData.e_id); // 🔍 여기에 로그 찍어보기!
-                //     setSelectedEid(rowData.e_id);
-                //   }}
-                // >
+              renderActionButtons={(rowData) => (     // renderActionButtons 각 행마다 버튼을 렌더링 하는 함수
                 <Link to={`/main/hr_emp_card_detail/${rowData.e_id}`} >
                   조회
                 </Link>
@@ -252,7 +234,7 @@ export default function Hr_emp_card() {
                 <label>부서 *</label>
                 <HrDropdown
                   title={
-                    deptList.find((dept) => dept.value === hrCardData.d_code)?.label || '부서를 선택하세요'
+                    deptList.find((dept) => dept.value === hrCardData.d_code)?.label || '부서를 선택하세요'   // 부서코드(hrCardData.d_code)와 같은 값을 가진 부서를 찾아서 dropdown에 표시, 못 찾으면 ''메세지 출력
                   }
                   items={deptList}  // [{label: '기획팀', value: 'D001'}, ...]
                   onSelect={(val) => setHrCardData({ ...hrCardData, d_code: val })}

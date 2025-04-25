@@ -14,6 +14,11 @@ export default defineConfig({
 			},
 		}),
 	],
+	resolve: {
+		alias: {
+			'@': '/src/main/react/app',  // src 폴더로 매핑
+		},
+	},
 	define: {
 		global: 'window' // SockJS의 global 오류 방지!
 	  }

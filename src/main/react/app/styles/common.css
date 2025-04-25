@@ -4,6 +4,9 @@
 .text_left{
     text-align: left;
 }
+.text_right{
+    text-align: right;
+}
 
 .area_fit{
     padding: 6px;
@@ -212,9 +215,23 @@ main.rs-content {
     max-width: 1500px;
 }
 
+/* dropdown menu */
 .rs-navbar-item, .rs-navbar-nav>.rs-dropdown .rs-dropdown-toggle{
-	color : var(--rs-text-primary);
+	color : white !important;
     font-weight: bold;
+}
+
+.rs-navbar-default .rs-dropdown .rs-dropdown-toggle:hover, .rs-navbar-default .rs-dropdown.rs-dropdown-open .rs-dropdown-toggle{
+	background-color : #eeeeee !important;
+	color : rgb(34, 40, 76) !important;
+}
+
+ul.rs-dropdown-menu {
+    width: 100% !important;
+}
+
+.rs-navbar-default .rs-navbar-item:hover{
+   background-color: rgb(34, 40, 76) !important;
 }
 
 .cursor_pointer{

@@ -40,7 +40,7 @@ public class HrEmpCardController {
 		return new ResponseEntity<>(service.hrEmpCardInsert(empCard), HttpStatus.CREATED); // 201 // <>를 주면 위에 있는 <int>안에 있는게 그대로 적용된다.
 	}
 	
-	// 인사카드 상세 GetMapping -> http://localhost:8081/hrCard/hrCardLDetail/{e_id}
+	// 인사카드 상세 GetMapping -> http://localhost:8081/hrCard/hrCardDetail/{e_id}
 	@GetMapping("/hrCardDetail/{e_id}")
 	public ResponseEntity<?> hrEmpCardDetail(@PathVariable int e_id){
 		System.out.println("<< HrController - basicItemDetail >>");

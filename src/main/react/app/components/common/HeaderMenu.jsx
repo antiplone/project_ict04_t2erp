@@ -25,13 +25,6 @@ const HeaderMenu = () => {
 	// ✅ 로그인 시 저장해둔 사용자 직급 가져오기
 	const position = localStorage.getItem("e_position");  // 예: '관리자' 또는 '사원'
 
-	const chatState = {
-		show: useState(false),  /* state, setter */
-		placement: useState('')  /* state, setter */
-	};
-
-	const [open, setOpen] = chatState.show;
-	const [placement, setPlacement] = chatState.placement;
 	const [myInfo, setMyInfo] = useState("");
 
 	useEffect(() => {
@@ -67,16 +60,7 @@ const HeaderMenu = () => {
 
 				});
 		}
-
-		if (open)
-			console.log("상담시작");
-		else console.log("상담종료");
-	}, [myInfo, open, placement]);
-
-	const handleOpen = (key) => {
-		setOpen(true);
-		setPlacement(key);
-	};
+	}, [myInfo]);
 
 	const handleLogout = () => {
 		localStorage.clear();

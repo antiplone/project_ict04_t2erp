@@ -5,7 +5,6 @@ import { Button } from "rsuite";
 
 export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
   // onRefresh : 새로고침용 콜백함수
-  // console.log("🔥 현재 e_id:", e_id, ", e_name:", e_name);
 
   // 상태 관리
   const [record, setRecord] = useState(null);     // 출퇴근 데이터 객체
@@ -13,14 +12,10 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
   const [eName, setEName] = useState("");   // 사원명
   const today = new Date().toISOString().split("T")[0]; // '2025-04-21'
 
-  // 오늘자 기록
+  // 그 날짜의 출퇴근 기록 1건 조회. 서버-클라이언트 간의 현재 시간이 맞지 않기 때문에 클라이언트에서 today 로 날짜를 넘겨서 일치시킴.
+  // new Date() 값 = 2025-04-21T06:41:32.123Z
   const fetchTodayRecord = () => {
     fetch(`${attURL}/todayRecord/${e_id}/${today}`)
-      // .then(res => res.json())
-      // .then(data => {
-      //   setRecord(data);    // recode 상태에 저장
-      //   setLoading(false);
-      // })
       .then(res => {
         if (!res.ok) throw new Error(`서버 응답 오류: ${res.status}`);
         return res.text();  // 일단 텍스트로 받기
@@ -51,11 +46,6 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
     fetchTodayRecord();
   }, [e_id]);
 
-  // 추가
-  // useEffect(() => {
-  //   console.log("🧪 출퇴근 기록 상태:", record);
-  // }, [record]);
-
   // 처음에 저장된 이름 불러오기
   useEffect(() => {
     const storedName = localStorage.getItem("e_name");
@@ -77,7 +67,6 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
           co_work_date: today,
         }),
       });
-      alert(await res.text());
       onRefresh();          // 부모 쪽 UI 업데이트 유도
       fetchTodayRecord();   // 최신 출근시간 가져옴 → 버튼 disable 상태 업데이트됨
     } catch (err) {
@@ -94,7 +83,6 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ e_id, co_work_date: today }),
       });
-      alert(await res.text());
       onRefresh();          // 테이블 갱신 요청
       fetchTodayRecord();   // 버튼 리프레쉬
     } catch (err) {
@@ -119,7 +107,7 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
           <Button appearance="primary" onClick={startWork} disabled={hasStarted} style={{ marginRight: 10 }}>
             출근
           </Button>
-          <Button appearance="ghost" onClick={endWork} disabled={!hasStarted || hasEnded}>
+          <Button appearance="primary" onClick={endWork} disabled={!hasStarted || hasEnded} style={{ marginRight: 10 }}>
             퇴근
           </Button>
         </div>

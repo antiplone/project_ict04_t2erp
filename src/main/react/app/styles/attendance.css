@@ -25,4 +25,44 @@
     height: 400px;
 }
 
+/* 근태관리 페이지 */
+.calendar-container {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+/* 왼쪽 전체 */
+.left-panel {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 출퇴근 버튼 영역 */
+.top-buttons {
+  background: #f9f9f9;
+  padding: 16px;
+  border-radius: 6px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 전체 리스트 영역 */
+.bottom-list {
+  margin-top: 20px;
+  background: #fff;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: auto;
+}
+
+/* 오른쪽 달력 영역 */
+.right-calendar {
+  flex: 1;
+  max-width: 100%;
+}
+  
   

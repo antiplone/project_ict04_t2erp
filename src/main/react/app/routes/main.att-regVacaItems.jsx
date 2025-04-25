@@ -67,6 +67,8 @@ export default function RegAttItems() {
           fetcher.load("/main/att-regVacaItems");
           setModalOpen(false);
         }} />
+        {/* onReloading : 모달 내부에서 등록/수정 작업이 끝났을 때 실행하는 콜백 함수이다.
+          새로고침 없이 목록을 다시 리로드시킨다. */}
     </Container>
   );
 }

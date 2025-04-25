@@ -7,6 +7,7 @@ import AttItemsTable from "#components/attendance/AttItemsTable";
 import AttModal from "#components/attendance/AttModal";
 import MessageBox from "#components/common/MessageBox";
 import "#styles/attendance.css";
+import Btn from "#components/attendance/Btn.jsx";
 import AppConfig from "#config/AppConfig.json";
 
 export function meta() {
@@ -58,7 +59,7 @@ export default function RegAttItems() {
           columns={attColumns}
           onReloading={() => fetcher.load("/main/att-regAttItems")}
         />
-        <Button className="btn" onClick={() => setModalOpen(true)}>추가</Button>
+        <Btn text="추가" color="blue" onClick={() => setModalOpen(true)} />
       </Container>
       
       <AttModal open={modalOpen} onClose={() => setModalOpen(false)} 

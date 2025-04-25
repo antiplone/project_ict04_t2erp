@@ -22,8 +22,9 @@ const HeaderMenu = () => {
 
 	const navigate = useNavigate();
 
-	// ✅ 로그인 시 저장해둔 사용자 직급 가져오기
+	// 로그인 시 저장해둔 사용자 직위를 가져오고, 관리자급 직위로만 다시 나누기
 	const position = localStorage.getItem("e_position");  // 예: '관리자' 또는 '사원'
+	const adminPositions = ["대리", "과장", "부장", "차장", "팀장", "이사", "관리"];
 
 	const [myInfo, setMyInfo] = useState("");
 
@@ -77,16 +78,23 @@ const HeaderMenu = () => {
 				<Nav>
 					<Nav.Item style={{ padding: 0 }} icon={<ToImage style={{ margin: 0 }} src={brand} fbText="Logo" width={60} height={60} />} />
 					<Nav.Menu title="관리운영">
-						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_client") }}>거래처등록</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("basic_item") }}>상품등록</Nav.Item>
 					</Nav.Menu>
-					{position === "관리" ? (
-						<Nav.Menu title="근태관리">
-							<Nav.Item onSelect={() => navigate("att-regVacaItems")}>휴가항목등록</Nav.Item>
-							<Nav.Item onSelect={() => navigate("att-regAttItems")}>근태항목등록</Nav.Item>
-							<Nav.Item onSelect={() => navigate("att-management")}>근태관리</Nav.Item>
-						</Nav.Menu>
+					<Nav.Menu title="인사관리">
+						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사카드관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("hr_appointment") }}>거래처등록</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("hr_department") }}>상품등록</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("hr-retirement") }}>퇴직관리</Nav.Item>
+					</Nav.Menu>
+					{adminPositions.includes(position?.trim()) ? (
+					// === : 값과 타입 모두 비교. position이 문자열일 때 .trim()을 적용
+					<Nav.Menu title="근태관리">
+						<Nav.Item onSelect={() => navigate("att-regVacaItems")}>휴가항목등록</Nav.Item>
+						<Nav.Item onSelect={() => navigate("att-regAttItems")}>근태항목등록</Nav.Item>
+						<Nav.Item onSelect={() => navigate("att-management")}>근태관리</Nav.Item>
+						<Nav.Item onSelect={() => navigate("att-schedule")}>일정관리</Nav.Item>
+					</Nav.Menu>
 					) : (
 						<Nav.Menu title="근태관리">
 							<Nav.Item onSelect={() => navigate("att-management")}>근태관리</Nav.Item>

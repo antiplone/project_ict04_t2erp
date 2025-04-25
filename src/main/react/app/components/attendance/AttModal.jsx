@@ -9,6 +9,8 @@ import {
   RadioGroup,
   Schema,
   SelectPicker,
+  Notification,
+  toaster,  // Notification.open() 을 관리하는 전역 헬퍼이다.
 } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 
@@ -77,7 +79,6 @@ const AttModal = ({ open, onClose, onReloading }) => {
     } else {
       setVacationList([]);
     }
-    // setVacationList([]);
   };
 
   // 휴가코드 선택 시 휴가명 자동 설정
@@ -172,10 +173,6 @@ const AttModal = ({ open, onClose, onReloading }) => {
                 <Form.Control
                   name="v_code"
                   accepter={SelectPicker}
-                  // data={vacationList.map(item => ({
-                  //   label: `${item.v_code} (${item.v_name})`,
-                  //   value: item.v_code
-                  // }))}
                   data={vacationList}
                   onChange={VacaCodeChange}
                   value={att.v_code}

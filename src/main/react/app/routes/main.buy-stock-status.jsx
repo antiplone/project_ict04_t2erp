@@ -9,6 +9,8 @@ import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
 import StorageSearchModal from "#components/buy/StorageSearchModal.jsx";
 import ItemSearchModal from "#components/buy/ItemSearchModal.jsx";
 import readingGlasses from "#images/common/readingGlasses.png";
+import { useToast } from '#components/common/ToastProvider';
+import MessageBox from '../components/common/MessageBox';
 
 export function meta() {
     return [
@@ -20,6 +22,8 @@ export function meta() {
 const { Column, HeaderCell, Cell } = Table;
 
 export default function BuyStockStatus() {
+
+    const { showToast } = useToast();
 
     // 발주 일자
     const [orderDate, setOrderDate] = useState(null);
@@ -86,7 +90,7 @@ export default function BuyStockStatus() {
             console.log("buyStockStatus:", result);
 
             if (result.length === 0) {
-                alert("선택한 조건에 해당하는 입고정보가 없습니다.");
+                showToast("선택한 조건에 해당하는 입고정보가 없습니다.", "warning");
             }
 
             setBuyStockStatus(result);
@@ -129,10 +133,7 @@ export default function BuyStockStatus() {
     return (
         <>
             <Container>
-
-                <Message type="info" style={{ width: 1500, fontSize: 16 }}>
-                    <strong>입고현황</strong>
-                </Message>
+                <MessageBox type="info" text="입고현황" />
                 <br />
 
                 <div className="inputBox">
@@ -253,43 +254,43 @@ export default function BuyStockStatus() {
                 <>
                     <Table height={500} width={1200} data={buyStockStatus} onRowClick={ReceivingData => console.log(ReceivingData)}>
                         
-                        <Column width={120} align="center">
-                        <HeaderCell style={styles}>발주일자</HeaderCell>
+                        <Column width={120} className='text_center'>
+                        <HeaderCell style={styles} className='text_center'>발주일자</HeaderCell>
                         <Cell dataKey="order_date" />
                         </Column>
 
-                        <Column width={120} align="center">
-                        <HeaderCell style={styles}>발주번호</HeaderCell>
+                        <Column width={120} className='text_center'>
+                        <HeaderCell style={styles} className='text_center'>발주번호</HeaderCell>
                         <Cell dataKey="order_id" />
                         </Column>
 
-                        <Column width={150}>
-                        <HeaderCell style={styles}>거래처명</HeaderCell>
+                        <Column width={150} className='text_left'>
+                        <HeaderCell style={styles} className='text_center'>거래처명</HeaderCell>
                         <Cell dataKey="client_name" />
                         </Column>
 
-                        <Column width={250}>
-                        <HeaderCell style={styles}>물품명</HeaderCell>
+                        <Column width={250} className='text_left'>
+                        <HeaderCell style={styles} className='text_center'>물품명</HeaderCell>
                         <Cell dataKey="item_name" />
                         </Column>
 
-                        <Column width={150}>
-                        <HeaderCell style={styles}>창고명</HeaderCell>
+                        <Column width={150} className='text_left'>
+                        <HeaderCell style={styles} className='text_center'>창고명</HeaderCell>
                         <Cell dataKey="storage_name" />
                         </Column>
 
-                        <Column width={120} align="center">
-                        <HeaderCell style={styles}>창고재고</HeaderCell>
+                        <Column width={120} className='text_center'>
+                        <HeaderCell style={styles} className='text_center'>창고재고</HeaderCell>
                         <Cell dataKey="stock_amount" />
                         </Column>
 
-                        <Column width={120} align="center">
-                        <HeaderCell style={styles}>안전재고</HeaderCell>
+                        <Column width={120} className='text_center'>
+                        <HeaderCell style={styles} className='text_center'>안전재고</HeaderCell>
                         <Cell dataKey="safe_stock" />
                         </Column>
 
-                        <Column width={120}>
-                        <HeaderCell style={styles}>최근 입고일</HeaderCell>
+                        <Column width={120} className='text_center'>
+                        <HeaderCell style={styles} className='text_center'>최근 입고일</HeaderCell>
                         <Cell dataKey="last_date" />
                         </Column>
 

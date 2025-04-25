@@ -14,26 +14,67 @@
 
 <!-- 거래처 등록 -->
 <insert id="basicInsertClient" parameterType="com.spring.erp_ordit.dto.basic.BasicClientDTO">
-	INSERT INTO item_tbl (item_code, item_name, item_status, item_standard, item_reg_date)
+	INSERT INTO client_tbl (
+		client_name,
+		c_ceo,
+		c_biz_num,
+		c_tel,
+		c_email,
+		c_zone_code,
+		c_base_address,
+		c_detail_address,
+		c_type,
+		c_industry,
+		c_status,
+		c_note,
+		c_reg_date
+	)
 	VALUES (
-        #{client_name},
-        #{c_ceo},
-        #{c_biz_num},
-        #{c_tel},
-        #{c_address},
-        #{c_type},
-        #{c_industry},
-        #{c_status},
-        #{c_note}
-    )
+		#{client_name},
+		#{c_ceo},
+		#{c_biz_num},
+		#{c_tel},
+		#{c_email},
+		#{c_zone_code},
+		#{c_base_address},
+		#{c_detail_address},
+		#{c_type},
+		#{c_industry},
+		#{c_status},
+		#{c_note},
+		NOW()
+	)
 </insert>
 
 <!-- 거래저 상세보기 -->
-<select id="clientDetail" resultType="com.spring.erp_ordit.dto.basic.BasicClientDTO">
+<select id="basicClientDetail" resultType="com.spring.erp_ordit.dto.basic.BasicClientDTO">
    SELECT * FROM client_tbl
     WHERE client_code=#{client_code} 
 </select>
 
+<!-- 거래처 수정 -->
+<update id="basicClientUpdate" parameterType="com.spring.erp_ordit.dto.basic.BasicClientDTO">
+  UPDATE client_tbl
+  SET
+    client_name = #{client_name},
+    c_ceo = #{c_ceo},
+    c_biz_num = #{c_biz_num},
+    c_tel = #{c_tel},
+    c_email = #{c_email},
+    c_zone_code = #{c_zone_code},
+    c_base_address = #{c_base_address},
+    c_detail_address = #{c_detail_address},
+    c_type = #{c_type},
+    c_industry = #{c_industry},
+    c_status = #{c_status},
+    c_note = #{c_note}
+  WHERE client_code = #{client_code}
+</update>
 
+<!-- 거래처 삭제 -->
+<delete id="basicClientDelete" parameterType="com.spring.erp_ordit.dto.basic.BasicClientDTO">
+	DELETE FROM client_tbl
+	 WHERE client_code=#{client_code}
+</delete>
 
 </mapper>

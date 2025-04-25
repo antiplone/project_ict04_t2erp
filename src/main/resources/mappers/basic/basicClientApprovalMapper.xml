@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+     
+<mapper namespace="com.spring.erp_ordit.dao.basic.BasicClientApprovalMapper">
+     
+<!-- 거래처 요청 목록 조회 -->
+<select id="basicClientApprovalList" resultType="com.spring.erp_ordit.dto.basic.BasicClientApprovalDTO">
+	 SELECT r.*,
+	        COALESCE(a.sa_approval_status, '진행중') AS sa_approval_status
+	   FROM request_client_tbl r
+       LEFT JOIN request_client_approval_tbl a
+	     ON r.sc_id = a.sa_request_id
+	  ORDER BY r.sc_date DESC
+</select>
+
+<!-- 거래처 요청 상세 -->
+<select id="basicClientApprovalDetail" resultType="com.spring.erp_ordit.dto.basic.BasicClientApprovalDTO">
+   SELECT * FROM request_client_tbl
+    WHERE sc_id=#{sc_id} 
+</select>
+
+<!-- 거래처 요청 승인 -->
+<update id="basicClientApprovalUpdate" parameterType="com.spring.erp_ordit.dto.basic.BasicClientApprovalDTO">
+    UPDATE request_client_approval_tbl
+    SET
+        sa_approval_comment = #{sa_approval_comment},
+        sa_approval_status = #{sa_approval_status},
+        sa_e_id = #{sa_e_id},
+        sa_app_e_name = #{sa_app_e_name},
+        sa_approval_date = NOW()
+    WHERE sa_request_id = #{sc_id}
+</update>
+
+<!-- 승인한 거래처 정보 client_tbl에 insert -->
+<insert id="basicClientApprovalInsert" parameterType="com.spring.erp_ordit.dto.basic.BasicClientApprovalDTO">
+  INSERT INTO client_tbl (
+    client_name, c_ceo, c_biz_num, c_email, c_tel,
+    c_zone_code, c_base_address, c_detail_address,
+    c_type, c_industry, c_status, c_note, c_reg_date
+  ) VALUES (
+    #{sc_client_name}, #{sc_ceo}, #{sc_biz_num}, #{sc_email}, #{sc_tel},
+    #{zone_code}, #{base_address}, #{detail_address},
+    #{sc_type}, #{sc_industry}, 'Y', #{sc_note}, NOW()
+  )
+</insert>
+
+</mapper>

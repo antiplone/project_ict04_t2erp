@@ -8,6 +8,7 @@ export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActi
   return (
     <Table
       autoHeight
+      virtualized={false}
       width={1450}
       data={items}
       cellBordered
@@ -16,47 +17,54 @@ export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActi
       {columns.map((col, index) => (
         <Column
           key={index}
-          minWidth={col.minWidth || 100}
-          flexGrow={1}
-          align="center"
-          sortable
+          width={col.width || 100}
+          align={col.align || "center"}
+          fixed={index === 0 ? 'left' : undefined}
         >
-          <HeaderCell>{col.label}</HeaderCell>
-          <Cell dataKey={col.dataKey} />
+          <HeaderCell>{col.label || ""}</HeaderCell>
+          <Cell>
+            {(rowData, rowIndex) =>
+              col.renderCell
+                ? col.renderCell(rowData, rowIndex)
+                : rowData[col.dataKey]
+            }
+          </Cell>
         </Column>
       ))}
 
-      <Column width={180} align="center">
+      <Column width={180} align="center" fixed="right">
         <HeaderCell>작업</HeaderCell>
-        <Cell style={{ display: 'flex', alignContent: 'center' }}>
-          {(rowData) =>
-            renderActionButtons ? (
-              renderActionButtons(rowData)
-            ) : (
-              <>
-                <Button
-                  color="blue"
-                  appearance="ghost"
-                  size="xs"
-                  style={{ marginRight: '5px' }}
-                  onClick={() => onEditClick(rowData)}
-                >
-                  수정
-                </Button>
-                <Button
-                  color="red"
-                  appearance="ghost"
-                  size="xs"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onDeleteClick(rowData);
-                  }}
-                >
-                  삭제
-                </Button>
-              </>
-            )
-          }
+        <Cell>
+          {(rowData) => {
+            if (renderActionButtons) {
+              return renderActionButtons(rowData);
+            } else {
+              return (
+                <>
+                  <Button
+                    color="blue"
+                    appearance="ghost"
+                    size="xs"
+                    style={{ marginRight: '5px' }}
+                    onClick={() => onEditClick(rowData)}
+                  >
+                    수정
+                  </Button>
+                  <Button
+                    color="red"
+                    appearance="ghost"
+                    size="xs"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onDeleteClick(rowData);
+                    }}
+                  >
+                    삭제
+                  </Button>
+                </>
+              );
+            }
+          }}
         </Cell>
       </Column>
     </Table>

@@ -23,7 +23,7 @@ const Textarea = React.forwardRef((props, ref) => (
     const [clientAdd, setClientAdd] = useState({
         sc_client_name: '',
         sc_ceo: '',
-        c_biz_num: '',
+        sc_biz_num: '',
         sc_email_front: '',
         sc_email_back: '',
         sc_tel: '',
@@ -55,7 +55,7 @@ const Textarea = React.forwardRef((props, ref) => (
                 setClientAdd({
                     sc_client_name: res.sc_client_name,
                     sc_ceo: res.sc_ceo,
-                    c_biz_num: res.c_biz_num,
+                    sc_biz_num: res.sc_biz_num,
                     sc_email_front: emailFront,
                     sc_email_back: emailBack,
                     sc_tel: res.sc_tel,
@@ -78,7 +78,7 @@ useEffect(() => {
         setClientAdd({
             sc_client_name: rowData.sc_client_name || '',
             sc_ceo: rowData.sc_ceo || '',
-            c_biz_num: rowData.c_biz_num || '',
+            sc_biz_num: rowData.sc_biz_num || '',
             sc_email_front: rowData.sc_email ? rowData.sc_email.split('@')[0] : '',
             sc_email_back: rowData.sc_email ? rowData.sc_email.split('@')[1] : '',
             sc_tel: rowData.sc_tel || '',
@@ -105,20 +105,20 @@ useEffect(() => {
     const [isBizNumValid, setIsBizNumValid] = useState(false);      // 중복 결과 여부
 
     // 사업자 등록번호 중복 체크
-    const bizNumCheck = (c_biz_num) => {
-        if (!c_biz_num.trim()) {
+    const bizNumCheck = (sc_biz_num) => {
+        if (!sc_biz_num.trim()) {
             alert("사업자등록번호를 입력해주세요.");
             return;
         }
 
         // 형식 검사 (사업자등록번호는 XXX-XX-XXXXX 형식)
         const bizNumPattern = /^\d{3}-\d{2}-\d{5}$/;
-        if (!bizNumPattern.test(c_biz_num)) {
+        if (!bizNumPattern.test(sc_biz_num)) {
             alert("사업자등록번호 형식이 올바르지 않습니다. \n (예시: 123-45-67890)");
             return;
         }
 
-        fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientBizNum/` + c_biz_num, {
+        fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientBizNum/` + sc_biz_num, {
             method: 'GET',
         })
         .then((res) => res.text())
@@ -128,7 +128,7 @@ useEffect(() => {
                 alert('이미 등록되어 있습니다. 재확인 후 입력해주세요.');
                 setClientAdd({
                     ...clientAdd,
-                    c_biz_num: ""
+                    sc_biz_num: ""
                 });
                 setIsBizNumValid(false);
             } else {
@@ -176,7 +176,7 @@ useEffect(() => {
     const requiredFields = {
         sc_client_name: "거래처명",
         sc_ceo: "대표자명",
-        c_biz_num: "사업자등록번호",
+        sc_biz_num: "사업자등록번호",
         sc_email_front: "이메일",
         sc_email_back: "이메일",
         sc_tel: "연락처",
@@ -305,13 +305,13 @@ useEffect(() => {
         
                           <Form.Group>
                             <Form.ControlLabel>사업자등록번호 
-                                <Button appearance="ghost" style={{ marginLeft: 10}} size="xs" onClick={() => bizNumCheck(clientAdd.c_biz_num)}>중복체크</Button>
+                                <Button appearance="ghost" style={{ marginLeft: 10}} size="xs" onClick={() => bizNumCheck(clientAdd.sc_biz_num)}>중복체크</Button>
                             </Form.ControlLabel>
                             <Form.Control
-                              name="c_biz_num"
-                              value={clientAdd.c_biz_num}
+                              name="sc_biz_num"
+                              value={clientAdd.sc_biz_num}
                               onChange={(value) =>
-                                changeValue(value, "c_biz_num")
+                                changeValue(value, "sc_biz_num")
                               }
                             />
                             

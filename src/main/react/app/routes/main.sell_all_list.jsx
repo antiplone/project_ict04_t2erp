@@ -1,5 +1,4 @@
-import { Table, Button, Tabs, Message, ButtonToolbar, 
-	Checkbox, Modal } from 'rsuite';
+import { Table, Button, Tabs, Message, ButtonToolbar, Modal } from 'rsuite';
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate  } from "react-router-dom";
 import SellSlipAll from '#components/sell/SellSlipAll';
@@ -11,93 +10,85 @@ import SellInvoice from '#components/sell/SellInvoice.jsx';
 
 const { Column, HeaderCell, Cell } = Table;
 
-  /* 결재 여부 - 선택 데이터 */
-const confirm = ['미확인', '결재중', '완료'].map(
-	(confirmChk) => ({ // 이렇게 하면, 둘다 같게 들어가서, 라벨따로 값따로 안넣어줘도 됩니다.
-		label: confirmChk, 
-		value: confirmChk,
-	})
-);
-
 const sell_all_list = () => {
 
+	const fetchURL = AppConfig.fetch['mytest'];
 	const navigate = useNavigate();
 
-	// 거래명세서 클릭 시 전달할 order_id, 등록일자_No 값을 저장
+	// 전체 리스트
+	const [allList, setAllList] = useState([]);
+
+	// 거래명세서 클릭 시 전달할 'order_id, 등록일자_No' 값을 저장
 	const [selectedOrderInfo, setSelectedOrderInfo] = useState(null);
 
-	// '불러온 전표' 모달
-	const [open1, setOpen1] = React.useState(false);
+	// '거래명세서' 모달
+	const [open1, setOpen1] = useState(false);
 	const handleOpen1 = () => setOpen1(true);
 	const handleClose1 = () => setOpen1(false);
 
 	// '불러온 전표' 모달
-	const [open2, setOpen2] = React.useState(false);
+	const [open2, setOpen2] = useState(false);
 	const handleOpen2 = () => setOpen2(true);
 	const handleClose2 = () => setOpen2(false);
 
+	// 등록일자_No.과 대표 상품명 입력 설정하기
 	const getNumberedList = (data) => {
-		let result = [];
-		let groupedByDate = {};
+		let result = [];	// 최종 결과를 담을 배열
+		let groupedByDate = {};	// 날짜별로 데이터를 나눠서 담을 객체
 	
-		// 날짜별로 그룹핑
+		// 데이터를 날짜(order_date) 기준으로 그룹핑
+		// ex: { '2025-04-10': [item1, item2, ...], '2025-04-11': [item3, ...] }
 		data.forEach(item => {
 			if (!groupedByDate[item.order_date]) {
-				groupedByDate[item.order_date] = [];
+				groupedByDate[item.order_date] = [];	// 해당 날짜 키가 없으면 초기화
 			}
-			groupedByDate[item.order_date].push(item);
+			groupedByDate[item.order_date].push(item);	// 해당 날짜 배열에 데이터 추가
 		});
 	
 		// 날짜별로 처리
 		Object.keys(groupedByDate).forEach(date => { 
-			// groupedByDate : 날짜별로 데이터를 묶어둔 객체
-			 // ex: { '2025-04-10': [item1, item2, ...], '2025-04-11': [item3, ...] }
 			let orders = groupedByDate[date];	// 해당 날짜(date)의 전체 주문 데이터 배열
-			let seenOrderIds = new Set();	// 중복된 주문(order_id)을 한 번만 처리하기 위해 사용
+			let seenOrderIds = new Set();	// 이미 처리한 주문번호를 저장할 Set
 			let count = 1;
-	
+			
+			// 날짜별 주문 데이터 반복
 			orders.forEach(item => {
 				if (seenOrderIds.has(item.order_id)) return;	 // 이미 처리한 주문번호(order_id)는 무시
 				seenOrderIds.add(item.order_id);
 	
 				// 같은 order_id의 품목 모으기
 				const sameOrderItems = orders.filter(x => x.order_id === item.order_id);
-													// 주문번호와 item 주문번호가 같은 걸 배열로 만들기
-													console.log("현재 처리 중인 order_id:", item.order_id);
-													console.log("해당 order_id로 묶인 품목 수:", sameOrderItems.length);
-													console.log("묶인 품목 목록:", sameOrderItems.map(x => x.item_name));
-													const firstItemName = sameOrderItems[0].item_name;
-				const displayName = sameOrderItems.length > 1
-					? `${firstItemName} 외 ${sameOrderItems.length - 1}건`
-					: firstItemName;
+				console.log("현재 처리 중인 order_id:", item.order_id);
+				console.log("해당 order_id로 묶인 품목 수:", sameOrderItems.length);
+				console.log("묶인 품목 목록:", sameOrderItems.map(x => x.item_name));
 				
-					// total_sum 계산 (동일 주문번호에 대한 합산)
-			const totalSum = sameOrderItems.reduce((sum, curr) => sum + curr.total, 0);
+				// 첫 번째 품목명을 표시용으로 사용
+				const firstItemName = sameOrderItems[0].item_name;
+				const displayName = sameOrderItems.length > 1 ?
+									`${firstItemName} 외 ${sameOrderItems.length - 1}건`	// 여러 품목이면 요약
+									: firstItemName;	// 한 개면 그냥 이름 그대로
+					
+				// 동일 주문번호로 묶인 항목들의 total 합계 계산
+				// .reduce : 배열에 있는 값을 하나로 쌓아가면서 계산하는 함수 => sum: 누적된 합계, curr: 지금 처리 중인 항목(아이템1, 아이템2, ...)
+				const totalSum = sameOrderItems.reduce((sum, curr) => sum + curr.total, 0);
 
-				// 한 줄만 push
+				// 결과 담기
+				// .push({ ... }) : 배열에 새로운 객체 하나씩 추가
 				result.push({
 					...item,
 					date_no: count,
 					item_display: displayName,
-					total_sum: totalSum // 총합을 추가
+					total_sum: totalSum // 총 금액 합계
 				});
-	
+		
 				count++;
 			});
 		});
 
 		return result;
 	};
-  
-	const allListDetail = (order_id) => {
-		navigate(`/main/sell_all_list_detail/${order_id}`)
-	}
 
-	// 전체 리스트
-	const [allList, setAllList] = useState([]);
-
-	const fetchURL = AppConfig.fetch['mytest'];
-
+	// 전체 리스트 조회
 	useEffect(() => {
 		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/allList`, {
 			method: "GET"
@@ -109,6 +100,11 @@ const sell_all_list = () => {
 			setAllList(numbered);
 		});
 	}, []);
+	  
+	// 상세 클릭 시 order_id 넘겨주며 페이지 이동
+	const allListDetail = (order_id) => {
+		navigate(`/main/sell_all_list_detail/${order_id}`)
+	}
 
 	// 탭 상태(기본값 1 : 전체리스트)
 	const [activeTab, setActiveTab] = useState("1");
@@ -121,6 +117,10 @@ const sell_all_list = () => {
 		return false;
 	  });
 	
+	const styles = {
+        backgroundColor: '#f8f9fa',
+    };
+
 	return (
 		<div>
 			<Message type="success" className="main_title">
@@ -140,19 +140,18 @@ const sell_all_list = () => {
 			<Table 
 				className="all_table"
 				height={500}
-				data={filteredList}
+				data={filteredList}	// 탭 상태에 따라 조건 필터한 데이터
 				onRowClick={rowData => {
 					console.log(rowData);
 				}}
 			>	
 			
-			<Column width={130} className="all_text">
-				<HeaderCell>등록일자_No.</HeaderCell>
+			<Column width={130} className="text_center">
+				<HeaderCell style={styles}>등록일자_No.</HeaderCell>
 				<Cell>
 					{(rowData) => (
 						<span 
 							onClick={() => allListDetail(rowData.order_id)}
-							// style={{ cursor: 'pointer' }}
 							className="allList-date"
 						>
 							{`${rowData.order_date}_${rowData.date_no}`}
@@ -161,56 +160,44 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 
-			<Column width={130} className="all_text">
-				<HeaderCell>출하지시일</HeaderCell>
-				<Cell>
-					{(rowData) => rowData.shipment_order_date}
-				</Cell>
+			<Column width={130} className="text_center">
+				<HeaderCell style={styles}>출하지시일</HeaderCell>
+				<Cell>{(rowData) => rowData.shipment_order_date}</Cell>
 			</Column>
 
-			<Column width={100}  className="all_text">
-				<HeaderCell>거래처명</HeaderCell>
-				<Cell>
-					{(rowData) => rowData.client_name}
-				</Cell>
+			<Column width={100}>
+				<HeaderCell className="text_center" style={styles}>거래처명</HeaderCell>
+				<Cell className="text_left">{(rowData) => rowData.client_name}</Cell>
 			</Column>
 
-			<Column width={250}  className="all_text">
-				<HeaderCell>품목명</HeaderCell>
-				<Cell>
-					{(rowData) => rowData.item_display}
-				</Cell>
+			<Column width={250}>
+				<HeaderCell className="text_center" style={styles}>품목명</HeaderCell>
+				<Cell className="text_left">{(rowData) => rowData.item_display}</Cell>
 			</Column>
 
-			<Column width={100} className="all_text">
-				<HeaderCell>금액 합계</HeaderCell>
-				<Cell>
-					{(rowData) => new Intl.NumberFormat().format(rowData.total_sum)}
-					{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
-				</Cell>
+			<Column width={100}>
+				<HeaderCell className="text_center" style={styles}>금액 합계</HeaderCell>
+				<Cell style={{ textAlign: 'right' }}>{(rowData) => new Intl.NumberFormat().format(rowData.total_sum)}</Cell>
+				{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
 			</Column>
 
-			<Column width={150} className="all_text">
-				<HeaderCell>거래유형</HeaderCell>
-				<Cell>
-					{(rowData) => rowData.transaction_type}
-				</Cell>
+			<Column width={150} className="text_center">
+				<HeaderCell style={styles}>거래유형</HeaderCell>
+				<Cell>{(rowData) => rowData.transaction_type}</Cell>
 			</Column>
 
-			<Column width={150} className="all_text">
-				<HeaderCell>출하창고명</HeaderCell>
-				<Cell>
-					{(rowData) => rowData.storage_name}
-				</Cell>
+			<Column width={150} className="text_center">
+				<HeaderCell style={styles}>출하창고명</HeaderCell>
+				<Cell>{(rowData) => rowData.storage_name}</Cell>
 			</Column>
 
-			{/* <Column width={100} className="all_text">
+		{/* <Column width={100} className="all_text">
 				<HeaderCell>회계반영 여부</HeaderCell>
 				<Cell />
 			</Column> */}
 
-			<Column width={100} className="all_text">
-				<HeaderCell>출하여부</HeaderCell>
+			<Column width={100} className="text_center">
+				<HeaderCell style={styles}>출하여부</HeaderCell>
 				<Cell>
 					{(rowData) => {
 						if (rowData.income_confirm === null || rowData.income_confirm === 'N') {
@@ -222,8 +209,8 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 			
-			<Column width={100} className="all_text">
-				<HeaderCell>거래명세서</HeaderCell>
+			<Column width={100} className="text_center">
+				<HeaderCell style={styles}>거래명세서</HeaderCell>
 				<Cell>
 				{(rowData) => (
 					<Button
@@ -245,20 +232,25 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 
-			<Column width={100} className="all_text">
-				<HeaderCell>불러온 전표</HeaderCell>
+			<Column width={100} className="text_center">
+				<HeaderCell style={styles}>불러온 전표</HeaderCell>
 				<Cell>
 					<Button color="green" appearance="ghost" size="xs" onClick={handleOpen2}>조회</Button>
 				</Cell>
 			</Column>
 			</Table>
 
-			<Modal open={open1} onClose={handleClose1} style={{ width:1000 }}>
+			<Modal open={open1} onClose={handleClose1} 
+				style={{ 
+					position: 'fixed',
+					left: '30%',
+					width: 800 }}>
 				<Modal.Header>
 					<Modal.Title>거래명세서</Modal.Title>
 				</Modal.Header>
+
 				<Modal.Body>
-					{/* selectedOrderInfo가 null이 아닐 때만 SellInvoice 컴포넌트를 렌더링하게 조건문을 추가 */}
+					{/* selectedOrderInfo 값이 null이 아닐 때만 SellInvoice 컴포넌트를 렌더링 */}
 					{selectedOrderInfo && (
 						<SellInvoice 
 							order_id={selectedOrderInfo.order_id}
@@ -267,14 +259,17 @@ const sell_all_list = () => {
 						/>
 					)}
 				</Modal.Body>
+
 				<Modal.Footer>
-					<Button onClick={handleClose1} appearance="default">
-						닫기
-					</Button>
+					<Button onClick={handleClose1} appearance="default">닫기</Button>
 				</Modal.Footer>
 			</Modal>
 
-			<Modal open={open2} onClose={handleClose2} style={{ width:800 }}>
+			<Modal open={open2} onClose={handleClose2} 
+				style={{ 
+					position: 'fixed',
+					left: '30%',
+					width:800 }}>
 				<Modal.Header>
 					<Modal.Title>전표</Modal.Title>
 				</Modal.Header>
@@ -291,7 +286,7 @@ const sell_all_list = () => {
 			<div className="all_listBtn">
 				<ButtonToolbar>
 					<Link to="/main/sell_insert">
-						<Button appearance="primary" className="allList_btn">판매 입력</Button>
+						<Button appearance="ghost">판매 입력</Button>
 					</Link>
 				</ButtonToolbar>
 			</div>

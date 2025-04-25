@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import com.spring.erp_ordit.dto.sell.SellRequestClientApprovalDTO;
 import com.spring.erp_ordit.dto.sell.SellRequestClientDTO;
 
 @Mapper
@@ -31,5 +30,5 @@ public interface SellRequestClientMapper {
 	public int deleteClient(int sc_id);
 	
 	// 판매_거래처 관리 - 등록(거래처 정보)
-	public int checkClientBizNum(String c_biz_num);
+	public int checkClientBizNum(String sc_biz_num);
 }

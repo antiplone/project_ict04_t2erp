@@ -125,17 +125,10 @@ const sell_all_list_detail = () => {
       <Divider style={{maxWidth: 1200}}/>
 
       <div className="sell_DetailBtnBox">
-        <Button appearance="ghost" color="blue" className="sell_DetailBtn" onClick={() => updateAllList(order_id)}>
-            수정
-        </Button>
+        <Button appearance="ghost" color="blue" className="sell_DetailBtn" onClick={() => updateAllList(order_id)}>수정</Button>
+        <Button style={{ marginRight: 10, border: '1px solid #22284C', color: '#22284C' }} appearance="ghost" className="sell_DetailBtn" onClick={() => allList()}> 목록</Button>
+        <Button appearance="ghost" color="red" className="sell_DetailBtn" onClick={() => deleteAllList(order_id)}>삭제</Button>
 
-        <Button appearance="ghost" color="red" className="sell_DetailBtn" onClick={() => deleteAllList(order_id)}>
-          삭제
-        </Button>
-
-        <Button appearance="ghost" color="cyan" className="sell_DetailBtn" onClick={() => allList()}>
-            목록
-        </Button>
       </div>
 	</>
   );

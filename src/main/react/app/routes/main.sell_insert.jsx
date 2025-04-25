@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from "react";
-import { Button, ButtonToolbar, Message, DatePicker, Form, 
-		InputGroup, Input, Table, InputPicker,
-		InputNumber, toaster } from "rsuite";
+import { Button, ButtonToolbar, Message, DatePicker, Form, InputGroup,
+		Input, Table, InputPicker, InputNumber, toaster } from "rsuite";
 import "#styles/sell.css";
+import "#styles/common.css";
 import SellClientSearchModal from "#components/sell/SellClientSearchModal.jsx";
 import SellEmployeeSearchModal from "#components/sell/SellEmployeeSearchModal.jsx";
 import SellStorageSearchModal from "#components/sell/SellStorageSearchModal.jsx";
@@ -23,28 +23,28 @@ const sellType = ["부과세율 적용", "부가세율 미적용"].map(
 	})
 );
 
-// RSuite Table => 편집 셀, 셀 하나를 렌더링하고, 데이터 수정할 수 있도록 input 필드 표시 (문자입력)
+// 편집 가능한 셀(문자 입력용) - 더블클릭했을 때 편집
 const EditableCell = ({ rowData, dataKey, onChange, editable, onDoubleClickCell, ...props }) => (
 	<Cell {...props} onDoubleClick={() => onDoubleClickCell?.(rowData.id)}>
-		{editable ? ( // editable ? 셀편집이 가능한지 여부, editable === true 편집가능 모드, editable === false 읽기 전용 모드 
+		{editable ? ( // 만약 이 셀이 편집 가능한 상태라면
 			<Input
 				size="xs"
 				value={rowData[dataKey] || ''}
-				onChange={(value) => onChange(rowData.id, dataKey, value)} // 사용자가 입력한 값 onchange를 통해 부모 컨포넌트로 전달
+				onChange={(value) => onChange(rowData.id, dataKey, value)} 
 			/>
 		) : (
-			rowData[dataKey]
+			rowData[dataKey]	// 편집 불가능한 상태면 그냥 데이터만 보여줌
 		)}
 	</Cell>
 );
 
-// RSuite Table => 테이블 내에서 숫자를 수정할 수 있게 해준다. (숫자 전용 입력)
-const EditableNumberCell = ({ rowData, dataKey, onChange, editable, ...props }) => (  // rowData  행 데이터, 물품정보 한건에 해당하는 정보
+// 편집 가능한 셀(숫자 입력용)
+const EditableNumberCell = ({ rowData, dataKey, onChange, editable, ...props }) => ( 
 	<Cell {...props}>
-		{editable ? (
+		{editable ? (	// 편집 가능한 상태일 때
 			<InputNumber
 				size="xs"
-				value={rowData[dataKey] || 0}
+				value={rowData[dataKey] || 0}	// 데이터가 없으면 0부터 시작
 				min={0} // 0보다 작을 수 없게 설정
 				onChange={(value) => onChange(rowData.id, dataKey, value)}
 			/>
@@ -55,18 +55,16 @@ const EditableNumberCell = ({ rowData, dataKey, onChange, editable, ...props }) 
 );
 
 const Sellinsert = () => {
-
+	const fetchURL = AppConfig.fetch['mytest'];
+	
 	// 현재 편집중인 셀
 	const [currentEditId, setCurrentEditId] = useState(null);
 	
 	// 입력한 내역 저장
 	const [sellAdd, setSellAdd] = useState([]);
-	// 경고 메세지창
-	const [warning, setWarning] = useState("");
 
-	// 백엔드로 전달하기 위해 출하창고 저장
+	// 백엔드로 전달하기 위해 출하창고, 거래유형 저장
 	const [shipmentOrderDate, setShipmentOrderDate] = useState(null);
-	// 백엔드로 전달하기 위해 거래유형 저장
 	const [transactionType, setTransactionType] = useState(null);
 
 	// 거래처 모달 관리
@@ -107,7 +105,7 @@ const Sellinsert = () => {
 
 	const handleChange = (id, key, value) => {
 		const nextData = [...sellAdd];
-		const target = nextData.find(item => item.id === id);
+		const target = nextData.find(item => item.id === id);	// 수정하려는 행의 ID와 일치하는 데이터
 		if (target) {
 			target[key] = value;
 
@@ -125,14 +123,13 @@ const Sellinsert = () => {
 						</Message>,
 						{ placement: "topCenter" }
 					);
-					// alert("재고보다 많은 수량을 입력할 수 없습니다.");
 					target.quantity = stock; // 최대 재고로 자동 수정
 				}
 			}
 			
 			// 수량 또는 단가 바뀌었을 때 계산
 			const supply = quantity * price;
-			const vat = Math.floor(supply * 0.1); // 부가세 10%
+			const vat = Math.floor(supply * 0.1); // 부가세 10% / Math.floor(): 내림 함수. 소수점 아래를 버리고 정수만 남김.
 			const total = supply + vat;
 
 			target.supply = supply;
@@ -144,12 +141,10 @@ const Sellinsert = () => {
 	};
 	
 	// 삭제
-	const handleRemove = (id) => {
-		const filtered = sellAdd.filter(order => order.id !== id);
-        setSellAdd(filtered); // 필터링된 배열로 상태를 업데이트
+	const handleRemove = (id) => {	// id를 받아 해당 행 삭제
+		const filtered = sellAdd.filter(order => order.id !== id);	// 삭제하려는 id가 아닌 것들만 남긴다
+        setSellAdd(filtered);
 	};
-
-	const fetchURL = AppConfig.fetch['mytest'];
 	
 	// 입력한 값을 백엔드로 전달
 	const submitSellInsert = (e) => {
@@ -194,6 +189,7 @@ const Sellinsert = () => {
 			return;
 		}
 
+		// 구조분해 할당. status, id는 버리고 나머지만 rest에 담기
 		const filteredSellAdd = sellAdd.map(({ status, id, ...rest }) => rest);
 
 		const payload = {
@@ -268,6 +264,10 @@ const Sellinsert = () => {
 		}, 0);
 	}, [sellAdd]);
 
+	const styles = {
+        backgroundColor: '#f8f9fa',
+    };
+
 	return (
 		<div>
 			<Message type="info" className="main_title">
@@ -278,14 +278,15 @@ const Sellinsert = () => {
 
 			{/* 입력 상위 칸 */}
 			<div className="add_final">
-
 				<div className="form_div">
 					<div className="add_div">
 						<InputGroup className="insert_input">
 							<InputGroup.Addon style={{ width: 90 }}>
-							출하지시일
+								출하지시일
 							</InputGroup.Addon>
 							<DatePicker 
+								placeholder="날짜 선택"
+                                format="yyyy-MM-dd"
 								name="shipment_order_date"
 								value={shipmentOrderDate}
   								onChange={setShipmentOrderDate} />
@@ -298,7 +299,6 @@ const Sellinsert = () => {
 								담당자
 							</InputGroup.Addon>
 							<Input
-								placeholder='담당자'
 								name="e_id"
 								value={selectedIncharge || ""} readOnly
 							/>
@@ -321,17 +321,17 @@ const Sellinsert = () => {
 							<InputGroup.Addon style={{ width: 90 }}>
 								거래처
 							</InputGroup.Addon>
-							<Input placeholder='거래처'
+							<Input
 								name="client_code"
 								value={selectedClient || ""} readOnly
 							/>
 							<InputGroup.Addon tabIndex={-1} onClick={() => setClientModalOpen(true)}>
 								<img
-								src={readingGlasses}
-								alt="돋보기"
-								width={20}
-								height={20}
-								style={{ cursor: "pointer "}}
+									src={readingGlasses}
+									alt="돋보기"
+									width={20}
+									height={20}
+									style={{ cursor: "pointer "}}
 								/>
 							</InputGroup.Addon>
 						</InputGroup>
@@ -365,7 +365,6 @@ const Sellinsert = () => {
 								출하창고
 							</InputGroup.Addon>
 							<Input 
-								placeholder='창고' 
 								name="storage_code"
 								value={selectedStorage || ""} readOnly
 							/>
@@ -386,9 +385,8 @@ const Sellinsert = () => {
 				</div>
 
 				<div className="form_div">
-				<ButtonToolbar>
-						<Button appearance="primary"
-							// className="status_btn"
+					<ButtonToolbar>
+						<Button appearance="ghost"
 							onClick={() => {
 								const newId = sellAdd.length > 0
 											? Math.max(...sellAdd.map(item => item.id)) + 1
@@ -406,131 +404,137 @@ const Sellinsert = () => {
 									status: 'EDIT'
 								};
 								setSellAdd(prev => [newItem, ...prev]);
-								// setEditingRowId(newId);
 							}}
 						>
 							입력 추가
 						</Button>
 
-						<Button appearance="primary" type="submit" onClick={handleResetForm}>
+						<Button color="green" appearance="ghost" type="submit" onClick={handleResetForm}>
 							초기화
 						</Button>
 					</ButtonToolbar>
 				</div>
 
-						<hr />
+					<hr />
 
 						{/* 입력 하위 칸 */}
-						<div className="addTabel">
+					<div className="addTabel">
 						<Table height={400} data={sellAdd}>
 							
 							<Column width={150}>
-								<HeaderCell>물품코드</HeaderCell>
+								<HeaderCell className="text_center" style={styles}>물품코드</HeaderCell>
 								<EditableCell
-								dataKey="item_code"
-								editable
-								onDoubleClickCell={(id) => {
-									setCurrentEditId(id); // 현재 편집 중인 행 저장
-									setItemModalOpen(true);
-								}} 
-								onChange={handleChange}
+									className="text_left"
+									dataKey="item_code"
+									editable
+									onDoubleClickCell={(id) => {
+										setCurrentEditId(id); // 현재 편집 중인 행 저장
+										setItemModalOpen(true);
+									}} 
+									onChange={handleChange}
 								>
 								</EditableCell>
 							</Column>
 
 							<Column width={150}>
-								<HeaderCell>물품명</HeaderCell>
+								<HeaderCell className="text_center" style={styles}>물품명</HeaderCell>
 								<EditableCell
-								dataKey="item_name"
-								onDoubleClickCell={(id) => {
-									setCurrentEditId(id); // 현재 편집 중인 행 저장
-									setItemModalOpen(true);
-								}} 
-								onChange={handleChange}
-								editable
+									className="text_left"
+									dataKey="item_name"
+									onDoubleClickCell={(id) => {
+										setCurrentEditId(id); // 현재 편집 중인 행 저장
+										setItemModalOpen(true);
+									}} 
+									onChange={handleChange}
+									editable
 								/>
 							</Column>
 
 							<Column width={150}>
-								<HeaderCell>규격</HeaderCell>
+								<HeaderCell className="text_center" style={styles}>규격</HeaderCell>
 								<EditableCell
-								dataKey="item_standard"
-								onDoubleClickCell={(id) => {
-									setCurrentEditId(id); // 현재 편집 중인 행 저장
-									setItemModalOpen(true);
-								}} 
-								onChange={handleChange}
-								editable
+									className="text_left"
+									dataKey="item_standard"
+									onDoubleClickCell={(id) => {
+										setCurrentEditId(id); // 현재 편집 중인 행 저장
+										setItemModalOpen(true);
+									}} 
+									onChange={handleChange}
+									editable
 								/>
 							</Column>
 						
-						<Column width={100}>
-							<HeaderCell>재고</HeaderCell>
-							<EditableCell
-							dataKey="stock_amount"
-							/>
-						</Column>
+							<Column width={100}>
+								<HeaderCell className="text_center" style={styles}>재고</HeaderCell>
+								<EditableCell className="text_center" dataKey="stock_amount" />
+							</Column>
 
-						<Column width={100}>
-							<HeaderCell>수량</HeaderCell>
-							<EditableNumberCell
-							dataKey="quantity"
-							dataType="number"
-							onChange={handleChange}
-							editable
-							/>
-						</Column>
+							<Column width={100}>
+								<HeaderCell className="text_center" style={styles}>수량</HeaderCell>
+								<EditableNumberCell
+									className="text_center" 
+									dataKey="quantity"
+									dataType="number"
+									onChange={handleChange}
+									editable
+								/>
+							</Column>
 
-						<Column width={150}>
-							<HeaderCell>단가</HeaderCell>
-							<EditableNumberCell
-								dataKey="price"
-								dataType="number"
-								onChange={handleChange}
-								editable
-							/>
-						</Column>
+							<Column width={150}>
+								<HeaderCell className="text_center" style={styles}>단가</HeaderCell>
+								<EditableNumberCell
+									style={{ textAlign: 'right' }}
+									dataKey="price"
+									dataType="number"
+									onChange={handleChange}
+									editable
+								/>
+							</Column>
 
-						<Column width={150}>
-							<HeaderCell>공급가액</HeaderCell>
-							<Cell dataKey="supply" />
-						</Column>
+							<Column width={150}>
+								<HeaderCell className="text_center" style={styles}>공급가액</HeaderCell>
+								<Cell style={{ textAlign: 'right' }}>
+									{supplyData => new Intl.NumberFormat().format(supplyData.supply)}
+								</Cell>
+							</Column>
 
-						<Column width={150}>
-							<HeaderCell>부가세</HeaderCell>
-							<Cell dataKey="vat" />
-						</Column>
+							<Column width={150}>
+								<HeaderCell className="text_center" style={styles}>부가세</HeaderCell>
+								<Cell style={{ textAlign: 'right' }}>
+									{vatData => new Intl.NumberFormat().format(vatData.vat)}
+								</Cell>
+							</Column>
 
-						<Column width={150}>
-							<HeaderCell>총액</HeaderCell>
-							<Cell dataKey="total" />
-						</Column>
+							<Column width={150}>
+								<HeaderCell className="text_center" style={styles}>총액</HeaderCell>
+								<Cell style={{ textAlign: 'right' }}>
+									{totalData => new Intl.NumberFormat().format(totalData.total)}
+								</Cell>
+							</Column>
 
 
-						<Column width={100}>
-							<HeaderCell>삭제</HeaderCell>
-							<Cell>
-								{rowData => (
-									<img
-										src={ashBn}
-										alt="돋보기"
-										width={20}
-										height={20}
-										onClick={() => handleRemove(rowData.id)}
-										style={{ cursor: "pointer" }}
-									/>
-								)}
-                   			 </Cell>
-						</Column>
-					</Table>
+							<Column width={150}>
+								<HeaderCell className="text_center" style={styles}>삭제</HeaderCell>
+								<Cell>
+									{rowData => (
+										<img
+											src={ashBn}
+											alt="휴지통"
+											width={20}
+											height={20}
+											onClick={() => handleRemove(rowData.id)}
+											style={{ cursor: "pointer" }}
+										/>
+									)}
+								</Cell>
+							</Column>
+						</Table>
 					</div>
-				
 
 					<div className="resultContainer">
 						<div className="resultBtn">
 							<ButtonToolbar>
-								<Button appearance="primary" onClick={submitSellInsert}>저장</Button>
-								{/* <Button appearance="primary" onClick={handleResetForm}>다시 작성</Button> */}
+								<Button appearance="ghost" onClick={submitSellInsert}>저장</Button>
 							</ButtonToolbar>
 						</div>
 
@@ -538,6 +542,7 @@ const Sellinsert = () => {
 							총액 합계: {totalSum.toLocaleString()} 원
 						</div>
 					</div>
+
 				</div>
 					<hr></hr>
 				

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Form, Input, ButtonToolbar, Button, Message, FlexboxGrid,
         Panel, Divider, Grid, Row, Col, toaster } from "rsuite";
 import { useDaumPostcodePopup } from "react-daum-postcode";
+import { useNavigate } from "@remix-run/react";
 import "#styles/sell.css";
 import AppConfig from "#config/AppConfig.json";
 
@@ -12,13 +13,14 @@ Textarea.displayName = "Textarea";
 
 const SellRequestClient = () => {
 
+  const navigate = useNavigate();
   const fetchURL = AppConfig.fetch["mytest"];
 
   const [clientAdd, setClientAdd] = useState({
     sc_req_d_name: "",
     sc_client_name: "",
     sc_ceo: "",
-    c_biz_num: "",
+    sc_biz_num: "",
     sc_email_front: "", // 첫번째 빈칸 (이메일 앞부분)
     sc_email_back: "",  // 두번째 빈칸 (이메일 뒷부분)
     sc_tel: "",
@@ -42,31 +44,31 @@ const SellRequestClient = () => {
     const [isBizNumValid, setIsBizNumValid] = useState(false);      // 중복 결과 여부
 
     // 사업자 등록번호 중복 체크
-    const bizNumCheck = (c_biz_num) => {
-        if (!c_biz_num.trim()) {
+    const bizNumCheck = (sc_biz_num) => {
+        if (!sc_biz_num.trim()) {
             alert("사업자등록번호를 입력해주세요.");
             return;
         }
 
         // 형식 검사 (사업자등록번호는 XXX-XX-XXXXX 형식)
         const bizNumPattern = /^\d{3}-\d{2}-\d{5}$/;
-        if (!bizNumPattern.test(c_biz_num)) {
+        if (!bizNumPattern.test(sc_biz_num)) {
             alert("사업자등록번호 형식이 올바르지 않습니다. \n (예시: 123-45-67890)");
             return;
         }
 
-        fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientBizNum/` + c_biz_num, {
+        fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientBizNum/` + sc_biz_num, {
             method: 'GET',
         })
         .then((res) => res.text())
         .then((res) => {
             setIsBizNumChecked(true); // 체크는 했음
-            console.log("사업자등록번호 중복 체크 URL:", `${fetchURL.protocol}${fetchURL.url}/sell/reqClientBizNum/` + c_biz_num);
+            console.log("사업자등록번호 중복 체크 URL:", `${fetchURL.protocol}${fetchURL.url}/sell/reqClientBizNum/` + sc_biz_num);
             if (res != 0) {
                 alert('이미 등록되어 있습니다. 재확인 후 입력해주세요.');
                 setClientAdd({
                     ...clientAdd,
-                    c_biz_num: ""
+                    sc_biz_num: ""
                 });
                 setIsBizNumValid(false);
             } else {
@@ -115,7 +117,7 @@ const SellRequestClient = () => {
     const requiredFields = {
     sc_client_name: "거래처명",
     sc_ceo: "대표자명",
-    c_biz_num: "사업자등록번호",
+    sc_biz_num: "사업자등록번호",
     sc_email_front: "이메일",
     sc_email_back: "이메일",
     sc_tel: "연락처",
@@ -187,6 +189,13 @@ const SellRequestClient = () => {
       });
   };
 
+  // 취소 버튼에서
+  const allList = () => {
+    navigate('/main/sell_request_client_list', {
+      state: { resetTab: "1" }
+    });
+  }
+
   return (
     <FlexboxGrid style={{ marginTop: 30, marginLeft: 20, marginBottom: 50 }}>
         <FlexboxGrid.Item 
@@ -224,13 +233,13 @@ const SellRequestClient = () => {
 
                   <Form.Group>
                     <Form.ControlLabel>사업자등록번호 
-                        <Button appearance="ghost" style={{ marginLeft: 10}} size="xs" onClick={() => bizNumCheck(clientAdd.c_biz_num)}>중복체크</Button>
+                        <Button appearance="ghost" style={{ marginLeft: 10}} size="xs" onClick={() => bizNumCheck(clientAdd.sc_biz_num)}>중복체크</Button>
                     </Form.ControlLabel>
                     <Form.Control
-                      name="c_biz_num"
-                      value={clientAdd.c_biz_num}
+                      name="sc_biz_num"
+                      value={clientAdd.sc_biz_num}
                       onChange={(value) =>
-                        changeValue(value, "c_biz_num")
+                        changeValue(value, "sc_biz_num")
                       }
                     />
                     
@@ -346,11 +355,11 @@ const SellRequestClient = () => {
 
             <Row style={{ marginTop: 20 }}>
               <Col xs={24} style={{ textAlign: "center" }}>
-               <ButtonToolbar style={{ display: "inline-block" }}>
-                    <Button appearance="primary" type="submit" style={{ marginRight: 10 }}>
+               <ButtonToolbar>
+                    <Button appearance="ghost" type="submit" style={{ marginRight: 10 }}>
                       등록 요청
                     </Button>
-                    <Button appearance="default">취소</Button>
+                    <Button color="red" appearance="ghost" onClick={allList}>취소</Button>
                   </ButtonToolbar>
                 </Col>
               </Row>

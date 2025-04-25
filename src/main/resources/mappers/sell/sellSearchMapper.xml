@@ -54,9 +54,9 @@
 	    JOIN item_tbl i
        	  ON i.item_code=s.item_code
 	   WHERE storage_code = #{storage_code}
-	   AND (item_code LIKE CONCAT('%', #{keyword}, '%') 
-         OR item_name LIKE CONCAT('%', #{keyword}, '%') 
-         OR item_standard LIKE CONCAT('%', #{keyword}, '%'))
+	   AND (i.item_code LIKE CONCAT('%', #{keyword}, '%') 
+         OR i.item_name LIKE CONCAT('%', #{keyword}, '%') 
+         OR i.item_standard LIKE CONCAT('%', #{keyword}, '%'))
    </select>
 	
 	

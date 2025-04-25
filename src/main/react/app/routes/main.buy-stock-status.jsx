@@ -130,77 +130,88 @@ export default function BuyStockStatus() {
         <>
             <Container>
 
-                <Message type="info" style={{ width: 1500 }}>
-                    <strong>구매관리 - 입고현황</strong>
+                <Message type="info" style={{ width: 1500, fontSize: 16 }}>
+                    <strong>입고현황</strong>
                 </Message>
                 <br />
 
                 <div className="inputBox">
-                    <InputGroup className="input">
-                        <InputGroup.Addon style={{ width: 80 }}>발주일자</InputGroup.Addon>
-                        <DateRangePicker
-                            value={orderDate}
-                            onChange={handleDateChange}
-                            format="yyyy-MM-dd"
-                            placeholder="날짜 선택"
-                        />
-                    </InputGroup>
-
-                    <InputGroup className="input">
-                        <InputGroup.Addon style={{ width: 80 }}>발주번호</InputGroup.Addon>
-                        <Input
-                            placeholder="발주번호 입력"
-                            value={searchKeyword}
-                            onChange={setSearchKeyword}
-                        />
-                    </InputGroup>
-
-                    <InputGroup className="input">
-                        <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
-                        <Input value={selectedClient || ""} readOnly onClick={() => setClientModalOpen(true)} />
-                        <InputGroup.Addon>
-                            <img
-                                src={readingGlasses}
-                                alt="돋보기"
-                                width={20}
-                                height={20}
-                                style={{ cur: "pointer" }}
+                    <div className="input">
+                        <InputGroup className="input_date_type">
+                            <InputGroup.Addon style={{ width: 90 }}>발주일자</InputGroup.Addon>
+                            <DateRangePicker
+                                value={orderDate}
+                                onChange={handleDateChange}
+                                placeholder="날짜 선택"
+                                format="yyyy-MM-dd"
                             />
-                        </InputGroup.Addon>
-                    </InputGroup>
-                    <Input value={selectedClientName || ""} readOnly style={{ width: 250 }} />
+                        </InputGroup>
+                    </div>
+
+                    <div className="input">
+                        <InputGroup className="inputModal">
+                            <InputGroup.Addon style={{ width: 90 }}>입고창고</InputGroup.Addon>
+                            <Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
+                            <InputGroup.Addon>
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                    style={{ cur: "pointer" }}
+                                />
+                            </InputGroup.Addon>
+                        </InputGroup>
+                        <Input value={selectedStorageName || ""} readOnly className="inputModalSide" />
+                    </div>
+
+                    <div className="input">
+                        <InputGroup className="inputModal">
+                            <InputGroup.Addon style={{ width: 90 }}>거래처</InputGroup.Addon>
+                            <Input value={selectedClient || ""} readOnly onClick={() => setClientModalOpen(true)} />
+                            <InputGroup.Addon>
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                    style={{ cur: "pointer" }}
+                                />
+                            </InputGroup.Addon>
+                        </InputGroup>
+                        <Input value={selectedClientName || ""} readOnly className="inputModalSide" />
+                    </div>
                 </div>
 
                 <div className="inputBox">
-                    <InputGroup className="input">
-                        <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
-                        <Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
-                        <InputGroup.Addon>
-                            <img
-                                src={readingGlasses}
-                                alt="돋보기"
-                                width={20}
-                                height={20}
-                                style={{ cur: "pointer" }}
-                            />
-                        </InputGroup.Addon>
-                    </InputGroup>
-                    <Input value={selectedStorageName || ""} readOnly style={{ width: 250 }} />
 
-                    <InputGroup className="input">
-                        <InputGroup.Addon style={{ width: 80 }}> 품목코드</InputGroup.Addon>
-                        <Input value={selectedItem || ""} readOnly onClick={() => setItemModalOpen(true)} />
-                        <InputGroup.Addon>
-                            <img
-                                src={readingGlasses}
-                                alt="돋보기"
-                                width={20}
-                                height={20}
-                                style={{ cur: "pointer" }}
+                    <div className="input">
+                        <InputGroup className="input_date_type">
+                            <InputGroup.Addon style={{ width: 90 }}>발주번호</InputGroup.Addon>
+                            <Input
+                                placeholder="발주번호 입력"
+                                value={searchKeyword}
+                                onChange={setSearchKeyword}
                             />
-                        </InputGroup.Addon>
-                    </InputGroup>
-                    <Input value={selectedItemName || ""} readOnly style={{ width: 250 }} />
+                        </InputGroup>
+                    </div>
+
+                    <div className="input">
+                        <InputGroup className="inputModal">
+                            <InputGroup.Addon style={{ width: 90 }}> 품목코드</InputGroup.Addon>
+                            <Input value={selectedItem || ""} readOnly onClick={() => setItemModalOpen(true)} />
+                            <InputGroup.Addon>
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                    style={{ cur: "pointer" }}
+                                />
+                            </InputGroup.Addon>
+                        </InputGroup>
+                        <Input value={selectedItemName || ""} readOnly className="inputModalSide" />
+                    </div>
                 </div>
 
                 {/* 거래처 모달 관리 */}
@@ -233,26 +244,59 @@ export default function BuyStockStatus() {
                     }}
                 />
 
-               <div className="buyBtnBox">
-                <Button appearance="ghost" color="green" onClick={handleSearch} className="statusSearchBtn">검색</Button>
-                <Button appearance="ghost" color="blie" onClick={downloadExcel} className="statusExcelBtn">엑셀 다운로드</Button>
+                <div className="buyBtnBox">
+                    <Button appearance="ghost" color="green" onClick={handleSearch} className="statusSearchBtn">검색</Button>
+                    <Button appearance="ghost" color="blie" onClick={downloadExcel} className="statusExcelBtn">엑셀 다운로드</Button>
                 </div>
 
                 <Divider style={{ maxWidth: 1200 }} />
                 <>
                     <Table height={500} width={1200} data={buyStockStatus} onRowClick={ReceivingData => console.log(ReceivingData)}>
-                        <Column width={150}><HeaderCell style={styles}>발주일자</HeaderCell><Cell dataKey="order_date" /></Column>
-                        <Column width={150}><HeaderCell style={styles}>발주번호</HeaderCell><Cell dataKey="order_id" /></Column>
-                        <Column width={150}><HeaderCell style={styles}>거래처명</HeaderCell><Cell dataKey="client_name" /></Column>
-                        <Column width={150}><HeaderCell style={styles}>물품명</HeaderCell><Cell dataKey="item_name" /></Column>
-                        <Column width={150}><HeaderCell style={styles}>창고명</HeaderCell><Cell dataKey="storage_name" /></Column>
-                        <Column width={150}><HeaderCell style={styles}>창고재고</HeaderCell><Cell dataKey="stock_amount" /></Column>
-                        <Column width={150}><HeaderCell style={styles}>안전재고</HeaderCell><Cell dataKey="safe_stock" /></Column>
-                        <Column width={150}><HeaderCell style={styles}>최근 입고일</HeaderCell><Cell dataKey="last_date" /></Column>
+                        
+                        <Column width={120} align="center">
+                        <HeaderCell style={styles}>발주일자</HeaderCell>
+                        <Cell dataKey="order_date" />
+                        </Column>
+
+                        <Column width={120} align="center">
+                        <HeaderCell style={styles}>발주번호</HeaderCell>
+                        <Cell dataKey="order_id" />
+                        </Column>
+
+                        <Column width={150}>
+                        <HeaderCell style={styles}>거래처명</HeaderCell>
+                        <Cell dataKey="client_name" />
+                        </Column>
+
+                        <Column width={250}>
+                        <HeaderCell style={styles}>물품명</HeaderCell>
+                        <Cell dataKey="item_name" />
+                        </Column>
+
+                        <Column width={150}>
+                        <HeaderCell style={styles}>창고명</HeaderCell>
+                        <Cell dataKey="storage_name" />
+                        </Column>
+
+                        <Column width={120} align="center">
+                        <HeaderCell style={styles}>창고재고</HeaderCell>
+                        <Cell dataKey="stock_amount" />
+                        </Column>
+
+                        <Column width={120} align="center">
+                        <HeaderCell style={styles}>안전재고</HeaderCell>
+                        <Cell dataKey="safe_stock" />
+                        </Column>
+
+                        <Column width={120}>
+                        <HeaderCell style={styles}>최근 입고일</HeaderCell>
+                        <Cell dataKey="last_date" />
+                        </Column>
+
                     </Table>
                 </>
 
-            </Container>
+            </Container >
 
             <Divider style={{ maxWidth: 1200 }} />
 

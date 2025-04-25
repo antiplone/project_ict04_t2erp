@@ -85,10 +85,10 @@ export default function BuySelectTabPaing() {
 
     return (
         <>
-            <Table height={500} data={buyOrderPayingList} style={{ maxWidth: 1500 }}>
+            <Table height={500} data={buyOrderPayingList}>
 
-                <Column width={120} align="center">
-                    <HeaderCell style={styles}>등록일자</HeaderCell>
+                <Column width={120} className='text_center'>
+                    <HeaderCell style={styles} className='text_center'>등록일자</HeaderCell>
                     <Cell>
                         {(orderDate) => (
                             <span
@@ -100,46 +100,46 @@ export default function BuySelectTabPaing() {
                     </Cell>
                 </Column>
 
-                <Column width={120} align="center">
-                    <HeaderCell style={styles}>발주번호</HeaderCell>
+                <Column width={120} className='text_center'>
+                    <HeaderCell style={styles} className='text_center'>발주번호</HeaderCell>
                     <Cell dataKey="order_id" />
                 </Column>
 
-                <Column width={150}>
-                    <HeaderCell style={styles}>거래처명</HeaderCell>
+                <Column width={150} className='text_left'>
+                    <HeaderCell style={styles} className='text_center'>거래처명</HeaderCell>
                     <Cell dataKey="client_name" />
                 </Column>
 
-                <Column width={250}>
-                    <HeaderCell style={styles}>품목명</HeaderCell>
+                <Column width={250} className='text_left'>
+                    <HeaderCell style={styles} className='text_center'>품목명</HeaderCell>
                     <Cell dataKey="item_display" />
                 </Column>
 
-                <Column width={150} align="right">
-                    <HeaderCell style={styles}>금액합계</HeaderCell>
+                <Column width={150} className='text_right'>
+                    <HeaderCell style={styles} className='text_center'>금액합계</HeaderCell>
                     <Cell>
                         {(totalData) => new Intl.NumberFormat().format(totalData.total)}
                         {/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
                     </Cell>
                 </Column>
 
-                <Column width={150} align="center">
-                    <HeaderCell style={styles}>거래유형</HeaderCell>
+                <Column width={150} className='text_center'>
+                    <HeaderCell style={styles} className='text_center'>거래유형</HeaderCell>
                     <Cell dataKey="transaction_type" />
                 </Column>
 
-                <Column width={150}>
-                    <HeaderCell style={styles}>입고창고</HeaderCell>
+                <Column width={150} className='text_left'>
+                    <HeaderCell style={styles} className='text_center'>입고창고</HeaderCell>
                     <Cell dataKey="storage_name" />
                 </Column>
 
-                <Column width={120} align="center">
-                    <HeaderCell style={styles}>납기일자</HeaderCell>
+                <Column width={120} className='text_center'>
+                    <HeaderCell style={styles} className='text_center'>납기일자</HeaderCell>
                     <Cell dataKey="delivery_date" />
                 </Column>
 
-                <Column width={120} align="center">
-                    <HeaderCell style={styles}>진행상태</HeaderCell>
+                <Column width={120} className='text_center'>
+                    <HeaderCell style={styles} className='text_center'>진행상태</HeaderCell>
                     <Cell dataKey="order_status" />
                 </Column>
 

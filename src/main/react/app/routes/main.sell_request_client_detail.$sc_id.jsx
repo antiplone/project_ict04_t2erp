@@ -116,8 +116,8 @@ const sell_request_client_detail = () => {
                   <Form.Group>
                     <Form.ControlLabel>사업자등록번호</Form.ControlLabel>
                     <Form.Control
-                      name="c_biz_num"
-                      value={rowData.c_biz_num || ''}
+                      name="sc_biz_num"
+                      value={rowData.sc_biz_num || ''}
                       readOnly
                     />
                   </Form.Group>
@@ -231,9 +231,9 @@ const sell_request_client_detail = () => {
               <Row style={{ marginTop: 20 }}>
                 <Col xs={24} style={{ textAlign: "center" }}>
                                <ButtonToolbar style={{ display: "inline-block" }}>
-                    <Button style={{ marginRight: 10 }} onClick={() => listReqClient()} appearance="primary" >목록</Button>
-                    <Button style={{ marginRight: 10 }} onClick={() => updateReqClient(rowData.sc_id)} appearance="primary">수정</Button>
-                    <Button onClick={() => deleteReqClient(rowData.sc_id)} appearance="primary">삭제</Button>
+                    <Button style={{ marginRight: 10 }} onClick={() => updateReqClient(rowData.sc_id)} appearance="ghost">수정</Button>
+                    <Button style={{ marginRight: 10, border: '1px solid #22284C', color: '#22284C' }} onClick={() => listReqClient()} appearance="ghost" >목록</Button>
+                    <Button onClick={() => deleteReqClient(rowData.sc_id)} color="red" appearance="ghost">삭제</Button>
                   </ButtonToolbar>
                 </Col>
               </Row>

@@ -31,10 +31,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spring.erp_ordit.dto.buy.BuyOrderDetailDTO;
 import com.spring.erp_ordit.dto.buy.BuyOrderRequest;
-import com.spring.erp_ordit.dto.buy.BuyStockStatusDTO;
 import com.spring.erp_ordit.dto.buy.BuyStatusDTO;
+import com.spring.erp_ordit.dto.buy.BuyStockStatusDTO;
 import com.spring.erp_ordit.service.buy.BuyOrderServiceImpl;
 
 @RestController // RestController는 리턴타입이 JSON
@@ -49,7 +48,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	// 구매조회 탭 <전체> 목록 GetMapping => http://localhost:8081/buy/buyOrderAllList
 	@GetMapping("/buyOrderAllList")
 	public ResponseEntity<?> buyOrderAllList() {	// ?를 주면 자동으로 적용된다. T 와 같은 의미, 데이터가 아직 결정되지 않았다는 뜻 => Integer 또는 ? 를 주면 된다. 
-		System.out.println("<<< buyOrderAllList >>>");
 		
 		return new ResponseEntity<>(buyOrderService.getBuyOrderAllList(), HttpStatus.OK); //200
 	}
@@ -57,7 +55,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	// 구매조회 탭 <결재중> 목록 GetMapping => http://localhost:8081/buy/buyOrderPayingList
 	@GetMapping("/buyOrderPayingList")
 	public ResponseEntity<?> buyOrderPayingList() {	
-		System.out.println("<<< buyOrderPayingList >>>");
 		
 		return new ResponseEntity<>(buyOrderService.getBuyOrderPayingList(), HttpStatus.OK); //200
 	}
@@ -65,7 +62,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	// 구매조회 탭 <결재중> "건수" 조회 GetMapping => http://localhost:8081/buy/buyOrderPayingCount
 	@GetMapping("/buyOrderPayingCount")
 	public ResponseEntity<?> buyOrderPayingCount() {	
-		System.out.println("<<< buyOrderPayingCount >>>");
 		
 		return new ResponseEntity<>(buyOrderService.getBuyOrderPayingCount(), HttpStatus.OK); //200
 	}
@@ -73,7 +69,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	// 구매조회 탭 진행상태별 "건수" 조회 GetMapping => http://localhost:8081/buy/buyOrderStatusCounts
 	@GetMapping("/buyOrderStatusCounts")
 	public ResponseEntity<Map<String, Long>> buyOrderStatusCount() {	
-		System.out.println("<<< buyOrderStatusCount >>>");
 		
 		return new ResponseEntity<>(buyOrderService.getBuyOrderStatusCount(), HttpStatus.OK); //200
 	}
@@ -82,7 +77,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 //	// 구매조회 탭 <미확인> 목록 GetMapping => http://localhost:8081/buy/buyOrderUnchkList
 //	@GetMapping("/buyOrderUnchkList")
 //	public ResponseEntity<?> buyOrderUnchkList() {	
-//		System.out.println("<<< buyOrderUnchkList >>>");
 //		
 //		return new ResponseEntity<>(buyOrderService.getBuyOrderUnchkList(), HttpStatus.OK); //200
 //	}
@@ -90,7 +84,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 //	// 구매조회 탭 <미확인> "건수" 조회 GetMapping => http://localhost:8081/buy/buyOrderUnchkCount
 //	@GetMapping("/buyOrderUnchkCount")
 //	public ResponseEntity<?> buyOrderUnchkCount() {	
-//		System.out.println("<<< buyOrderUnchkCount >>>");
 //		
 //		return new ResponseEntity<>(buyOrderService.getBuyOrderUnchkCount(), HttpStatus.OK); //200
 //	}
@@ -98,7 +91,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	// 구매조회 탭 <확인> 목록 GetMapping => http://localhost:8081/buy/buyOrderCheckList
 	@GetMapping("/buyOrderCheckList")
 	public ResponseEntity<?> buyOrderCheckList() {	
-		System.out.println("<<< buyOrderCheckList >>>");
 		
 		return new ResponseEntity<>(buyOrderService.getBuyOrderCheckList(), HttpStatus.OK); //200
 	}
@@ -107,10 +99,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	// 구매 내역 1건 <상세> 조회 GetMapping => http://localhost:8081/buy/buyOrderDetail/{order_id}
 	@GetMapping("/buyOrderDetail/{order_id}")
 	public ResponseEntity<?> buyOrderDetail(@PathVariable Long order_id) {	
-		List<BuyOrderDetailDTO> orderList = buyOrderService.getBuyOrderDetail(order_id);
-		
-		System.out.println("<<< buyOrderDetail >>>");
-		System.out.println("orderList:" + orderList);
 		
 		return new ResponseEntity<>(buyOrderService.getBuyOrderDetail(order_id), HttpStatus.OK); //200
 	}
@@ -120,10 +108,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	@PutMapping("/buyOrderUpdate/{order_id}")
 	public ResponseEntity<?> buyOrderUpdate(@PathVariable int order_id, @RequestBody BuyOrderRequest request){
 		
-		System.out.println("<<< boyOrderUpdate >>>");
-		System.out.println("order_id = " + order_id);
-	    System.out.println("request = " + request);
-		
 		return new ResponseEntity<>(buyOrderService.buyOrderUpdate(order_id, request), HttpStatus.OK);	// 200
 	}
 
@@ -131,7 +115,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	// 구매 입력 <한건의 주문정보 + 다건의 물품정보> PostMapping => http://localhost:8081/buy/buyInsertAll
 	@PostMapping("/buyInsertAll")
     public ResponseEntity<?> buyInsertAll(@RequestBody BuyOrderRequest request) {	// @RequestBody BuyOrderRequest request => 화면에서 입력받은 JSON 데이터를 BuyOrderRequest 객체로 변환해서 받음
-		System.out.println("<<< buyInsertAll >>>");
 		
 		buyOrderService.setBuyInsertAll(request);
 		
@@ -142,7 +125,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	// 구매내역 삭제 DeleteMapping => http://localhost:8081/buy/buyOrder/{order_id}
 	@DeleteMapping("/buyOrder/{order_id}")
 	public ResponseEntity<?> buyOrderDelete(@PathVariable int order_id){
-		System.out.println("<<< buyOrderDelete >>>");
 		
 		return new ResponseEntity<String>(buyOrderService.buyOrderDelete(order_id), HttpStatus.OK);	// 200
 	}
@@ -161,15 +143,11 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	    @RequestParam(required = false) String item_code,
 	    @RequestParam(required = false) String transaction_type
 	) {
-	    System.out.println("<<< buyStatusSearch >>>");
 
 	    // 서비스 메서드 호출 (파라미터 전달)
 	    List<BuyStatusDTO> result = buyOrderService.getBuyStatusSearch(
 	    		start_date, end_date, client_code, e_id, storage_code, item_code, transaction_type
 	    );
-	    
-	    System.out.println("start_date: " + start_date);
-	    System.out.println("end_date: " + end_date);
 	    
 	    return new ResponseEntity<>(result, HttpStatus.OK); // 200 OK
 	}
@@ -301,7 +279,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	    @RequestParam(required = false) String last_date	
 				
 	) {	
-		System.out.println("<<< buyStockStatusSearch >>>");
 		
 		// 서비스 메서드 호출 (파라미터 전달)
 	    List<BuyStockStatusDTO> result = buyOrderService.getBuyStockStatusSearch(

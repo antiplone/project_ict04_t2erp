@@ -24,7 +24,9 @@
     e_email,
     e_birth,
     e_entry,
-    e_address,
+    e_zone_code,
+    e_base_address,
+    e_detail_address,
     e_photo,
     e_salary_account_bank,
     e_salary_account_num,
@@ -40,7 +42,9 @@
     #{e_email},
     #{e_birth},
     #{e_entry},
-    #{e_address},
+    #{e_zone_code},
+    #{e_base_address},
+    #{e_detail_address},
     #{e_photo},
     #{e_salary_account_bank},
     #{e_salary_account_num},
@@ -62,17 +66,21 @@
   SET
     e_name = #{e_name},
     e_tel = #{e_tel},
+    e_tel = #{e_tel},
     e_position = #{e_position},
     e_status = #{e_status},
     e_email = #{e_email},
     e_birth = #{e_birth},
     e_entry = #{e_entry},
-    e_address = #{e_address},
+    e_zone_code = #{e_zone_code},
+    e_base_address = #{e_base_address},
+    e_detail_address = #{e_detail_address},
     e_photo = #{e_photo},
     e_salary_account_bank = #{e_salary_account_bank},
     e_salary_account_num = #{e_salary_account_num},
     e_salary_account_owner = #{e_salary_account_owner},
-    e_note = #{e_note}
+    e_note = #{e_note},
+    d_code = #{d_code}
   WHERE e_id = #{e_id}
 </update>
 

@@ -24,11 +24,11 @@ public class HrEmpCardService {
 	}
 	
 	// 인사카드 등록
-	@Transactional	// 서비스 함수가 종료될 때 commit 할지 rollback 할지 트랜잭션 관리
+	@Transactional
 	public int hrEmpCardInsert(HrEmpCardDTO dto) {
 		System.out.println("<< HrEmpCardService - hrEmpCardInsert >>");
 		
-		return cardMapper.hrEmpCardInsert(dto);	// 마이바티스 i, u, d 리턴타입 int(1: 성공, 0: 실패)
+		return cardMapper.hrEmpCardInsert(dto);
 	}
 	
 	// 인사카드 상세
@@ -47,7 +47,7 @@ public class HrEmpCardService {
 		return cardMapper.hrEmpCardUpdate(dto);
 	}
 
-	// 인사카 삭제
+	// 인사카드 삭제
 	@Transactional
 	public String hrEmpCardDelete(int e_id) {
 		System.out.println("<< HrEmpCardService - hrEmpCardDelete >>");

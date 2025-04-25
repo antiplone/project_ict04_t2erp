@@ -10,7 +10,8 @@
 <select id="hrEmpCardList" resultType="com.spring.erp_ordit.dto.hr.HrEmpCardDTO">
 	SELECT *
   	  FROM empCard_view
-  	 WHERE e_id != 0;		
+  	 WHERE e_id != 0
+  	 ORDER BY e_id DESC
 </select>
 
 <!-- 인사카드 등록 -->

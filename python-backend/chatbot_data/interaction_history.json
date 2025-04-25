@@ -784,5 +784,35 @@
       "confidence": 0.16012704372406006,
       "category": "inventory_check"
     }
+  },
+  {
+    "timestamp": "2025-04-24T21:01:18.987458",
+    "question": "물류",
+    "response": "입고관리에서 확인 후 구매 담당자에서 연락하십시오.",
+    "metadata": {
+      "confidence": 0.07570119202136993,
+      "category": "purchase_order_status",
+      "matched_pattern": "물류"
+    }
+  },
+  {
+    "timestamp": "2025-04-24T21:06:15.490998",
+    "question": "물류",
+    "response": "입고관리에서 확인 후 구매 담당자에서 연락하십시오.",
+    "metadata": {
+      "confidence": 0.14092503488063812,
+      "category": "purchase_order_status",
+      "matched_pattern": "물류"
+    }
+  },
+  {
+    "timestamp": "2025-04-24T22:46:11.892336",
+    "question": "물류",
+    "response": "입고관리에서 확인 후 구매 담당자에서 연락하십시오.",
+    "metadata": {
+      "confidence": 0.14092503488063812,
+      "category": "purchase_order_status",
+      "matched_pattern": "물류"
+    }
   }
 ]

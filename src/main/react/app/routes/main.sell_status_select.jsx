@@ -10,6 +10,8 @@ import SellItemSearchModal from "#components/sell/SellItemSearchModal.jsx";
 import AppConfig from "#config/AppConfig.json";
 import readingGlasses from "#images/common/readingGlasses.png";
 import "#styles/sell.css";
+import "#styles/common.css";
+
 // sell_status_select => 판매 현황 페이지
 
 const { Column, HeaderCell, Cell } = Table;
@@ -204,6 +206,10 @@ const sell_status_select = () => {
 		setSelectedItemName(null);
 	}
 
+	const styles = {
+        backgroundColor: '#f8f9fa',
+    };
+
 	return (
 		<div>
 			
@@ -227,6 +233,8 @@ const sell_status_select = () => {
 								name="order_date"
 								value={orderDate}
 								onChange={setOrderDate}
+								placeholder="날짜 선택"
+                                format="yyyy-MM-dd"
 							/>
 						</InputGroup>
 					</div>
@@ -244,12 +252,12 @@ const sell_status_select = () => {
 							/>
 							<InputGroup.Addon tabIndex={-1}>
 								<img
-								src={readingGlasses}
-								alt="돋보기"
-								width={20}
-								height={20}
-								onClick={() => setInchargeModalOpen(true)}
-								style={{ cursor: "pointer "}}
+									src={readingGlasses}
+									alt="돋보기"
+									width={20}
+									height={20}
+									onClick={() => setInchargeModalOpen(true)}
+									style={{ cursor: "pointer "}}
 								/>
 							</InputGroup.Addon>
 						</InputGroup>
@@ -270,12 +278,12 @@ const sell_status_select = () => {
 							/>
 							<InputGroup.Addon tabIndex={-1}>
 								<img
-								src={readingGlasses}
-								alt="돋보기"
-								width={20}
-								height={20}
-								onClick={() => setClientModalOpen(true)}
-								style={{ cursor: "pointer "}}
+									src={readingGlasses}
+									alt="돋보기"
+									width={20}
+									height={20}
+									onClick={() => setClientModalOpen(true)}
+									style={{ cursor: "pointer "}}
 								/>
 							</InputGroup.Addon>
 						</InputGroup>
@@ -358,14 +366,10 @@ const sell_status_select = () => {
 				</div>
 
 					<div className="form_div">
-					<ButtonToolbar>
-						<Button appearance="primary" type="submit" onClick={submitStatusSearch}>
-							검색
-						</Button>
-						<Button appearance="primary" type="submit" onClick={submitStatusReset}>
-							검색창 초기화
-						</Button>
-					</ButtonToolbar>
+						<ButtonToolbar>
+							<Button color="green" appearance="ghost" type="submit" onClick={submitStatusSearch}>검색</Button>
+							<Button appearance="ghost" type="submit" onClick={submitStatusReset}>검색창 초기화</Button>
+						</ButtonToolbar>
 					</div>
 						<hr />
 
@@ -382,70 +386,76 @@ const sell_status_select = () => {
 									// 검색 결과가 있으면 해당 데이터 보여주고, 없으면 전체 목록 보여주기
 							>	
 
-							<Column width={150}>
-								<HeaderCell>등록일자_No.</HeaderCell>
+							<Column width={150} className="text_center">
+								<HeaderCell style={styles}>등록일자_No.</HeaderCell>
 								<Cell>
 									{(rowData) => `${rowData.order_date}_${rowData.date_no}`}
 								</Cell>
 							</Column>
+							
+							<Column width={150}>
+								<HeaderCell className="text_center" style={styles}>거래처명</HeaderCell>
+								<Cell className="text_left">
+									{(rowData) => rowData.client_name}
+								</Cell>
+							</Column>
 
-							<Column width={200}>
-								<HeaderCell>품목명</HeaderCell>
-								<Cell>
+							<Column width={250}>
+								<HeaderCell className="text_center" style={styles}>품목명</HeaderCell>
+								<Cell className="text_left">
 									{(rowData) => rowData.item_display}
 								</Cell>
 							</Column>
 
-							<Column width={100}>
-								<HeaderCell>수량</HeaderCell>
+							<Column width={120} className="text_center">
+								<HeaderCell style={styles}>수량</HeaderCell>
 								<Cell>
 									{(rowData) => rowData.quantity}
 								</Cell>
 							</Column>
 
 							<Column width={150}>
-								<HeaderCell>단가</HeaderCell>
-								<Cell>
+								<HeaderCell className="text_center" style={styles}>단가</HeaderCell>
+								<Cell style={{ textAlign: 'right' }}>
 									{(rowData) => new Intl.NumberFormat().format(rowData.price)}
 									{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
 								</Cell>
 							</Column>
 
 							<Column width={150}>
-								<HeaderCell>공급가액</HeaderCell>
-								<Cell>
+								<HeaderCell className="text_center" style={styles}>공급가액</HeaderCell>
+								<Cell style={{ textAlign: 'right' }}>
 									{(rowData) => new Intl.NumberFormat().format(rowData.supply)}
 									{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
 								</Cell>
 							</Column>
 
 							<Column width={150}>
-								<HeaderCell>부가세</HeaderCell>
-								<Cell>
+								<HeaderCell className="text_center" style={styles}>부가세</HeaderCell>
+								<Cell style={{ textAlign: 'right' }}>
 									{(rowData) => new Intl.NumberFormat().format(rowData.vat)}
 									{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
 								</Cell>
 							</Column>
 
 							<Column width={150}>
-								<HeaderCell>금액합계</HeaderCell>
-								<Cell>
+								<HeaderCell className="text_center" style={styles}>금액합계</HeaderCell>
+								<Cell style={{ textAlign: 'right' }}>
 									{(rowData) => new Intl.NumberFormat().format(rowData.total)}
 									{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
 								</Cell>
 							</Column>
-
-							<Column width={150}>
-								<HeaderCell>거래처명</HeaderCell>
-								<Cell>
-									{(rowData) => rowData.client_name}
-								</Cell>
-							</Column>
 							
-							<Column width={100} className="all_text">
-								<HeaderCell>출하여부</HeaderCell>
-								<Cell>
-									{(rowData) => rowData.income_confirm === null ? 'N' : rowData.income_confirm}
+							<Column width={150}>
+								<HeaderCell className="text_center" style={styles}>출하여부</HeaderCell>
+								<Cell className="text_center">
+									{(rowData) => {
+										if (rowData.income_confirm === null || rowData.income_confirm === 'N') {
+											return '미완료'; // null 또는 'N'이면 미완료 표시
+										} else if (rowData.income_confirm === 'Y') {
+											return '완료'; // 'Y'이면 완료 표시
+										}
+									}}
 								</Cell>
 							</Column>
 						</Table>)}
@@ -453,7 +463,7 @@ const sell_status_select = () => {
 
 					<div className="resultBtn">
 						<ButtonToolbar>
-							<Button appearance="primary" onClick={statusList_btn}>내역 초기화</Button>
+							<Button appearance="ghost" onClick={statusList_btn}>내역 초기화</Button>
 						</ButtonToolbar>
 					</div>
 

@@ -1,5 +1,4 @@
-import { List, Button, Card, Message, ButtonToolbar, Container,
-	Divider, Table } from 'rsuite';
+import { Button, Message, Container, Divider, Table, toaster } from 'rsuite';
 import React, { useState, useEffect } from "react";
 import "#styles/sell.css";
 import AppConfig from "#config/AppConfig.json";
@@ -11,14 +10,13 @@ const { Column, HeaderCell, Cell } = Table;
 
 const sell_all_list_detail = () => {
 
+	const fetchURL = AppConfig.fetch['mytest'];
 	const navigate = useNavigate();
 	const { order_id } = useParams();
 
 	// 상세 정보
 	const [allDetail, setAllDetail] = useState([]);
-
-	const fetchURL = AppConfig.fetch['mytest'];
-
+	
 	// 주문번호 1개에 대해 조회
 	useEffect(() => {
 		if (!order_id) return; // undefined 방지
@@ -50,13 +48,30 @@ const sell_all_list_detail = () => {
 		})
 		.then((res) => res.text())
 		.then((res) => {
-			if (res != null) {	// 대소문자 주의
-				alert('삭제에 성공했습니다.');
+			if (res != null) {
+				toaster.push(
+					<Message showIcon type="success" closable>
+						삭제에 성공했습니다.
+					</Message>,
+					{ placement: "topCenter" }
+				);
 				navigate('/main/sell_all_list');
-				// setReqClient(reqClient.filter(item => item.order_id !== order_id)); // 삭제된 항목 제거
 			} else {
-				alert('삭제에 실패했습니다.');
+				toaster.push(
+					<Message showIcon type="error" closable>
+						삭제에 실패했습니다.
+					</Message>,
+					{ placement: "topCenter" }
+				);
 			}
+		})
+		.catch(() => {
+			toaster.push(
+				<Message showIcon type="error" closable>
+					요청 중 오류 발생.
+				</Message>,
+				{ placement: "topCenter" }
+			);
 		});
 	}
 
@@ -125,17 +140,10 @@ const sell_all_list_detail = () => {
       <Divider style={{maxWidth: 1200}}/>
 
       <div className="sell_DetailBtnBox">
-        <Button appearance="ghost" color="blue" className="sell_DetailBtn" onClick={() => updateAllList(order_id)}>
-            수정
-        </Button>
+        <Button appearance="ghost" color="blue" className="sell_DetailBtn" onClick={() => updateAllList(order_id)}>수정</Button>
+        <Button style={{ marginRight: 10, border: '1px solid #22284C', color: '#22284C' }} appearance="ghost" className="sell_DetailBtn" onClick={() => allList()}> 목록</Button>
+        <Button appearance="ghost" color="red" className="sell_DetailBtn" onClick={() => deleteAllList(order_id)}>삭제</Button>
 
-        <Button appearance="ghost" color="red" className="sell_DetailBtn" onClick={() => deleteAllList(order_id)}>
-          삭제
-        </Button>
-
-        <Button appearance="ghost" color="cyan" className="sell_DetailBtn" onClick={() => allList()}>
-            목록
-        </Button>
       </div>
 	</>
   );

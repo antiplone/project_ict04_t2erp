@@ -7,13 +7,10 @@ import readingGlasses from "#images/common/readingGlasses.png";
 
 // SellSearchModal => 판매 물품 검색 > 물품, 창고 검색 가능한 모달 페이지
 
-// 검색바 스타일 지정
-const searchBoxstyles = {
-	width: 200,
-	marginBottom: 5
-  };
-
-const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleClose, onSearchResult } /* = props:속성 */) => {
+const SellSearchModal = ({ handleOpen, handleClose, onSearchResult } /* = props:속성 */) => {
+	
+	const fetchURL = AppConfig.fetch['mytest'];
+	const [searchResultList, setSearchResultList] = useState([]);	// 조회한 결과 리스트
 	
 	// 물품 모달 관리
 	const [selectedItem, setSelectedItem] = useState(null);
@@ -37,9 +34,6 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleClose, onSe
 		setStorageModalOpen(false);
 	};
 
-	const [searchResultList, setSearchResultList] = useState([]);
-	
-	const fetchURL = AppConfig.fetch['mytest'];
 
 	// 입력한 값을 백엔드로 전달
 	const submitSellSearch = (e) => {
@@ -53,24 +47,24 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleClose, onSe
 		console.log("제출할 전체 데이터:", payload); // 확인용
 	
 		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchResultItemList`, {
-			method: "POST", // 보통 검색 필터는 POST로 보냄. GET은 URL에 붙여야 해서 복잡함.
+			method: "POST",		// 데이터를 Body에 JSON으로 넣어서 보냄(보통 조회 시 GET 사용하나, 넘길 값이 많거나 URL보안 필요 시 POST도 사용)
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(payload),
+			body: JSON.stringify(payload),	// 선택한 값(아이템코드, 창고명) 담아 넘기기
 		})
-			.then((res) => res.json())
-			.then((data) => {
-				console.log("검색 결과:", data);
-				setSearchResultList(data);
+		.then((res) => res.json())
+		.then((data) => {
+			console.log("검색 결과:", data);
+			setSearchResultList(data);
 				if (onSearchResult) {
 					onSearchResult(data); // 부모에게 전달
 				}
-				handleClose(); // 모달 닫기 추가!!
-			})
-			.catch((error) => {
-				console.error("검색 오류:", error);
-			});
+			handleClose(); // 모달 닫기 추가!!
+		})
+		.catch((error) => {
+			console.error("검색 오류:", error);
+		});
 	};
 
 	// 모달이 열릴 때 선택값 초기화
@@ -86,7 +80,7 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleClose, onSe
 	return (
 		<Modal open={handleOpen} onClose={handleClose} >
 			<Modal.Header>
-				<Modal.Title>{title}</Modal.Title>
+				<Modal.Title>물품 검색</Modal.Title>
 			</Modal.Header>
 			{/* overflowX: 'hidden' => 가로 스크롤 없애기 (넘치는 영역 제거) */}
 			<Modal.Body style={{ overflowX: 'hidden' }}>
@@ -96,20 +90,18 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleClose, onSe
 					<Form.Group controlId="customer_1">
 						<HStack>
 							<Form.ControlLabel style={{ marginRight: 45, fontSize: 17 }}>품목명</Form.ControlLabel>
-							<InputGroup style={searchBoxstyles}>
+							<InputGroup className="searchBox">
 							<Input
-								placeholder='품목명'
 								value={selectedItem || ""} readOnly
 							/>
 								<AutoComplete /> 
-									{/* AutoComplete => 추후 정리 필요 */}
 									<InputGroup.Button tabIndex={-1} onClick={() => setItemModalOpen(true)}>
 										<img
-										src={readingGlasses}
-										alt="돋보기"
-										width={20}
-										height={20}
-										style={{ cursor: "pointer "}}
+											src={readingGlasses}
+											alt="돋보기"
+											width={20}
+											height={20}
+											style={{ cursor: "pointer "}}
 										/>
 									</InputGroup.Button>
 							</InputGroup>
@@ -123,19 +115,18 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleClose, onSe
 					<Form.Group controlId="storage">
 						<HStack>
 							<Form.ControlLabel style={{ marginRight: 30, fontSize: 17 }}>출하창고</Form.ControlLabel>
-							<InputGroup style={searchBoxstyles}>
+							<InputGroup className="searchBox">
 							<Input
-								placeholder='창고'
 								value={selectedStorage || ""} readOnly
 							/>
 								<AutoComplete />
 								<InputGroup.Button tabIndex={-1} onClick={() => setStorageModalOpen(true)}>
 										<img
-										src={readingGlasses}
-										alt="돋보기"
-										width={20}
-										height={20}
-										style={{ cursor: "pointer "}}
+											src={readingGlasses}
+											alt="돋보기"
+											width={20}
+											height={20}
+											style={{ cursor: "pointer "}}
 										/>
 									</InputGroup.Button>
 							</InputGroup>
@@ -146,18 +137,12 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleClose, onSe
 					</div>
 
 					<ItemSearchModal
-						title="물품 선택"
-						confirm="확인"
-						cancel="취소"
 						onItemSelect={handleItemSelect}
 						handleOpen={isItemModalOpen}
 						handleClose={() => setItemModalOpen(false)}
 					/>
 
 					<StorageSearchModal
-						title="창고 선택"
-						confirm="확인"
-						cancel="취소"
 						onStorageSelect={handleStorageSelect}	// emid, Incharge 받기
 						handleOpen={isStorageModalOpen}
 						handleClose={() => setStorageModalOpen(false)}
@@ -167,23 +152,16 @@ const SellSearchModal = ({ title, confirm, cancel, handleOpen, handleClose, onSe
 			</Modal.Body>
 			<Modal.Footer>
 				<Button appearance="primary" onClick={submitSellSearch}>
-					{confirm}
+					확인
 				</Button>
 				<Button onClick={handleClose} appearance="subtle">
-					{cancel}
+					취소
 				</Button>
 			</Modal.Footer>
 		</Modal>
 
 		
 	);
-};
-
-SellSearchModal.defaultProps = {
-	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
-	title: "상세 검색",
-	confirm: "검색",
-	cancel: "취소",
 };
 
 export default SellSearchModal;

@@ -294,54 +294,54 @@ export default function BuyStatusSelect() {
 
                 <Table height={400} width={1400} data={orderstatus} onRowClick={itemData => console.log(itemData)}>
 
-                    <Column width={120} align="center">
-                        <HeaderCell style={styles}>발주일자</HeaderCell>
+                    <Column width={120} className='text_center'>
+                        <HeaderCell style={styles} className='text_center'>발주일자</HeaderCell>
                         <Cell dataKey="order_date" />
                     </Column>
 
-                    <Column width={120} align="center">
-                        <HeaderCell style={styles}>발주번호</HeaderCell>
+                    <Column width={120} className='text_center'>
+                        <HeaderCell style={styles} className='text_center'>발주번호</HeaderCell>
                         <Cell dataKey="order_id" />
                     </Column>
 
-                    <Column width={150}>
-                        <HeaderCell style={styles}>거래처명</HeaderCell>
+                    <Column width={150} className='text_left'>
+                        <HeaderCell style={styles} className='text_center'>거래처명</HeaderCell>
                         <Cell dataKey="client_name" />
                     </Column>
 
-                    <Column width={250}>
-                        <HeaderCell style={styles}>품목명</HeaderCell>
+                    <Column width={250} className='text_left'>
+                        <HeaderCell style={styles} className='text_center'>품목명</HeaderCell>
                         <Cell dataKey="item_name" />
                     </Column>
 
-                    <Column width={120} align="center">
-                        <HeaderCell style={styles}>수량</HeaderCell>
+                    <Column width={120} className='text_center'>
+                        <HeaderCell style={styles} className='text_center'>수량</HeaderCell>
                         <Cell dataKey="quantity" />
                     </Column>
 
-                    <Column width={150} align="right">
-                        <HeaderCell style={styles}>단가</HeaderCell>
+                    <Column width={150} className='text_right'>
+                        <HeaderCell style={styles} className='text_center'>단가</HeaderCell>
                         <Cell>
                             {priceData => new Intl.NumberFormat().format(priceData.price)}
                         </Cell>
                     </Column>
 
-                    <Column width={150} align="right">
-                        <HeaderCell style={styles}>공급가액</HeaderCell>
+                    <Column width={150} className='text_right'>
+                        <HeaderCell style={styles} className='text_center'>공급가액</HeaderCell>
                         <Cell>
                             {supplyData => new Intl.NumberFormat().format(supplyData.supply)}
                         </Cell>
                     </Column>
 
-                    <Column width={150} align="right">
-                        <HeaderCell style={styles}>부가세</HeaderCell>
+                    <Column width={150} className='text_right'>
+                        <HeaderCell style={styles} className='text_center'>부가세</HeaderCell>
                         <Cell>
                             {vatData => new Intl.NumberFormat().format(vatData.vat)}
                         </Cell>
                     </Column>
 
-                    <Column width={150} align="right">
-                        <HeaderCell style={styles}>금액합계</HeaderCell>
+                    <Column width={150} className='text_right'>
+                        <HeaderCell style={styles} className='text_center'>금액합계</HeaderCell>
                         <Cell>
                             {totalData => new Intl.NumberFormat().format(totalData.total)}
                         </Cell>

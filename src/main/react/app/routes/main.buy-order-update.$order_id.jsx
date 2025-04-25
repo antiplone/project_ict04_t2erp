@@ -189,12 +189,12 @@ export default function BuyOrderUpdate() {
                     <div className="BuyUpdateFrom">
                         <Form.Group>
                             <Form.ControlLabel>발주일자</Form.ControlLabel>
-                            <Form.Control name="order_date" className="updateInput"/>
+                            <Form.Control name="order_date" className="updateInput" />
                         </Form.Group>
 
                         <Form.Group>
                             <Form.ControlLabel>구매요청 부서</Form.ControlLabel>
-                            <Form.Control name="order_type" className="updateInput"/>
+                            <Form.Control name="order_type" className="updateInput" />
                         </Form.Group>
 
                         <Form.Group>
@@ -401,12 +401,12 @@ export default function BuyOrderUpdate() {
                 <div className="buyBtnBox">
                     <Button appearance="default" className="buyBtn" onClick={handleAddRow}>행 추가</Button>
                     <Button appearance="ghost" color="blue" className="buyBtn" onClick={submitOrder}>저장</Button>
-                    <Button appearance="ghost" color="red" className="buyBtn" onClick={() => navigate(-1)}>취소</Button> {/* navigate(-1); 브라우저 history 뒤로 */}
                     <Link to={`/main/buy-select`}>
-                        <Button appearance="primary" className="ListBtn">
+                        <Button appearance="ghost" className="ListBtn">
                             목록
                         </Button>
                     </Link>
+                    <Button appearance="ghost" color="red" className="buyBtn" onClick={() => navigate(-1)}>취소</Button> {/* navigate(-1); 브라우저 history 뒤로 */}
                 </div>
             </Container>
 

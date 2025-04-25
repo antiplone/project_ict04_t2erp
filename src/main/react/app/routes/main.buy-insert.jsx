@@ -346,44 +346,44 @@ export default function BuyInsert() {
                     />
                 </Column>
 
-                <Column width={170} align="center">
-                    <HeaderCell>물품명</HeaderCell>
+                <Column width={170} className='text_center'>
+                    <HeaderCell className='text_center'>물품명</HeaderCell>
                     <EditableCell dataKey="item_name" onChange={handleChange} editable />
                 </Column>
 
-                <Column width={160} align="center">
-                    <HeaderCell>수량</HeaderCell>
+                <Column width={160} className='text_center'>
+                    <HeaderCell className='text_center'>수량</HeaderCell>
                     <EditableNumberCell dataKey="quantity" onChange={handleChange} editable />
                 </Column>
 
-                <Column width={160} align="center">
-                    <HeaderCell>단가</HeaderCell>
+                <Column width={160} className='text_center'>
+                    <HeaderCell className='text_center'>단가</HeaderCell>
                     <EditableNumberCell dataKey="price" onChange={handleChange} editable />
                 </Column>
 
-                <Column width={160} align="right">
-                    <HeaderCell>공급가액</HeaderCell>
+                <Column width={160} className='text_right'>
+                    <HeaderCell className='text_center'>공급가액</HeaderCell>
                     <Cell>
                         {supplyData => new Intl.NumberFormat().format(supplyData.supply)}
                     </Cell>
                 </Column>
 
-                <Column width={160} align="right">
-                    <HeaderCell>부가세</HeaderCell>
+                <Column width={160} className='text_right'>
+                    <HeaderCell className='text_center'>부가세</HeaderCell>
                     <Cell>
                         {vatData => new Intl.NumberFormat().format(vatData.vat)}
                     </Cell>
                 </Column>
 
-                <Column width={160} align="right">
-                    <HeaderCell>금액합계</HeaderCell>
+                <Column width={160} className='text_right'>
+                    <HeaderCell className='text_center'>금액합계</HeaderCell>
                     <Cell>
                         {totalData => new Intl.NumberFormat().format(totalData.total)}
                     </Cell>
                 </Column>
 
-                <Column width={180} align="center">
-                    <HeaderCell>삭제</HeaderCell>
+                <Column width={180} className='text_center'>
+                    <HeaderCell className='text_center'>삭제</HeaderCell>
                     <Cell>
                         {rowData => (
                             <img
@@ -406,7 +406,7 @@ export default function BuyInsert() {
                     <Button appearance="default" className="buyBtn" onClick={handleAdditem}>행 추가</Button>
                     <Button appearance="ghost" className="buyBtn" onClick={handleSubmit}>저장</Button>
                     <Link to={`/main/buy-select`}>
-                        <Button appearance="ghost" color="cyan" className="buyUpdateBtn">
+                        <Button appearance="ghost" className="ListBtn">
                             목록
                         </Button>
                     </Link>

@@ -111,30 +111,30 @@ export default function BuyStatusSelect() {
     const downloadExcel = () => {
         let startDate = '';
         let endDate = '';
-      
+
         if (orderDate && orderDate.length === 2) {
-          startDate = orderDate[0].toLocaleDateString('sv-SE');
-          endDate = orderDate[1].toLocaleDateString('sv-SE');
+            startDate = orderDate[0].toLocaleDateString('sv-SE');
+            endDate = orderDate[1].toLocaleDateString('sv-SE');
         }
-      
+
         const searchParams = {
-          start_date: startDate,
-          end_date: endDate,
-          client_code: selectedClient,
-          e_id: selectedIncharge,
-          storage_code: selectedStorage,
-          item_code: selectedItem,
-          transaction_type: selectedType
+            start_date: startDate,
+            end_date: endDate,
+            client_code: selectedClient,
+            e_id: selectedIncharge,
+            storage_code: selectedStorage,
+            item_code: selectedItem,
+            transaction_type: selectedType
         };
-      
+
         const cleanedParams = Object.fromEntries(
-          Object.entries(searchParams).filter(([_, v]) => v !== null && v !== "")
+            Object.entries(searchParams).filter(([_, v]) => v !== null && v !== "")
         );
-      
+
         const query = new URLSearchParams(cleanedParams).toString();
-      
+
         window.open(`${AppConfig.fetch.mytest.protocol}${AppConfig.fetch.mytest.url}/buy/exportOrderStatusExcel?${query}`, "_blank");
-      };
+    };
 
     const styles = {
         backgroundColor: '#f8f9fa',
@@ -143,94 +143,106 @@ export default function BuyStatusSelect() {
     return (
         <Container>
             <>
-                <Message type="info" style={{ width: 1500 }}>
+                <Message type="info" style={{ width: 1500, fontSize: 16 }}>
                     <strong>구매현황</strong>
                 </Message>
                 <br />
 
                 <div className="inputBox">
-                    <InputGroup className="input">
-                        <InputGroup.Addon style={{ width: 80 }}>발주일자</InputGroup.Addon>
-                        <DateRangePicker
-                            value={orderDate}
-                            onChange={handleDateChange}
-                            format="yyyy-MM-dd"
-                            placeholder="날짜 선택"
-                        />
-                    </InputGroup>
-
-                    <InputGroup className="input">
-                        <InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
-                        <Input value={selectedIncharge || ""} readOnly onClick={() => setInchargeModalOpen(true)} />
-                        <InputGroup.Button tabIndex={-1}>
-                            <img
-                                src={readingGlasses}
-                                alt="돋보기"
-                                width={20}
-                                height={20}
-                                style={{ cur: "pointer" }}
+                    <div className="input">
+                        <InputGroup className="input_date_type">
+                            <InputGroup.Addon style={{ width: 80 }}>발주일자</InputGroup.Addon>
+                            <DateRangePicker
+                                value={orderDate}
+                                onChange={handleDateChange}
+                                placeholder="날짜 선택"
+                                format="yyyy-MM-dd"
                             />
-                        </InputGroup.Button>
-                    </InputGroup>
-                    <Input value={selectedInchargeName || ""} readOnly style={{ width: 250 }} />
+                        </InputGroup>
+                    </div>
 
-                    <InputGroup className="input">
-                        <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
-                        <Input value={selectedClient || ""} readOnly onClick={() => setClientModalOpen(true)} />
-                        <InputGroup.Addon>
-                            <img
-                                src={readingGlasses}
-                                alt="돋보기"
-                                width={20}
-                                height={20}
-                                style={{ cur: "pointer" }}
-                            />
-                        </InputGroup.Addon>
-                    </InputGroup>
-                    <Input value={selectedClientName || ""} readOnly style={{ width: 250 }} />
+                    <div className="input">
+                        <InputGroup className="inputModal">
+                            <InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
+                            <Input value={selectedIncharge || ""} readOnly onClick={() => setInchargeModalOpen(true)} />
+                            <InputGroup.Button tabIndex={-1}>
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                    style={{ cur: "pointer" }}
+                                />
+                            </InputGroup.Button>
+                        </InputGroup>
+                        <Input value={selectedInchargeName || ""} readOnly className="inputModalSide" />
+                    </div>
+
+                    <div className="input">
+                        <InputGroup className="inputModal">
+                            <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
+                            <Input value={selectedClient || ""} readOnly onClick={() => setClientModalOpen(true)} />
+                            <InputGroup.Addon>
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                    style={{ cur: "pointer" }}
+                                />
+                            </InputGroup.Addon>
+                        </InputGroup>
+                        <Input value={selectedClientName || ""} readOnly className="inputModalSide" />
+                    </div>
                 </div>
 
                 <div className="inputBox">
-                    <InputGroup className="input">
-                        <InputGroup.Addon style={{ width: 80 }}>거래유형</InputGroup.Addon>
-                        <InputPicker
-                            placeholder="거래유형 선택"
-                            data={buyType}
-                            style={{ width: 224, border: 'none' }}
-                            value={selectedType}
-                            onChange={setSelectedType}
-                        />
-                    </InputGroup>
-
-                    <InputGroup className="input">
-                        <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
-                        <Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
-                        <InputGroup.Addon>
-                            <img
-                                src={readingGlasses}
-                                alt="돋보기"
-                                width={20}
-                                height={20}
-                                style={{ cur: "pointer" }}
+                    <div className="input">
+                        <InputGroup className="input_date_type">
+                            <InputGroup.Addon style={{ width: 80 }}>거래유형</InputGroup.Addon>
+                            <InputPicker
+                                placeholder="거래유형 선택"
+                                data={buyType}
+                                style={{ width: 224, border: 'none' }}
+                                value={selectedType}
+                                onChange={setSelectedType}
                             />
-                        </InputGroup.Addon>
-                    </InputGroup>
-                    <Input value={selectedStorageName || ""} readOnly style={{ width: 250 }} />
+                        </InputGroup>
+                    </div>
 
-                    <InputGroup className="input">
-                        <InputGroup.Addon style={{ width: 80 }}> 품목코드</InputGroup.Addon>
-                        <Input value={selectedItem || ""} readOnly onClick={() => setItemModalOpen(true)} />
-                        <InputGroup.Addon>
-                            <img
-                                src={readingGlasses}
-                                alt="돋보기"
-                                width={20}
-                                height={20}
-                                style={{ cur: "pointer" }}
-                            />
-                        </InputGroup.Addon>
-                    </InputGroup>
-                    <Input value={selectedItemName || ""} readOnly style={{ width: 250 }} />
+                    <div className="input">
+                        <InputGroup className="inputModal">
+                            <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
+                            <Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
+                            <InputGroup.Addon>
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                    style={{ cur: "pointer" }}
+                                />
+                            </InputGroup.Addon>
+                        </InputGroup>
+                        <Input value={selectedStorageName || ""} readOnly className="inputModalSide" />
+                    </div>
+
+                    <div className="input">
+                        <InputGroup className="inputModal">
+                            <InputGroup.Addon style={{ width: 80 }}> 품목코드</InputGroup.Addon>
+                            <Input value={selectedItem || ""} readOnly onClick={() => setItemModalOpen(true)} />
+                            <InputGroup.Addon>
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                    style={{ cur: "pointer" }}
+                                />
+                            </InputGroup.Addon>
+                        </InputGroup>
+                        <Input value={selectedItemName || ""} readOnly style={{ width: 150 }} />
+                    </div>
                 </div>
 
                 {/* 거래처 모달 관리 */}
@@ -274,22 +286,67 @@ export default function BuyStatusSelect() {
                 />
 
                 <div className="buyBtnBox">
-                <Button appearance="ghost" color="green" onClick={handleSearch} className="statusSearchBtn">검색</Button>
-                <Button appearance="ghost" color="blie" onClick={downloadExcel} className="statusExcelBtn">엑셀 다운로드</Button>
+                    <Button appearance="ghost" color="green" onClick={handleSearch} className="statusSearchBtn">검색</Button>
+                    <Button appearance="ghost" color="blie" onClick={downloadExcel} className="statusExcelBtn">엑셀 다운로드</Button>
                 </div>
 
                 <Divider style={{ maxWidth: 1400 }} />
 
                 <Table height={400} width={1400} data={orderstatus} onRowClick={itemData => console.log(itemData)}>
-                    <Column width={150}><HeaderCell style={styles}>발주일자</HeaderCell><Cell dataKey="order_date" /></Column>
-                    <Column width={150}><HeaderCell style={styles}>발주번호</HeaderCell><Cell dataKey="order_id" /></Column>
-                    <Column width={150}><HeaderCell style={styles}>거래처명</HeaderCell><Cell dataKey="client_name" /></Column>
-                    <Column width={200}><HeaderCell style={styles}>품목명</HeaderCell><Cell dataKey="item_name" /></Column>
-                    <Column width={150}><HeaderCell style={styles}>수량</HeaderCell><Cell dataKey="quantity" /></Column>
-                    <Column width={150}><HeaderCell style={styles}>단가</HeaderCell><Cell dataKey="price" /></Column>
-                    <Column width={150}><HeaderCell style={styles}>공급가액</HeaderCell><Cell dataKey="supply" /></Column>
-                    <Column width={150}><HeaderCell style={styles}>부가세</HeaderCell><Cell dataKey="vat" /></Column>
-                    <Column width={150}><HeaderCell style={styles}>금액합계</HeaderCell><Cell dataKey="total" /></Column>
+
+                    <Column width={120} align="center">
+                        <HeaderCell style={styles}>발주일자</HeaderCell>
+                        <Cell dataKey="order_date" />
+                    </Column>
+
+                    <Column width={120} align="center">
+                        <HeaderCell style={styles}>발주번호</HeaderCell>
+                        <Cell dataKey="order_id" />
+                    </Column>
+
+                    <Column width={150}>
+                        <HeaderCell style={styles}>거래처명</HeaderCell>
+                        <Cell dataKey="client_name" />
+                    </Column>
+
+                    <Column width={250}>
+                        <HeaderCell style={styles}>품목명</HeaderCell>
+                        <Cell dataKey="item_name" />
+                    </Column>
+
+                    <Column width={120} align="center">
+                        <HeaderCell style={styles}>수량</HeaderCell>
+                        <Cell dataKey="quantity" />
+                    </Column>
+
+                    <Column width={150} align="right">
+                        <HeaderCell style={styles}>단가</HeaderCell>
+                        <Cell>
+                            {priceData => new Intl.NumberFormat().format(priceData.price)}
+                        </Cell>
+                    </Column>
+
+                    <Column width={150} align="right">
+                        <HeaderCell style={styles}>공급가액</HeaderCell>
+                        <Cell>
+                            {supplyData => new Intl.NumberFormat().format(supplyData.supply)}
+                        </Cell>
+                    </Column>
+
+                    <Column width={150} align="right">
+                        <HeaderCell style={styles}>부가세</HeaderCell>
+                        <Cell>
+                            {vatData => new Intl.NumberFormat().format(vatData.vat)}
+                        </Cell>
+                    </Column>
+
+                    <Column width={150} align="right">
+                        <HeaderCell style={styles}>금액합계</HeaderCell>
+                        <Cell>
+                            {totalData => new Intl.NumberFormat().format(totalData.total)}
+                        </Cell>
+                    </Column>
+
                 </Table>
             </>
         </Container>

@@ -3,6 +3,7 @@ import { HrTable } from '#components/hr/HrTable';  // 테이블 컴포넌트
 import HrButton from '#components/hr/HrButton'; // 버튼 컴포넌트
 import HrModal from '#components/hr/HrModal'; // 모달 컴포넌트
 import { Input, Grid, Col, RadioGroup, Radio, Message } from 'rsuite'; // UI 컴포넌트
+import MessageBox from '#components/common/MessageBox.jsx';
 
 export default function Item() {
   const [open, setOpen] = useState(false);
@@ -165,8 +166,8 @@ export default function Item() {
   ];
 
   return (
-    <div style={{ padding: '30px', width: '100%' }}>
-      <Message><h5>기초 등록 - 상품 등록</h5></Message>
+    <div style={{ width: '100%' }}>
+      <MessageBox text="기초등록 - 상품 등록" />
 
       <div style={{ maxWidth: '1450px' }}>
         {/* 테이블 렌더링 */}

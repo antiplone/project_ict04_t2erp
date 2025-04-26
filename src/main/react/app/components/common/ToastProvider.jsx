@@ -9,7 +9,7 @@ const ToastContext = createContext({
 export default function ToastProvider({ children }) {
   const showToast = (message, type = 'info') => {
     toaster.push(
-      <Message type={type} closable duration={1000}>
+      <Message showIcon type={type} closable duration={1000}>
         {message}
       </Message>,
       { placement: 'topCenter' }

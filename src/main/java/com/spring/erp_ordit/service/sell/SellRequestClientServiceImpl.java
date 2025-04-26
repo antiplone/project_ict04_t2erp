@@ -91,9 +91,9 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 	// 판매_거래처 관리 - 사업자등록번호 중복체크
 	@Override
 	@Transactional
-	public int sellCheckReqClientBizNum(String c_biz_num) {
+	public int sellCheckReqClientBizNum(String sc_biz_num) {
 		System.out.println("서비스 - sellCheckReqClientBizNum");
 
-	    return mapper.checkClientBizNum(c_biz_num);
+	    return mapper.checkClientBizNum(sc_biz_num);
 	}
 }

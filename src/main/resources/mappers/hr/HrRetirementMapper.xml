@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+     
+<mapper namespace="com.spring.erp_ordit.dao.hr.HrRetirementMapper">
+
+    <!-- 인사 관리 - 퇴직 관리 -->
+	<!-- 퇴직 리스트 -->
+	<!-- 퇴사한(또는 신청 중인) 사원의 현재 정보(사원명,직위 등)를 가져오기 위한 조인 + 사원이 속한 부서명을 사져오기 위한 조인.-->
+	<select id="retirementList" resultType="com.spring.erp_ordit.dto.hr.HrRetirementDTO">
+		SELECT 
+			r.re_list_no,
+			r.re_type,
+			r.re_app_date,
+			r.re_date,
+			r.re_last_working_date,
+			r.re_approval_date,
+			r.re_approval_status,
+			r.re_apply_status,
+			r.re_succession_yn,
+			r.re_reject_reason,
+			r.re_request_reason,
+			r.re_note,
+			r.e_id,
+			e.e_name,
+			e.e_position,
+			d.d_name
+		FROM retirement_tbl r
+		JOIN employee_tbl e ON r.e_id = e.e_id
+		JOIN department_tbl d ON e.d_code = d.d_code
+	</select>
+
+	<!-- 퇴직 상세 조회: 관리자+사원 -->
+	<select id="retirementDetail" resultType="com.spring.erp_ordit.dto.hr.HrRetirementDTO" parameterType="int">
+		SELECT 
+			r.re_list_no,
+			r.re_type,
+			r.re_app_date,
+			r.re_date,
+			r.re_last_working_date,
+			r.re_approval_date,
+			r.re_approval_status,
+			r.re_apply_status,
+			r.re_succession_yn,
+			r.re_reject_reason,
+			r.re_request_reason,
+			r.re_note,
+			r.e_id,
+			e.e_name,
+			e.e_position,
+			d.d_name
+		FROM retirement_tbl r
+		JOIN employee_tbl e ON r.e_id = e.e_id
+		JOIN department_tbl d ON e.d_code = d.d_code
+		WHERE r.e_id = #{e_id}
+	</select>
+	<!-- 퇴직 1건 조회: 관리자 -->
+	<update id="retirementUpdateManager" parameterType="com.spring.erp_ordit.dto.hr.HrRetirementDTO">
+		update retirement_tbl
+			    set re_app_date = #{re_app_date}
+			         , re_date = #{re_date}
+			         , re_type = #{re_type}
+			         , re_approval_status = #{re_approval_status}
+			         <if test="re_approval_status == '승인' or re_approval_status == '반려'">
+					    ,re_approval_date = CURRENT_DATE
+					</if>
+			         , re_last_working_date = #{re_last_working_date}
+			         , re_succession_yn = #{re_succession_yn}
+			         , re_reject_reason = #{re_reject_reason}
+			         , re_note = #{re_note}
+			WHERE e_id = #{e_id}
+	</update>
+	
+	<!-- 퇴직 1건 추가: 사원 -->
+	<insert id="retirementInsertEmployee" parameterType="com.spring.erp_ordit.dto.hr.HrRetirementDTO" >
+		  INSERT INTO retirement_tbl (
+		    re_type,
+		    re_app_date,
+		    re_date,
+		    re_request_reason,
+		    re_apply_status,
+		    re_succession_yn,
+		    e_id,
+		    e_name,
+		    e_position,
+		    d_name
+		  )
+		  VALUES (
+		    #{re_type},
+		    CURRENT_DATE,
+		    #{re_date},
+		    #{re_request_reason},
+		    '신청',
+		    'N',
+		    #{e_id},
+		    #{e_name},
+		    #{e_position},
+		    #{d_name}
+		  )
+	</insert>
+	
+	<!-- 퇴직 1건 조회: 사원 -->
+	<select id="retirementListByEid" parameterType="int" resultType="com.spring.erp_ordit.dto.hr.HrRetirementDTO">
+		SELECT 
+			r.re_list_no,
+			r.re_type,
+			r.re_app_date,
+			r.re_date,
+			r.re_last_working_date,
+			r.re_approval_date,
+			r.re_approval_status,
+			r.re_apply_status,
+			r.re_succession_yn,
+			r.re_reject_reason,
+			r.re_request_reason,
+			r.re_note,
+			r.e_id,
+			e.e_name,
+			e.e_position,
+			d.d_name
+		FROM retirement_tbl r
+		JOIN employee_tbl e ON r.e_id = e.e_id
+		JOIN department_tbl d ON e.d_code = d.d_code
+		WHERE r.e_id = #{e_id}
+	</select>
+	
+	<!-- 퇴직 검토에서 승인처리했을 때, 사원의 상태를 재직 → 퇴직으로 변경 -->
+	<update id="updateEmployeeStatusToRetired" parameterType="int">
+	    UPDATE employee_tbl
+	    SET e_status = '퇴직'
+	    WHERE e_id = #{e_id}
+	</update>
+	
+</mapper>

@@ -1,7 +1,5 @@
 package com.spring.erp_ordit.dto.api;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor	// 매개변수 생성자
 @NoArgsConstructor	// 디폴트 생성자
 @Builder
-public class CalendarDTO {
-	
-	// 캘린더 open API
-	private Long cal_id;
-	private String cal_title;
-	private LocalDate cal_start_time;
-	private LocalDate cal_end_time;
+public class CalendarDTO {			// CalendarDTO
+	private String title;				// 제목
+    private String start;			// 
+    private boolean allDay;		//
 }
+// 공공데이터에서 받아온 JSON을 Java 객체로 파싱하거나, React 로 전달할 때 구조화된 데이터를 사용하기 위해

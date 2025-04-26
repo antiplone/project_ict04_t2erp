@@ -2,12 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import AppConfig from "#config/AppConfig.json";
 import "#styles/sell.css";
 
-// print-js를 전역에서 사용할 수 있도록 변수 선언(초기에는 undefined)
-let printJS;
-
 const SellInvoiceContent = ({ order_id, order_date, date_no }) => {
   const [data, setData] = useState([]);
-  const [clientInfo, setClientInfo] = useState(null);
+  const [clientInfo, setClientInfo] = useState(null); // 거래처 정보는 화면에 1회만 불러오기 위해 별도 생성
 
   const fetchURL = AppConfig.fetch['mytest'];
 
@@ -20,7 +17,9 @@ const SellInvoiceContent = ({ order_id, order_date, date_no }) => {
       .then(res => {
         console.log("res 확인:", res);
 
-        const result = Array.isArray(res) ? res : (res.data && Array.isArray(res.data) ? res.data : []);
+        const result = Array.isArray(res) 
+                    ? res   // 응답이 배열이면 그대로
+                    : (res.data && Array.isArray(res.data) ? res.data : []);  // 아니면 data가 배열인지 체크
         setData(result);
 
         if (result[0]) {
@@ -28,8 +27,8 @@ const SellInvoiceContent = ({ order_id, order_date, date_no }) => {
           setClientInfo({
             client_name: item.client_name,
             c_tel: item.c_tel,
-            c_biz_num: item.c_biz_num,
-            e_name: item.e_name,
+            sc_biz_num: item.sc_biz_num,
+            c_ceo: item.c_ceo,
             address: `${item.c_base_address} ${item.c_detail_address}`
           });
         }
@@ -40,7 +39,8 @@ const SellInvoiceContent = ({ order_id, order_date, date_no }) => {
       });
   }, [order_id]);
 
-  // 합계 계산
+  // 합계 계산. 
+  // .reduce() : 배열 안의 값들을 하나의 결과값으로 / useMemo: 렌더링할 때마다 다시 계산하지 않도록 막는 훅.
   const totals = useMemo(() => {
     return data.reduce((acc, item) => {
       acc.quantity += item.quantity || 0;
@@ -72,9 +72,9 @@ const SellInvoiceContent = ({ order_id, order_date, date_no }) => {
                 </tr>
                 <tr>
                   <td className="label">사업자등록번호</td>
-                  <td>{clientInfo?.c_biz_num || ""}</td>
+                  <td>{clientInfo?.sc_biz_num || ""}</td>
                   <td className="label">성명</td>
-                  <td>{clientInfo?.e_name || ""}</td>
+                  <td>{clientInfo?.c_ceo || ""}</td>
                 </tr>
                 <tr>
                   <td className="label">상호</td>

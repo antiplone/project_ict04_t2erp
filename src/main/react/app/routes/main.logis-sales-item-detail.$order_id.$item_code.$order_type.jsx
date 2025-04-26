@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from '@remix-run/react';
-import { Card, Container, Message } from 'rsuite';
+import { Container, Divider, Message, Table } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
 import "#components/common/css/common.css";
+import MessageBox from '../components/common/MessageBox';
+const { Column, HeaderCell, Cell } = Table;
 
 const SalesItemDetail = () => { 
 	const fetchURL = Appconfig.fetch['mytest']
@@ -47,38 +49,73 @@ const SalesItemDetail = () => {
 
     return (
         <div>
-            <Container>
-                <Message type="info" className="main_title">
-                	출고 아이템 상세
-                </Message>
-                <br />
-                <Card className='no_border'>
-                    <div className='text_center no_border'>
-                        {salesItemDetail ? (
-                            <div className='padding_10px max_content_margin_10px_auto border_black_1px borderradius_10px'>
-                                <h2 className='padding_10px'>
-                                    주문번호 : {salesItemDetail.order_id}
-                                </h2>
-                                <h3 className='padding_10px'>
-                                    품목코드 : {salesItemDetail.item_code}
-                                </h3>
-                                <div className='padding_10px'>
-                                    품목명 : {salesItemDetail.item_name}
-                                </div>
-                                <div className='padding_10px'>
-                                    출고수량 : {salesItemDetail.quantity}
-                                </div>
-                                <div className='padding_10px'>
-                                    규격 : {salesItemDetail.item_standard}
-                                </div>
-                            </div>
-                        ) : (
-                            <div>데이터를 불러올 수 없습니다.</div>
-                        )}
-                    </div>
-                </Card>
-                 <Link to={`/main/logis-sales-item-list/${order_id}`} className="btn btn-primary area_fit wide_fit">주문 으로</Link>
-            </Container>
+        	<MessageBox type="info" text={`출고 아이템 상세 - 아이템번호:${order_id}`} />
+            <br />
+			<Container>
+				<Table height={100} width={930} data={salesItemDetail ? [salesItemDetail] : []} onRowClick={OrderData => console.log(OrderData)} style={{margin: '0 auto'}}>
+
+					<Column width={120} className="text_center">
+						<HeaderCell >발주번호</HeaderCell>
+						<Cell dataKey="order_id" />
+					</Column>
+
+					<Column width={120} className="text_center">
+						<HeaderCell >출하요청일</HeaderCell>
+						<Cell dataKey="shipment_order_date" />
+					</Column>
+
+					<Column width={120} className="text_center">
+						<HeaderCell >담당 부서</HeaderCell>
+						<Cell dataKey="d_name" />
+					</Column>
+
+					<Column width={150} className="text_center">
+						<HeaderCell >담당자명</HeaderCell>
+						<Cell dataKey="e_name" />
+					</Column>
+
+					<Column width={150} className="text_center">
+						<HeaderCell >거래처명</HeaderCell>
+						<Cell dataKey="client_name" />
+					</Column>
+
+					<Column width={150} className="text_center">
+						<HeaderCell >출하창고</HeaderCell>
+						<Cell dataKey="storage_name" />
+					</Column>
+
+					<Column width={120} className="text_center">
+						<HeaderCell >납기일자</HeaderCell>
+						<Cell dataKey="order_date" />
+					</Column>
+
+				</Table>
+				<Divider width={940}/>
+					<Table height={100} width={870} data={salesItemDetail ? [salesItemDetail] : []} onRowClick={OrderData => console.log(OrderData)} style={{margin: '0 auto'}}>
+
+						<Column width={120} className="text_center">
+							<HeaderCell >아이템 코드</HeaderCell>
+							<Cell dataKey="item_code" />
+						</Column>
+
+						<Column width={260} className="text_center">
+							<HeaderCell >품목명</HeaderCell>
+							<Cell dataKey="item_name" />
+						</Column>
+
+						<Column width={340} className="text_center">
+							<HeaderCell >규격</HeaderCell>
+							<Cell dataKey="item_standard" />
+						</Column>
+
+						<Column width={150} className="text_center">
+							<HeaderCell >최근 등록일</HeaderCell>
+							<Cell dataKey="item_reg_date" />
+						</Column>
+					</Table>
+
+					<Link to={`/main/logis-sales-item-list/${order_id}`} className="btn btn-primary area_fit wide_fit">주문 으로</Link>
+			</Container>
         </div>
     );
 }

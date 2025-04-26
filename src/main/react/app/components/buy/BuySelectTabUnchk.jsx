@@ -90,7 +90,7 @@ export default function BuySelectTabUnchk() {
 
     return (
         <>
-            <Table height={500} data={buyOrderUnchkList} style={{ maxWidth: 1500 }}>
+            <Table height={500} data={buyOrderUnchkList}>
 
                 <Column width={120} align="center">
                     <HeaderCell style={styles}>등록일자</HeaderCell>

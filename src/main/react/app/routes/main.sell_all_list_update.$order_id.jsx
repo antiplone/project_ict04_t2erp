@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
-		 InputGroup, Input, Table, InputPicker,
+		 InputGroup, Input, InputPicker,
 		 Divider, toaster } from "rsuite";
 import { useParams } from "react-router-dom";
 import "#styles/sell.css";
@@ -15,9 +15,6 @@ import SellItemSearchCountModal from "#components/sell/SellItemSearchCountModal.
 
 // sell_all_list_update => 판매 입력건 수정 페이지
 
-
-
-const { Column, HeaderCell, Cell } = Table;
 
 /* 거래유형 - 선택 데이터 */
 const sellType = ["부과세율 적용", "부가세율 미적용"].map(
@@ -292,14 +289,31 @@ const sell_all_list_update = (props) => {
 
 			// 등록 성공 시 페이지 새로고침
 			if(res != 0) { 
-				alert('수정이 완료 되었습니다.');
+				toaster.push(
+					<Message showIcon type="success" closable>
+						수정이 완료 되었습니다.
+					</Message>,
+					{ placement: "topCenter" }
+				);
                 navigate(`/main/sell_all_list`);
 			}
-			else alert("수정에 실패했습니다.");
+			else {
+				toaster.push(
+					<Message showIcon type="error" closable>
+						등록에 실패했습니다.
+					</Message>,
+					{ placement: "topCenter" }
+				);
+			}
 		})
 		// 예외처리
 		.catch(error => {
-			console.log('실패', error);
+			toaster.push(
+				<Message showIcon type="error" closable>
+					처리 중 오류 발생
+				</Message>,
+				{ placement: "topCenter" }
+			);
 		})
 	}
 

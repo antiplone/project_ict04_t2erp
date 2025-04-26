@@ -1,13 +1,13 @@
 /* 판매 페이지 CSS */
 
 
-/* 각 페이지 메인 타이틀 폰트 설정 */
+/* 각 페이지 메인 타이틀 폰트 설정
 .main_title {
     margin: 20px 20px 20px 0px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: bold;
     max-width: 1500px;
-}
+} */
 
 /* sell_search_item.jsx */
 /* 표 헤더 폰트 설정 */
@@ -23,17 +23,20 @@
     max-width: 1200px;
 }
 
-/* 리스트 폰트 */
-.search_text {
-    text-align: center;
-}
 
 /* 물품검색 버튼 */
 .search_btn{
-    display: flex;
-    justify-content: center; /* 가로 가운데 정렬 */
     margin-top: 30px;
 }
+
+/* SellSearchModal - 판매물품검색 > 물품검색 모달창.jsx */
+/* 검색바 스타일 */
+.searchBox {
+  width: 200px;
+	margin-bottom: 5px;
+}
+
+
 
 /* sell_all_list.jsx */
 /* 표 헤더 폰트 설정 */
@@ -49,15 +52,10 @@
     max-width: 1350px;
 }
 
-/* 리스트 폰트 */
-.all_text {
-    margin-left: 2px;
-}
-
 /* 판매입력 버튼 */
 .all_listBtn{
-    display: flex;
-    justify-content: center; /* 가로 가운데 정렬 */
+    /* display: flex;
+    justify-content: center; 가로 가운데 정렬 */
     margin-top: 30px;
 }
 
@@ -182,13 +180,6 @@
     width: 150px;
 }
 
-
-/* sell_request_client_list.js */
-/* 리스트 - 테이블 타이틀 */
-.r_title {
-    text-align: center;
-}
-
 /* Sell_sell_request_client_detail.js */
 /* 테이블 */
 .detail {
@@ -309,9 +300,6 @@
     font-weight: bold;
   }
 
-
-
-  /*  */
   .invoice-table-bottom {
     width: 100%;
     margin-top: 20px;

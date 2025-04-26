@@ -9,87 +9,66 @@ const { Column, HeaderCell, Cell } = Table;
 
 const SellEmployeeSearchModal = ({ title, confirm, cancel, onInchargeSelect, handleOpen, handleClose } /* = props:속성 */) => {
 	
+	const fetchURL = AppConfig.fetch['mytest'];
+
 	const [employeeList, setEmployeeList] = useState([]);
 	const [keyword, setKeyword] = useState("");
 	const [selectedIncharge, setSelectedIncharge] = useState(null);
 
-	const fetchURL = AppConfig.fetch['mytest'];
+	const inchargeChkChange = (checked, incharge) => {
+		if (checked) {
+			setSelectedIncharge(incharge); // 체크된 담당자 저장
+		} else {
+			setSelectedIncharge(null); // 체크 해제 시 초기화
+		}
+	};
+		
+	// 데이터 조회
+	const handleSearch = (keyword) => {
+		console.log("키워드: ", keyword);
+		if (keyword.trim() === "") {
+			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchEmployee`, {	// 전체 리스트
+				method: "GET"
+			})
+			.then(res => res.json())
+			.then(res => setEmployeeList(res));
+		} else {
+			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchDetailEmployee/${keyword}`, {	// 키워드 결과 리스트
+				method: "GET"
+			})
+			.then(res => res.json())
+			.then(res => setEmployeeList(res));
+		}
+	}
 
-		// fetch()를 통해 톰캣서버에게 데이터를 요청
-		useEffect(() => {
+	// 선택 완료 처리
+	const handleSubmit = () => {
+		if (selectedIncharge) {
+			onInchargeSelect(selectedIncharge.e_id, selectedIncharge.e_name);
+			handleClose();
+		}
+	};
+
+	// 모달이 열릴 때 선택값 초기화 + 전체 리스트 불러오기
+	useEffect(() => {
+		if (handleOpen) {
+			setSelectedIncharge(null);
+			setKeyword("");
+			
 			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchEmployee`, {
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => {
-				setEmployeeList(res);
-			});
-		}, []);
-
-		const inchargeChkChange = (checked, incharge) => {
-			if (checked) {
-				setSelectedIncharge(incharge); // 체크된 담당자 저장
-			} else {
-				setSelectedIncharge(null); // 체크 해제 시 초기화
-			}
-		};
-		
-		// 키워드 검색 시 데이터 조회
-		const handleSearch = (keyword) => {
-			console.log("키워드: ", keyword);
-			if (keyword.trim() === "") {
-				// 빈 검색어면 전체 리스트 다시 불러오기
-				
-				fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchEmployee`, {
-					method: "GET"
-				})
-				.then(res => res.json())
-				.then(res => setEmployeeList(res));
-			} else {
-				// 키워드로 검색 요청
-				fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchDetailEmployee/${keyword}`, {
-					method: "GET"
-				})
-				.then(res => res.json())
-				.then(res => setEmployeeList(res));
-			}
+			.then(res => setEmployeeList(res));
 		}
-
-		// 선택 완료 처리
-		const handleSubmit = () => {
-			if (selectedIncharge) {
-				onInchargeSelect(selectedIncharge.e_id, selectedIncharge.e_name);
-				handleClose();
-			}
-		};
-
-		// 모달이 열릴 때 선택값 초기화 + 전체 리스트 불러오기
-		useEffect(() => {
-			if (handleOpen) {
-				setSelectedIncharge(null);
-				setKeyword("");
-				
-				// 전체 리스트 다시 불러오기
-				fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchEmployee`, {
-					method: "GET"
-				})
-				.then(res => res.json())
-				.then(res => setEmployeeList(res));
-			}
-		}, [handleOpen]);
+	}, [handleOpen]);
 
 	return (
 		<Modal open={handleOpen} onClose={handleClose}
-			style={{
-				width: 550,
-				margin: 'auto',
-				position: 'fixed',
-				left: '40%'
-			}}
-			>
+			style={{ width: 550, margin: 'auto', position: 'fixed', left: '40%' }} >
 			
 			<Modal.Header>
-				<Modal.Title>{title}</Modal.Title>
+				<Modal.Title>담당자 선택</Modal.Title>
 			</Modal.Header>
 
 			<Modal.Body>
@@ -119,58 +98,42 @@ const SellEmployeeSearchModal = ({ title, confirm, cancel, onInchargeSelect, han
 					</InputGroup.Addon>
 				</InputGroup>
 
-			<Table
-				height={400}
-				data={employeeList}
-			>
-				<Column width={100} align="center" fixed>
-					<HeaderCell>선택</HeaderCell>
-					
-					<Cell>{(rowData) => (
-						<Checkbox 
-						checked={selectedIncharge?.e_id === rowData.e_id} 
-                        onChange={(_, checked) => 
-							inchargeChkChange(checked, rowData)}
-						/>
-						)}
-			  		</Cell>
-				</Column>
+				<Table height={400} data={employeeList} >
+					<Column width={100} align="center" fixed>
+						<HeaderCell>선택</HeaderCell>
+						<Cell>{(rowData) => (
+							<Checkbox 
+							checked={selectedIncharge?.e_id === rowData.e_id} 
+							onChange={(_, checked) => 
+								inchargeChkChange(checked, rowData)}
+							/>
+							)}
+						</Cell>
+					</Column>
 
-				<Column width={100} align="center" fixed>
-					<HeaderCell>사번</HeaderCell>
-					
-					<Cell>{(rowData) => rowData.e_id}</Cell>
-				</Column>
+					<Column width={100} align="center" fixed>
+						<HeaderCell>사번</HeaderCell>
+						<Cell>{(rowData) => rowData.e_id}</Cell>
+					</Column>
 
-				<Column width={150}>
-					<HeaderCell>담당자명</HeaderCell>
-					<Cell>{(rowData) => rowData.e_name}</Cell>
-				</Column>
+					<Column width={150}>
+						<HeaderCell>담당자명</HeaderCell>
+						<Cell>{(rowData) => rowData.e_name}</Cell>
+					</Column>
 
-				<Column width={150}>
-					<HeaderCell>부서</HeaderCell>
-					<Cell>{(rowData) => rowData.d_name}</Cell>
-				</Column>
-	  		</Table>
+					<Column width={150}>
+						<HeaderCell>부서</HeaderCell>
+						<Cell>{(rowData) => rowData.d_name}</Cell>
+					</Column>
+				</Table>
 			</Modal.Body>
 
 			<Modal.Footer>
-				<Button /* href="/" */ onClick={handleSubmit} appearance="primary">
-					{confirm}
-				</Button>
-				<Button onClick={handleClose} appearance="subtle">
-					{cancel}
-				</Button>
+				<Button onClick={handleSubmit} appearance="primary">확인</Button>
+				<Button onClick={handleClose} appearance="subtle">취소</Button>
 			</Modal.Footer>
 		</Modal>
 	);
-};
-
-SellEmployeeSearchModal.defaultProps = {
-	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
-	title: "담당자 선택",
-	confirm: "확인",
-	cancel: "취소",
 };
 
 export default SellEmployeeSearchModal;

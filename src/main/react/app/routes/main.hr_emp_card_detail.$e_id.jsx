@@ -1,31 +1,62 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from '@remix-run/react';
-import PropTypes from 'prop-types';
-import { Input, Grid, Col, Button } from 'rsuite';
-import HrModal from '#components/hr/HrModal';
-import ErrorText from '#components/hr/ErrorText';
+import { useParams, useNavigate } from '@remix-run/react';
+import {
+  Message, Form, Divider, ButtonToolbar, Button, FlexboxGrid,
+  Panel, Grid, Row, Col, Input, Uploader, Loader, useToaster
+} from 'rsuite';
 import HrDropdown from '#components/hr/HrDropdown';
-import HrRadio from '#components/hr/HrRadio.jsx';
+import HrRadio from '#components/hr/HrRadio';
+import { useDaumPostcodePopup } from 'react-daum-postcode';
 
-const  HrEmpCardDetail = () => {
+const Textarea = React.forwardRef((props, ref) => (
+  <Input {...props} as="textarea" ref={ref} />
+));
+Textarea.displayName = "Textarea";
+
+// 이미지 미리보기 처리 함수
+const handleImagePreview = (file, setEmp) => {
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    setEmp(prev => ({ ...prev, e_photo: reader.result }));
+  };
+  reader.readAsDataURL(file);
+};
+
+const HrEmpCardDetail = () => {
   const { e_id } = useParams();
-  const [detail, setDetail] = useState(null);
-  const [open, setOpen] = useState(false); // 수정 모달
-  const [editData, setEditData] = useState({});
-  const [errors, setErrors] = useState({});
-  const [deptList, setDeptList] = useState([]); // 부서명 리스트
+  const navigate = useNavigate();
+  const toaster = useToaster();
+  const [emp, setEmp] = useState({});
+  const [deptList, setDeptList] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
-  const positionList = ['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무'];    // 직위 dropdown 리스트
+  const open = useDaumPostcodePopup("https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");  // ⭐ 추가
 
-  // 상세 정보 조회
+  const handleAddress = () => {
+    open({
+      onComplete: (data) => {
+        let baseAddress = data.address;
+        let extra = data.bname || '';
+        if (data.buildingName) extra += `, ${data.buildingName}`;
+        if (extra) baseAddress += ` (${extra})`;
+        setEmp(prev => ({
+          ...prev,
+          e_zone_code: data.zonecode,
+          e_base_address: baseAddress,
+          e_detail_address: ''
+        }));
+      }
+    });
+  };
+
+  // 상세 보기
   useEffect(() => {
     fetch(`http://localhost:8081/hrCard/hrCardDetail/${e_id}`)
       .then(res => res.json())
       .then(data => {
-        setDetail(data);
-        setEditData(data);
+        setEmp(data);
       })
-      .catch(err => console.error("상세 조회 실패:", err));
+      .catch(err => console.error("사원 조회 실패:", err));
   }, [e_id]);
 
   // 부서 목록 불러오기
@@ -39,141 +70,222 @@ const  HrEmpCardDetail = () => {
         }));
         setDeptList(mapped);
       })
-      .catch(err => console.error('부서 목록 조회 실패:', err));
+      .catch(err => console.error("부서 조회 실패:", err));
   }, []);
 
-  if (!detail) return <div>로딩 중...</div>;
-
-  // trim 앞뒤 공백 제거
-  const validate = () => {
-    const newErrors = {};
-    if (!editData.e_name?.trim()) newErrors.e_name = "이름은 필수입니다.";
-    if (!editData.e_tel?.trim()) newErrors.e_tel = "전화번호는 필수입니다.";
-    if (!editData.e_position?.trim()) newErrors.e_position = "직위는 필수입니다.";
-    if (!editData.e_status?.trim()) newErrors.e_status = "재직 상태는 필수입니다.";
-    if (!editData.e_email?.trim()) newErrors.e_email = "이메일은 필수입니다.";
-    if (!editData.e_birth) newErrors.e_birth = "생년월일은 필수입니다.";
-    if (!editData.e_salary_account_bank?.trim()) newErrors.e_salary_account_bank = "은행명은 필수입니다.";
-    if (!editData.e_salary_account_num?.trim()) newErrors.e_salary_account_num = "계좌번호는 필수입니다.";
-    if (!editData.e_salary_account_owner?.trim()) newErrors.e_salary_account_owner = "예금주는 필수입니다.";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleChange = (key, val) => {
+    setEmp(prev => ({ ...prev, [key]: val }));
   };
 
+  // 수정
   const handleUpdate = () => {
-    if (!validate()) return;
-
-    // 수정 요청
     fetch(`http://localhost:8081/hrCard/hrCardUpdate/${e_id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(editData)
+      body: JSON.stringify(emp)
     })
-      .then(res => {
-        if (!res.ok) throw new Error('수정 실패');
-        return res.json();
-      })
+      .then(res => res.json())
       .then(() => {
-        setOpen(false);
-        setDetail(editData); // 화면 갱신
+        alert('수정 완료되었습니다.');
+        navigate('/main/hr_emp_card');
       })
       .catch(err => {
-        alert('수정 중 오류 발생: ' + err.message);
+        alert('수정 실패');
+        console.error(err);
       });
   };
 
-  // 삭제 요청
+  // 삭제
   const handleDelete = () => {
-    const confirmed = window.confirm('정말 삭제하시겠습니까?');
-    if (!confirmed) return;
-
     fetch(`http://localhost:8081/hrCard/hrCardDelete/${e_id}`, {
       method: 'DELETE'
     })
-      .then(res => {
-        if (!res.ok) throw new Error('삭제 실패');
-        return res.text();
-      })
-      .catch(err => {
-        alert('삭제 중 오류 발생: ' + err.message);
+      .then(res => res.text())
+      .then(result => {
+        if (result) {
+          alert('삭제 완료되었습니다.');
+          navigate('/main/hr_emp_card');
+        } else {
+          alert('삭제 실패');
+        }
       });
   };
 
-  const displayOrDash = (value) => value ? value : '-';
-
   return (
-    <div style={{ padding: '30px' }}>
-      <h4>사원 상세 정보</h4>
-      <p>사원 번호: {detail.e_id}</p>
-      <p>사원 이름: {detail.e_name}</p>
-      <p>전화번호: {detail.e_tel}</p>
-      <p>부서: {detail.d_name}</p>
-      <p>직위: {detail.e_position}</p>
-      <p>재직 상태: {detail.e_status}</p>
-      <p>이메일: {detail.e_email}</p>
-      <p>생년월일: {detail.e_birth}</p>
-      <p>입사 구분: {displayOrDash(detail.e_entry)}</p>
-      <p>주소: {displayOrDash(detail.e_address)}</p>
-      <p>사진: {displayOrDash(detail.e_photo)}</p>
-      <p>급여통장 - 은행: {detail.e_salary_account_bank}</p>
-      <p>급여통장 - 계좌번호: {detail.e_salary_account_num}</p>
-      <p>급여통장 - 예금주: {detail.e_salary_account_owner}</p>
-      <p>비고: {displayOrDash(detail.e_note)}</p>
-      <p>등록일: {detail.e_reg_date}</p>
+    <div>
+      <Message type="info" className="main_title">사원 상세정보</Message>
 
-      <div style={{ marginTop: '20px' }}>
-        <Button appearance="ghost" onClick={() => setOpen(true)}>수정</Button>{' '}
-        <Button appearance="ghost" color="red" onClick={handleDelete}>삭제</Button>{' '}
-        <Link to={`/main/hr_emp_card/`} > 목록으로 </Link>
-      </div>
+      <FlexboxGrid style={{ marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
+        <FlexboxGrid.Item colspan={20} style={{ maxWidth: 800, width: '100%' }}>
+          <Panel header={<h4>👤 사원 상세 조회</h4>} bordered style={{ background: '#fff' }}>
+            <Form fluid>
+              <Grid fluid>
+                <Row gutter={16}>
+                  <Col xs={12}>
+                    <Form.Group>
+                      <Form.ControlLabel>사진</Form.ControlLabel>
+                      <Uploader
+                        fileListVisible={false}
+                        listType="picture"
+                        action=""
+                        autoUpload={false}
+                        onChange={(fileList) => {
+                          const file = fileList[0]?.blobFile;
+                          if (file) handleImagePreview(file, setEmp);
+                        }}
+                      >
+                        <div style={{
+                          width: 130,
+                          height: 150,
+                          border: '1px dashed #ccc',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          cursor: 'pointer'
+                        }}>
+                          {emp.e_photo ? (
+                          <img
+                            // emp.e_photo가 절대 URL이면 그대로, 아니면 백엔드 주소 붙여주기
+                            src={
+                              emp.e_photo.startsWith('http')
+                                ? emp.e_photo
+                                : `http://localhost:8081${emp.e_photo}`
+                            }
+                            alt="사진 미리보기"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        ) : (
+                          <span style={{ color: '#999' }}>사진 업로드</span>
+                        )}
+                        </div>
+                      </Uploader>
+                    </Form.Group>
 
-      {/* 수정 모달 */}
-      <HrModal
-        open={open}
-        handleClose={() => setOpen(false)}
-        title="사원 정보 수정"
-        onRegister={handleUpdate}
-      >
-        <Grid fluid>
-          <Col xs={24}><label>사원 이름 *</label><Input value={editData.e_name} onChange={v => setEditData({ ...editData, e_name: v })} /><ErrorText message={errors.e_name} /></Col>
-          <Col xs={24}><label>전화번호 *</label><Input value={editData.e_tel} onChange={v => setEditData({ ...editData, e_tel: v })} /><ErrorText message={errors.e_tel} /></Col>
-          <Col xs={24}><label>이메일 *</label><Input value={editData.e_email} onChange={v => setEditData({ ...editData, e_email: v })} /><ErrorText message={errors.e_email} /></Col>
-          <Col xs={24}><label>생년월일 *</label><Input type="date" value={editData.e_birth} onChange={v => setEditData({ ...editData, e_birth: v })} /><ErrorText message={errors.e_birth} /></Col>
-          <Col xs={24}>
-            <label>부서 *</label>
-            <HrDropdown
-              title={deptList.find(dept => dept.value === editData.d_code)?.label || '부서를 선택하세요'}
-              items={deptList}
-              onSelect={(val) => setEditData({ ...editData, d_code: val })}
-              style={{ width: '100%' }}
-              menuStyle={{ width: 200 }}
-            />
-          </Col>
-          <Col xs={24}><label>직위 *</label><HrDropdown
-            title={editData.e_position || "직위를 선택하세요"}
-            items={['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무']}
-            onSelect={(val) => setEditData({ ...editData, e_position: val })}
-            style={{ width: '100%' }}
-            menuStyle={{ width: 120 }}
-          /><ErrorText message={errors.e_position} /></Col>
-          <Col xs={24}><label>재직 상태 *</label><Input value={editData.e_status} onChange={v => setEditData({ ...editData, e_status: v })} /><ErrorText message={errors.e_status} /></Col>
-          <Col xs={24}><label>입사 구분</label><HrRadio value={editData.e_entry} onChange={(val) => setEditData({ ...editData, e_entry: val })} options={['신입', '경력']} /></Col>
-          <Col xs={24}><label>주소</label><Input value={editData.e_address || ''} onChange={v => setEditData({ ...editData, e_address: v })} /></Col>
-          <Col xs={24}><label>사진</label><Input value={editData.e_photo || ''} onChange={v => setEditData({ ...editData, e_photo: v })} /></Col>
-          <Col xs={24}><label>급여통장 - 은행 *</label><Input value={editData.e_salary_account_bank} onChange={v => setEditData({ ...editData, e_salary_account_bank: v })} /><ErrorText message={errors.e_salary_account_bank} /></Col>
-          <Col xs={24}><label>급여통장 - 계좌번호 *</label><Input value={editData.e_salary_account_num} onChange={v => setEditData({ ...editData, e_salary_account_num: v })} /><ErrorText message={errors.e_salary_account_num} /></Col>
-          <Col xs={24}><label>급여통장 - 예금주 *</label><Input value={editData.e_salary_account_owner} onChange={v => setEditData({ ...editData, e_salary_account_owner: v })} /><ErrorText message={errors.e_salary_account_owner} /></Col>
-          <Col xs={24}><label>비고</label><Input as="textarea" rows={3} value={editData.e_note || ''} onChange={v => setEditData({ ...editData, e_note: v })} /></Col>
-        </Grid>
-      </HrModal>
+                    <Form.Group>
+                      <Form.ControlLabel>사원 이름</Form.ControlLabel>
+                      <Form.Control name="e_name" value={emp.e_name || ''} onChange={(val) => handleChange('e_name', val)} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.ControlLabel>전화번호</Form.ControlLabel>
+                      <Form.Control name="e_tel" value={emp.e_tel || ''} onChange={(val) => handleChange('e_tel', val)} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.ControlLabel>생년월일</Form.ControlLabel>
+                      <Form.Control name="e_birth" type="date" value={emp.e_birth || ''} onChange={(val) => handleChange('e_birth', val)} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.ControlLabel>이메일</Form.ControlLabel>
+                      <Form.Control name="e_email" value={emp.e_email || ''} onChange={(val) => handleChange('e_email', val)} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.ControlLabel>직위</Form.ControlLabel>
+                      <HrDropdown
+                        title={emp.e_position || '직위 선택'}
+                        items={['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무']}
+                        onSelect={(val) => handleChange('e_position', val)}
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.ControlLabel>부서</Form.ControlLabel>
+                      <HrDropdown
+                        title={deptList.find(d => d.value === emp.d_code)?.label || '부서 선택'}
+                        items={deptList}
+                        onSelect={(val) => handleChange('d_code', val)}
+                      />
+                    </Form.Group>
+                    
+                  </Col>
+                  <Col xs={12}>
+                    <Form.Group>
+                      <Form.ControlLabel>재직 상태</Form.ControlLabel>
+                      <Form.Control name="e_status" value={emp.e_status || ''} onChange={(val) => handleChange('e_status', val)} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.ControlLabel>입사 구분</Form.ControlLabel>
+                      <HrRadio value={emp.e_entry} onChange={(val) => handleChange('e_entry', val)} options={['신입', '경력']} />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.ControlLabel>급여통장 - 은행</Form.ControlLabel>
+                      <Form.Control
+                        name="e_salary_account_bank"
+                        value={emp.e_salary_account_bank || ''}
+                        onChange={(val) => handleChange('e_salary_account_bank', val)}
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.ControlLabel>급여통장 - 계좌번호</Form.ControlLabel>
+                      <Form.Control
+                        name="e_salary_account_num"
+                        value={emp.e_salary_account_num || ''}
+                        onChange={(val) => handleChange('e_salary_account_num', val)}
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.ControlLabel>급여통장 - 예금주</Form.ControlLabel>
+                      <Form.Control
+                        name="e_salary_account_owner"
+                        value={emp.e_salary_account_owner || ''}
+                        onChange={(val) => handleChange('e_salary_account_owner', val)}
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                    <Form.ControlLabel>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>주소 *</span>
+                        <Button size="xs" appearance="ghost" onClick={handleAddress}>
+                          우편번호 검색
+                        </Button>
+                      </div>
+                    </Form.ControlLabel>
+
+                    {/* 우편번호 */}
+                    <Form.Control
+                      name="e_zone_code"
+                      value={emp.e_zone_code || ''}
+                      onChange={(val) => handleChange('e_zone_code', val)}
+                      style={{ marginBottom: 8 }}
+                    />
+
+                    {/* 기본주소 */}
+                    <Form.Control
+                      name="e_base_address"
+                      value={emp.e_base_address || ''}
+                      onChange={(val) => handleChange('e_base_address', val)}
+                      style={{ marginBottom: 8 }}
+                    />
+
+                    {/* 상세주소 */}
+                    <Form.Control
+                      name="e_detail_address"
+                      value={emp.e_detail_address || ''}
+                      onChange={(val) => handleChange('e_detail_address', val)}
+                    />
+                  </Form.Group>
+                    <Form.Group>
+                      <Form.ControlLabel>비고</Form.ControlLabel>
+                      <Form.Control name="e_note" accepter={Textarea} value={emp.e_note || ''} onChange={(val) => handleChange('e_note', val)} rows={3} />
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <Divider />
+
+                <Row>
+                  <Col xs={24} style={{ textAlign: 'center' }}>
+                    <ButtonToolbar>
+                      <Button appearance="ghost" color="green" onClick={() => navigate('/main/hr_emp_card')}>목록</Button>
+                      <Button appearance="ghost" onClick={handleUpdate}>수정</Button>
+                      <Button appearance="ghost" color="red" onClick={handleDelete}>삭제</Button>
+                    </ButtonToolbar>
+                  </Col>
+                </Row>
+              </Grid>
+            </Form>
+          </Panel>
+        </FlexboxGrid.Item>
+      </FlexboxGrid>
     </div>
   );
-}
-
-// HrEmpCardDetail.propTypes = {
-//   e_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-//   onBack: PropTypes.func.isRequired,
-// };
-
+};
 
 export default HrEmpCardDetail;

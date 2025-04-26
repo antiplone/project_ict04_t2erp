@@ -7,6 +7,7 @@ import BuySelectTabAll from "#components/buy/BuySelectTabAll.jsx";
 import "../styles/buy.css";
 import BuySelectTabCheck from "#components/buy/BuySelectTabCheck.jsx";
 import BuySelectTabPaing from "#components/buy/BuySelectTabPaing.jsx";
+import MessageBox from '../components/common/MessageBox';
 
 // @Remix:모듈함수 - <html>의 <head>의 내용
 export function meta() {
@@ -38,10 +39,7 @@ export default function BuySelect() {
     return (
         <>
             <Container>
-
-                <Message type="info" style={{ maxWidth: 1500, fontSize: 16 }}>
-                    <strong>구매조회</strong>
-                </Message>
+                <MessageBox type="info" text="구매조회" />
                 <br />
 
                 {/* 전체 / 결재중 /미확인 / 승인 탭 */}

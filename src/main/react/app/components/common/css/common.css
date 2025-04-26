@@ -209,7 +209,6 @@ main.rs-content {
     margin: 10px 20px 15px 0px;
     font-size: 17px;
     font-weight: bold;
-    max-width: 1500px;
 }
 
 .rs-navbar-item, .rs-navbar-nav>.rs-dropdown .rs-dropdown-toggle{

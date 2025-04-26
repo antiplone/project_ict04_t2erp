@@ -14,11 +14,11 @@ public interface BasicClientMapper {
 	
 	public List<BasicClientDTO> clientList();	// 거래처 목록
 
-//	public BasicClientDTO clientDetail(int client_code);	// 거래처 상세페이지
+	public BasicClientDTO basicClientDetail(int client_code);	// 거래처 상세페이지
 
 	public int basicInsertClient(BasicClientDTO dto);	// 거래처 등록
 	
-	public int basicUpdateClient(BasicClientDTO dto);	// 거래처 수정
+	public int basicClientUpdate(BasicClientDTO dto);	// 거래처 수정
 	
-	public int basicDeleteClient(int client_code);		// 거래처 삭제
+	public int basicClientDelete(int client_code);		// 거래처 삭제
 }

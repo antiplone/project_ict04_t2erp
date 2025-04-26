@@ -1,15 +1,73 @@
-import React, { useState } from 'react';
-import { Modal, Button } from 'rsuite'; // rsuite 기준, 다른 UI 프레임워크도 OK
-import DBChart from './DBChart'; // 아까 만든 차트 컴포넌트
+import React, { useState, useEffect } from 'react';
+import * as rsuite from 'rsuite';
+const { Modal, Button, RadioGroup, Radio } = rsuite;
+import DBChart from '#components/chart/DBChart';
+import DBChart2 from '#components/chart/DBChart2';
+import axios from 'axios';
+import { useToast } from '#components/common/ToastProvider';// Import useToast here
 
 const DBChartModal = ({ open, onClose }) => {
+  const [chartData, setChartData] = useState([]);
+  const [selectedFunction, setSelectedFunction] = useState('count');
+  const { showToast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchData = async () => {
+    const endpoint = selectedFunction === 'count' ? '/api/order/count' : '/api/order/items';
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(`http://localhost:8000${endpoint}`);
+      console.log("response => ", response.data);
+      if (response.data.status === "success") {
+        setChartData(response.data.data);
+      } else {
+        console.error("Server Error:", response.data.message);
+        setError("Server Error: " + response.data.message);
+        showToast("Server Error: " + response.data.message, 'error');
+      }
+    } catch (err) {
+      console.error("Axios Error:", err);
+      if (err.response) {
+        console.error("Response Error:", err.response.data);
+        setError("Request failed: " + err.response.data.detail);
+        showToast("Request failed: " + err.response.data.detail, 'error');
+      } else {
+        setError("An unknown error occurred");
+        showToast("An unknown error occurred", 'error');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (open) {
+      fetchData();
+    }
+  }, [open, selectedFunction]);
+
   return (
     <Modal open={open} onClose={onClose} size="lg">
       <Modal.Header>
-        <Modal.Title>DB 기반 차트 보기</Modal.Title>
+        <Modal.Title className='text_center'>차트 보기</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <DBChart />
+        <RadioGroup
+          inline
+          name="chartFunction"
+          value={selectedFunction}
+          onChange={setSelectedFunction}
+        >
+          <Radio value="count">날짜별 출고 처리건수</Radio>
+          <Radio value="items">품목별 처리건수</Radio>
+        </RadioGroup>
+			  {!loading && !error && (
+				  chartData?.length > 0
+					  ? <DBChart data={chartData} />
+					  : <DBChart2 />  // 데이터 없을 때 표시할 컴포넌트
+			  )}
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={onClose} appearance="subtle">

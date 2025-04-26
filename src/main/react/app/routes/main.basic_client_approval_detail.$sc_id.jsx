@@ -207,7 +207,7 @@ const sell_request_client_detail = () => {
 
               <Row style={{ marginTop: 20 }}>
                 <Col xs={24} style={{ textAlign: "center" }}>
-                               <ButtonToolbar style={{ display: "inline-block" }}>
+                  <ButtonToolbar style={{ display: "inline-block" }}>
                     <Button style={{ marginRight: 10}} onClick={() => listReqClient()} appearance="ghost" >목록</Button>
                   </ButtonToolbar>
                 </Col>

@@ -65,7 +65,7 @@ public class CommuteService {
 	    
 	    // insert문
 	    int result = dao.insertStartTime(dto);
-	    return result > 0 ? "출근s" : "출근 실패s";
+	    return result > 0 ? "안녕하십니까" : "출근 실패했습니다. 다시 시도해주세요";
 	}
 	
 	// 근태관리 - 퇴근 시간 저장 처리 + 자동 근무시간 계산
@@ -116,7 +116,7 @@ public class CommuteService {
         System.out.println("▶ update 조건 확인: " + dto.getE_id() + " / " + dto.getCo_work_date());
         if (result == 0) System.out.println("⚠ update 실패! 조건에 맞는 데이터 없음!");
         
-        return result > 0 ? "퇴근s" : "퇴근 실패s";
+        return result > 0 ? "수고하셨습니다" : "퇴근 실패했습니다.";
 	}
 
 	// 출퇴근 수정

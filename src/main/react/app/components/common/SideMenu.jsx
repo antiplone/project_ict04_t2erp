@@ -1,4 +1,5 @@
 import brand from "#images/common/brand.png";
+import brand2 from "#images/common/brand2.png";
 import backImg from "#images/common/back.png";
 import rightImg from "#images/common/right.png";
 
@@ -92,7 +93,7 @@ const Brand = ({ expand }) => {
 			justifyContent={"center"}
 			spacing={12}
 		>
-			<ToImage src={brand} width={32} height={32} />
+			<ToImage src={brand2} width={32} height={32} />
 			{expand && <Text size={24}>Ordit</Text>}
 		</HStack>
 	);

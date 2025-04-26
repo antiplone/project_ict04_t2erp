@@ -56,3 +56,75 @@ npm run preview
 ```shellscript
 npx sirv-cli build/client/ --single
 ```
+
+## npm 설치해야 할꺼
+### 리액트 아이콘
+npm install react-icons
+
+### 주소api
+npm i react-daum-postcode
+
+### 이메일 API
+npm install axios
+#### -pom.xml
+    <!-- Spring Boot Mail Starter -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-mail</artifactId>
+    </dependency>
+
+### 1:1 채팅
+npm install sockjs-client stompjs
+npm install @stomp/stompjs sockjs-client
+#### -pom.xml
+    <!-- websocket -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-websocket</artifactId>
+    </dependency>
+
+### Aapache POI API - 엑셀 변환 API
+#### -pom.xml
+    <!-- Apache POI 엑셀 변환용 : 핵심기능 -->
+    <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+        <version>5.2.3</version>
+    </dependency>
+    <!-- Apache POI 엑셀 변환용 : .xlsx 파일용 -->
+    <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml</artifactId>
+        <version>5.2.3</version>
+    </dependency>
+
+### 인쇄 API
+npm install print-js
+
+### FullCalendar API
+npm install @fullcalendar/react @fullcalendar/core @fullcalendar/daygrid @fullcalendar/interaction
+#### -현재 몇 버전으로 깔렸는지 확인할 수 있는 명령어
+#### -예시: @fullcalendar/react@6.x.xx 라고 나오면 됨
+npm ls @fullcalendar/react
+
+### 날씨 API
+npm은 없습니다.
+#### -pox.xml
+    <dependency>
+        <groupId>org.json</groupId>
+        <artifactId>json</artifactId>
+        <version>20231013</version> <!-- 최신 버전 확인 -->
+    </dependency>
+
+### 크롤링
+#### 1. VS Code 에서 Python 설치 → python 이라고 검색했을 때, 제일 처음에 나오는거 설치하면 됩니다.
+#### 2. Ctrl + Shift + P → Python: Select Interpreter 라고 검색한 후 설치된 Python 버전 선택 (예: Python 3.9.21 → anaconda 에서 설치한 버전이랑 맞췄습니다.)
+#### 3. 터미널에서 pip install requests beautifulsoup4 설치
+
+#### 4. 확인
+#### - pip show requests
+Name: requests
+Version: 2.32.3
+#### - pip show beautifulsoup4
+Name: beautifulsoup4
+Version: 4.12.3

@@ -1,0 +1,123 @@
+/* FullCalendar 공통 버튼 */
+.fc .fc-button {
+  background-color: transparent !important;
+  color: #555 !important;
+  border: 1px solid #555 !important;
+  border-radius: 4px;
+  font-weight: bold;
+  box-shadow: none !important;
+}
+
+/* hover 시 색 반전 효과 */
+.fc .fc-button:hover {
+  background-color: #f5f5f5 !important;
+  color: #111 !important;
+  border-color: #111 !important;
+}
+
+/* 오늘 날짜. 강조되게 설정 */
+.fc .fc-day-today {
+  background-color: transparent !important;  /* 배경 없애기 */
+  border: 2px solid #007BFF;               /* 파란 진한 선으로 강조 */
+}
+
+
+/* 요일 제목 정렬 깨짐 방지 + 선 정렬 */
+.fc .fc-col-header-cell {
+  border-bottom: 1px solid #ddd; /* 아래쪽 선 */
+  padding: 8px 0;
+  vertical-align: middle;
+}
+
+.fc-daygrid-day-number {
+  color: #111;  /* 기본 날짜 숫자 색상 → 검정 */
+  font-weight: normal;
+  text-decoration: none;
+}
+
+/* 공휴일 텍스트만 굵고 빨갛게 표시하고 배경 제거 */
+.fc-daygrid-event.fc-event {
+  background-color: transparent !important;
+  border: none !important;
+  color: red !important;
+  /* font-weight: bold; */
+  padding-left: 2px;
+}
+
+/* 일요일 날짜 숫자 빨간색 */
+.fc-day-sun .fc-daygrid-day-number {
+  color: red;
+}
+
+/* 토요일 날짜 숫자 파란색 */
+.fc-day-sat .fc-daygrid-day-number {
+  color: #007BFF;
+}
+
+/* 요일 제목 텍스트를 검정색으로 설정 */
+.fc-col-header-cell-cushion {
+  color: #111 !important;
+  font-weight: 600;
+  font-family: 'Segoe UI', '맑은 고딕', sans-serif;
+  line-height: 1.2 !important;        /* 텍스트 위아래 간격 조정 */
+  vertical-align: middle !important;  /* 세로 가운데 정렬 */
+  display: inline-block !important;   /* 줄간격 깨짐 방지 */
+  padding: 4px 0 !important;          /* 상하 여백도 정돈 */
+  text-decoration: none !important;   /* 일부 브라우저에서 <a> 태그에 기본 밑줄이 생기므로, 밑줄 제거 설정 */
+}
+
+/* 달력 옆 화살표 */
+.calendar-arrow {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+.calendar-today {
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+
+/* ----- 근태관리 ----- */
+/* 드롭다운 내부 항목 기본 텍스트 색상 (hover 포함) */
+.rs-picker-select-menu-item {
+  color: #222 !important;
+}
+/* 출퇴근 셀렉트박스 */
+.rs-picker-toggle { 
+  border: 1px solid #ccc !important;     /* 테두리 검정 */
+  color: #222 !important;                /* 선택된 값 색상 */
+}
+
+.rs-picker-toggle:hover,
+.rs-picker-toggle:focus {
+  border-color: #aaa !important;
+  box-shadow: none !important;          /* 파란 테두리 제거 */
+}
+
+.rs-picker-menu .rs-picker-select-menu-item.rs-picker-select-menu-item-active {
+  background-color: #f0f0f0 !important; /* 선택 배경 색 */
+  color: #222 !important;               /* 선택 텍스트 색 */
+}
+
+.rs-picker-menu .rs-picker-select-menu-item:hover {
+  background-color: #ddd !important;
+  color: #222 !important;
+}
+
+/* 선택된 항목 텍스트 색상 */
+.rs-picker-select-menu-item.rs-picker-select-menu-item-active {
+  color: #222 !important;
+  font-weight: normal !important; /* 필요시 bold 해제 */
+}
+
+/* 마우스 hover 시 색상 */
+.rs-picker-select-menu-item:hover {
+  background-color: #f2f2f2 !important;
+  color: #222 !important;
+}

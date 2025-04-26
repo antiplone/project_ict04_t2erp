@@ -62,9 +62,9 @@ public class CommuteController {			// 근태관리-출퇴근 관리
 		System.out.println("▶ CommuteController - 오늘 출퇴근 1건 조회- 날짜: " + date);
 	    return new ResponseEntity<>(service.getRecordByDate(e_id, date), HttpStatus.OK);
 	}
-	// 서버에서 CURRENT_DATE 를 쓰면, 서버의 시스템 시간을 기준으로 오늘 날짜가 결정됨(=> 어제 날짜로 찍힘)
+	// 서버에서 CURRENT_DATE를 쓰면 서버 시간 기준인 UTC 기준를 사용함 → 어제일 수도 있음
 	// 하지만 프론트엔드는 클라이언트 시간을 기준으로 오늘 날짜를 판단하기 때문에, 서버-클라이언트의 시간이 달라짐.
-	// 따라서, 명시적으로 서버로 date를 넘기는 방식을 사용함.
+	// 따라서, 프론트엔드에서 '오늘 날짜'를 직접 문자열로 넘기는 방식을 사용함.
 
 	
 	// 출퇴근 수정(Put) ⇒ http://localhost:8081/attendance/commUpdate/e_id

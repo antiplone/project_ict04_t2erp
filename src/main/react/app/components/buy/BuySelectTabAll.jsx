@@ -2,8 +2,10 @@
 import AppConfig from "#config/AppConfig.json";
 import { Table, Button, ButtonToolbar } from 'rsuite';
 import React, { useEffect, useState } from 'react';
+import '../../styles/common.css';
 import '../../styles/buy.css';
 import { Link } from 'react-router-dom';
+
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -86,10 +88,10 @@ export default function BuySelectTabAll() {
 
     return (
         <>
-            <Table height={500} data={buyOrderAllList} style={{ maxWidth: 1500 }}>
+            <Table height={500} data={buyOrderAllList}>
 
-                <Column width={120} align="center">
-                    <HeaderCell style={styles}>등록일자_No.</HeaderCell>
+                <Column width={120} className='text_center'>
+                    <HeaderCell style={styles} className='text_center, cell_header'>등록일자_No.</HeaderCell>
                     <Cell> 
                         {(orderDate) => (
                             <span
@@ -101,52 +103,52 @@ export default function BuySelectTabAll() {
                     </Cell>
                 </Column>
 
-                <Column width={120} align="center">
-                    <HeaderCell style={styles}>발주번호</HeaderCell>
+                <Column width={120} className='text_center'>
+                    <HeaderCell style={styles} className='text_center, cell_header '>발주번호</HeaderCell>
                     <Cell dataKey="order_id" />
                 </Column>
 
-                <Column width={150}>
-                    <HeaderCell style={styles}>거래처명</HeaderCell>
+                <Column width={150} className='text_left'>
+                    <HeaderCell style={styles} className='text_center, cell_header'>거래처명</HeaderCell>
                     <Cell dataKey="client_name" />
                 </Column>
 
-                <Column width={250}>
-                    <HeaderCell style={styles}>품목명</HeaderCell>
+                <Column width={250} className='text_left'>
+                    <HeaderCell style={styles} className='text_center, cell_header'>품목명</HeaderCell>
                     <Cell dataKey="item_display" />
                 </Column>
 
-                <Column width={150} align="right">
-                    <HeaderCell style={styles}>금액합계</HeaderCell>
+                <Column width={150} className='text_right'>
+                    <HeaderCell style={styles} className='text_center, cell_header'>금액합계</HeaderCell>
                     <Cell>
                         {(totalData) => new Intl.NumberFormat().format(totalData.total)}
                         {/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
                     </Cell>
                 </Column>
 
-                <Column width={150} align="center">
-                    <HeaderCell style={styles}>거래유형</HeaderCell>
+                <Column width={150} className='text_center'>
+                    <HeaderCell style={styles} className='text_center, cell_header'>거래유형</HeaderCell>
                     <Cell dataKey="transaction_type" />
                 </Column>
 
-                <Column width={150}>
-                    <HeaderCell style={styles}>입고창고</HeaderCell>
+                <Column width={150} className='text_left'>
+                    <HeaderCell style={styles} className='text_center, cell_header'>입고창고</HeaderCell>
                     <Cell dataKey="storage_name" />
                 </Column>
 
-                <Column width={120} align="center">
-                    <HeaderCell style={styles}>납기일자</HeaderCell>
+                <Column width={120} className='text_center'>
+                    <HeaderCell style={styles} className='text_center, cell_header'>납기일자</HeaderCell>
                     <Cell dataKey="delivery_date" />
                 </Column>
 
-                <Column width={120} align="center">
-                    <HeaderCell style={styles}>진행상태</HeaderCell>
+                <Column width={120} className='text_center'>
+                    <HeaderCell style={styles} className='text_center, cell_header'>진행상태</HeaderCell>
                     <Cell dataKey="order_status" />
                 </Column>
 
                 {/*          
                 <Column width={150} fixed="right">
-                    <HeaderCell style={styles}>불러온전표</HeaderCell>
+                    <HeaderCell style={styles} className='text_center, cell_header'>불러온전표</HeaderCell>
                     <Cell style={{ padding: '6px' }}>
                         {rowData => (
                             <Button color="blue" appearance='link'>
@@ -156,8 +158,8 @@ export default function BuySelectTabAll() {
                     </Cell>
                 </Column>
  */}
-                <Column width={60} align="center">
-                    <HeaderCell style={styles}>조회</HeaderCell>
+                <Column width={60} className='text_center'>
+                    <HeaderCell style={styles} className='text_center, cell_header'>조회</HeaderCell>
                     <Cell style={{ padding: '6px' }}>
                         {buyOrderAllList => (
                             <Link to={`/main/buy-select-detail/${buyOrderAllList.order_id}`}>

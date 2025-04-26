@@ -44,7 +44,10 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
 
   // 저장버튼을 누르면 서버에 PUT 요청을 보내고, 성공 시 onReloading 실행.
   const handleSubmit = async () => {
-    if (!att.a_code) return alert("수정할 항목이 없습니다.");
+    if (!att.a_code) {
+      alert("수정할 항목이 없습니다.");
+      return
+    }
 
     const check = model.check(att);
     if (check.hasError) {

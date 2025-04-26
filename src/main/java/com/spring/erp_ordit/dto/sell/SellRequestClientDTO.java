@@ -22,7 +22,7 @@ public class SellRequestClientDTO {
 	private String sc_req_d_name;		// 요청 부서
 	private String sc_client_name; 		// 거래처명
 	private String sc_ceo; 				// 대표자명
-	private String c_biz_num; 			// 사업자등록번호
+	private String sc_biz_num; 			// 사업자등록번호
 	private String sc_email;			// 이메일
 	private String sc_tel;				// 연락처
 	private String zone_code;			// 우편번호

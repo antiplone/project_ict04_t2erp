@@ -1,11 +1,12 @@
 // 구매팀 - 상세조회 페이지
 /* eslint-disable react/react-in-jsx-scope */
 import AppConfig from "#config/AppConfig.json";
-import { Table } from 'rsuite';
 import React, { useEffect, useState } from "react";
 import "../styles/buy.css";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Button, Container, Divider, Message } from "rsuite";
+import { Button, Container, Divider, Message, Table, toaster } from "rsuite";
+import { useToast } from '#components/common/ToastProvider';
+import MessageBox from '../components/common/MessageBox';
 
 export function meta() {
   return [
@@ -21,6 +22,8 @@ export default function BuySelectDetail() {
   const { order_id } = useParams(); // URL에서 전달된 파라미터들을 객체 형태로 반환 ex) order_id -> '1' 문자열로 출력됨
 
   const navigate = useNavigate();
+
+  const { showToast } = useToast();
 
   // 주문정보 (단일 객체)
   const [orderInfo, setOrderInfo] = useState({});
@@ -70,10 +73,11 @@ export default function BuySelectDetail() {
       .then((res) => res.text())
       .then((res) => {
         if (res === "ok") {
-          alert('삭제 성공!');
+          showToast("주문이 정상적으로 삭제되었습니다.", "success");
+          
           navigate("/main/buy-select");
         } else {
-          alert('삭제 실패');
+          showToast("주문 삭제를 실패했습니다.", "error");
         }
       })
       .catch(error => console.error("삭제 오류:", error));
@@ -86,58 +90,55 @@ export default function BuySelectDetail() {
   return (
     <>
       <Container>
-
-        <Message type="info" style={{ width: 1500 }}>
-          <strong> 구매 상세페이지 - 주문번호: {order_id} </strong>
-        </Message>
+        <MessageBox type="info" text={`구매 상세페이지 - 발주번호:${order_id}`} />
         <br />
 
         <> {/* data={[orderInfo]} 여기만 대괄호를 준 이유는 orderInfo는 하나의 객체 단일 주문 정보이기 때문에 배열로 감싸줬음 => rsuite의 <Table data={...}>는 배열형태의 데이터를 요구함*/}
           <Table height={100} width={1200} data={[orderInfo]} onRowClick={OrderData => console.log(OrderData)}>
-            
+
             <Column width={120} align="center">
-            <HeaderCell style={styles}>발주번호</HeaderCell>
-            <Cell dataKey="order_id" />
+              <HeaderCell style={styles}>발주번호</HeaderCell>
+              <Cell dataKey="order_id" />
             </Column>
 
             <Column width={120} align="center">
-            <HeaderCell style={styles}>발주일자</HeaderCell
-            ><Cell dataKey="order_date" />
+              <HeaderCell style={styles}>발주일자</HeaderCell
+              ><Cell dataKey="order_date" />
             </Column>
 
             <Column width={120} align="center">
-            <HeaderCell style={styles}>구매요청 부서</HeaderCell>
-            <Cell dataKey="order_type" />
+              <HeaderCell style={styles}>구매요청 부서</HeaderCell>
+              <Cell dataKey="order_type" />
             </Column>
 
             <Column width={150} align="center">
-            <HeaderCell style={styles}>담당자명</HeaderCell>
-            <Cell dataKey="e_name" />
+              <HeaderCell style={styles}>담당자명</HeaderCell>
+              <Cell dataKey="e_name" />
             </Column>
 
             <Column width={150}>
-            <HeaderCell style={styles}>거래처명</HeaderCell>
-            <Cell dataKey="client_name" />
+              <HeaderCell style={styles}>거래처명</HeaderCell>
+              <Cell dataKey="client_name" />
             </Column>
 
             <Column width={150}>
-            <HeaderCell style={styles}>거래유형</HeaderCell>
-            <Cell dataKey="transaction_type" />
+              <HeaderCell style={styles}>거래유형</HeaderCell>
+              <Cell dataKey="transaction_type" />
             </Column>
 
             <Column width={150}>
-            <HeaderCell style={styles}>입고창고</HeaderCell>
-            <Cell dataKey="storage_name" />
+              <HeaderCell style={styles}>입고창고</HeaderCell>
+              <Cell dataKey="storage_name" />
             </Column>
 
             <Column width={120} align="center">
-            <HeaderCell style={styles}>납기일자</HeaderCell>
-            <Cell dataKey="delivery_date" />
+              <HeaderCell style={styles}>납기일자</HeaderCell>
+              <Cell dataKey="delivery_date" />
             </Column>
 
             <Column width={120} align="center">
-            <HeaderCell style={styles}>진행상태</HeaderCell>
-            <Cell dataKey="order_status" />
+              <HeaderCell style={styles}>진행상태</HeaderCell>
+              <Cell dataKey="order_status" />
             </Column>
 
             {/* 
@@ -162,7 +163,7 @@ export default function BuySelectDetail() {
               <Cell dataKey="item_name" />
             </Column>
 
-            <Column width={110}>
+            <Column width={110} align="center">
               <HeaderCell style={styles}>수량</HeaderCell>
               <Cell dataKey="quantity" />
             </Column>
@@ -208,15 +209,16 @@ export default function BuySelectDetail() {
           </Button>
         </Link>
 
+        <Link to={`/main/buy-select`}>
+          <Button appearance="ghost" className="ListBtn">
+            목록
+          </Button>
+        </Link>
+
         <Button appearance="ghost" color="red" className="buyUpdateBtn" onClick={() => deleteOrderItem(orderInfo.order_id)}>
           삭제
         </Button>
 
-        <Link to={`/main/buy-select`}>
-          <Button appearance="primary" className="ListBtn">
-            목록
-          </Button>
-        </Link>
       </div>
 
     </>

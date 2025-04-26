@@ -6,9 +6,7 @@
 <mapper namespace="com.spring.erp_ordit.dao.api.CalendarMapper">
 
 	<!-- 캘린더 리스트 -->
-	<!-- 
 	<select id="getAllEvents" resultType="com.spring.erp_ordit.dto.api.CalendarDTO">
 		SELECT * FROM calendar_event
-	</select> -->
-	
+	</select>
 </mapper>

@@ -23,7 +23,7 @@ const Textarea = React.forwardRef((props, ref) => (
     const [clientAdd, setClientAdd] = useState({
         sc_client_name: '',
         sc_ceo: '',
-        c_biz_num: '',
+        sc_biz_num: '',
         sc_email_front: '',
         sc_email_back: '',
         sc_tel: '',
@@ -55,7 +55,7 @@ const Textarea = React.forwardRef((props, ref) => (
                 setClientAdd({
                     sc_client_name: res.sc_client_name,
                     sc_ceo: res.sc_ceo,
-                    c_biz_num: res.c_biz_num,
+                    sc_biz_num: res.sc_biz_num,
                     sc_email_front: emailFront,
                     sc_email_back: emailBack,
                     sc_tel: res.sc_tel,
@@ -78,7 +78,7 @@ useEffect(() => {
         setClientAdd({
             sc_client_name: rowData.sc_client_name || '',
             sc_ceo: rowData.sc_ceo || '',
-            c_biz_num: rowData.c_biz_num || '',
+            sc_biz_num: rowData.sc_biz_num || '',
             sc_email_front: rowData.sc_email ? rowData.sc_email.split('@')[0] : '',
             sc_email_back: rowData.sc_email ? rowData.sc_email.split('@')[1] : '',
             sc_tel: rowData.sc_tel || '',
@@ -105,34 +105,56 @@ useEffect(() => {
     const [isBizNumValid, setIsBizNumValid] = useState(false);      // 중복 결과 여부
 
     // 사업자 등록번호 중복 체크
-    const bizNumCheck = (c_biz_num) => {
-        if (!c_biz_num.trim()) {
-            alert("사업자등록번호를 입력해주세요.");
+    const bizNumCheck = (sc_biz_num) => {
+        if (!sc_biz_num.trim()) {
+             toaster.push(
+                <Message showIcon type="warning" closable >
+                  사업자등록번호를 입력해주세요.
+                </Message>,
+                { placement: "topCenter" }
+              );
             return;
         }
 
         // 형식 검사 (사업자등록번호는 XXX-XX-XXXXX 형식)
         const bizNumPattern = /^\d{3}-\d{2}-\d{5}$/;
-        if (!bizNumPattern.test(c_biz_num)) {
-            alert("사업자등록번호 형식이 올바르지 않습니다. \n (예시: 123-45-67890)");
+        if (!bizNumPattern.test(sc_biz_num)) {
+            toaster.push(
+              <Message showIcon type="warning" closable >
+                사업자등록번호 형식이 올바르지 않습니다. <br />
+                (예시: 123-45-67890)
+              </Message>,
+              { placement: "topCenter" }
+            );
             return;
         }
 
-        fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientBizNum/` + c_biz_num, {
+        fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientBizNum/` + sc_biz_num, {
             method: 'GET',
         })
         .then((res) => res.text())
         .then((res) => {
             setIsBizNumChecked(true); // 체크는 했음
             if (res != 0) {
-                alert('이미 등록되어 있습니다. 재확인 후 입력해주세요.');
+                toaster.push(
+                  <Message showIcon type="warning" closable >
+                    사업자등록번호 형식이 올바르지 않습니다. <br />
+                    (예시: 123-45-67890)
+                  </Message>,
+                  { placement: "topCenter" }
+                );
                 setClientAdd({
                     ...clientAdd,
-                    c_biz_num: ""
+                    sc_biz_num: ""
                 });
                 setIsBizNumValid(false);
             } else {
-                alert('등록 가능한 사업자등록번호입니다.');
+                toaster.push(
+                  <Message showIcon type="success" closable >
+                    등록 가능한 사업자등록번호입니다.
+                  </Message>,
+                  { placement: "topCenter" }
+                );
                 setIsBizNumValid(true);
             }
         });
@@ -176,7 +198,7 @@ useEffect(() => {
     const requiredFields = {
         sc_client_name: "거래처명",
         sc_ceo: "대표자명",
-        c_biz_num: "사업자등록번호",
+        sc_biz_num: "사업자등록번호",
         sc_email_front: "이메일",
         sc_email_back: "이메일",
         sc_tel: "연락처",
@@ -193,7 +215,7 @@ useEffect(() => {
         if (!isBizNumValid) {
         toaster.push(
             <Message showIcon type="warning">
-            사업자등록번호 중복체크를 먼저 해주세요.
+              사업자등록번호 중복체크를 먼저 해주세요.
             </Message>,
             { placement: "topCenter" }
         );
@@ -243,15 +265,30 @@ useEffect(() => {
       })
       .then((res) => {
           if (res !== 0) {
-              alert("수정이 완료되었습니다.");
-              // window.location.href = "/main/sell_request_client_list";
+              toaster.push(
+                <Message showIcon type="success" closable>
+                  수정이 완료되었습니다.
+                </Message>,
+                { placement: "topCenter" }
+              );
+
               navigate("/main/sell_request_client_list");
           } else {
-              alert("수정에 실패하였습니다.");
+              toaster.push(
+                <Message showIcon type="error" closable>
+                  수정에 실패했습니다.
+                </Message>,
+                { placement: "topCenter" }
+              );
           }
       })
       .catch(error => {
-          console.log('실패', error);
+          toaster.push(
+            <Message showIcon type="error" closable>
+              서버에 오류가 발생했습니다.
+            </Message>,
+            { placement: "topCenter" }
+          );
       });
   }
 
@@ -305,13 +342,13 @@ useEffect(() => {
         
                           <Form.Group>
                             <Form.ControlLabel>사업자등록번호 
-                                <Button appearance="ghost" style={{ marginLeft: 10}} size="xs" onClick={() => bizNumCheck(clientAdd.c_biz_num)}>중복체크</Button>
+                                <Button appearance="ghost" style={{ marginLeft: 10}} size="xs" onClick={() => bizNumCheck(clientAdd.sc_biz_num)}>중복체크</Button>
                             </Form.ControlLabel>
                             <Form.Control
-                              name="c_biz_num"
-                              value={clientAdd.c_biz_num}
+                              name="sc_biz_num"
+                              value={clientAdd.sc_biz_num}
                               onChange={(value) =>
-                                changeValue(value, "c_biz_num")
+                                changeValue(value, "sc_biz_num")
                               }
                             />
                             

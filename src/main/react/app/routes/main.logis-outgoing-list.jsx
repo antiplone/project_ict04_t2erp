@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import SearchIcon from '@rsuite/icons/Search';
+import readingGlasses from "#images/common/readingGlasses.png";
 import { Link } from "@remix-run/react";
 import { Button, Container, DateRangePicker, Input, InputGroup,/* Message,  Form, */ Table } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
@@ -108,7 +108,7 @@ const OutgoingList = () => {
 				<div className="inputBox">
 					<div>
 						<InputGroup className="input">
-							<InputGroup.Addon style={{ width: 80 }}>발주일자</InputGroup.Addon>
+							<InputGroup.Addon style={{ width: 80 }} className='text_center'>발주일자</InputGroup.Addon>
 							<DateRangePicker
 								value={orderDate}
 								onChange={handleDateChange}
@@ -119,29 +119,47 @@ const OutgoingList = () => {
 					</div>
 					<div className="display_flex">
 						<InputGroup className="input">
-							<InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
-							<Input value={selectedIncharge || ""} readOnly />
-							<InputGroup.Button tabIndex={-1}>
-								<SearchIcon onClick={() => setInchargeModalOpen(true)} />
-							</InputGroup.Button>
+							<InputGroup.Addon style={{ width: 80 }} className='text_center'>담당자</InputGroup.Addon>
+							<Input value={selectedIncharge || ""} readOnly onClick={() => setInchargeModalOpen(true)} />
+							<InputGroup.Addon>
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                    style={{ cur: "pointer" }}
+                                />
+                            </InputGroup.Addon>
 						</InputGroup>
 						<Input value={selectedInchargeName || ""} readOnly style={{ width: 150 }} />
 					</div>
 					<InputGroup className="input">
-						<InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
-						<Input value={selectedClient || ""} readOnly />
+						<InputGroup.Addon style={{ width: 80 }} className='text_center'>거래처</InputGroup.Addon>
+						<Input value={selectedClient || ""} readOnly onClick={() => setClientModalOpen(true)} />
 						<InputGroup.Addon>
-							<SearchIcon onClick={() => setClientModalOpen(true)} />
-						</InputGroup.Addon>
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                    style={{ cur: "pointer" }}
+                                />
+                            </InputGroup.Addon>
 					</InputGroup>
 					<Input value={selectedClientName || ""} readOnly style={{ width: 150 }} />
 
 					<InputGroup className="input">
-						<InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
-						<Input value={selectedStorage || ""} readOnly />
+						<InputGroup.Addon style={{ width: 80 }} className='text_center'>입고창고</InputGroup.Addon>
+						<Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
 						<InputGroup.Addon>
-							<SearchIcon onClick={() => setStorageModalOpen(true)} />
-						</InputGroup.Addon>
+                                <img
+                                    src={readingGlasses}
+                                    alt="돋보기"
+                                    width={20}
+                                    height={20}
+                                    style={{ cur: "pointer" }}
+                                />
+                            </InputGroup.Addon>
 					</InputGroup>
 					<Input value={selectedStorageName || ""} readOnly style={{ width: 150 }} />
 
@@ -156,22 +174,22 @@ const OutgoingList = () => {
 				<br />
 				<Table height={400} data={salesListWithRowNum} className="text_center">
 					<Table.Column width={80} align="center" fixed>
-						<Table.HeaderCell>번호</Table.HeaderCell>
+						<Table.HeaderCell className='text_center'>번호</Table.HeaderCell>
 						<Table.Cell dataKey="row_num" />
 					</Table.Column>
 
 					<Table.Column width={80} align="center" fixed>
-						<Table.HeaderCell>주문고유번호</Table.HeaderCell>
+						<Table.HeaderCell className='text_center'>주문고유번호</Table.HeaderCell>
 						<Table.Cell dataKey="order_id" />
 					</Table.Column>
 
 					<Table.Column width={120}>
-						<Table.HeaderCell>출고일자</Table.HeaderCell>
+						<Table.HeaderCell className='text_center'>출고일자</Table.HeaderCell>
 						<Table.Cell dataKey="shipment_order_date" />
 					</Table.Column>
 
 					<Table.Column width={150}>
-						<Table.HeaderCell>아이템 비고</Table.HeaderCell>
+						<Table.HeaderCell className='text_center'>아이템 비고</Table.HeaderCell>
 						<Table.Cell dataKey="item_name" style={{ padding: '6px' }}>
 							{rowData => (
 								<Link to={`/main/logis-sales-item-list/${rowData.order_id}`} className="btn btn-primary area_fit wide_fit">주문상세보기</Link>
@@ -180,7 +198,7 @@ const OutgoingList = () => {
 					</Table.Column>
 
 					<Table.Column width={120}>
-						<Table.HeaderCell>발주처</Table.HeaderCell>
+						<Table.HeaderCell className='text_center'>발주처</Table.HeaderCell>
 						<Table.Cell dataKey="client_name" />
 					</Table.Column>
 
@@ -190,7 +208,7 @@ const OutgoingList = () => {
                         </Table.Column> */}
 
 					<Table.Column width={160}>
-						<Table.HeaderCell>입고창고</Table.HeaderCell>
+						<Table.HeaderCell className='text_center'>입고창고</Table.HeaderCell>
 						<Table.Cell dataKey="storage_name" />
 					</Table.Column>
 				</Table>

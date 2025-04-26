@@ -9,7 +9,7 @@ export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActi
     <Table
       autoHeight
       virtualized={false}
-      width={1450}
+      width={1130}
       data={items}
       cellBordered
       style={{ marginTop: '25px', marginBottom: '50px', border: '1px solid #EEEEEE' }}

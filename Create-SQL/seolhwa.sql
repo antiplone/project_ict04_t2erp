@@ -77,12 +77,10 @@ DROP VIEW sell_invoice_view;
 CREATE VIEW sell_invoice_view AS
 SELECT 
 	ot.order_id as order_id, -- 주문 번호
-	-- oi.order_item_id as order_item_id, -- 아이템 테이블 주문번호
 	ot.order_type as order_type, -- 판매 1 / 구매 2
 	ot.e_id as e_id,	-- 담당자 사번
 	et.e_name as e_name, -- 담당자명
 	ot.order_date as order_date, -- 등록일자
-	-- ot.shipment_order_date as shipment_order_date, -- 출하지시일
 	ot.client_code as client_code, -- 거래처코드 fk
 	cl.client_name as client_name, -- 거래처명
 	cl.c_base_address as c_base_address, -- 거래처 주소(도로명)
@@ -97,11 +95,6 @@ SELECT
 	oi.supply as supply, 	-- 공급가액
 	oi.total as total, -- 금액합계
 	oi.vat as vat,	-- 부가세
-	-- ot.transaction_type as transaction_type, -- 거래유형
-	-- ot.storage_code as storage_code, -- 창고코드
-	-- wt.storage_name as storage_name, -- 창고명
-	-- oi.income_confirm as income_confirm, -- 출하여부
-	-- os.order_status as order_status, -- 결재 상태
 	ot.order_show as order_show -- 보여짐 유무 (삭제는 N)
 FROM
 	order_tbl AS ot 

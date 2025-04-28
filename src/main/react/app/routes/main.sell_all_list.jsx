@@ -125,7 +125,6 @@ const sell_all_list = () => {
 	return (
 		<div>
 			<MessageBox type="success" text="판매조회"/>
-
 			<Tabs 
 				activeKey={activeTab}
 				onSelect={(key) => setActiveTab(key)}

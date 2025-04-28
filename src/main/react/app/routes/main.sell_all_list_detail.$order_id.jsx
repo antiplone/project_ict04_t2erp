@@ -89,47 +89,47 @@ const sell_all_list_detail = () => {
 			<>
 
 			{allDetail.length > 0 && (	// 주문정보는 1회만 출력되어야 하므로 첫번째 데이터만 가져오기
-			<Table height={100} width={1350} data={[allDetail[0]]} >
-				<Column width={150}><HeaderCell style={styles}>주문번호</HeaderCell><Cell dataKey="order_id" /></Column>
-				<Column width={150}><HeaderCell style={styles}>요청일자</HeaderCell><Cell dataKey="order_date" /></Column>
-				<Column width={150}><HeaderCell style={styles}>판매요청 부서</HeaderCell>
+			<Table height={100} width={1200} data={[allDetail[0]]} >
+				<Column className="text_center" width={120}><HeaderCell style={styles}>주문번호</HeaderCell><Cell dataKey="order_id" /></Column>
+				<Column className="text_center" width={120}><HeaderCell style={styles}>요청일자</HeaderCell><Cell dataKey="order_date" /></Column>
+				<Column className="text_center" width={120}><HeaderCell style={styles}>판매요청 부서</HeaderCell>
 					<Cell>
 						{(rowData) => rowData.order_type === 1 ? "판매팀" : rowData.order_type === 2 ? "구매팀" : ""}
 					</Cell>
 				</Column>
-				<Column width={150}><HeaderCell style={styles}>담당자명</HeaderCell><Cell dataKey="e_name" /></Column>
-				<Column width={150}><HeaderCell style={styles}>거래처명</HeaderCell><Cell dataKey="client_name" /></Column>
-				<Column width={150}><HeaderCell style={styles}>거래유형</HeaderCell><Cell dataKey="transaction_type" /></Column>
-				<Column width={150}><HeaderCell style={styles}>출하창고</HeaderCell><Cell dataKey="storage_name" /></Column>
-				<Column width={150}><HeaderCell style={styles}>출하지시일</HeaderCell><Cell dataKey="shipment_order_date" /></Column>
-				<Column width={150}><HeaderCell style={styles}>진행상태</HeaderCell><Cell dataKey="order_status" /></Column>
+				<Column className="text_center" width={150}><HeaderCell style={styles}>담당자명</HeaderCell><Cell dataKey="e_name" /></Column>
+				<Column width={150}><HeaderCell className="text_center" style={styles}>거래처명</HeaderCell><Cell className="text_left" dataKey="client_name" /></Column>
+				<Column width={150}><HeaderCell style={styles}>거래유형</HeaderCell><Cell className="text_left" dataKey="transaction_type" /></Column>
+				<Column width={150}><HeaderCell style={styles}>출하창고</HeaderCell><Cell className="text_left" dataKey="storage_name" /></Column>
+				<Column className="text_center" width={120}><HeaderCell style={styles}>출하지시일</HeaderCell><Cell dataKey="shipment_order_date" /></Column>
+				<Column className="text_center" width={120}><HeaderCell style={styles}>진행상태</HeaderCell><Cell dataKey="order_status" /></Column>
 			</Table> )}
 			</>
 
         <Divider style={{maxWidth: 1200}}/>
         <>
-			<Table height={400} width={1350} data={allDetail}>
-				<Column width={150}><HeaderCell style={styles}>물품코드</HeaderCell><Cell dataKey="item_code" /></Column>
-				<Column width={300}><HeaderCell style={styles}>물품명</HeaderCell><Cell dataKey="item_name" /></Column>
-				<Column width={150}>
+			<Table height={400} width={1200} data={allDetail}>
+				<Column className="text_center" width={120}><HeaderCell style={styles}>물품코드</HeaderCell><Cell dataKey="item_code" /></Column>
+				<Column width={250}><HeaderCell className="text_center" style={styles}>물품명</HeaderCell><Cell className="text_left" dataKey="item_name" /></Column>
+				<Column align="right" width={110}>
 					<HeaderCell style={styles}>수량</HeaderCell>
 					<Cell>{rowData => Number(rowData.quantity).toLocaleString()}</Cell>
 				</Column>	
 				{/* Number(...).toLocaleString() : 문자열 숫자("1234" 등)도 자동으로 변환됨 
 				 	new Intl.NumberFormat().format(...): 다양한 국가별 통화/숫자 형식 지원 */}
-				<Column width={150}>
+				<Column align="right" width={180}>
 					<HeaderCell style={styles}>단가</HeaderCell>
 					<Cell>{rowData => Number(rowData.price).toLocaleString()}</Cell>
 				</Column>
-				<Column width={150}>
+				<Column align="right" width={180}>
 					<HeaderCell style={styles}>공급가액</HeaderCell>
 					<Cell>{rowData => Number(rowData.supply).toLocaleString()}</Cell>
 				</Column>
-				<Column width={150}>
+				<Column align="right" width={180}>
 					<HeaderCell style={styles}>부가세</HeaderCell>
 					<Cell>{rowData => Number(rowData.vat).toLocaleString()}</Cell>
 				</Column>
-				<Column width={150}>
+				<Column align="right" width={180}>
 					<HeaderCell style={styles}>총액</HeaderCell>
 					<Cell>{rowData => Number(rowData.total).toLocaleString()}</Cell>
 				</Column>

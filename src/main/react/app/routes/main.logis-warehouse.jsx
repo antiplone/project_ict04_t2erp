@@ -37,22 +37,22 @@ const WareHouseList = () => {
                 <br />
                 <Table height={400} data={storageList}>
                     <Table.Column width={100} align="center" fixed>
-                        <Table.HeaderCell>창고 코드</Table.HeaderCell>
+                        <Table.HeaderCell className='text_center'>창고 코드</Table.HeaderCell>
                         <Table.Cell dataKey="storage_code" />
                     </Table.Column>
 
                     <Table.Column width={200}>
-                        <Table.HeaderCell>창고명</Table.HeaderCell>
+                        <Table.HeaderCell className='text_center'>창고명</Table.HeaderCell>
                         <Table.Cell dataKey="storage_name" />
                     </Table.Column>
 
                     <Table.Column width={150}>
-                        <Table.HeaderCell>주소</Table.HeaderCell>
+                        <Table.HeaderCell className='text_center'>주소</Table.HeaderCell>
                         <Table.Cell dataKey="storage_location" />
                     </Table.Column>
 
                     <Table.Column width={150} style={{padding:'6px'}}>
-                        <Table.HeaderCell>창고 상세보기</Table.HeaderCell>
+                        <Table.HeaderCell className='text_center'>창고 상세보기</Table.HeaderCell>
                         <Table.Cell dataKey="storage_code">
                         {(storageList) => (
                             <Link to={`/main/logis-warehouse-detail/${storageList.storage_code}`} className="btn btn-primary area_fit wide_fit" >창고 상세</Link>

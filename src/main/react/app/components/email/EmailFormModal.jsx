@@ -91,7 +91,25 @@ const EmailFormModal = ({ open, onClose }) => {
 					</div>
 					<div className={styles.formGroup}>
 						<label className={styles.label}>첨부파일:</label>
-						<input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} className={styles.fileInput} />
+						<input
+							type="file"
+							onChange={(e) => {
+								const file = e.target.files?.[0];
+								const maxSizeInMB = 10; // 업로드 최대 크기 (10MB)
+								if (file) {
+									if (file.size > maxSizeInMB * 1024 * 1024) {
+										alert(`파일 크기가 ${maxSizeInMB}MB를 초과했습니다. 다른 파일을 선택해주세요.`);
+										e.target.value = ''; // 파일 input 초기화
+										setFile(null);
+										return;
+									}
+									setFile(file);
+								} else {
+									setFile(null);
+								}
+							}}
+							className={styles.fileInput}
+						 />
 					</div>
 					<div className={styles.buttonContainer}>
 						<button

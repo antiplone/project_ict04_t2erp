@@ -212,7 +212,7 @@ main.rs-content {
     margin: 10px 20px 15px 0px;
     font-size: 17px;
     font-weight: bold;
-    max-width: 1500px;
+    min-width: 100%;
 }
 
 /* dropdown menu */
@@ -251,12 +251,27 @@ ul.rs-dropdown-menu {
     margin: 10px 0px;
 }
 
+.BtnBoxLeftMargin {
+    margin-left: 10px;
+}
+
+.main_container{
+	width:1760px;
+	margin: 0 auto;
+}
+
 .inputBox {
 	display: flex;
 	justify-content: flex-start;
-	width: 100%;
+	width: 1470px;
 	max-width: 1500px;
 	height: 40px;
-	margin-bottom: 10px;
+	margin: 0px 0px 10px 10px;
 	gap: 20px;
+}
+
+/* 테이블 헤드 색상 및 정렬 */
+.rs-table-cell-header .rs-table-cell-content{
+	text-align : center;
+	background-color: rgb(248, 249, 250);
 }

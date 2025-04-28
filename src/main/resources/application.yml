@@ -21,3 +21,9 @@ spring:
     # 이것만 바꾸면 DB접속을 바꿀수 있어요.
     # publish면 배포버전DB, mytest면 개인DB
     active: publish
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+

@@ -11,7 +11,6 @@ import "../styles/buy.css";
 import StorageSearchModal from "#components/buy/StorageSearchModal.jsx";
 import readingGlasses from "#images/common/readingGlasses.png";
 import ashBn from "#images/common/ashBn.png";
-import { Link } from "react-router-dom";
 import ItemSearchModal from "#components/buy/ItemSearchModal.jsx";
 import { useToast } from '#components/common/ToastProvider';
 import MessageBox from '../components/common/MessageBox';
@@ -165,10 +164,14 @@ export default function BuyInsert() {
             return;
         }
 
+        const orderDate = new Date().toLocaleString("sv-SE", {timeZone: "Asia/Seoul"}).replace(" ","T");
+
         // 백엔드에 보낼 데이터
         try {
             const requestBody = {
+                
                 order: { // order 주문정보
+                    order_date: orderDate,
                     delivery_date: deliveryDate.toLocaleDateString('sv-SE'), // 브라우저 기준 날짜, 'YYYY-MM-DD' 형식으로 변환
                     client_code: selectedClient,
                     e_id: selectedIncharge,
@@ -199,6 +202,18 @@ export default function BuyInsert() {
             showToast("오류가 발생했습니다.", "error");
         }
     };
+
+    // 검색 필터 초기화
+    const handleResetInput = () => {
+        setDeliveryDate(null);
+        setSelectedIncharge(null);
+        setSelectedInchargeName(null);
+        setSelectedClient(null);
+        setSelectedClientName(null);
+        setSelectedType(null);
+        setSelectedStorage(null);
+        setSelectedStorageName(null);
+    }
 
     return (
         <Container >
@@ -285,7 +300,14 @@ export default function BuyInsert() {
                 </div>
             </div>
 
-            <Divider style={{ maxWidth: 1350 }} />
+            <div className="buyBtnBox">
+                <Button appearance="ghost" className="buyBtn" onClick={handleAdditem}>입력 추가</Button>
+                <Button color="green" appearance="ghost" type="submit" className="buyBtn" onClick={handleResetInput}>
+                    초기화
+                </Button>
+            </div>
+
+            <Divider />
 
             {/* 거래처 모달 관리 */}
             <ClientSearchModal
@@ -401,22 +423,12 @@ export default function BuyInsert() {
                 </Column>
             </Table>
 
-            <Divider style={{ maxWidth: 1350 }} />
+            <Divider />
             <div className="insertTotalSum">총액 합계: {totalSum.toLocaleString()} 원</div>
-            <div className="buyBtnBox">
-                <div style={{ display: 'flex', gap: 20 }}>
-                    <Button appearance="default" className="buyBtn" onClick={handleAdditem}>행 추가</Button>
-                    <Button appearance="ghost" className="buyBtn" onClick={handleSubmit}>저장</Button>
-                    <Link to={`/main/buy-select`}>
-                        <Button appearance="ghost" className="ListBtn">
-                            목록
-                        </Button>
-                    </Link>
-                </div>
+            <div style={{ display: 'flex', gap: 10 }}>
+                <Button appearance="ghost" onClick={handleSubmit}>저장</Button>
             </div>
-
             <hr />
-
         </Container>
     );
 }

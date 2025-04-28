@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -170,9 +171,15 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		        start_date, end_date, client_code, e_id, storage_code, item_code, transaction_type
 		    );
 		    
-		    // 새 엑셀 파일과 구매현항 이름의 시트를 만듬.
-		    Workbook workbook = new XSSFWorkbook();
-		    Sheet sheet = workbook.createSheet("구매현황");
+		    // 응답 설정
+		    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); // 브라우저가 엑셀파일을 인식하게 함.
+		    response.setHeader("Content-Disposition", "attachment; filename=buy_orderStatus_result.xlsx"); // 다운로드 받는 이름 설정
+		    
+		    // try - catch를 써서 자동으로 닫히게 처리
+		    try (Workbook workbook = new XSSFWorkbook(); // 새 엑셀 파일 만듦
+	    	     ServletOutputStream out = response.getOutputStream()) { // 파일을 내려받는 스트림
+		    
+		    	 Sheet sheet = workbook.createSheet("구매현황"); // 시트 생성
 
 		    // 헤더 style
 		    CellStyle headerStyle = workbook.createCellStyle();
@@ -196,6 +203,7 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		    String[] headers = { "발주일자", "발주번호", "거래처명", "품목명", "수량", "단가", "공급가액", "부가세", "금액합계" };
 		    // orderStatus 리스트 for문으로 엑셀에 입력
 		    Row headerRow = sheet.createRow(0); 
+		    
 		    for (int i = 0; i < headers.length; i++) {
 		        Cell cell = headerRow.createCell(i);
 		        cell.setCellValue(headers[i]);
@@ -206,7 +214,7 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		    int rowNum = 1;
 		    for (BuyStatusDTO dto : OrderStatus) {
 		    	// 열 너비 자동 조정
-		        Row row = sheet.createRow(rowNum++);
+		        Row row = sheet.createRow(rowNum++); // 행 번호 자동증가
 
 		        // 발주일자 
 		        Cell cell0 = row.createCell(0);
@@ -251,16 +259,15 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		        sheet.autoSizeColumn(i);
 		    }
 
-		    // 응답 설정
-		    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-		    response.setHeader("Content-Disposition", "attachment; filename=buy_orderStatus_result.xlsx"); // 다운로드 받는 이름 설정
+		    workbook.write(out); // 엑셀 파일을 브라우저로 보냄.
+	        out.flush(); // flush()로 응답 밀어주기
+	    }
 		    
-		    // 엑셀 파일 전송
-		    workbook.write(response.getOutputStream());
-		    workbook.close();
+		    catch (IOException e) {
+		        e.printStackTrace();
+		        throw new RuntimeException("구매현황 엑셀 다운로드 중 오류가 발생하였습니다.", e);
+		    }
 		}
-	
-	
 	
 	// -------------  구매관리 - 입고조회 페이지 --------------------------------------------------------------------------------------
 	// 구매관리 - 입고조회 GetMapping => http://localhost:8081/buy/buyStockStatusSearch
@@ -268,7 +275,7 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	public ResponseEntity<List<BuyStockStatusDTO>> buyStockStatusSearch(
 		// @RequestParam은 GET 요청의 쿼리 파라미터를 바인딩할 때 사용 => ex)clientCode=1001&buyType=부과세율 적용
 		// required = false: 선택적인 파라미터 → 안 보내도 null로 들어가게 하려고 씀.
-		@RequestParam(required = false) String start_date, 
+		@RequestParam(required = false) String start_date,  
 		@RequestParam(required = false) String end_date, 
 		@RequestParam(required = false) String order_id, 
 	    @RequestParam(required = false) String client_code,
@@ -307,10 +314,16 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		    		start_date, end_date, order_id, client_code, item_code, storage_code, stock_amount, safe_stock, last_date
 		    );
 			
-			 // 새 엑셀 파일과 입고현황 이름의 시트를 만듬.
-		    Workbook workbook = new XSSFWorkbook();
-		    Sheet sheet = workbook.createSheet("입고현황");
-
+			// 응답 설정
+		    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); // 브라우저가 엑셀파일을 인식하게 함.
+		    response.setHeader("Content-Disposition", "attachment; filename=buy_stockStatus_result.xlsx"); // 다운로드 받는 이름 설정
+		    
+		    // try - catch를 써서 자동으로 닫히게 처리
+		    try (Workbook workbook = new XSSFWorkbook(); // 새 엑셀 파일 만듦
+	    	     ServletOutputStream out = response.getOutputStream()) { // 파일을 내려받는 스트림
+		    
+		    	 Sheet sheet = workbook.createSheet("입고현황"); // 시트 생성
+			
 		    // 헤더 style
 		    CellStyle headerStyle = workbook.createCellStyle();
 		    Font headerFont = workbook.createFont();
@@ -382,13 +395,14 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		        sheet.autoSizeColumn(i);
 		    }
 
-		    // 응답 설정
-		    response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-		    response.setHeader("Content-Disposition", "attachment; filename=buy_stockStatus_result.xlsx"); // 다운로드 받는 이름 설정
+		    workbook.write(out); // 엑셀 파일을 브라우저로 보냄.
+	        out.flush(); // flush()로 응답 밀어주기
+	    }
 		    
-		    // 엑셀 파일 전송
-		    workbook.write(response.getOutputStream());
-		    workbook.close();
+		    catch (IOException e) {
+		        e.printStackTrace();
+		        throw new RuntimeException("입고현황 엑셀 다운로드 중 오류가 발생하였습니다.", e);
+		    }
 		}
 
 }

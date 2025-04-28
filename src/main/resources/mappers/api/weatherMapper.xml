@@ -5,14 +5,30 @@
      
 <mapper namespace="com.spring.erp_ordit.dao.api.WeatherMapper">
 
-	<insert id="insertWeather" parameterType="com.spring.erp_ordit.dto.api.WeatherDTO">
-	    INSERT INTO weather_info (weather_date, weather_time, weather_temperature, weather_sky, weather_rain_type)
-	    VALUES (#{weather_date}, #{weather_time}, #{weather_temperature}, #{weather_sky}, #{weather_rain_type})
-	</insert>
-	
-	<select id="selectLatestWeather" resultType="com.spring.erp_ordit.dto.api.WeatherDTO">
-	    SELECT * FROM weather_info
-	    ORDER BY weather_id DESC
-	    LIMIT 1
-	</select>
+<!-- 최신 날씨 추가 -->
+<insert id="insertWeather" parameterType="com.spring.erp_ordit.dto.api.WeatherDTO">
+    INSERT INTO weather_info(
+    	weather_date,
+    	weather_time,
+    	weather_temperature,
+    	weather_rain_probability,
+    	weather_humidity,
+    	weather_description
+   	) VALUES(
+   		#{weatherDate},
+   		#{weatherTime},
+   		#{weatherTemperature},
+   		#{weatherRainProbability},
+   		#{weatherHumidity},
+   		#{weatherDescription})
+</insert>
+
+<!-- 최신 날씨 조회 -->
+<select id="selectLatestWeather" resultType="com.spring.erp_ordit.dto.api.WeatherDTO">
+    SELECT * FROM weather_info
+    ORDER BY weather_id DESC
+    LIMIT 1
+</select>
+<!-- ORDER BY weather_id DESC LIMIT 1 : 최신 날씨 1건만 가져오기 -->
+
 </mapper>

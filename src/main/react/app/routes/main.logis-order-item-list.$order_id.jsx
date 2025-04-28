@@ -181,22 +181,22 @@ const OrderItemList = () => {
 	                </Table.Column>
 
                     <Table.Column width={100}>
-                        <Table.HeaderCell>품목코드</Table.HeaderCell>
+                        <Table.HeaderCell className='text_center'>품목코드</Table.HeaderCell>
                         <Table.Cell dataKey="item_code" />
                     </Table.Column>
 
                     <Table.Column width={160}>
-                        <Table.HeaderCell>품목명</Table.HeaderCell>
+                        <Table.HeaderCell className='text_center'>품목명</Table.HeaderCell>
                         <Table.Cell dataKey="item_name" />
                     </Table.Column>
 
                     <Table.Column width={80}>
-                        <Table.HeaderCell>주문수량</Table.HeaderCell>
+                        <Table.HeaderCell className='text_center'>주문수량</Table.HeaderCell>
                         <Table.Cell dataKey="quantity" />
                     </Table.Column>
                     
 					<Table.Column width={120}>
-						<Table.HeaderCell>실제 입고 수량</Table.HeaderCell>
+						<Table.HeaderCell className='text_center'>실제 입고 수량</Table.HeaderCell>
 						<Table.Cell dataKey="income_confirm">
 							{rowData => (
 								<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
@@ -223,19 +223,19 @@ const OrderItemList = () => {
 					</Table.Column>
 
                     <Table.Column width={160}>
-                        <Table.HeaderCell>규격</Table.HeaderCell>
+                        <Table.HeaderCell className='text_left'>규격</Table.HeaderCell>
                         <Table.Cell dataKey="item_standard" />
                     </Table.Column>
                     
 					<Table.Column width={200}>
-						<Table.HeaderCell>입고 상태</Table.HeaderCell>
+						<Table.HeaderCell className='text_center'>입고 상태</Table.HeaderCell>
 						<Table.Cell>
 							{renderIncomeConfirmCell}
 						</Table.Cell>
 					</Table.Column>
 
                     <Table.Column width={150} style={{ padding: '6px' }}>
-                        <Table.HeaderCell>창고 상세보기</Table.HeaderCell>
+                        <Table.HeaderCell className='text_center'>창고 상세보기</Table.HeaderCell>
                         <Table.Cell dataKey="order_id">
                             {(rowData) => (
                                 <Link to={`/main/logis-order-item-detail/${rowData.order_id}/${rowData.item_code}/${rowData.order_type}`}
@@ -247,7 +247,7 @@ const OrderItemList = () => {
                     </Table.Column>
                     
                      <Table.Column width={160}>
-                        <Table.HeaderCell>입고 창고 코드</Table.HeaderCell>
+                        <Table.HeaderCell className='text_center'>입고 창고 코드</Table.HeaderCell>
                         <Table.Cell dataKey="storage_code" />
                     </Table.Column>
                 </Table>
@@ -262,6 +262,8 @@ const OrderItemList = () => {
 					</Button>
                     <Link to={'/main/logis-income-list'} className="btn btn-primary area_fit wide_fit margin_0">입고 목록</Link>
                 </div>
+                
+               
             </Container>
         </div>
     )

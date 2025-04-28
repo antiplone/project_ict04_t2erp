@@ -203,7 +203,7 @@ const StockItemsList = () => {
 					</InputGroup>
 
 					<InputGroup className="input" style={{ width: 190 , marginLeft: '140px'}}>
-						<InputGroup.Addon style={{ width: 80 }}>품목</InputGroup.Addon>
+						<InputGroup.Addon style={{ width: 80 }} className='text_center'>품목</InputGroup.Addon>
 						<Input value={selectedItem || ""} readOnly onClick={() => setItemModalOpen(true)} />
 						<InputGroup.Button tabIndex={-1}>
 							<img
@@ -234,7 +234,7 @@ const StockItemsList = () => {
 					</InputGroup>
 					<Input value={selectedClientName || ""} readOnly style={{ width: 250 }} />
                     <InputGroup className="input" style={{ width: 190 }}>
-                        <InputGroup.Addon style={{ width: 80 }}>보관창고</InputGroup.Addon>
+                        <InputGroup.Addon style={{ width: 80 }} className='text_center'>보관창고</InputGroup.Addon>
                         <Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
                         <InputGroup.Addon>
                             <img

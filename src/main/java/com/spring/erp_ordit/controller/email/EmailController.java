@@ -21,6 +21,8 @@ public class EmailController {
     @Autowired
     private JavaMailSender mailSender;
     
+    private static final long MAX_FILE_SIZE = 10_485_760L; // 10MB
+    
     @PostMapping("/send")
     public ResponseEntity<String> sendEmail(
     		@RequestParam("to") String to,
@@ -29,6 +31,7 @@ public class EmailController {
     		@RequestParam(value = "files", required = false) MultipartFile[] files
     	) {
     		try {
+    			
     			MimeMessage message = mailSender.createMimeMessage();
     			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
@@ -37,15 +40,21 @@ public class EmailController {
     			helper.setText(text, false);
 
     			if (files != null) {
-    				for (MultipartFile file : files) {
-    					if (!file.isEmpty()) {
-    						helper.addAttachment(file.getOriginalFilename(), file);
-    					}
-    				}
+    			    for (MultipartFile file : files) {
+    			        if (!file.isEmpty()) {
+    			            if (file.getSize() > MAX_FILE_SIZE) {
+    			                return ResponseEntity
+    			                        .badRequest()
+    			                        .body("첨부파일 " + file.getOriginalFilename() + "의 크기가 10MB를 초과했습니다.");
+    			            }
+    			            helper.addAttachment(file.getOriginalFilename(), file);
+    			        }
+    			    }
     			}
 
     			mailSender.send(message);
     			return ResponseEntity.ok("이메일 발송 성공!");
+    			
     		} catch (Exception e) {
     			e.printStackTrace();
     			return ResponseEntity.status(500)

@@ -48,7 +48,7 @@ export default function RetiMyTab({ retiColumns, retiData }) {
                   }
                   const color =
                     status === "승인"
-                      ? "#27ae60"
+                      ? "#007bff"
                       : status === "반려"
                       ? "#e74c3c"
                       : "#2980b9";

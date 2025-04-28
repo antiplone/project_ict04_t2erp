@@ -57,8 +57,8 @@ const AttItemsTable = ({ data, columns, onReloading }) => {
     <>
       <Table
         autoHeight
-        maxHeight={500}
-        style={{ marginBottom: "24px", minWidth: 800 }}
+        height={500}
+        style={{ marginBottom: "24px", minWidth: "600px" }}
         data={data ?? []}
         cellBordered
       >

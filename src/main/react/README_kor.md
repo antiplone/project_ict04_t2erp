@@ -98,7 +98,7 @@ npm install @stomp/stompjs sockjs-client
         <version>5.2.3</version>
     </dependency>
 
-### 인쇄 API
+### Java Mail API
 npm install print-js
 
 ### FullCalendar API
@@ -107,8 +107,16 @@ npm install @fullcalendar/react @fullcalendar/core @fullcalendar/daygrid @fullca
 #### -예시: @fullcalendar/react@6.x.xx 라고 나오면 됨
 npm ls @fullcalendar/react
 
+### 공휴일 API(구글 캘린더) + API 키 발급(구글 클라우드 콘솔)
+[Google Cloud Console](https://console.cloud.google.com/welcome?project=erp-system-458206)
+1. url 접속
+2. 새 프로젝트 생성 (ex. "ERP system")
+3. API 및 서비스 > 라이브러리 > "Google Calendar API" 검색 > 클릭 후 사용버튼 누르기
+4. 사용자 인증 정보 > API 키 만들기
+5. 발급된 API 키 복사
+
 ### 날씨 API
-[Weather API](https://openweathermap.org/api)
+[OpenWeatherMap API](https://openweathermap.org/api)
 1. 회원가입
 2. 오른쪽 상단에 이름 클릭 > My API Keys(내 API 키) > Name이 Default 라고 써져있는 Key를 사용하면 OK
 [시군구](https://developers.kakao.com/)

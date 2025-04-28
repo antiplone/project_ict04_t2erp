@@ -5,6 +5,7 @@ import { Table } from "rsuite";
 import VacaUpdateModal from "./VacaUpdateModal";
 import AppConfig from "#config/AppConfig.json";
 import Btn from "./Btn";
+import "#styles/common.css";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -56,7 +57,7 @@ const VacaItemsTable = ({ data, columns, onReloading }) => {
     <>
       <Table
         autoHeight
-        maxHeight={500}
+        height={500}
         style={{ marginBottom: "24px", minWidth: 910 }}
         data={data ?? []}
         cellBordered
@@ -66,14 +67,14 @@ const VacaItemsTable = ({ data, columns, onReloading }) => {
           .filter(col => !["v_start", "v_end"].includes(col.dataKey)) // 기존 start, end 컬럼 제거
           .map(col => (
           <React.Fragment key={col.dataKey}>
-            <Column key={col.dataKey} width={col.width} align="center">
+            <Column key={col.dataKey} width={col.width} className="text_center">
               <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
               <Cell dataKey={col.dataKey} />
             </Column>
 
           {/* ✅ '휴가명' 뒤에만 휴가기간 컬럼 끼워넣기 */}
           {col.dataKey === "v_name" && (
-            <Column width={250} align="center">
+            <Column width={250} className="text_center">
               <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>휴가기간</HeaderCell>
               <Cell>
                 {(rowData) => `${rowData.v_start} ~ ${rowData.v_end}`}
@@ -83,7 +84,7 @@ const VacaItemsTable = ({ data, columns, onReloading }) => {
           </React.Fragment>
         ))}
 
-        <Column width={110} align="center">
+        <Column width={110} className="text_center">
           <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>작업</HeaderCell>
           <Cell>
             {(rowData) => (

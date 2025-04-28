@@ -26,7 +26,7 @@ const sellType = ["부과세율 적용", "부가세율 미적용"].map(
 
 
 const sell_all_list_update = (props) => {
-
+	const fetchURL = AppConfig.fetch['mytest'];
 	const navigate = useNavigate();
 
 	const propsparam = useParams();
@@ -166,8 +166,6 @@ const sell_all_list_update = (props) => {
 		// 해당 id를 제외한 배열로 상태 업데이트
     };
 
-	const fetchURL = AppConfig.fetch['mytest'];
-	
 	// 주문번호 1개에 대한 입력건들 조회
 	useEffect(() => {
 		if (!order_id) return; // undefined 방지
@@ -352,9 +350,7 @@ const sell_all_list_update = (props) => {
 
 	return (
 		<div>
-			<Message type="info" className="main_title">
-			판매 정보 수정페이지 - 주문번호: {order_id}
-    		</Message>
+			<Message type="info" className="main_title">판매 정보 수정페이지 - 주문번호: {order_id}</Message>
 
 			<Form layout="horizontal">
 
@@ -380,7 +376,6 @@ const sell_all_list_update = (props) => {
 								담당자
 							</InputGroup.Addon>
 							<Input
-								placeholder='담당자'
 								name="e_id"
 								value={selectedIncharge || ""} readOnly
 							/>
@@ -403,7 +398,7 @@ const sell_all_list_update = (props) => {
 							<InputGroup.Addon style={{ width: 90 }}>
 								거래처
 							</InputGroup.Addon>
-							<Input placeholder='거래처'
+							<Input
 								name="client_code"
 								value={selectedClient || ""} readOnly
 							/>
@@ -447,7 +442,6 @@ const sell_all_list_update = (props) => {
 								출하창고
 							</InputGroup.Addon>
 							<Input 
-								placeholder='창고' 
 								name="storage_code"
 								value={selectedStorage || ""} readOnly
 							/>
@@ -534,7 +528,7 @@ const sell_all_list_update = (props) => {
 									name="stock_amount"
 									plaintext
 									value={String(item.stock_amount ?? '')}
-									className="updateBox"
+									className="updateBox_price"
 								/>
                             </Form.Group>
 

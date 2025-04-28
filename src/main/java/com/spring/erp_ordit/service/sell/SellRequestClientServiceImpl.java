@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.erp_ordit.dao.sell.SellRequestClientMapper;
-import com.spring.erp_ordit.dto.sell.SellOrderItemDTO;
-import com.spring.erp_ordit.dto.sell.SellRequestClientApprovalDTO;
 import com.spring.erp_ordit.dto.sell.SellRequestClientDTO;
 
 @Service
@@ -43,7 +41,6 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 		else {
 			// 2. request_client_tbl에 입력된 sc_id 값 가져오기
 			int sc_id = dto.getSc_id();
-			System.out.println("서비스 - sc_id : " + sc_id);
 
 			// 3. request_client_tbl의 sa_request_id에 값 넣기
 			int approvalResult = mapper.insertClientApproval(sc_id);
@@ -71,7 +68,6 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 	@Transactional
     public int updateClient(int sc_id, SellRequestClientDTO dto) {	// BoardDTO 리턴: 상세페이지로 리턴하기 위해
 		System.out.println("서비스 - SellRequestClientDTO");
-		System.out.println("서비스 - sc_id => " + sc_id);
 		
 		dto.setSc_id(sc_id);
 		
@@ -82,7 +78,7 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 	@Override
 	@Transactional
 	public String deleteClient(int sc_id) {
-		System.out.println("서비스 - deleteClient=> sc_no: " + sc_id);
+		System.out.println("서비스 - deleteClient");
 		mapper.deleteClient(sc_id);
 		
 		return "ok";

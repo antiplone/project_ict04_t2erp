@@ -27,6 +27,7 @@ const OrderIncomeList = () => {
     const [orderDate, setOrderDate] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const { showToast } = useToast(); 
+  
 	/* 차트 보기 모달 버튼 */
 	const [isChartModalOpen, setChartModalOpen] = useState(false);
 	
@@ -123,6 +124,7 @@ const OrderIncomeList = () => {
 		e_id: selectedIncharge,
 		storage_code: selectedStorage,
 	});
+
     
     /* 검색 조건*/
 	const handleSearch = async () => {
@@ -189,8 +191,8 @@ const OrderIncomeList = () => {
 				{firstItem} {items.length > 0 ? `${totalCount}` : ""}
 			</div>
 		);
-	};
 
+	};
     return (
         <div>
         	<MessageBox type="success" text="입고 관리"/>
@@ -364,13 +366,14 @@ const OrderIncomeList = () => {
 						{/* EmailFormModal Component */}
 						<EmailFormModal open={modalOpen} onClose={() => handleCloseModal(false)} />
 						
-						
 						{/* ChartModal 버튼 */}
+
 						<Button appearance="primary" onClick={() => setChartModalOpen(true)}>
 							차트 보기
 						</Button>
 
 						{/* ChartModal Component */}
+
 						<DBChartModal
 							open={isChartModalOpen}
 							onClose={() => setChartModalOpen(false)}

@@ -1,8 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Button, ButtonToolbar, Message, Form, 
-		 InputGroup, Input, Table, InputPicker,
-		  DateRangePicker} from "rsuite";
+		 InputGroup, Input, Table, InputPicker, DateRangePicker} from "rsuite";
 import SellEmployeeSearchModal from "#components/sell/SellEmployeeSearchModal.jsx";
 import SellClientSearchModal from "#components/sell/SellClientSearchModal.jsx";
 import SellStorageSearchModal from "#components/sell/SellStorageSearchModal.jsx";
@@ -26,7 +25,9 @@ const sellType = ["부과세율 적용", "부가세율 미적용"].map(
 
 const sell_status_select = () => {
 
-	
+	const fetchURL = AppConfig.fetch['mytest'];
+	const [statusData, setStatusData] = useState([]);
+
 	// 백엔드로 전달하기 위해 출하창고, 거래유형타입 저장
 	const [orderDate, setOrderDate] = useState(null);
 	const [transactionType, setTransactionType] = useState(null);
@@ -63,7 +64,6 @@ const sell_status_select = () => {
 		setSelectedStorageName(storage_name);
 		setStorageModalOpen(false);
 	};
-	
 
 	// 물품 검색 모달 관리
 	const [selectedItem, setSelectedItem] = useState(null);
@@ -121,11 +121,6 @@ const sell_status_select = () => {
 		return result;
 	};
 
-	const [statusData, setStatusData] = useState([]);
-
-	// 전체 리스트
-	const fetchURL = AppConfig.fetch['mytest'];
-	
 	useEffect(() => {
 		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/allList`, {
 			method: "GET"
@@ -137,7 +132,6 @@ const sell_status_select = () => {
 			setStatusData(numbered);
 		});
 	}, []);
-	
 	
 	// 검색한 리스트 조회하기 : 검색값을 백엔드로 전달
 	const [searchResultList, setSearchResultList] = useState([]);
@@ -164,11 +158,9 @@ const sell_status_select = () => {
 			storage_code: selectedStorage,
 			item_code: selectedItem,
 		};
-	
-		console.log("제출할 전체 데이터:", payload); // 확인용
-	
+
 		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/statusSearchList`, {
-			method: "POST", // 보통 검색 필터는 POST로 보냄. GET은 URL에 붙여야 해서 복잡함.
+			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -218,162 +210,156 @@ const sell_status_select = () => {
 			</Message>
 			
 			{/* 입력 상위 칸 */}
-			
 			<div className="result_final">
-			
 				<Form className="addForm" layout="inline">
-
-				<div className="form_div">
-					<div className="status_div">
-						<InputGroup className="status_input">
-							<InputGroup.Addon style={{ width: 80 }}>
-								등록일자
-							</InputGroup.Addon>
-							<DateRangePicker 
-								name="order_date"
-								value={orderDate}
-								onChange={setOrderDate}
-								placeholder="날짜 선택"
-                                format="yyyy-MM-dd"
-							/>
-						</InputGroup>
-					</div>
-
-					<div className="status_div">
-						<InputGroup className="status_inputBox">
-							<InputGroup.Addon style={{ width: 80 }}>
-								담당자
-							</InputGroup.Addon>
-							<Input
-								placeholder='담당자'
-								name="e_id"
-								value={selectedIncharge || ""} readOnly
-								// value={selectedIncharge ? selectedIncharge.em_name : ""}
-							/>
-							<InputGroup.Addon tabIndex={-1}>
-								<img
-									src={readingGlasses}
-									alt="돋보기"
-									width={20}
-									height={20}
-									onClick={() => setInchargeModalOpen(true)}
-									style={{ cursor: "pointer "}}
+					<div className="form_div">
+						<div className="status_div">
+							<InputGroup className="status_input">
+								<InputGroup.Addon style={{ width: 80 }}>
+									등록일자
+								</InputGroup.Addon>
+								<DateRangePicker 
+									name="order_date"
+									value={orderDate}
+									onChange={setOrderDate}
+									placeholder="날짜 선택"
+									format="yyyy-MM-dd"
 								/>
-							</InputGroup.Addon>
-						</InputGroup>
-						<Input 
-							name="e_name" type="text" autoComplete="off" className="status_inputBox2"
-							value={selectedInchargeName || ""} readOnly />
-					</div>
+							</InputGroup>
+						</div>
 
-					<div className="status_div">
-						<InputGroup className="status_inputBox">
-							<InputGroup.Addon style={{ width: 80 }}>
-								거래처
-							</InputGroup.Addon>
+						<div className="status_div">
+							<InputGroup className="status_inputBox">
+								<InputGroup.Addon style={{ width: 80 }}>
+									담당자
+								</InputGroup.Addon>
+								<Input
+									name="e_id"
+									value={selectedIncharge || ""} readOnly
+									// value={selectedIncharge ? selectedIncharge.em_name : ""}
+								/>
+								<InputGroup.Addon tabIndex={-1}>
+									<img
+										src={readingGlasses}
+										alt="돋보기"
+										width={20}
+										height={20}
+										onClick={() => setInchargeModalOpen(true)}
+										style={{ cursor: "pointer "}}
+									/>
+								</InputGroup.Addon>
+							</InputGroup>
 							<Input 
-								placeholder='거래처' 
-								name="client_code"
-								value={selectedClient || ""} readOnly
+								name="e_name" type="text" autoComplete="off" className="status_inputBox2"
+								value={selectedInchargeName || ""} readOnly 
 							/>
-							<InputGroup.Addon tabIndex={-1}>
-								<img
-									src={readingGlasses}
-									alt="돋보기"
-									width={20}
-									height={20}
-									onClick={() => setClientModalOpen(true)}
-									style={{ cursor: "pointer "}}
-								/>
-							</InputGroup.Addon>
-						</InputGroup>
-						<Input type="text" autoComplete="off" className="status_inputBox2"
-								name="client_name"
-								value={selectedClientName || ""} readOnly 
-						/>
-					</div>
-				</div>
+						</div>
 
-				<div className="form_div">
-					<div className="status_div">
-						<InputGroup className="status_input">
-							<InputGroup.Addon style={{ width: 80 }}>
-								거래유형
-							</InputGroup.Addon>
-							<InputPicker
-								placeholder='거래유형 선택'
-								name="transaction_type"
-								data={sellType}
-								value={transactionType}
-								onChange={setTransactionType}
-								style={{ width: 224, border: 'none', height: 38}}
-							/>
-						</InputGroup>
-					</div>
-
-					<div className="status_div">
-						<InputGroup className="status_inputBox">
-							<InputGroup.Addon style={{ width: 80 }}>
-								출하창고
-							</InputGroup.Addon>
-							<Input 
-								placeholder='출하창고' 
-								name="storage_code"
-								value={selectedStorage || ""} readOnly
+						<div className="status_div">
+							<InputGroup className="status_inputBox">
+								<InputGroup.Addon style={{ width: 80 }}>
+									거래처
+								</InputGroup.Addon>
+								<Input 
+									name="client_code"
+									value={selectedClient || ""} readOnly
 								/>
-							<InputGroup.Addon tabIndex={-1}>
-								<img
-								src={readingGlasses}
-								alt="돋보기"
-								width={20}
-								height={20}
-								onClick={() => setStorageModalOpen(true)}
-								style={{ cursor: "pointer "}}
-								/>
-							</InputGroup.Addon>
+								<InputGroup.Addon tabIndex={-1}>
+									<img
+										src={readingGlasses}
+										alt="돋보기"
+										width={20}
+										height={20}
+										onClick={() => setClientModalOpen(true)}
+										style={{ cursor: "pointer "}}
+									/>
+								</InputGroup.Addon>
 							</InputGroup>
 							<Input type="text" autoComplete="off" className="status_inputBox2"
-								name="storage_name"
-								value={selectedStorageName || ""} readOnly 
+									name="client_name"
+									value={selectedClientName || ""} readOnly 
 							/>
+						</div>
 					</div>
-
-					<div className="status_div">
-						<InputGroup className="status_inputBox">
-							<InputGroup.Addon style={{ width: 80 }}>
-								품목코드
-							</InputGroup.Addon>
-							<Input 
-								placeholder='품목코드' 
-								name="item_code"
-								value={selectedItem || ""} readOnly
-							/>
-							<InputGroup.Addon tabIndex={-1}>
-								<img
-								src={readingGlasses}
-								alt="돋보기"
-								width={20}
-								height={20}
-								onClick={() => setItemModalOpen(true)}
-								style={{ cursor: "pointer "}}
-								/>
-							</InputGroup.Addon>
-							</InputGroup>
-							<Input name="item_name" type="text" autoComplete="off" className="status_inputBox2"
-								value={selectedItemName || ""} readOnly />
-						
-					</div>
-				</div>
 
 					<div className="form_div">
-						<ButtonToolbar>
-							<Button color="green" appearance="ghost" type="submit" onClick={submitStatusSearch}>검색</Button>
-							<Button appearance="ghost" type="submit" onClick={submitStatusReset}>검색창 초기화</Button>
-						</ButtonToolbar>
-					</div>
-						<hr />
+						<div className="status_div">
+							<InputGroup className="status_input">
+								<InputGroup.Addon style={{ width: 80 }}>
+									거래유형
+								</InputGroup.Addon>
+								<InputPicker
+									placeholder="거래유형 선택"
+									name="transaction_type"
+									data={sellType}
+									value={transactionType}
+									onChange={setTransactionType}
+									style={{ width: 224, border: 'none', height: 38}}
+								/>
+							</InputGroup>
+						</div>
 
-					<div className="addTabel">
+						<div className="status_div">
+							<InputGroup className="status_inputBox">
+								<InputGroup.Addon style={{ width: 80 }}>
+									출하창고
+								</InputGroup.Addon>
+								<Input  
+									name="storage_code"
+									value={selectedStorage || ""} readOnly
+									/>
+								<InputGroup.Addon tabIndex={-1}>
+									<img
+									src={readingGlasses}
+									alt="돋보기"
+									width={20}
+									height={20}
+									onClick={() => setStorageModalOpen(true)}
+									style={{ cursor: "pointer "}}
+									/>
+								</InputGroup.Addon>
+								</InputGroup>
+								<Input type="text" autoComplete="off" className="status_inputBox2"
+									name="storage_name"
+									value={selectedStorageName || ""} readOnly 
+								/>
+						</div>
+
+						<div className="status_div">
+							<InputGroup className="status_inputBox">
+								<InputGroup.Addon style={{ width: 80 }}>
+									품목코드
+								</InputGroup.Addon>
+								<Input 
+									name="item_code"
+									value={selectedItem || ""} readOnly
+								/>
+								<InputGroup.Addon tabIndex={-1}>
+									<img
+									src={readingGlasses}
+									alt="돋보기"
+									width={20}
+									height={20}
+									onClick={() => setItemModalOpen(true)}
+									style={{ cursor: "pointer "}}
+									/>
+								</InputGroup.Addon>
+							</InputGroup>
+							<Input name="item_name" type="text" autoComplete="off" className="status_inputBox2"
+									value={selectedItemName || ""} readOnly 
+							/>
+						</div>
+					</div>
+
+						<div className="form_div">
+							<ButtonToolbar>
+								<Button color="green" appearance="ghost" type="submit" onClick={submitStatusSearch}>검색</Button>
+								<Button appearance="ghost" type="submit" onClick={submitStatusReset}>검색창 초기화</Button>
+							</ButtonToolbar>
+						</div>
+							<hr />
+
+						<div className="addTabel">
 							{isSearched && searchResultList.length === 0 ? (
 								<div style={{ padding: '20px', textAlign: 'center', fontSize: '16px', color: 'gray' }}>
 									해당 정보로 조회되는 리스트가 없습니다.
@@ -386,117 +372,102 @@ const sell_status_select = () => {
 									// 검색 결과가 있으면 해당 데이터 보여주고, 없으면 전체 목록 보여주기
 							>	
 
-							<Column width={150} className="text_center">
-								<HeaderCell style={styles}>등록일자_No.</HeaderCell>
-								<Cell>
-									{(rowData) => `${rowData.order_date}_${rowData.date_no}`}
-								</Cell>
-							</Column>
-							
-							<Column width={150}>
-								<HeaderCell className="text_center" style={styles}>거래처명</HeaderCell>
-								<Cell className="text_left">
-									{(rowData) => rowData.client_name}
-								</Cell>
-							</Column>
+								<Column width={150} className="text_center">
+									<HeaderCell style={styles}>등록일자_No.</HeaderCell>
+									<Cell>{(rowData) => `${rowData.order_date}_${rowData.date_no}`}</Cell>
+								</Column>
+								
+								<Column width={150}>
+									<HeaderCell className="text_center" style={styles}>거래처명</HeaderCell>
+									<Cell className="text_left">{(rowData) => rowData.client_name}</Cell>
+								</Column>
 
-							<Column width={250}>
-								<HeaderCell className="text_center" style={styles}>품목명</HeaderCell>
-								<Cell className="text_left">
-									{(rowData) => rowData.item_display}
-								</Cell>
-							</Column>
+								<Column width={250}>
+									<HeaderCell className="text_center" style={styles}>품목명</HeaderCell>
+									<Cell className="text_left">{(rowData) => rowData.item_display}</Cell>
+								</Column>
 
-							<Column width={120} className="text_center">
-								<HeaderCell style={styles}>수량</HeaderCell>
-								<Cell>
-									{(rowData) => rowData.quantity}
-								</Cell>
-							</Column>
+								<Column width={120} className="text_center">
+									<HeaderCell style={styles}>수량</HeaderCell>
+									<Cell>{(rowData) => rowData.quantity}</Cell>
+								</Column>
 
-							<Column width={150}>
-								<HeaderCell className="text_center" style={styles}>단가</HeaderCell>
-								<Cell style={{ textAlign: 'right' }}>
-									{(rowData) => new Intl.NumberFormat().format(rowData.price)}
-									{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
-								</Cell>
-							</Column>
+								<Column width={150}>
+									<HeaderCell className="text_center" style={styles}>단가</HeaderCell>
+									<Cell style={{ textAlign: 'right' }}>
+										{(rowData) => new Intl.NumberFormat().format(rowData.price)}
+									</Cell>
+								</Column>
 
-							<Column width={150}>
-								<HeaderCell className="text_center" style={styles}>공급가액</HeaderCell>
-								<Cell style={{ textAlign: 'right' }}>
-									{(rowData) => new Intl.NumberFormat().format(rowData.supply)}
-									{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
-								</Cell>
-							</Column>
+								<Column width={150}>
+									<HeaderCell className="text_center" style={styles}>공급가액</HeaderCell>
+									<Cell style={{ textAlign: 'right' }}>
+										{(rowData) => new Intl.NumberFormat().format(rowData.supply)}
+									</Cell>
+								</Column>
 
-							<Column width={150}>
-								<HeaderCell className="text_center" style={styles}>부가세</HeaderCell>
-								<Cell style={{ textAlign: 'right' }}>
-									{(rowData) => new Intl.NumberFormat().format(rowData.vat)}
-									{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
-								</Cell>
-							</Column>
+								<Column width={150}>
+									<HeaderCell className="text_center" style={styles}>부가세</HeaderCell>
+									<Cell style={{ textAlign: 'right' }}>
+										{(rowData) => new Intl.NumberFormat().format(rowData.vat)}
+									</Cell>
+								</Column>
 
-							<Column width={150}>
-								<HeaderCell className="text_center" style={styles}>금액합계</HeaderCell>
-								<Cell style={{ textAlign: 'right' }}>
-									{(rowData) => new Intl.NumberFormat().format(rowData.total)}
-									{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
-								</Cell>
-							</Column>
-							
-							<Column width={150}>
-								<HeaderCell className="text_center" style={styles}>출하여부</HeaderCell>
-								<Cell className="text_center">
-									{(rowData) => {
-										if (rowData.income_confirm === null || rowData.income_confirm === 'N') {
-											return '미완료'; // null 또는 'N'이면 미완료 표시
-										} else if (rowData.income_confirm === 'Y') {
-											return '완료'; // 'Y'이면 완료 표시
-										}
-									}}
-								</Cell>
-							</Column>
-						</Table>)}
-					</div>
+								<Column width={150}>
+									<HeaderCell className="text_center" style={styles}>금액합계</HeaderCell>
+									<Cell style={{ textAlign: 'right' }}>
+										{(rowData) => new Intl.NumberFormat().format(rowData.total)}
+									</Cell>
+								</Column>
+								
+								<Column width={150}>
+									<HeaderCell className="text_center" style={styles}>출하여부</HeaderCell>
+									<Cell className="text_center">
+										{(rowData) => {
+											if (rowData.income_confirm === null || rowData.income_confirm === 'N') {
+												return '미완료'; // null 또는 'N'이면 미완료 표시
+											} else if (rowData.income_confirm === 'Y') {
+												return '완료'; // 'Y'이면 완료 표시
+											}
+										}}
+									</Cell>
+								</Column>
+							</Table>)}
+						</div>
 
-					<div className="resultBtn">
-						<ButtonToolbar>
-							<Button appearance="ghost" onClick={statusList_btn}>내역 초기화</Button>
-						</ButtonToolbar>
-					</div>
+						<div className="resultBtn">
+							<ButtonToolbar>
+								<Button appearance="ghost" onClick={statusList_btn}>내역 초기화</Button>
+							</ButtonToolbar>
+						</div>
 
-					<hr></hr>
-					<SellEmployeeSearchModal
-						onInchargeSelect={handleInchargeSelect}	// e_id, e_name 받기
-						handleOpen={isInchargeModalOpen}
-						handleClose={() => setInchargeModalOpen(false)}
-					/>
+						<hr></hr>
+						<SellEmployeeSearchModal
+							onInchargeSelect={handleInchargeSelect}	// e_id, e_name 받기
+							handleOpen={isInchargeModalOpen}
+							handleClose={() => setInchargeModalOpen(false)}
+						/>
 
-					<SellClientSearchModal
-						onClientSelect={handleClientSelect}	// client_code, client_name 받기
-						handleOpen={isClientModalOpen}
-						handleClose={() => setClientModalOpen(false)}
-					/>
+						<SellClientSearchModal
+							onClientSelect={handleClientSelect}	// client_code, client_name 받기
+							handleOpen={isClientModalOpen}
+							handleClose={() => setClientModalOpen(false)}
+						/>
 
-					<SellStorageSearchModal
-						onStorageSelect={handleStorageSelect}	// storage_code, storage_name 받기
-						handleOpen={isStorageModalOpen}
-						handleClose={() => setStorageModalOpen(false)}
-					/>
+						<SellStorageSearchModal
+							onStorageSelect={handleStorageSelect}	// storage_code, storage_name 받기
+							handleOpen={isStorageModalOpen}
+							handleClose={() => setStorageModalOpen(false)}
+						/>
 
-					<SellItemSearchModal
-						onItemSelect={handleItemSelect}
-						handleOpen={isItemModalOpen}
-						handleClose={() => setItemModalOpen(false)}
-					/>
+						<SellItemSearchModal
+							onItemSelect={handleItemSelect}
+							handleOpen={isItemModalOpen}
+							handleClose={() => setItemModalOpen(false)}
+						/>
 				</Form>
 			</div>
-			{/* <hr></hr> */}
-
 		</div>
-		
 	);
 };
 

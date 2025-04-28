@@ -125,7 +125,6 @@ const sell_all_list = () => {
 	return (
 		<div>
 			<MessageBox type="success" text="판매조회"/>
-
 			<Tabs 
 				activeKey={activeTab}
 				onSelect={(key) => setActiveTab(key)}
@@ -145,7 +144,7 @@ const sell_all_list = () => {
 				}}
 			>	
 			
-			<Column width={130} className="text_center">
+			<Column width={120} className="text_center">
 				<HeaderCell style={styles}>등록일자_No.</HeaderCell>
 				<Cell>
 					{(rowData) => (
@@ -158,8 +157,13 @@ const sell_all_list = () => {
 					)}
 				</Cell>
 			</Column>
-
+			
 			<Column width={130} className="text_center">
+				<HeaderCell style={styles}>주문번호</HeaderCell>
+				<Cell>{(rowData) => rowData.order_id}</Cell>
+			</Column>
+
+			<Column width={100} className="text_center">
 				<HeaderCell style={styles}>출하지시일</HeaderCell>
 				<Cell>{(rowData) => rowData.shipment_order_date}</Cell>
 			</Column>
@@ -272,13 +276,13 @@ const sell_all_list = () => {
 				<Modal.Header>
 					<Modal.Title>전표</Modal.Title>
 				</Modal.Header>
+
 				<Modal.Body>
 					<SellSlipAll />
 				</Modal.Body>
+
 				<Modal.Footer>
-					<Button onClick={handleClose2} appearance="default">
-						닫기
-					</Button>
+					<Button onClick={handleClose2} appearance="default">닫기</Button>
 				</Modal.Footer>
 			</Modal>
 

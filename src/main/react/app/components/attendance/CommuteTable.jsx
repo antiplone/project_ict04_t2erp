@@ -5,9 +5,10 @@ import { useState, useEffect } from "react";
 import CommuteUpdateModal from "./CommuteUpdateModal";
 import RetireInsertTable from "#components/hr/RetiInsertTable.jsx";
 import AppConfig from "#config/AppConfig.json";
-import "#styles/holiday.css";
 import CommuteRequestModal from "./CommuteRequestModal";
 import Btn from "./Btn";
+import "#styles/holiday.css";
+import "#styles/common.css";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -24,7 +25,7 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
   const [employee, setEmployee] = useState(null);
 
   const [position, setPosition] = useState(null); // position 상태 생성
-  const adminPositions = ["대리", "과장", "부장", "차장", "팀장", "이사", "관리"];
+  const adminPositions = ["과장", "부장", "차장", "팀장", "이사", "관리"];
 
   const [activeKey, setActiveKey] = useState("1");
   const uniqueDates = Array.from(new Set(record.map(item => item.co_work_date)));
@@ -113,12 +114,12 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
           {activeKey === "1" && (
             <Table height={500} data={filteredRecord} cellBordered style={{ minWidth: 910 }}>
               {attColumns.map((col) => (
-                <Column key={col.dataKey} width={col.width} align="center">
+                <Column key={col.dataKey} width={col.width} className="text_center">
                   <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
                   <Cell dataKey={col.dataKey} />
                 </Column>
               ))}
-              <Column width={70} fixed="right" align="center">
+              <Column width={70} fixed="right" className="text_center">
                 <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>작업</HeaderCell>
                 <Cell style={{ padding: '6px' }}>
                   {rowData => (
@@ -132,12 +133,12 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
           {activeKey === "2" && (
             <Table height={500} data={myData} cellBordered style={{ minWidth: 840 }}>
               {attColumns.map((col) => (
-                <Column key={col.dataKey} width={col.width} align="center">
+                <Column key={col.dataKey} width={col.width} className="text_center">
                   <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
                   <Cell dataKey={col.dataKey} />
                 </Column>
               ))}
-              {/* <Column width={70} fixed="right" align="center">
+              {/* <Column width={70} fixed="right" className="text_center">
                 <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>정정요청</HeaderCell>
                 <Cell style={{ padding: '6px' }}>
                   {rowData => (
@@ -171,12 +172,12 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
           {activeKey === "1" && (
             <Table height={500} data={myData} cellBordered style={{ minWidth: 840 }}>
               {attColumns.map((col) => (
-                <Column key={col.dataKey} width={col.width} align="center">
+                <Column key={col.dataKey} width={col.width} className="text_center">
                   <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
                   <Cell dataKey={col.dataKey} />
                 </Column>
               ))}
-              {/* <Column width={70} fixed="right" align="center">
+              {/* <Column width={70} fixed="right" className="text_center">
                 <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>정정요청</HeaderCell>
                 <Cell style={{ padding: '6px' }}>
                   {rowData => (

@@ -1,10 +1,9 @@
 // routes/main/schedule.jsx
 /* eslint-disable react/react-in-jsx-scope */
 import { Container } from "rsuite";
-import HolidayCalendar from "#components/api/HolidayCalendar";
 import MessageBox from "#components/common/MessageBox";
 import AppConfig from "#config/AppConfig.json";
-import WeatherBox from "#components/api/WeatherBox.jsx";
+import Calendar from "#components/api/Calendar.jsx";
 
 export function meta() {
   return [
@@ -18,9 +17,8 @@ export default function SchedulePage() {
     <Container>
       <MessageBox text="공휴일 일정" />
       <div style={{ marginTop: "20px" }}>
-        <HolidayCalendar />
+        <Calendar />
       </div>
-      {/* <WeatherBox /> */}
     </Container>
   );
 }

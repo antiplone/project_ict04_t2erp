@@ -17,11 +17,11 @@ import DBChartModal from '#components/chart/DBChartModal.jsx'; //
 
 const OutgoingList = () => {
 	const fetchURL = Appconfig.fetch['mytest']
-    const [loading, setLoading] = useState(true); // 로딩 상태를 true로 초기화
+  const [loading, setLoading] = useState(true); // 로딩 상태를 true로 초기화
 	const [salesList, setSalesList] = useState([]); // 초기값을 모르므로 빈배열로 OutgoingList에 대입
 	const [salesDate, setSalesDate] = useState(null);
-    const [modalOpen, setModalOpen] = useState(false);
-    const { showToast } = useToast(); 
+  const [modalOpen, setModalOpen] = useState(false);
+  const { showToast } = useToast(); 
 	
 	// 거래처 모달  
 	const [selectedClient, setSelectedClient] = useState(null);
@@ -40,8 +40,8 @@ const OutgoingList = () => {
 	
 	// 물품 모달
 	const [selectedItem, setSelectedItem] = useState(null);
-    const [selectedItemName, setSelectedItemName] = useState(null);
-    const [isItemModalOpen, setItemModalOpen] = useState(false);
+  const [selectedItemName, setSelectedItemName] = useState(null);
+  const [isItemModalOpen, setItemModalOpen] = useState(false);
 	
 	/* 차트 보기 모달 버튼 */
 	const [isChartModalOpen, setChartModalOpen] = useState(false);
@@ -124,7 +124,6 @@ const OutgoingList = () => {
 	const handleSearch = async () => {
 		setLoading(true);
 
-
 		if (salesDate && salesDate.length === 2) {
 			startDate = salesDate[0].toLocaleDateString('sv-SE');
 			endDate = salesDate[1].toLocaleDateString('sv-SE');
@@ -201,8 +200,8 @@ const OutgoingList = () => {
 								/>
 							</InputGroup>
 						</div>
-						
-						<div className="input">
+
+            <div className="input">
 							<InputGroup className="inputModal">
 								<InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
 								<Input value={selectedIncharge || ""} readOnly onClick={() => setInchargeModalOpen(true)} />
@@ -217,7 +216,7 @@ const OutgoingList = () => {
 							</InputGroup>
 							<Input value={selectedInchargeName || ""} readOnly className="inputModalSide" />
 						</div>
-						
+            
 						 <div className="input">
 	                        <InputGroup className="inputModal">
 	                            <InputGroup.Addon style={{ width: 80 }} className='text_center'>거래처</InputGroup.Addon>

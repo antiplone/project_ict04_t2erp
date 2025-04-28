@@ -1,10 +1,11 @@
-/* eslint-disable react/prop-types */
+SelectPicker/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import { Table, Input, DatePicker, SelectPicker, Modal, Button } from 'rsuite';
 import { EmployeeSelectTable } from './HrTable';
 
 const { Column, HeaderCell, Cell } = Table;
 
+// 직위 리스트
 const positionList = [
   { label: '사원', value: '사원' },
   { label: '대리', value: '대리' },
@@ -14,12 +15,33 @@ const positionList = [
   { label: '이사', value: '이사' },
 ];
 
-const HrAppointEditTable = ({ rows, onChange, onDoubleClickCell, departmentList }) => {
+const EditableInput = ({ row, field, onChange, onDoubleClick }) => {
+  const [localValue, setLocalValue] = useState(row[field] || '');
+
+  useEffect(() => {
+    setLocalValue(row[field] || '');
+  }, [row[field]]); // 외부 데이터 바뀌면 동기화
+
+  return (
+    <div style={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center' }}>
+      <Input
+        value={localValue}
+        onChange={(value) => setLocalValue(value)}
+        onBlur={() => onChange(row.id, field, localValue)}
+        onDoubleClick={onDoubleClick}
+        style={{ height: '36px', width: '100%',  fontSize: '14px', padding: '4px 8px' }}
+      />
+    </div>
+  );
+};
+
+const HrAppointEditTable = ({ rows, onChange, onDoubleClickCell, departmentList, setEmployees }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [empList, setEmpList] = useState([]);
   const [selectedEmp, setSelectedEmp] = useState(null);
   const [targetRowId, setTargetRowId] = useState(null);
 
+  // 사원 가져오기
   useEffect(() => {
     fetch("http://localhost:8081/hrCard/hrCardList")
       .then(res => res.json())
@@ -33,143 +55,208 @@ const HrAppointEditTable = ({ rows, onChange, onDoubleClickCell, departmentList 
   };
 
   const handleConfirmModal = () => {
-    if (selectedEmp && targetRowId) {
+    if (selectedEmp && targetRowId !== null) {
       const selected = empList.find(emp => emp.e_id === selectedEmp);
       if (selected) {
-        onChange(targetRowId, 'e_id', selected.e_id);
-        onChange(targetRowId, 'e_name', selected.e_name);
-        onChange(targetRowId, 'prev_position', selected.e_position);
-        onChange(targetRowId, 'prev_department', selected.d_name);
+        const updateFields = {
+          id: targetRowId,
+          e_id: selected.e_id,
+          e_name: selected.e_name,
+          old_position: selected.e_position,
+          old_department: selected.d_name || ''
+        };
+
+        setEmployees(prev =>
+          prev.map(row =>
+            row.id === targetRowId
+              ? { ...row, ...updateFields }
+              : row
+          )
+        );
+      } else {
+        console.log('선택된 사원 못 찾음:', selectedEmp);
       }
+    } else {
+      console.log('선택된 사원 없음 or row 없음', selectedEmp, targetRowId);
     }
+
     setModalOpen(false);
     setSelectedEmp(null);
   };
 
   return (
     <>
-      <Table autoHeight data={rows} cellBordered bordered style={{ marginTop: 20 }}>
+      <Table autoHeight data={rows} cellBordered bordered 
+        style={{
+          marginTop: 20,
+          width: '100%',    
+          minWidth: '1400px' 
+        }}>
         <Column width={130} align="center">
           <HeaderCell>사번</HeaderCell>
           <Cell>
             {row => (
-              <Input
-                value={row.e_id || ''}
-                onChange={(value) => onChange(row.id, 'e_id', value)}
+              <EditableInput
+                row={row}
+                field="e_id"
+                onChange={onChange}
                 onDoubleClick={() => handleDoubleClick(row.id)}
-                style={{ height: '36px' }}
               />
             )}
           </Cell>
         </Column>
 
-        <Column width={130} align="center">
-          <HeaderCell>성명</HeaderCell>
+        <Column width={140} align="center">
+          <HeaderCell>이름</HeaderCell>
           <Cell>
             {row => (
-              <Input
-                value={row.e_name || ''}
-                onChange={(value) => onChange(row.id, 'e_name', value)}
-                style={{ height: '36px' }}
+              <EditableInput
+                row={row}
+                field="e_name"
+                onChange={onChange}
               />
             )}
           </Cell>
         </Column>
 
-        <Column width={130} align="center">
+        <Column width={140} align="center">
           <HeaderCell>현재 직위</HeaderCell>
           <Cell>
             {row => (
-              <Input
-                value={row.prev_position || ''}
-                onChange={(value) => onChange(row.id, 'prev_position', value)}
-                style={{ height: '36px' }}
+              <EditableInput
+                row={row}
+                field="old_position"
+                onChange={onChange}
               />
             )}
           </Cell>
         </Column>
 
-        <Column width={130} align="center">
+        <Column width={140} align="center">
           <HeaderCell>현재 부서</HeaderCell>
           <Cell>
             {row => (
-              <Input
-                value={row.prev_department || ''}
-                onChange={(value) => onChange(row.id, 'prev_department', value)}
-                style={{ height: '36px' }}
+              <EditableInput
+                row={row}
+                field="old_department"
+                onChange={onChange}
               />
             )}
           </Cell>
         </Column>
 
-        <Column width={130} align="center">
+        <Column width={150} align="center">
           <HeaderCell>발령 구분</HeaderCell>
           <Cell>
             {row => (
-              <SelectPicker
-                placeholder="선택"
-                data={[{ label: '부서 이동', value: '부서 이동' }, { label: '직위 변경', value: '직위 변경' }]}
-                value={row.appoint_type}
-                onChange={(value) => onChange(row.id, 'appoint_type', value)}
-                style={{ width: 120 }}
-                cleanable={false}
-              />
+              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <SelectPicker
+                  placeholder="선택"
+                  data={[
+                    { label: '부서 이동', value: '부서 이동' },
+                    { label: '직위 변경', value: '직위 변경' }
+                  ]}
+                  value={row.appoint_type}
+                  onChange={(value) => onChange(row.id, 'appoint_type', value)}
+                  style={{ width: 120 }}
+                  cleanable={false}
+                  searchable={false}
+                />
+              </div>
             )}
           </Cell>
         </Column>
 
-        <Column width={130} align="center">
+        <Column width={150} align="center">
           <HeaderCell>발령 직위</HeaderCell>
           <Cell>
             {row => (
-              <SelectPicker
-                data={positionList}
-                value={row.new_position}
-                onChange={(value) => onChange(row.id, 'new_position', value)}
-                style={{ width: 120 }}
-                disabled={row.appoint_type === '부서 이동'}
-              />
+              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <SelectPicker
+                  placeholder="선택"
+                  data={positionList}
+                  value={row.new_position}
+                  onChange={(value) => onChange(row.id, 'new_position', value)}
+                  style={{ width: 120 }}
+                  disabled={row.appoint_type === '부서 이동'}
+                  searchable={false}
+                />
+              </div>
             )}
           </Cell>
         </Column>
 
-        <Column width={130} align="center">
+        <Column width={150} align="center">
           <HeaderCell>발령 부서</HeaderCell>
           <Cell>
             {row => (
-              <SelectPicker
-                data={departmentList}
-                value={row.new_department}
-                onChange={(value) => onChange(row.id, 'new_department', value)}
-                style={{ width: 120 }}
-                disabled={row.appoint_type === '직위 변경'}
-              />
+              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <SelectPicker
+                  placeholder="선택"
+                  data={departmentList}
+                  value={row.new_department}
+                  onChange={(value) => onChange(row.id, 'new_department', value)}
+                  style={{ width: 120 }}
+                  disabled={row.appoint_type === '직위 변경'}
+                  searchable={false}
+                />
+              </div>
             )}
           </Cell>
         </Column>
 
-        <Column width={200} align="center">
+        <Column flexGrow={1} width={250} align="center">
           <HeaderCell>비고</HeaderCell>
           <Cell>
             {row => (
-              <Input
-                value={row.appoint_note || ''}
-                onChange={(value) => onChange(row.id, 'appoint_note', value)}
-                style={{ height: '36px' }}
+              <EditableInput
+                row={row}
+                field="appoint_note"
+                onChange={onChange}
               />
             )}
           </Cell>
         </Column>
 
-        <Column width={160} align="center">
+        <Column width={180} align="center">
           <HeaderCell>발령일자</HeaderCell>
           <Cell>
             {row => (
-              <DatePicker
-                value={row.appoint_date || null}
-                onChange={(value) => onChange(row.id, 'appoint_date', value)}
-                style={{ width: 140, height: '36px' }}
-              />
+              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <DatePicker
+                  value={row.appoint_date || null}
+                  onChange={(value) => onChange(row.id, 'appoint_date', value)}
+                  placeholder="날짜 선택"
+                  format="yyyy-MM-dd"
+                  style={{ width: 140, height: '36px' }}
+                />
+              </div>
+            )}
+          </Cell>
+        </Column>
+
+        <Column width={110} align="center">
+          <HeaderCell>작업</HeaderCell>
+          <Cell>
+            {row => (
+              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Button
+                  appearance="ghost"
+                  size="xs"
+                  color="red"
+                  onClick={() => {
+                    setEmployees(prev => {
+                      if (prev.length <= 1) {
+                        alert('발령 대상자는 최소 1명 이상이어야 합니다.');
+                        return prev;
+                      }
+                      return prev.filter(emp => emp.id !== row.id);
+                    });
+                  }}
+                >
+                  삭제
+                </Button>
+              </div>
             )}
           </Cell>
         </Column>
@@ -184,6 +271,7 @@ const HrAppointEditTable = ({ rows, onChange, onDoubleClickCell, departmentList 
             data={empList}
             selectedId={selectedEmp}
             onSelect={setSelectedEmp}
+            selectedEmployeeIds={rows.map(r => r.e_id)}
           />
         </Modal.Body>
         <Modal.Footer>
@@ -191,7 +279,7 @@ const HrAppointEditTable = ({ rows, onChange, onDoubleClickCell, departmentList 
             취소
           </Button>
           <Button onClick={handleConfirmModal} appearance="primary">
-            확인
+            선택
           </Button>
         </Modal.Footer>
       </Modal>

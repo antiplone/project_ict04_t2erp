@@ -33,5 +33,4 @@ public interface AttMapper {
 	public int updateVacaItems(VacaItemsDTO dto);
 	// 휴가 항목 리스트: 휴가명
 	public List<String> vacaName();
-
 }

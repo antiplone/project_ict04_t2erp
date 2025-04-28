@@ -20,7 +20,7 @@
 
 /* 목록 버튼 */
 .ListBtn {
-    background-color: #22284C;
+    color: #22284C; 
     border-color: #22284C;
     width: 80px;
     height: 35px;

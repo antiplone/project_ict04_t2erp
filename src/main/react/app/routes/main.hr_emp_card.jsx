@@ -1,327 +1,272 @@
 import React, { useState, useEffect } from 'react';
+import {
+  Tabs, Input, ButtonToolbar, Button, Panel,
+  Grid, Row, Col, Form, Divider, FlexboxGrid, Uploader,
+  Loader
+} from 'rsuite';
 import { HrTable } from '#components/hr/HrTable';
-import HrButton from '#components/hr/HrButton';
-import HrModal from '#components/hr/HrModal';
-import { Input, Grid, Col, Button, Message } from 'rsuite';
-import ErrorText from '#components/hr/ErrorText';         // 필수 입력란 미입력 시 에러 메세지
 import HrDropdown from '#components/hr/HrDropdown';
 import HrRadio from '#components/hr/HrRadio';
-import "#components/common/css/common.css";   // Message 컴포넌트
-import HrEmpCardDetail from './main.hr_emp_card_detail.$e_id';
+import { useDaumPostcodePopup } from 'react-daum-postcode';
 import { Link } from '@remix-run/react';
+import MessageBox from '#components/common/MessageBox.jsx';
 
-// 초기 입력값 공통 정의
-const initialFormData = {
-  e_id: '',
-  e_name: '',
-  e_tel: '',
-  e_position: '',
-  e_reg_date: '',
-  e_status: '',
-  e_email: '',
-  e_birth: '',
-  e_entry: '',
-  e_address: '',
-  e_photo: '',
-  e_salary_account_bank: '',
-  e_salary_account_num: '',
-  e_salary_account_owner: '',
-  e_note: '',
-  d_code: '',     // 부서 코드 저장
-};
-
-export default function Hr_emp_card() {
-  const [open, setOpen] = useState(false);    // useState - 화면에 보여질 값들을 기억
-  const [message, setMessage] = useState('');
+const HrEmpCardPage = () => {
+  const [activeTab, setActiveTab] = useState('1');
   const [items, setItems] = useState([]);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [hrCardData, setHrCardData] = useState(initialFormData); 
-  const [selectedEid, setSelectedEid] = useState(null);   // 상세페이지에 보여줄 id
-  const [deptList, setDeptList] = useState([]);           // 부서명 리스트
-
-  // 인사카드 목록
-  const fetchHrCardList = () => {
-    fetch('http://localhost:8081/hrCard/hrCardList')
-      .then((res) => res.json())
-      .then((data) => {
-        setItems(data);     // 목록 갱신
-      })
-      .catch((err) => console.error('데이터를 불러오지 못했습니다:', err));
-  };
-
-  // 부서 목록 불러오기
-  const fetchDeptList = () => {
-    fetch('http://localhost:8081/hrDept/hrDeptList')
-      .then(res => res.json())
-      .then(data => {
-        // label은 화면에 보여질 부서명, value는 저장할 부서코드
-        const mapped = data.map(dept => ({
-          label: dept.d_name,
-          value: dept.d_code
-        }));
-        setDeptList(mapped);
-      })
-      .catch(err => console.error('부서 목록 불러오기 실패:', err));
-  };
-
-  // useEffect 안에서 부서 목록 불러오기 실행
-  useEffect(() => {       // 화면이 처음 열릴 때 실행
-    fetchHrCardList();    // 기존 사원 목록 서버에서 불러오기
-    fetchDeptList();      // 부서 목록도 같이 불러오기/ 빈배열 처음 한 번만 실행됨
-  }, []);
+  const [form, setForm] = useState({
+    e_name: '', e_tel: '', e_position: '', e_status: '', e_email: '',
+    e_birth: '', e_entry: '', e_zone_code: '', e_base_address: '', e_detail_address: '', e_photo: '',
+    e_salary_account_bank: '', e_salary_account_num: '', e_salary_account_owner: '',
+    e_note: '', d_code: ''
+  });
+  const [deptList, setDeptList] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState(null);
+  const [uploaderKey, setUploaderKey] = useState(0);
 
   useEffect(() => {
     fetch('http://localhost:8081/hrCard/hrCardList')
-      .then((res) => res.json())
-      .then((data) => {
-        setItems(data);
-      })
-      .catch((err) => console.error('데이터를 불러오지 못했습니다:', err));
+      .then(res => res.json()).then(data => setItems(data));
+    fetch('http://localhost:8081/hrDept/hrDeptList')
+      .then(res => res.json())
+      .then(data => setDeptList(data.map(d => ({ label: d.d_name, value: d.d_code }))));
   }, []);
 
-  const handleOpen = () => {
-    setIsEditMode(false);
-    setHrCardData(initialFormData); // 모달 열기 전 초기화
-    setErrors({});
-    setOpen(true);
+  const open = useDaumPostcodePopup("https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
+
+  const handleAddress = () => {
+    open({
+      onComplete: (data) => {
+        let baseAddress = data.address;
+        let extra = data.bname || '';
+        if (data.buildingName) extra += `, ${data.buildingName}`;
+        if (extra) baseAddress += ` (${extra})`;
+        setForm(prev => ({
+          ...prev,
+          e_zone_code: data.zonecode,
+          e_base_address: baseAddress,
+          e_detail_address: ''
+        }));
+      }
+    });
   };
 
-  const handleClose = () => {
-    setOpen(false);
-    setHrCardData(initialFormData); // 모달 닫을 때도 초기화
-    setErrors({});
+  const handleUpload = (file) => {
+    setUploading(true);
+  
+    // 프리뷰 먼저 보여주기
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoPreview(reader.result); // base64 preview
+    };
+    reader.readAsDataURL(file.blobFile);
+  
+    // 서버에 파일 전송
+    const formData = new FormData();
+    formData.append('file', file.blobFile);
+  
+    fetch('http://localhost:8081/hrCard/hrCardPhoto', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.text())
+      .then(url => {
+        setUploading(false);
+        setForm(prev => ({ ...prev, e_photo: url })); // 이건 서버 저장용 URL
+      })
+      .catch(() => setUploading(false));
   };
-
-  const validate = () => {
-    const newErrors = {};
-
-    if (!hrCardData.e_name.trim()) newErrors.e_name = "이름은 필수 항목입니다.";
-    if (!hrCardData.e_tel.trim()) newErrors.e_tel = "전화번호는 필수 항목입니다.";
-    if (!hrCardData.e_email.trim()) newErrors.e_email = "이메일은 필수 항목입니다.";
-    if (!hrCardData.e_birth) newErrors.e_birth = "생년월일은 필수 항목입니다.";
-    if (!hrCardData.e_position.trim()) newErrors.e_position = "직위는 필수 항목입니다.";
-    if (!hrCardData.e_status.trim()) newErrors.e_status = "재직 상태는 필수 항목입니다.";    
-    if (!hrCardData.e_salary_account_bank.trim()) newErrors.e_salary_account_bank = "은행명은 필수 항목입니다.";
-    if (!hrCardData.e_salary_account_num.trim()) newErrors.e_salary_account_num = "계좌번호는 필수 항목입니다.";
-    if (!hrCardData.e_salary_account_owner.trim()) newErrors.e_salary_account_owner = "예금주는 필수 항목입니다.";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  
 
   const handleRegister = () => {
-    if (!validate()) return;
-
-    const newEmployee = {
-      e_name: hrCardData.e_name,
-      e_tel: hrCardData.e_tel,
-      e_position: hrCardData.e_position,
-      e_status: hrCardData.e_status,
-      e_email: hrCardData.e_email,
-      e_birth: hrCardData.e_birth,
-      e_entry: hrCardData.e_entry,
-      e_address: hrCardData.e_address,
-      e_photo: hrCardData.e_photo,
-      e_salary_account_bank: hrCardData.e_salary_account_bank,
-      e_salary_account_num: hrCardData.e_salary_account_num,
-      e_salary_account_owner: hrCardData.e_salary_account_owner,
-      e_note: hrCardData.e_note,
-      d_code: hrCardData.d_code
-    };
-
     fetch('http://localhost:8081/hrCard/hrCardInsert', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newEmployee),
+      body: JSON.stringify(form)
     })
-      .then((response) => {
-        if (!response.ok) throw new Error('서버에서 오류가 발생했습니다.');
-        return response.json();
-      })
-      .then((data) => {
-        if (data === 1 || data.success === true) {
-          handleClose();
+      .then(res => res.json())
+      .then(result => {
+        if (result === 1 || result.success) {
+          alert('등록 완료');
+          setForm({
+            e_name: '', e_tel: '', e_position: '', e_status: '', e_email: '',
+            e_birth: '', e_entry: '', e_zone_code: '', e_base_address: '', e_detail_address: '', e_photo: '',
+            e_salary_account_bank: '', e_salary_account_num: '', e_salary_account_owner: '',
+            e_note: '', d_code: ''
+          });
+          setPhotoPreview(null);
+          setActiveTab('1');
           fetch('http://localhost:8081/hrCard/hrCardList')
-            .then((res) => res.json())
-            .then((data) => setItems(data));
+            .then(res => res.json()).then(data => setItems(data));
         }
-      })
-      .catch((error) => {
-        setMessage('등록 중 오류 발생: ' + error.message);
       });
   };
 
   const columns = [
-    { label: '사원 번호', dataKey: 'e_id', width: 100 },
-    { label: '이름', dataKey: 'e_name', width: 150 },
-    { label: '전화번호', dataKey: 'e_tel', width: 210 },
-    { label: '이메일', dataKey: 'e_email', width: 300 },
-    { label: '부서', dataKey: 'd_name', width: 150 },
+    { label: '사번', dataKey: 'e_id', width: 80 },
+    { label: '이름', dataKey: 'e_name', width: 120 },
+    { label: '이메일', dataKey: 'e_email', width: 250 },
+    { label: '부서', dataKey: 'd_name', width: 120 },
     { label: '직위', dataKey: 'e_position', width: 120 },
     { label: '재직 상태', dataKey: 'e_status', width: 120 },
-    { label: '등록일', dataKey: 'e_reg_date', width: 200 },
+    { label: '등록일', dataKey: 'e_reg_date', width: 150 },
   ];
 
-  const positionList = ['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무'];    // 직위 dropDown list/ 문자열 배열
-
   return (
-    <>
-        <div style={{ padding: '30px', width: '100%' }}>
-          <Message type="success" className="main_title">
-              인사카드 등록
-          </Message>
-          <div style={{ maxWidth: '1450px' }}>
-            <HrTable
-              columns={columns}
-              items={items}
-              renderActionButtons={(rowData) => (     // renderActionButtons 각 행마다 버튼을 렌더링 하는 함수
-                <Link to={`/main/hr_emp_card_detail/${rowData.e_id}`} >
+    <div>
+      <MessageBox text="인사카드 관리" />
+      <Tabs activeKey={activeTab} onSelect={setActiveTab}>
+        <Tabs.Tab eventKey="1" title="인사카드 목록">
+          <HrTable
+            columns={columns}
+            items={items}
+            renderActionButtons={(rowData) => (
+              <Link to={`/main/hr_emp_card_detail/${rowData.e_id}`}>
+                <Button appearance='ghost' size='xs' color='green'>
                   조회
-                </Link>
-                // </Button>
-              )}
-            />
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <HrButton hrBtn="인사카드등록" onClick={handleOpen} />
-            </div>
-          </div>
-  
-          <HrModal
-            title={isEditMode ? "인사카드 수정" : "인사카드 등록"}    // isEditMode === true 인사카드 수정, isEditMode === false 인사카드 등록
-            open={open}       // 모달 열기(true)
-            handleClose={handleClose}     // 모달 닫기
-            onRegister={isEditMode ? () => {} : handleRegister}   // 등록 버튼 눌렀을 때 실행되는 함수
-            onDeleteClick={() => {}}
-            backdrop="static"
-            onBackdropClick={(e) => e.stopPropagation()}
-          >
-            <Grid fluid>
-              <Col xs={24}>
-                <label>사원 이름 *</label>
-                <Input
-                  value={hrCardData.e_name}   // 현재 상태값
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_name: value })}   // 입력할 때마다 상태 업데이트
-                />
-                <ErrorText message={errors.e_name} />
-              </Col>
-              <Col xs={24}>
-                <label>전화번호 *</label>
-                <Input
-                  value={hrCardData.e_tel}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_tel: value })}
-                />
-                <ErrorText message={errors.e_tel} />
-              </Col>
-              <Col xs={24}>
-                <label>이메일 *</label>
-                <Input
-                  value={hrCardData.e_email}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_email: value })}
-                />
-                <ErrorText message={errors.e_email} />
-              </Col>
-              <Col xs={24}>
-                <label>생년월일 *</label>
-                <Input
-                  type="date"
-                  value={hrCardData.e_birth}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_birth: value })}
-                />
-                <ErrorText message={errors.e_birth} />
-              </Col>
-              <Col xs={24}>
-                <label>부서 *</label>
-                <HrDropdown
-                  title={
-                    deptList.find((dept) => dept.value === hrCardData.d_code)?.label || '부서를 선택하세요'   // 부서코드(hrCardData.d_code)와 같은 값을 가진 부서를 찾아서 dropdown에 표시, 못 찾으면 ''메세지 출력
-                  }
-                  items={deptList}  // [{label: '기획팀', value: 'D001'}, ...]
-                  onSelect={(val) => setHrCardData({ ...hrCardData, d_code: val })}
-                  style={{ width: '100%' }}
-                  menuStyle={{ width: 120 }}
-                />
-                <ErrorText message={errors.d_code} />
-              </Col>
-              <Col xs={24}>
-                <label>직위 *</label>
-                <HrDropdown
-                    title={hrCardData.e_position || "직위를 선택하세요"}
-                    items={['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무']}
-                    onSelect={(val) => setHrCardData({ ...hrCardData, e_position: val })}
-                    style={{ width: '100%' }}
-                    menuStyle={{ width: 120 }}
-                  />
-                <ErrorText message={errors.e_position} />
-              </Col>
-              <Col xs={24}>
-                <label>재직 상태 *</label>
-                <Input
-                  value={hrCardData.e_status}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_status: value })}
-                />
-                <ErrorText message={errors.e_status} />
-              </Col>
-              <Col xs={24}>
-                <label>입사 구분</label>
-                <HrRadio
-                  value={hrCardData.e_entry}
-                  onChange={(val) => setHrCardData({ ...hrCardData, e_entry: val })}
-                  options={['신입', '경력']}
-                />
-              </Col>
-              <Col xs={24}>
-                <label>주소</label>
-                <Input
-                  value={hrCardData.e_address}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_address: value })}
-                />
-              </Col>
-              <Col xs={24}>
-                <label>사진</label>
-                <Input
-                  value={hrCardData.e_photo}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_photo: value })}
-                />
-              </Col>
-              <Col xs={24}>
-                <label>급여통장 - 은행 *</label>
-                <Input
-                  value={hrCardData.e_salary_account_bank}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_salary_account_bank: value })}
-                />
-                <ErrorText message={errors.e_salary_account_bank} />
-              </Col>
-              <Col xs={24}>
-                <label>급여통장 - 계좌번호 *</label>
-                <Input
-                  value={hrCardData.e_salary_account_num}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_salary_account_num: value })}
-                />
-                <ErrorText message={errors.e_salary_account_num} />
-              </Col>
-              <Col xs={24}>
-                <label>급여통장 - 예금주 *</label>
-                <Input
-                  value={hrCardData.e_salary_account_owner}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_salary_account_owner: value })}
-                />
-                <ErrorText message={errors.e_salary_account_owner} />
-              </Col>
-              <Col xs={24}>
-                <label>비고</label>
-                <Input
-                  as="textarea"
-                  rows={3}
-                  value={hrCardData.e_note}
-                  onChange={(value) => setHrCardData({ ...hrCardData, e_note: value })}
-                />
-              </Col>
-            </Grid>
-          </HrModal>
-        </div>
-      {/* )} */}
-    </>
+                </Button>
+              </Link>
+            )}
+          />
+        </Tabs.Tab>
+
+        <Tabs.Tab eventKey="2" title="인사카드 등록">
+          <FlexboxGrid style={{ marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
+            <FlexboxGrid.Item colspan={20} style={{ maxWidth: 800 }}>
+              <Panel header={<h4>📁 사원 정보 입력</h4>} bordered>
+                <Form fluid>
+                  <Grid fluid>
+                    <Row gutter={16}>
+                      <Col xs={12}>
+                        <Form.Group>
+                        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
+                          <Uploader
+                            key={uploaderKey}
+                            action="http://localhost:8081/hrCard/hrCardPhoto"   // 백엔드 파일 업로드 URL
+                            name="file"                                         // form-data에서 사용할 키 이름
+                            fileListVisible={false}
+                            autoUpload={true}
+                            listType="picture"
+                            onChange={(fileList) => {
+                              const file = fileList[0]?.blobFile;
+                              if (file) {
+                                const reader = new FileReader();
+                                reader.onloadend = () => {
+                                  setPhotoPreview(reader.result);               // 브라우저 즉시 미리보기
+                                };
+                                reader.readAsDataURL(file);
+                              }
+                            }}
+                            onSuccess={(res) => {
+                              setUploading(false);
+                              setForm((prev) => ({ ...prev, e_photo: res }));   // 서버 저장용 e_photo 업데이트
+                            }}
+                            onError={() => {
+                              setUploading(false);
+                              alert("1MB 이하의 사진만 등록할 수 있습니다");
+                            }}
+                          >
+                            <div style={{ width: 120, height: 160, border: '1px solid #ddd', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                              {uploading ? (
+                                <Loader />
+                              ) : photoPreview ? (
+                                <img
+                                  src={photoPreview}
+                                  alt="미리보기"
+                                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
+                              ) : (
+                                '사진 업로드'
+                              )}
+                            </div>
+                          </Uploader>
+
+                          {/* 사진 삭제 버튼 */}
+                          {photoPreview && (
+                            <Button
+                              appearance="ghost"
+                              size="xs"
+                              onClick={() => {
+                                setPhotoPreview(null);                           // 미리보기 지우기
+                                setForm((prev) => ({ ...prev, e_photo: '' }));   // 서버 저장용 e_photo 초기화
+                                setUploaderKey(prev => prev + 1);                // Uploader 자체의 파일 리스트가 초기화 되지 않아 다른 사진 등록 불가능한 경우, Uploader 자체 리렌더링, 삭제 버튼 누를 때 uploaderKey를 +1 올린다 > 리액트가 key가 바뀌면 Uploader를 통째로 새로 만든다
+                              }}
+                            >
+                              삭제
+                            </Button>
+                          )}
+                        </div>
+                        </Form.Group>
+                        <Form.Group><Form.ControlLabel>사원 이름 *</Form.ControlLabel><Form.Control value={form.e_name} onChange={val => setForm({ ...form, e_name: val })} /></Form.Group>
+                        <Form.Group><Form.ControlLabel>전화번호 *</Form.ControlLabel><Form.Control value={form.e_tel} onChange={val => setForm({ ...form, e_tel: val })} /></Form.Group>
+                        <Form.Group><Form.ControlLabel>생년월일 *</Form.ControlLabel><Form.Control type="date" value={form.e_birth} onChange={val => setForm({ ...form, e_birth: val })} /></Form.Group>
+                        <Form.Group><Form.ControlLabel>이메일 *</Form.ControlLabel><Form.Control value={form.e_email} onChange={val => setForm({ ...form, e_email: val })} /></Form.Group>
+                        <Form.Group><Form.ControlLabel>직위 *</Form.ControlLabel>
+                          <HrDropdown title={form.e_position || '선택'} items={['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무']} onSelect={val => setForm({ ...form, e_position: val })} /></Form.Group>
+                        <Form.Group><Form.ControlLabel>부서 *</Form.ControlLabel>
+                          <HrDropdown title={deptList.find(d => d.value === form.d_code)?.label || '선택'} items={deptList} onSelect={val => setForm({ ...form, d_code: val })} /></Form.Group>
+                          
+                      </Col>
+                      <Col xs={12}>
+                        <Form.Group><Form.ControlLabel>입사 구분</Form.ControlLabel><HrRadio value={form.e_entry} onChange={(val) => setForm({ ...form, e_entry: val })} options={['신입', '경력']} /></Form.Group>
+                        <Form.Group><Form.ControlLabel>재직 상태 *</Form.ControlLabel><Form.Control value={form.e_status} onChange={val => setForm({ ...form, e_status: val })} /></Form.Group>
+                        <Form.Group>
+                          <Form.ControlLabel>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span>주소 *</span>
+                              <Button size="xs" appearance="ghost" onClick={handleAddress}>
+                                우편번호 검색
+                              </Button>
+                            </div>
+                          </Form.ControlLabel>
+
+                          {/* 우편번호 */}
+                          <Form.Control
+                            name="e_zone_code"
+                            value={form.e_zone_code}
+                            onChange={val => setForm({ ...form, e_zone_code: val })}
+                            style={{ marginBottom: 8 }}
+                          />
+
+                          {/* 기본주소 */}
+                          <Form.Control
+                            name="e_base_address"
+                            value={form.e_base_address}
+                            onChange={val => setForm({ ...form, e_base_address: val })}
+                            style={{ marginBottom: 8 }}
+                          />
+
+                          {/* 상세주소 */}
+                          <Form.Control
+                            name="e_detail_address"
+                            value={form.e_detail_address}
+                            onChange={val => setForm({ ...form, e_detail_address: val })}
+                          />
+                        </Form.Group>
+                        <Form.Group><Form.ControlLabel>급여통장 - 은행 *</Form.ControlLabel><Form.Control value={form.e_salary_account_bank} onChange={val => setForm({ ...form, e_salary_account_bank: val })} /></Form.Group>
+                        <Form.Group><Form.ControlLabel>급여통장 - 계좌번호 *</Form.ControlLabel><Form.Control value={form.e_salary_account_num} onChange={val => setForm({ ...form, e_salary_account_num: val })} /></Form.Group>
+                        <Form.Group><Form.ControlLabel>급여통장 - 예금주 *</Form.ControlLabel><Form.Control value={form.e_salary_account_owner} onChange={val => setForm({ ...form, e_salary_account_owner: val })} /></Form.Group>
+                        <Form.Group><Form.ControlLabel>비고</Form.ControlLabel><Input as="textarea" rows={3} value={form.e_note} onChange={val => setForm({ ...form, e_note: val })} /></Form.Group>
+                      </Col>
+                    </Row>
+                  </Grid>
+                  <Divider />
+                  <Row>
+                    <Col xs={24} style={{ textAlign: 'center' }}>
+                      <ButtonToolbar>
+                        <Button appearance="ghost" color="green" onClick={handleRegister}>등록</Button>
+                      </ButtonToolbar>
+                    </Col>
+                  </Row>
+                </Form>
+              </Panel>
+            </FlexboxGrid.Item>
+          </FlexboxGrid>
+        </Tabs.Tab>
+      </Tabs>
+    </div>
   );
-  
-}
+};
+
+export default HrEmpCardPage;

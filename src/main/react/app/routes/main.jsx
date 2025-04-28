@@ -7,6 +7,7 @@ import AppConfig from "#config/AppConfig.json"
 
 import HeaderMenu from "#components/common/HeaderMenu"
 import Chatbot from '#components/chatbot/chatbot';
+import Management from "./main.att-management";
 
 // @Remix:모듈함수 - <html>의 <head>의 내용
 export function meta() {
@@ -52,12 +53,14 @@ export default function Main() {
 		else console.log(localStorage.getItem("e_auth_id")); // 세션정보출력
 	}, []);
 
+	const isMain = pathname === "/main";
+
 	return (
 		<Container style={{display: "block", width: "1920px", margin: "0 auto"}}>
 
 			<Container>
 				<HeaderMenu />
-				<Outlet />
+				{isMain ? <Management /> : <Outlet />}	{/* URL이 메인이면 근태, 아니라면 그 외 */}
                 <Chatbot width={150} height={150} style={{padding:'6px'}}/>
 			</Container>
 

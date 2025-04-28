@@ -11,6 +11,7 @@ import {
   SelectPicker,
 } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
+import { useToast } from '#components/common/ToastProvider';
 
 const { StringType } = Schema.Types;
 
@@ -30,6 +31,7 @@ const model = Schema.Model({
 const AttModal = ({ open, onClose, onReloading }) => {
   const fetchURL = AppConfig.fetch['mytest'];
   const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
+  const { showToast } = useToast();
 
   const [formError, setFormError] = useState({});
   const [vacationList, setVacationList] = useState([]);
@@ -77,7 +79,6 @@ const AttModal = ({ open, onClose, onReloading }) => {
     } else {
       setVacationList([]);
     }
-    // setVacationList([]);
   };
 
   // 휴가코드 선택 시 휴가명 자동 설정
@@ -101,8 +102,13 @@ const AttModal = ({ open, onClose, onReloading }) => {
       return;
     }
   
+    const payload = {
+      ...att,
+      v_code: att.a_type === '휴가' ? att.v_code : null
+    };
+
     if (att.a_type === "휴가" && !att.v_code) {
-      alert("휴가유형을 선택한 경우, 휴가코드를 반드시 선택해야 합니다.");
+      showToast("휴가유형을 선택한 경우, 휴가코드를 반드시 선택해야 합니다.", "info");
       return;
     }
 
@@ -110,16 +116,16 @@ const AttModal = ({ open, onClose, onReloading }) => {
     const res = await fetch(`${attURL}/addAttItems`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(att), // form 상태
+      body: JSON.stringify(payload), // form 상태
     });
   
     if (res.status === 201) {
-      // alert("등록 성공");
+      showToast("근태등록에 성공했습니다.", "success");
       onClose();
       // onReloading();    // 테이블 리로딩
       window.location.reload();
     } else {
-      alert("등록 실패");
+      showToast("근태등록에 실패했습니다.", "error");
     }
   };
 
@@ -172,10 +178,6 @@ const AttModal = ({ open, onClose, onReloading }) => {
                 <Form.Control
                   name="v_code"
                   accepter={SelectPicker}
-                  // data={vacationList.map(item => ({
-                  //   label: `${item.v_code} (${item.v_name})`,
-                  //   value: item.v_code
-                  // }))}
                   data={vacationList}
                   onChange={VacaCodeChange}
                   value={att.v_code}

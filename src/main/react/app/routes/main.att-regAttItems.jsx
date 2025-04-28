@@ -8,6 +8,7 @@ import AttModal from "#components/attendance/AttModal";
 import MessageBox from "#components/common/MessageBox";
 import "#styles/attendance.css";
 import AppConfig from "#config/AppConfig.json";
+import Btn from "#components/attendance/Btn.jsx";
 
 export function meta() {
   return [
@@ -58,7 +59,8 @@ export default function RegAttItems() {
           columns={attColumns}
           onReloading={() => fetcher.load("/main/att-regAttItems")}
         />
-        <Button className="btn" onClick={() => setModalOpen(true)}>추가</Button>
+        <Btn text="추가" size="sm" style={{ width: 60 }} onClick={() => setModalOpen(true)} />
+        {/* <Button className="btn" onClick={() => setModalOpen(true)}>추가</Button> */}
       </Container>
       
       <AttModal open={modalOpen} onClose={() => setModalOpen(false)} 

@@ -127,11 +127,25 @@ const HrEmpCardDetail = () => {
                       <Uploader
                         fileListVisible={false}
                         listType="picture"
-                        action=""
-                        autoUpload={false}
-                        onChange={(fileList) => {
-                          const file = fileList[0]?.blobFile;
-                          if (file) handleImagePreview(file, setEmp);
+                        action="http://localhost:8081/hrCard/hrCardPhoto"   // 다시 올릴 서버 주소
+                        name="file"
+                        autoUpload={true}       // 파일 선택하면 바로 서버 전송
+                        onUpload={(file) => {
+                          // 로컬 미리보기
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setEmp(prev => ({ ...prev, e_photo: reader.result })); 
+                          };
+                          reader.readAsDataURL(file.blobFile);
+                        }}
+                        onSuccess={(response) => {
+                          // 서버가 파일 URL을 응답해주면 그걸 emp.e_photo에 저장
+                          setEmp(prev => ({ ...prev, e_photo: response }));
+                          setUploading(false);
+                        }}
+                        onError={() => {
+                          alert('사진 업로드 실패!');
+                          setUploading(false);
                         }}
                       >
                         <div style={{

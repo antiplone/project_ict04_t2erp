@@ -1,4 +1,5 @@
 import tensorflow as tf
+from tensorflow.keras.utils import to_categorical
 from transformers import TFAutoModelForSequenceClassification, AutoTokenizer
 import numpy as np
 import json
@@ -13,13 +14,18 @@ class TensorFlowChatbot:
         # Initialize the model and tokenizer
         self.model_name = "distilbert-base-uncased"
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        self.model = TFAutoModelForSequenceClassification.from_pretrained(self.model_name, num_labels=7)
-        
-        # Set confidence threshold
-        self.confidence_threshold = 0.5
         
         # Load or create knowledge base
         self.knowledge_base = self._load_knowledge_base()
+
+        # Set the number of classes based on knowledge base
+        num_classes = len(self.knowledge_base)
+        
+        # Initialize the model with the correct number of labels
+        self.model = TFAutoModelForSequenceClassification.from_pretrained(self.model_name, num_labels=num_classes)
+        
+        # Set confidence threshold
+        self.confidence_threshold = 0.5
         
         # Load existing model weights if available
         self.data_manager.load_model_weights(self.model)
@@ -47,88 +53,7 @@ class TensorFlowChatbot:
                     "Greetings! How may I assist you?"
                 ]
             },
-            "farewell": {
-                "patterns": [
-                    "bye", "goodbye", "see you", "see ya", 
-                    "farewell", "take care", "have a good day"
-                ],
-                "responses": [
-                    "Goodbye! Have a great day!", 
-                    "See you later!",
-                    "Take care! Come back if you need anything."
-                ]
-            },
-            "help": {
-                "patterns": [
-                    "help", "support", "assistance", "need help",
-                    "can you help", "how to", "what is", "explain",
-                    "tell me about", "show me", "guide me"
-                ],
-                "responses": [
-                    "I can help you with various tasks. What do you need assistance with?",
-                    "I'm here to help! What would you like to know?",
-                    "How can I assist you today?"
-                ]
-            },
-            "thanks": {
-                "patterns": [
-                    "thank", "thanks", "thank you", "appreciate it",
-                    "much obliged", "grateful", "thanks a lot"
-                ],
-                "responses": [
-                    "You're welcome!", 
-                    "Glad I could help!",
-                    "My pleasure! Is there anything else you need?"
-                ]
-            },
-            "erp": {
-                "patterns": [
-                    "erp", "system", "software", "enterprise",
-                    "what is erp", "erp system", "erp software",
-                    "enterprise resource planning", "erp features"
-                ],
-                "responses": [
-                    "Our ERP system helps manage business processes. What specific aspect would you like to know about?",
-                    "The ERP system integrates various business functions. Would you like to know about specific modules?",
-                    "Our ERP solution includes modules for inventory, sales, and more. Which area interests you?"
-                ]
-            },
-            "inventory": {
-                "patterns": [
-                    "inventory", "stock", "products", "items",
-                    "warehouse", "stock levels", "inventory management",
-                    "product tracking", "stock control"
-                ],
-                "responses": [
-                    "The inventory management module helps track products, stock levels, and movements.",
-                    "You can manage your inventory, track stock levels, and monitor product movements.",
-                    "The inventory system provides real-time tracking of your products and stock levels."
-                ]
-            },
-            "sales": {
-                "patterns": [
-                    "sales", "orders", "customers", "transactions",
-                    "purchase", "buy", "order management",
-                    "customer orders", "sales tracking"
-                ],
-                "responses": [
-                    "The sales module manages customer orders, transactions, and customer relationships.",
-                    "You can process orders, track sales, and manage customer information.",
-                    "The sales system helps you handle orders and maintain customer records."
-                ]
-            },
-            "error": {
-                "patterns": [
-                    "error", "problem", "issue", "not working",
-                    "broken", "failed", "can't", "unable to",
-                    "doesn't work", "trouble"
-                ],
-                "responses": [
-                    "I'm sorry you're experiencing issues. Could you please provide more details?",
-                    "Let me help you with that problem. What exactly is not working?",
-                    "I'll help you resolve this. Could you describe the issue in more detail?"
-                ]
-            }
+            # other categories...
         }
         
         # Save the default knowledge base
@@ -139,28 +64,31 @@ class TensorFlowChatbot:
         # Prepare training data
         all_texts = []
         all_labels = []
-        
+
+        # Get the number of unique categories from the knowledge base
+        num_classes = len(self.knowledge_base)
+
         for idx, (category, data) in enumerate(self.knowledge_base.items()):
             for pattern in data["patterns"]:
                 all_texts.append(pattern)
                 all_labels.append(idx)
-        
+
         # Save training data
         self.data_manager.save_training_data(all_texts, all_labels)
-        
+
         # Tokenize the training data
         encoded_inputs = self.tokenizer(all_texts, padding=True, truncation=True, return_tensors="tf")
-        
+
         # Convert labels to one-hot encoding
-        labels = tf.keras.utils.to_categorical(all_labels, num_classes=len(self.knowledge_base))
-        
+        labels = to_categorical(all_labels, num_classes=num_classes)
+
         # Compile and train the model
         self.model.compile(
             optimizer=tf.keras.optimizers.Adam(learning_rate=2e-5),
             loss=tf.keras.losses.CategoricalCrossentropy(),
             metrics=['accuracy']
         )
-        
+
         # Train the model
         self.model.fit(
             dict(encoded_inputs),
@@ -168,7 +96,7 @@ class TensorFlowChatbot:
             epochs=3,
             batch_size=8
         )
-        
+
         # Save model weights
         self.data_manager.save_model_weights(self.model)
 
@@ -257,4 +185,4 @@ class TensorFlowChatbot:
 
     def get_interaction_history(self, limit=None):
         """Get the interaction history"""
-        return self.data_manager.get_interaction_history(limit) 
+        return self.data_manager.get_interaction_history(limit)

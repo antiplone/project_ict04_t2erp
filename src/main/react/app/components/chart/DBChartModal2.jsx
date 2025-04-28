@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import * as rsuite from 'rsuite';
 const { Modal, Button, RadioGroup, Radio } = rsuite;
-import DBChart from '#components/chart/DBChart';
 import DBChart2 from '#components/chart/DBChart2';
 import axios from 'axios';
 import { useToast } from '#components/common/ToastProvider';// Import useToast here
 
-const DBChartModal = ({ open, onClose }) => {
+const DBChartModal2 = ({ open, onClose }) => {
   const [chartData, setChartData] = useState([]);
   const [selectedFunction, setSelectedFunction] = useState('count');
   const { showToast } = useToast();
@@ -14,7 +13,7 @@ const DBChartModal = ({ open, onClose }) => {
   const [error, setError] = useState(null);
 
   const fetchData = async () => {
-    const endpoint = selectedFunction === 'count' ? '/api/order/count' : '/api/order/items';
+    const endpoint = selectedFunction === 'count' ? '/api/sales/count' : '/api/sales/items';
     setLoading(true);
     setError(null);
     try {
@@ -60,14 +59,10 @@ const DBChartModal = ({ open, onClose }) => {
           value={selectedFunction}
           onChange={setSelectedFunction}
         >
-          <Radio value="count">날짜별 출고 처리건수</Radio>
+          <Radio value="count">날짜별 입고 처리건수</Radio>
           <Radio value="items">품목별 처리건수</Radio>
         </RadioGroup>
-			  {!loading && !error && (
-				  chartData?.length > 0
-					  ? <DBChart data={chartData} />
-					  : <DBChart2 />  // 데이터 없을 때 표시할 컴포넌트
-			  )}
+		<DBChart2 data={chartData} />
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={onClose} appearance="subtle">
@@ -78,4 +73,4 @@ const DBChartModal = ({ open, onClose }) => {
   );
 };
 
-export default DBChartModal;
+export default DBChartModal2;

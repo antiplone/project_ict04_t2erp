@@ -39,7 +39,6 @@ const SellRequestClient = () => {
       }));
     };
 
-    
     const [isBizNumChecked, setIsBizNumChecked] = useState(false);  // 중복 체크 여부
     const [isBizNumValid, setIsBizNumValid] = useState(false);      // 중복 결과 여부
 
@@ -74,14 +73,14 @@ const SellRequestClient = () => {
         .then((res) => res.text())
         .then((res) => {
             setIsBizNumChecked(true); // 체크는 했음
-            console.log("사업자등록번호 중복 체크 URL:", `${fetchURL.protocol}${fetchURL.url}/sell/reqClientBizNum/` + sc_biz_num);
+
             if (res != 0) {
-              toaster.push(
-                <Message showIcon type="warning" closable >
-                  이미 등록되어 있습니다. 재확인 후 입력해주세요.
-                </Message>,
-                { placement: "topCenter" }
-              );
+            toaster.push(
+              <Message showIcon type="warning" closable >
+                이미 등록되어 있습니다. 재확인 후 입력해주세요.
+              </Message>,
+              { placement: "topCenter" }
+            );
                 setClientAdd({
                     ...clientAdd,
                     sc_biz_num: ""
@@ -136,17 +135,17 @@ const SellRequestClient = () => {
 
     // 필수 항목 모두 채워졌는지 확인
     const requiredFields = {
-    sc_client_name: "거래처명",
-    sc_ceo: "대표자명",
-    sc_biz_num: "사업자등록번호",
-    sc_email_front: "이메일",
-    sc_email_back: "이메일",
-    sc_tel: "연락처",
-    zone_code: "우편번호",
-    base_address: "기본 주소",
-    sc_type: "업태",
-    sc_industry: "업종",
-    sc_req_d_name: "요청 부서"
+      sc_client_name: "거래처명",
+      sc_ceo: "대표자명",
+      sc_biz_num: "사업자등록번호",
+      sc_email_front: "이메일",
+      sc_email_back: "이메일",
+      sc_tel: "연락처",
+      zone_code: "우편번호",
+      base_address: "기본 주소",
+      sc_type: "업태",
+      sc_industry: "업종",
+      sc_req_d_name: "요청 부서"
     };
     
   const submitclientAdd = () => {

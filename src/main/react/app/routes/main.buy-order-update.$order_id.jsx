@@ -186,7 +186,7 @@ export default function BuyOrderUpdate() {
 
     return (
         <>
-            <Container style={{ padding: 20 }}>
+            <Container>
                 <MessageBox type="info" text={`구매 정보 수정페이지 - 발주번호:${order_id}`} />
                 <br />
 
@@ -286,7 +286,7 @@ export default function BuyOrderUpdate() {
                         </div>
                     </div>
                 </Form>
-                <Divider style={{ maxWidth: 1500 }} />
+                <Divider/>
 
                 {/* 거래처 모달 관리 */}
                 <ClientSearchModal
@@ -399,20 +399,20 @@ export default function BuyOrderUpdate() {
                     </Form>
                 ))}
 
-                <Divider style={{ maxWidth: 1500 }} />
+                <Divider/>
                 <div className="updateTotalSum">
                     총액 합계: {totalSum.toLocaleString()} 원
                 </div>
 
                 <div className="buyBtnBox">
                     <Button appearance="default" className="buyBtn" onClick={handleAddRow}>행 추가</Button>
-                    <Button appearance="ghost" color="blue" className="buyBtn" onClick={submitOrder}>저장</Button>
+                    <Button appearance="ghost" color="blue" onClick={submitOrder}>저장</Button>
                     <Link to={`/main/buy-select`}>
                         <Button appearance="ghost" className="ListBtn">
                             목록
                         </Button>
                     </Link>
-                    <Button appearance="ghost" color="red" className="buyBtn" onClick={() => navigate(-1)}>취소</Button> {/* navigate(-1); 브라우저 history 뒤로 */}
+                    <Button appearance="ghost" color="red" onClick={() => navigate(-1)}>취소</Button> {/* navigate(-1); 브라우저 history 뒤로 */}
                 </div>
             </Container>
 

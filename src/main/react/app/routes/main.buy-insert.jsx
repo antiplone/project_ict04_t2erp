@@ -425,7 +425,7 @@ export default function BuyInsert() {
 
             <Divider />
             <div className="insertTotalSum">총액 합계: {totalSum.toLocaleString()} 원</div>
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div style={{ display: 'flex', marginLeft: 10 }}>
                 <Button appearance="ghost" onClick={handleSubmit}>저장</Button>
             </div>
             <hr />

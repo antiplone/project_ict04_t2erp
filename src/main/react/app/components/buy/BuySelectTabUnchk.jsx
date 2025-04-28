@@ -177,7 +177,7 @@ export default function BuySelectTabUnchk() {
             <>
                 <ButtonToolbar>
                     <Link to="/main/buy-insert">
-                        <Button appearance="ghost" color="blue" style={{ marginTop: 20 }} >구매 입력</Button>
+                        <Button appearance="ghost" color="blue" style={{ marginTop: 20, marginLeft: 10 }} >구매 입력</Button>
                     </Link>
                 </ButtonToolbar>
             </>

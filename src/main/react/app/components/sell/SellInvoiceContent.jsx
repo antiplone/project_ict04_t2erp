@@ -29,7 +29,7 @@ const SellInvoiceContent = ({ order_id, order_date, date_no }) => {
             c_tel: item.c_tel,
             sc_biz_num: item.sc_biz_num,
             c_ceo: item.c_ceo,
-            address: `${item.c_base_address} ${item.c_detail_address}`
+            address: `${item.c_base_address || ""} ${item.c_detail_address || ""}`
           });
         }
       })

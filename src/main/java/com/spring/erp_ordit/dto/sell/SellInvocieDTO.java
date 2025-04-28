@@ -24,7 +24,7 @@ public class SellInvocieDTO {	// 판매조회 _ 거래명세서 DTO
 	private String e_name; 				// 담당자명 
 	private int client_code; 			// 거래처코드  				   	 
 	private String client_name; 		// 거래처명 				   	 
-	private String c_ceo; 		// 거래처명 				   	 
+	private String c_ceo; 				// 거래처명 				   	 
 	private String c_base_address; 		// 거래처주소 (도로명)			   	 
 	private String c_detail_address; 	// 거래처주소 (상세주소)			   	 
 	private String sc_biz_num; 			// 사업자등록번호				   	 

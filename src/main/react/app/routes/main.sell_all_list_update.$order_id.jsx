@@ -350,9 +350,7 @@ const sell_all_list_update = (props) => {
 
 	return (
 		<div>
-			<Message type="info" className="main_title">
-			판매 정보 수정페이지 - 주문번호: {order_id}
-    		</Message>
+			<Message type="info" className="main_title">판매 정보 수정페이지 - 주문번호: {order_id}</Message>
 
 			<Form layout="horizontal">
 
@@ -530,7 +528,7 @@ const sell_all_list_update = (props) => {
 									name="stock_amount"
 									plaintext
 									value={String(item.stock_amount ?? '')}
-									className="updateBox"
+									className="updateBox_price"
 								/>
                             </Form.Group>
 

@@ -4,6 +4,9 @@
 .text_left{
     text-align: left;
 }
+.text_right{
+    text-align: right;
+}
 
 .area_fit{
     padding: 6px;
@@ -211,7 +214,48 @@ main.rs-content {
     font-weight: bold;
 }
 
+/* dropdown menu */
 .rs-navbar-item, .rs-navbar-nav>.rs-dropdown .rs-dropdown-toggle{
-	color : var(--rs-text-primary);
+	color : white !important;
     font-weight: bold;
+}
+
+.rs-navbar-default .rs-dropdown .rs-dropdown-toggle:hover, .rs-navbar-default .rs-dropdown.rs-dropdown-open .rs-dropdown-toggle{
+	background-color : #eeeeee !important;
+	color : rgb(34, 40, 76) !important;
+}
+
+ul.rs-dropdown-menu {
+    width: 100% !important;
+}
+
+.rs-navbar-default .rs-navbar-item:hover{
+   background-color: rgb(34, 40, 76) !important;
+}
+
+.cursor_pointer{
+    cursor: pointer;
+}
+
+.logis_pagination{
+	justify-content: space-evenly;
+	min-width: 810px;
+	max-width: 910px;
+	margin: 0 auto;
+}
+
+.buyBtnBox {
+    display: flex;
+    gap: 20px;
+    margin: 10px 0px;
+}
+
+.inputBox {
+	display: flex;
+	justify-content: flex-start;
+	width: 100%;
+	max-width: 1500px;
+	height: 40px;
+	margin-bottom: 10px;
+	gap: 20px;
 }

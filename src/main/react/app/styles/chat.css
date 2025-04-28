@@ -1,7 +1,7 @@
 /* 채팅 컨데이너 */
 .chatContainer {
     max-width: 600px;
-    /* margin: 0 auto; */
+    /* margin: 0 auto;  */
 }
 
 /* 채팅 상대 선택 박스 */
@@ -96,10 +96,11 @@
 }
 
 /* 메시지 입력과 보내기 버튼 */
-.inputBox {
+.inputChatBox {
     display: flex;
     margin-right: 8px;
     padding: 0 4px;
+    gap: 10px;
 }
 
 /* 메시지 입력 */

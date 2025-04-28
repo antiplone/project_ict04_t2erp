@@ -49,11 +49,13 @@ export default function BuyStockStatus() {
     const [selectedItemName, setSelectedItemName] = useState(null);
     const [isItemModalOpen, setItemModalOpen] = useState(false);
 
-    // 검색 키워드
+    // 발주번호 검색
     const [searchKeyword, setSearchKeyword] = useState("");
 
     // 입고확인
     const [buyStockStatus, setBuyStockStatus] = useState([]);
+
+    const fetchURL = AppConfig.fetch['mytest']
 
     // 선택한 조건 검색 
     const handleSearch = async () => {
@@ -81,8 +83,6 @@ export default function BuyStockStatus() {
 
         // URL 쿼리 생성
         const query = new URLSearchParams(cleanedParams).toString();
-
-        const fetchURL = AppConfig.fetch['mytest']
 
         try {
             const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyStockStatusSearch?${query}`);
@@ -123,12 +123,20 @@ export default function BuyStockStatus() {
 
         const query = new URLSearchParams(cleanedParams).toString();
 
-        window.open(`${AppConfig.fetch.mytest.protocol}${AppConfig.fetch.mytest.url}/buy/exportStockStatusExcel?${query}`, "_blank");
+        window.open(`${fetchURL.protocol}${fetchURL.url}/buy/exportStockStatusExcel?${query}`, "_blank");
     };
 
-    const styles = {
-        backgroundColor: '#f8f9fa',
-    };
+    // 검색 필터 초기화
+	const submitStatusReset = () => {
+		setOrderDate(null);
+		setSelectedClient(null);
+		setSelectedClientName(null);
+		setSelectedStorage(null);
+		setSelectedStorageName(null);
+		setSelectedItem(null);
+		setSelectedItemName(null);
+        setSearchKeyword(null);
+	}
 
     return (
         <>
@@ -246,51 +254,52 @@ export default function BuyStockStatus() {
                 />
 
                 <div className="buyBtnBox">
-                    <Button appearance="ghost" color="green" onClick={handleSearch} className="statusSearchBtn">검색</Button>
-                    <Button appearance="ghost" color="blie" onClick={downloadExcel} className="statusExcelBtn">엑셀 다운로드</Button>
+                    <Button appearance="ghost" color="green" onClick={handleSearch}>검색</Button>
+                    <Button appearance="ghost" type="submit" onClick={submitStatusReset}>검색창 초기화</Button>
+                    <Button appearance="ghost" color="violet" onClick={downloadExcel}>엑셀 다운로드</Button>
                 </div>
 
-                <Divider style={{ maxWidth: 1200 }} />
+                <Divider/>
                 <>
                     <Table height={500} width={1200} data={buyStockStatus} onRowClick={ReceivingData => console.log(ReceivingData)}>
                         
                         <Column width={120} className='text_center'>
-                        <HeaderCell style={styles} className='text_center'>발주일자</HeaderCell>
+                        <HeaderCell className='text_center'>발주일자</HeaderCell>
                         <Cell dataKey="order_date" />
                         </Column>
 
                         <Column width={120} className='text_center'>
-                        <HeaderCell style={styles} className='text_center'>발주번호</HeaderCell>
+                        <HeaderCell className='text_center'>발주번호</HeaderCell>
                         <Cell dataKey="order_id" />
                         </Column>
 
                         <Column width={150} className='text_left'>
-                        <HeaderCell style={styles} className='text_center'>거래처명</HeaderCell>
+                        <HeaderCell className='text_center'>거래처명</HeaderCell>
                         <Cell dataKey="client_name" />
                         </Column>
 
                         <Column width={250} className='text_left'>
-                        <HeaderCell style={styles} className='text_center'>물품명</HeaderCell>
+                        <HeaderCell className='text_center'>물품명</HeaderCell>
                         <Cell dataKey="item_name" />
                         </Column>
 
                         <Column width={150} className='text_left'>
-                        <HeaderCell style={styles} className='text_center'>창고명</HeaderCell>
+                        <HeaderCell className='text_center'>창고명</HeaderCell>
                         <Cell dataKey="storage_name" />
                         </Column>
 
                         <Column width={120} className='text_center'>
-                        <HeaderCell style={styles} className='text_center'>창고재고</HeaderCell>
+                        <HeaderCell className='text_center'>창고재고</HeaderCell>
                         <Cell dataKey="stock_amount" />
                         </Column>
 
                         <Column width={120} className='text_center'>
-                        <HeaderCell style={styles} className='text_center'>안전재고</HeaderCell>
+                        <HeaderCell className='text_center'>안전재고</HeaderCell>
                         <Cell dataKey="safe_stock" />
                         </Column>
 
                         <Column width={120} className='text_center'>
-                        <HeaderCell style={styles} className='text_center'>최근 입고일</HeaderCell>
+                        <HeaderCell className='text_center'>최근 입고일</HeaderCell>
                         <Cell dataKey="last_date" />
                         </Column>
 
@@ -299,7 +308,7 @@ export default function BuyStockStatus() {
 
             </Container >
 
-            <Divider style={{ maxWidth: 1200 }} />
+            <Divider/>
 
         </>
     );

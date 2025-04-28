@@ -170,18 +170,18 @@ export default function Basic_client() {
   ];
   
   const requestColumns = [
-    { label: "순번", dataKey: "sc_id", width: 80 },
-    { label: "거래처명", dataKey: "sc_client_name", width: 160 },
+    { label: "순번", dataKey: "sc_id", width: 85 },
+    { label: "거래처명", dataKey: "sc_client_name", width: 165 },
     { label: "대표자명", dataKey: "sc_ceo", width: 150 },
-    { label: "사업자등록번호", dataKey: "sc_biz_num", width: 170 },
+    { label: "사업자등록번호", dataKey: "sc_biz_num", width: 180 },
     { label: "이메일", dataKey: "sc_email", width: 210 },
-    { label: "연락처", dataKey: "sc_tel", width: 160 },
+    { label: "연락처", dataKey: "sc_tel", width: 165 },
     {
       label: "비고",
       dataKey: "sa_approval_comment",
       width: 250,
       renderCell: (rowData, rowIndex) => (
-        <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+        <div style={{ width: '100%', display: 'flex', alignItems: 'center', height: '100%' }}>
           <Input
             size="sm"
             value={rowData.sa_approval_comment || ""}
@@ -199,7 +199,7 @@ export default function Basic_client() {
     {
       label: "승인상태",
       dataKey: "sa_approval_status",
-      width: 150,
+      width: 160,
       renderCell: (rowData, rowIndex) => (
         <div style={{ padding: '4px', height: '100%', display: 'flex', alignItems: 'center' }}>
           <SelectPicker
@@ -454,9 +454,6 @@ export default function Basic_client() {
 
         <Tabs.Tab eventKey="3" title="거래처 요청">
           <div
-            style={{
-              width: '1450px',
-            }}
           >
             <HrTable
               columns={requestColumns}

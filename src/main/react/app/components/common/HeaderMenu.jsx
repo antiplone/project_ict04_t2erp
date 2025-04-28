@@ -83,8 +83,8 @@ const HeaderMenu = () => {
 					</Nav.Menu>
 					<Nav.Menu title="인사관리">
 						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사카드관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("hr_appointment") }}>거래처등록</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("hr_department") }}>상품등록</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("hr_appointment") }}>인사발령관리</Nav.Item>
+						<Nav.Item onSelect={() => { navigate("hr_department") }}>부서관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("hr-retirement") }}>퇴직관리</Nav.Item>
 					</Nav.Menu>
 					{adminPositions.includes(position?.trim()) ? (

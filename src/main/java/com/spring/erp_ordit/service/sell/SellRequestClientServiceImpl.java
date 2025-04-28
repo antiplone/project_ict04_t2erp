@@ -74,6 +74,7 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 		System.out.println("서비스 - sc_id => " + sc_id);
 		
 		dto.setSc_id(sc_id);
+		System.out.println("서비스 - dto => " + dto);
 		
     	return mapper.updateClient(dto);
     }

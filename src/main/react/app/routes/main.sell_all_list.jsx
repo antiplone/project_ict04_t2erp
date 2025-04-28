@@ -272,13 +272,13 @@ const sell_all_list = () => {
 				<Modal.Header>
 					<Modal.Title>전표</Modal.Title>
 				</Modal.Header>
+
 				<Modal.Body>
 					<SellSlipAll />
 				</Modal.Body>
+
 				<Modal.Footer>
-					<Button onClick={handleClose2} appearance="default">
-						닫기
-					</Button>
+					<Button onClick={handleClose2} appearance="default">닫기</Button>
 				</Modal.Footer>
 			</Modal>
 

@@ -1,11 +1,21 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from transformers import pipeline
 from tensorflow_chatbot import TensorFlowChatbot
+import joblib
+
+from db_connector import get_order_count
+from db_connector import get_order_items
+from db_connector import get_sales_count
+from db_connector import get_sales_items
 
 app = FastAPI()
 
-# Enable CORS
+# CORS 설정
+origins = [
+    "http://localhost:5173",  # Vite dev server
+]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -60,6 +70,46 @@ async def export_training_data(format: str = "json"):
         return {"data": data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+        
+@app.get("/api/order/count")
+async def fetch_order_count():
+    try:
+        data = get_order_count() # db_connector.py에서 데이터를 가져온다.
+        if not data:
+            raise HTTPException(status_code=404, detail="No data found")
+        return {"status": "success", "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="DB 조회 중 오류 발생: " + str(e))
+        
+@app.get("/api/order/items")
+async def fetch_order_items():
+    try:
+        data = get_order_items()
+        if not data:
+            raise HTTPException(status_code=404, detail="No data found")
+        return {"status": "success", "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="DB 조회 중 오류 발생: " + str(e))
+        
+@app.get("/api/sales/count")
+async def fetch_sales_count():
+    try:
+        data = get_sales_count() # db_connector.py에서 데이터를 가져온다.
+        if not data:
+            raise HTTPException(status_code=404, detail="No data found")
+        return {"status": "success", "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="DB 조회 중 오류 발생: " + str(e))
+        
+@app.get("/api/sales/items")
+async def fetch_sales_items():
+    try:
+        data = get_sales_items()
+        if not data:
+            raise HTTPException(status_code=404, detail="No data found")
+        return {"status": "success", "data": data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="DB 조회 중 오류 발생: " + str(e))
 
 if __name__ == "__main__":
     import uvicorn

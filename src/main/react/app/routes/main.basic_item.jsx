@@ -159,8 +159,8 @@ export default function Item() {
 
   const columns = [
     { label: '상품 코드', dataKey: 'item_code', width: 150 },
-    { label: '상품명', dataKey: 'item_name', width: 300 },
-    { label: '물품 규격', dataKey: 'item_standard', width: 350 },
+    { label: '상품명', dataKey: 'item_name', width: 300, align: 'left' },
+    { label: '물품 규격', dataKey: 'item_standard', width: 350, align: 'left' },
     { label: '사용 구분', dataKey: 'item_status', width: 150 },
     { label: '등록일', dataKey: 'item_reg_date', width: 250 },
   ];

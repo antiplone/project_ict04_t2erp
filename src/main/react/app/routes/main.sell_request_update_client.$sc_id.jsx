@@ -17,8 +17,6 @@ const Textarea = React.forwardRef((props, ref) => (
   const SellRequestUpdateClient = () => {
     const navigate = useNavigate();
     const { sc_id } = useParams(); // URL에서 /sell/reqClientDetail/:sc_id 가져오기
-    // const [scEmailFront, setScEmailFront] = useState('');   // 이메일 @ 앞
-    // const [scEmailBack, setScEmailBack] = useState('');     // 이메일 @ 뒤
 
     const [clientAdd, setClientAdd] = useState({
         sc_client_name: '',
@@ -49,7 +47,6 @@ const Textarea = React.forwardRef((props, ref) => (
         })
         .then(res => res.json())
         .then(res => {
-            setRowData(res);  // 서버에서 가져온 데이터를 rowData에 저장
             if (res.sc_email) {
                 const [emailFront, emailBack] = res.sc_email.split('@');
                 setClientAdd({
@@ -66,39 +63,39 @@ const Textarea = React.forwardRef((props, ref) => (
                     sc_industry: res.sc_industry,
                     sc_note: res.sc_note,
                     sc_req_d_name: res.sc_req_d_name,
-                    // sc_status: res.sc_status // 상태도 초기화
                 });
             }
         });
     }, [sc_id]);  // sc_id 바뀌면 다시 fetch
 
     // rowData가 변경될 때마다 clientAdd를 업데이트하는 effect 추가
-useEffect(() => {
-    if (Object.keys(rowData).length > 0) {
-        setClientAdd({
-            sc_client_name: rowData.sc_client_name || '',
-            sc_ceo: rowData.sc_ceo || '',
-            sc_biz_num: rowData.sc_biz_num || '',
-            sc_email_front: rowData.sc_email ? rowData.sc_email.split('@')[0] : '',
-            sc_email_back: rowData.sc_email ? rowData.sc_email.split('@')[1] : '',
-            sc_tel: rowData.sc_tel || '',
-            zone_code: rowData.zone_code || '',
-            base_address: rowData.base_address || '',
-            detail_address: rowData.detail_address || '',
-            sc_type: rowData.sc_type || '',
-            sc_industry: rowData.sc_industry || '',
-            sc_note: rowData.sc_note || '',
-            sc_req_d_name: rowData.sc_req_d_name || '',
-            // sc_status: rowData.sc_status || ''
-        });
-    }
-}, [rowData]);  // rowData가 변경되면 clientAdd를 업데이트
+    useEffect(() => {
+        if (Object.keys(rowData).length > 0) {
+            setClientAdd(prev => ({
+              ...prev,
+                sc_client_name: rowData.sc_client_name || '',
+                sc_ceo: rowData.sc_ceo || '',
+                sc_biz_num: rowData.sc_biz_num || '',
+                sc_email_front: rowData.sc_email ? rowData.sc_email.split('@')[0] : '',
+                sc_email_back: rowData.sc_email ? rowData.sc_email.split('@')[1] : '',
+                sc_tel: rowData.sc_tel || '',
+                zone_code: rowData.zone_code || '',
+                base_address: rowData.base_address || '',
+                detail_address: rowData.detail_address || '',
+                sc_type: rowData.sc_type || '',
+                sc_industry: rowData.sc_industry || '',
+                sc_note: rowData.sc_note || '',
+                sc_req_d_name: rowData.sc_req_d_name || '',
+                // sc_status: rowData.sc_status || ''
+            }));
+        }
+    }, [rowData]);  // rowData가 변경되면 clientAdd를 업데이트
 
     const changeValue = (value, name) => {
-        setClientAdd({
-            ...clientAdd,
-            [name]: value
-        });
+      setClientAdd(prev => ({
+        ...prev,
+        [name]: value
+    }));
     }
 
     const [isBizNumChecked, setIsBizNumChecked] = useState(false);  // 중복 체크 여부

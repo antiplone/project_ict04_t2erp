@@ -7,7 +7,7 @@ import {
 // 원형 차트 색상 배열
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#8dd1e1', '#a4de6c', '#d0ed57', '#d885f0'];
 
-function DBChart({ data }) {
+function DBChart2({ data }) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   
@@ -96,7 +96,7 @@ function DBChart({ data }) {
       <h4>{label} 차트</h4>
       <BarChart width={700} height={300} data={formattedData} style={{ margin: '20px auto 5px' }}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
+        <XAxis dataKey="delivery_date" />
         <YAxis />
         <Tooltip />
         <Legend />
@@ -127,4 +127,4 @@ function DBChart({ data }) {
   );
 }
 
-export default DBChart;
+export default DBChart2;

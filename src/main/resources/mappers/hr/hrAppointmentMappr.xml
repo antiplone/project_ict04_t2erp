@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+     
+<mapper namespace="com.spring.erp_ordit.dao.hr.HrAppointmentMapper">
+
+<!-- 인사발령 현황 목록 조회 -->
+<select id="hrAppointList" resultType="com.spring.erp_ordit.dto.hr.HrAppointmentDTO">
+    SELECT 
+      a.appoint_id,
+      a.e_id,
+      a.e_name,
+      a.appoint_type,
+      a.old_position,
+      a.new_position,
+      a.old_department,
+      d.d_name AS new_department,
+      a.appoint_note,
+      a.appoint_date
+    FROM appointment_tbl a
+    LEFT JOIN department_tbl d ON a.new_department = d.d_code
+    ORDER BY a.appoint_id
+</select>
+
+<!-- 인사발령 등록 -->
+<insert id="hrAppointInsert" parameterType="com.spring.erp_ordit.dto.hr.HrAppointmentDTO">
+    INSERT INTO appointment_tbl (
+      e_id,
+      e_name,
+      appoint_type,
+      old_position,
+      new_position,
+      old_department,
+      new_department,
+      appoint_note,
+      appoint_date
+    ) VALUES (
+      #{e_id},
+      #{e_name},
+      #{appoint_type},
+      #{old_position},
+      #{new_position},
+      #{old_department},
+      #{new_department},
+      #{appoint_note},
+      #{appoint_date}
+    )
+</insert>
+
+<!-- 부서만 업데이트 -->
+<update id="updateDepartmentOnly" parameterType="com.spring.erp_ordit.dto.hr.HrAppointmentDTO">
+    UPDATE employee_tbl
+    SET d_code = #{new_department}
+    WHERE e_id = #{e_id}
+</update>
+
+<!-- 직위만 업데이트 -->
+<update id="updatePositionOnly" parameterType="com.spring.erp_ordit.dto.hr.HrAppointmentDTO">
+    UPDATE employee_tbl
+    SET e_position = #{new_position}
+    WHERE e_id = #{e_id}
+</update>
+
+</mapper>

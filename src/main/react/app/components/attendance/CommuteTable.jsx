@@ -24,7 +24,7 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
   const [employee, setEmployee] = useState(null);
 
   const [position, setPosition] = useState(null); // position 상태 생성
-  const adminPositions = ["대리", "과장", "부장", "차장", "팀장", "이사", "관리"];
+  const adminPositions = ["과장", "부장", "차장", "팀장", "이사", "관리"];
 
   const [activeKey, setActiveKey] = useState("1");
   const uniqueDates = Array.from(new Set(record.map(item => item.co_work_date)));

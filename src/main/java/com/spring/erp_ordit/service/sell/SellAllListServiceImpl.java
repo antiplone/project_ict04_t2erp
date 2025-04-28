@@ -23,15 +23,12 @@ public class SellAllListServiceImpl implements SellAllListService {
 	@Transactional
 	public int sellInsert(SellOrderDTO dto) {
 	System.out.println("서비스 - sellInsert");
-	System.out.println("서비스 - dto: " + dto);
 	
 	// 1. order_tbl에 insert
 	int orderResult = Mapper.sell_orderInsert(dto);
-	System.out.println("서비스 - orderResult: " + orderResult);
 	
 	// insert 실패 시 바로 false 리턴
 	if (orderResult == 0) {
-		
 		return 0;
 	}
 	else {
@@ -39,11 +36,9 @@ public class SellAllListServiceImpl implements SellAllListService {
 		int order_id = dto.getOrder_id();
 		
 		int itemResult = 0;
-		System.out.println("서비스 - order_id : " + order_id);
 		// 3. order_item_tbl에 insert
 		for (SellOrderItemDTO item : dto.getOrderItemList()) {
 			item.setOrder_id(order_id);
-			System.out.println("서비스 - item : " + item);
 			
 			itemResult += Mapper.sell_itemInsert(item);  // insert 성공 시마다 +1
 			
@@ -97,8 +92,6 @@ public class SellAllListServiceImpl implements SellAllListService {
 			dto.setOrder_id(order_id);
 
 			int orderResult = Mapper.updateAllList_order(dto);
-			System.out.println("서비스 - orderResult: " + orderResult);
-
 			if (orderResult == 0) {
 				return 0;
 			}
@@ -108,7 +101,6 @@ public class SellAllListServiceImpl implements SellAllListService {
 			//  1. 삭제 처리 먼저 (루프 밖에서)
 			if (dto.getDeletedItemIds() != null) {
 			    for (Integer deletedId : dto.getDeletedItemIds()) {
-			        System.out.println("삭제 대상 ID: " + deletedId);
 			        Mapper.deleteOrderItem(deletedId);
 			    }
 			}
@@ -116,7 +108,6 @@ public class SellAllListServiceImpl implements SellAllListService {
 			//  2. 추가/수정 루프
 			for (SellOrderItemDTO item : dto.getOrderItemList()) {
 				item.setOrder_id(order_id);
-				System.out.println("서비스 - item, order_id : " + item + order_id);
 
 				// 추가 (새로운 항목)
 				if (item.getOrder_item_id() == null 
@@ -130,8 +121,6 @@ public class SellAllListServiceImpl implements SellAllListService {
 			
 			}
 
-			System.out.println("서비스 - itemResult: " + itemResult);
-
 			return 1 + itemResult;
 	}
 	
@@ -140,9 +129,8 @@ public class SellAllListServiceImpl implements SellAllListService {
 	@Transactional
 	public String deleteAllList(int order_id) {
 		System.out.println("서비스 - deleteAllList");
-		System.out.println("서비스 - order_id : " + order_id);
-		Mapper.deleteAllList(order_id);
 		
+		Mapper.deleteAllList(order_id);
 		return "ok";
 	}
 	
@@ -151,8 +139,6 @@ public class SellAllListServiceImpl implements SellAllListService {
 	@Transactional
 	public List<SellInvocieDTO> detailInvocie(int order_id) {
 		System.out.println("서비스 - detailInvocie");
-		
-		System.out.println("서비스 - order_id: " + order_id);
 		
 		return Mapper.detailInvocie(order_id);
 	}

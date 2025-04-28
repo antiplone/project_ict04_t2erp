@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
+import com.spring.erp_ordit.dto.finance.TransacOrderDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Builder
-public class SellOrderDTO {	// 판매입력 _ 주문 정보 DTO
+public class SellOrderDTO extends TransacOrderDTO {	// 판매입력 _ 주문 정보 DTO
 	
 	private int order_id; 				// 고유 주문번호
 	private int order_type; 			// 판매팀 구매 입력 1, 구매팀 구매 입력 2

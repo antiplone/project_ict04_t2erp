@@ -7,15 +7,16 @@ let printJS;
 
 const SellInvoice = ({ order_id, order_date, date_no }) => {
 
-  const printRef = useRef(null);
+  const printRef = useRef(null); // useRef: DOM 요소나 값을 저장하는 데 사용
 
   // 클라이언트 사이드(window, document, alert() 등) 여부를 판단하기 위한 상태값.
+  // 클라이언트 사이드: 내 컴퓨터 브라우저에서 실행되는 부분
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
       // 오류 방지를 위해 조건문 사용
       if (typeof window !== 'undefined') {    // 클라이언트에서만 로딩
-        import('print-js').then((module) => {
+        import('print-js').then((module) => {  // 일반적으로 import는 코드 시작 부분에서 미리 가져오는데, 동적 import는 필요할 때 비동기적으로(즉, 나중에) 가져오는 방식
           printJS = module.default;
           setIsClient(true);
         });
@@ -30,7 +31,7 @@ const SellInvoice = ({ order_id, order_date, date_no }) => {
         printable: printRef.current.innerHTML,  // 화면에 있는 DOM 요소 안의 HTML 전체 내용을 문자열로 가져옴
         type: 'raw-html',
         style: `
-           .invocie_page { zoom: 0.8; }
+          .invocie_page { zoom: 0.8; }
           .invoice-header {
             display: flex;
             justify-content: space-between;

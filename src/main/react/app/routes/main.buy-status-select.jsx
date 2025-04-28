@@ -66,6 +66,8 @@ export default function BuyStatusSelect() {
     // 주문상태
     const [orderstatus, setOrderstatus] = useState([]);
 
+    const fetchURL = AppConfig.fetch["mytest"];
+
     // 선택한 조건 검색
     const handleSearch = async () => {
         let startDate = '';
@@ -93,8 +95,6 @@ export default function BuyStatusSelect() {
 
         // URL 쿼리 생성
         const query = new URLSearchParams(cleanedParams).toString();
-
-        const fetchURL = AppConfig.fetch["mytest"];
 
         try {
             const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyStatusSearch?${query}`);
@@ -136,8 +136,22 @@ export default function BuyStatusSelect() {
 
         const query = new URLSearchParams(cleanedParams).toString();
 
-        window.open(`${AppConfig.fetch.mytest.protocol}${AppConfig.fetch.mytest.url}/buy/exportOrderStatusExcel?${query}`, "_blank");
+        window.open(`${fetchURL.protocol}${fetchURL.url}/buy/exportOrderStatusExcel?${query}`, "_blank");
     };
+
+    // 검색 필터 초기화
+	const submitStatusReset = () => {
+		setOrderDate(null);
+		setSelectedClient(null);
+		setSelectedClientName(null);
+		setSelectedIncharge(null);
+		setSelectedInchargeName(null);
+		setSelectedType(null);
+		setSelectedStorage(null);
+		setSelectedStorageName(null);
+		setSelectedItem(null);
+		setSelectedItemName(null);
+	}
 
     const styles = {
         backgroundColor: '#f8f9fa',
@@ -152,7 +166,7 @@ export default function BuyStatusSelect() {
                 <div className="inputBox">
                     <div className="input">
                         <InputGroup className="input_date_type">
-                            <InputGroup.Addon style={{ width: 80 }}>발주일자</InputGroup.Addon>
+                            <InputGroup.Addon style={{ width: 90 }}>발주일자</InputGroup.Addon>
                             <DateRangePicker
                                 value={orderDate}
                                 onChange={handleDateChange}
@@ -164,7 +178,7 @@ export default function BuyStatusSelect() {
 
                     <div className="input">
                         <InputGroup className="inputModal">
-                            <InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
+                            <InputGroup.Addon style={{ width: 90 }}>담당자</InputGroup.Addon>
                             <Input value={selectedIncharge || ""} readOnly onClick={() => setInchargeModalOpen(true)} />
                             <InputGroup.Button tabIndex={-1}>
                                 <img
@@ -181,7 +195,7 @@ export default function BuyStatusSelect() {
 
                     <div className="input">
                         <InputGroup className="inputModal">
-                            <InputGroup.Addon style={{ width: 80 }}>거래처</InputGroup.Addon>
+                            <InputGroup.Addon style={{ width: 90 }}>거래처</InputGroup.Addon>
                             <Input value={selectedClient || ""} readOnly onClick={() => setClientModalOpen(true)} />
                             <InputGroup.Addon>
                                 <img
@@ -200,7 +214,7 @@ export default function BuyStatusSelect() {
                 <div className="inputBox">
                     <div className="input">
                         <InputGroup className="input_date_type">
-                            <InputGroup.Addon style={{ width: 80 }}>거래유형</InputGroup.Addon>
+                            <InputGroup.Addon style={{ width: 90 }}>거래유형</InputGroup.Addon>
                             <InputPicker
                                 placeholder="거래유형 선택"
                                 data={buyType}
@@ -213,7 +227,7 @@ export default function BuyStatusSelect() {
 
                     <div className="input">
                         <InputGroup className="inputModal">
-                            <InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
+                            <InputGroup.Addon style={{ width: 90 }}>입고창고</InputGroup.Addon>
                             <Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
                             <InputGroup.Addon>
                                 <img
@@ -230,7 +244,7 @@ export default function BuyStatusSelect() {
 
                     <div className="input">
                         <InputGroup className="inputModal">
-                            <InputGroup.Addon style={{ width: 80 }}> 품목코드</InputGroup.Addon>
+                            <InputGroup.Addon style={{ width: 90 }}> 품목코드</InputGroup.Addon>
                             <Input value={selectedItem || ""} readOnly onClick={() => setItemModalOpen(true)} />
                             <InputGroup.Addon>
                                 <img
@@ -287,8 +301,9 @@ export default function BuyStatusSelect() {
                 />
 
                 <div className="buyBtnBox">
-                    <Button appearance="ghost" color="green" onClick={handleSearch} className="statusSearchBtn">검색</Button>
-                    <Button appearance="ghost" color="blie" onClick={downloadExcel} className="statusExcelBtn">엑셀 다운로드</Button>
+                    <Button appearance="ghost" color="green" onClick={handleSearch}>검색</Button>
+                    <Button appearance="ghost" type="submit" onClick={submitStatusReset}>검색창 초기화</Button>
+                    <Button appearance="ghost" color="violet" onClick={downloadExcel}>엑셀 다운로드</Button>
                 </div>
 
                 <Divider style={{ maxWidth: 1400 }} />

@@ -1,45 +1,109 @@
 /* eslint-disable react/react-in-jsx-scope */
+import React, { useState, useEffect, useMemo } from "react";
+import { Container, Grid, Row, Col, Pagination } from "rsuite";
 import MessageBox from "#components/common/MessageBox";
-import { Container } from "rsuite";
-import CurrentDateTime from "#components/attendance/CurrentDateTime";
+import CurrentDateTime from "#components/attendance/CurrentDateTime.jsx";
 import TodayCommuteInfo from "#components/attendance/TodayCommuteInfo";
 import CommuteTable from "#components/attendance/CommuteTable";
-import { useState } from "react";
 import AppConfig from "#config/AppConfig.json";
-
-export function meta() {
-  return [
-      { title: `${AppConfig.meta.title} : 출퇴근` },
-      { name: "description", content: "출퇴근 페이지" },
-  ];
-};
+import "#styles/attendance.css";
 
 export default function Management() {
   const fetchURL = AppConfig.fetch["mytest"];
   const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
-  const [refresh, setRefresh] = useState(false);  // 공통 상태 끌어올리기
 
-  const [record, setRecord] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const toggleRefresh = () => setRefresh(prev => !prev); // true ↔ false 토글
-
-  // const raw_id = sessionStorage.getItem("e_id");
-  // const e_id = raw_id && !isNaN(Number(raw_id)) ? Number(raw_id) : null;
-  // const e_name = sessionStorage.getItem("e_name") || null;  // 사원명도 세션에서 불러옴
+  // 로그인 정보
   const raw_id = localStorage.getItem("e_id");
   const e_id = raw_id && !isNaN(Number(raw_id)) ? Number(raw_id) : null;
-  const e_name = localStorage.getItem("e_name") || null;  // 사원명도 세션에서 불러옴
+  const e_name = localStorage.getItem("e_name") || null;
 
-  console.log("📌 로그인 정보- e_id:", e_id, ", e_name:", e_name);
+  // 전체 리스트 + 로딩
+  const [commuteList, setCommuteList] = useState([]);
+  const [loadingList, setLoadingList] = useState(false);
 
+  // 페이징
+  const [limit, setLimit] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // 새로고침 토글
+  const [refresh, setRefresh] = useState(false);
+  const toggleRefresh = () => setRefresh((p) => !p);
+
+  useEffect(() => {
+    if (e_id == null) return;
+    setLoadingList(true);
+    fetch(`${attURL}/myAttList/${e_id}`)
+      .then((res) => res.json())
+      .then(({ items = [] }) => setCommuteList(items))
+      .catch(console.error)
+      .finally(() => setLoadingList(false));
+  }, [e_id, refresh]);
+
+  // 페이징 적용
+  const pagedData = useMemo(() => {
+    const start = (currentPage - 1) * limit;
+    return commuteList.slice(start, start + limit);
+  }, [commuteList, currentPage, limit]);
 
   return (
-    <Container>
-      <MessageBox text="근태관리" />
-      <CurrentDateTime />
-      <TodayCommuteInfo e_id={e_id} e_name={e_name} attURL={attURL} onRefresh={toggleRefresh} />
-      <CommuteTable e_id={e_id} data={record} loading={loading} attURL={attURL} refresh={refresh} />
+    <Container style={{ padding: 20 }}>
+
+      <Grid fluid>
+        <Row gutter={16}>
+          {/* 왼쪽: 시간 + 버튼 영역 */}
+          <Col xs={24} md={8} lg={6}>
+            {/* 세로로 쌓기 */}
+            <div style={{ marginBottom: 20 }}>
+              <CurrentDateTime />
+            </div>
+            <TodayCommuteInfo
+              e_id={e_id}
+              e_name={e_name}
+              attURL={attURL}
+              onRefresh={toggleRefresh}
+            />
+          </Col>
+
+          {/* 오른쪽: 테이블 + 페이징 */}
+          <Col xs={24} md={16} lg={18}>
+            <CommuteTable
+              e_id={e_id}
+              data={pagedData}
+              loading={loadingList}
+              attURL={attURL}
+              refresh={refresh}
+            />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: 10,
+              }}
+            >
+              {/* <Pagination
+                prev
+                next
+                first
+                last
+                ellipsis
+                boundaryLinks
+                maxButtons={5}
+                size="md"
+                total={commuteList.length}
+                limit={limit}
+                layout={['pager']}
+                limitOptions={[5, 10, 20, 50]}
+                activePage={currentPage}
+                onChangePage={setCurrentPage}
+                onChangeLimit={(l) => {
+                  setCurrentPage(1);
+                  setLimit(l);
+                }}
+              /> */}
+            </div>
+          </Col>
+        </Row>
+      </Grid>
     </Container>
   );
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+     
+<mapper namespace="com.spring.erp_ordit.dao.api.WeatherMapper">
+
+	<insert id="insertWeather" parameterType="com.spring.erp_ordit.dto.api.WeatherDTO">
+	    INSERT INTO weather_info (weather_date, weather_time, weather_temperature, weather_sky, weather_rain_type)
+	    VALUES (#{weather_date}, #{weather_time}, #{weather_temperature}, #{weather_sky}, #{weather_rain_type})
+	</insert>
+	
+	<select id="selectLatestWeather" resultType="com.spring.erp_ordit.dto.api.WeatherDTO">
+	    SELECT * FROM weather_info
+	    ORDER BY weather_id DESC
+	    LIMIT 1
+	</select>
+</mapper>

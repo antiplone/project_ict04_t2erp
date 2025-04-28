@@ -24,7 +24,7 @@ const HeaderMenu = () => {
 
 	// 로그인 시 저장해둔 사용자 직위를 가져오고, 관리자급 직위로만 다시 나누기
 	const position = localStorage.getItem("e_position");  // 예: '관리자' 또는 '사원'
-	const adminPositions = ["대리", "과장", "부장", "차장", "팀장", "이사", "관리"];
+	const adminPositions = ["과장", "부장", "차장", "팀장", "이사", "관리"];
 
 	const [myInfo, setMyInfo] = useState("");
 

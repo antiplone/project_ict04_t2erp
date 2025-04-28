@@ -108,13 +108,11 @@ npm install @fullcalendar/react @fullcalendar/core @fullcalendar/daygrid @fullca
 npm ls @fullcalendar/react
 
 ### 날씨 API
-npm은 없습니다.
-#### -pox.xml
-    <dependency>
-        <groupId>org.json</groupId>
-        <artifactId>json</artifactId>
-        <version>20231013</version> <!-- 최신 버전 확인 -->
-    </dependency>
+[Weather API](https://openweathermap.org/api)
+1. 회원가입
+2. 오른쪽 상단에 이름 클릭 > My API Keys(내 API 키) > Name이 Default 라고 써져있는 Key를 사용하면 OK
+[시군구](https://developers.kakao.com/)
+[위도 경도 찾는 사이트](http://map.esran.com/)
 
 ### 크롤링
 #### 1. VS Code 에서 Python 설치 → python 이라고 검색했을 때, 제일 처음에 나오는거 설치하면 됩니다.

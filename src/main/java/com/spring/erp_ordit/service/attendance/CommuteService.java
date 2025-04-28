@@ -5,6 +5,8 @@ import java.sql.Time;			// 시간 차이 계산용
 import java.time.Duration;		// 시간 차이 계산용
 import java.time.LocalDate;
 import java.time.LocalTime;	// 시간 계산용
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,10 @@ public class CommuteService {
 
 	@Autowired
 	private CommuteMapper dao;
-	
+
+    // 'Asia/Seoul' 시간대 기준으로 현재 날짜와 시간 가져오기
+    ZonedDateTime seoulNow = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+    
 	// 전체 근태 리스트
 	public List<CommuteDTO> attendanceList() {
 	    System.out.println("▶ CommuteService - 출퇴근 리스트");
@@ -43,9 +48,9 @@ public class CommuteService {
 	public String insertStartTime(CommuteDTO dto) {
 	    System.out.println("▶ CommuteService - 출근 시간 저장 처리");
 	    
-	    // 브라우저에서 보이는 시계와는 무관하게 Spring Boot 가 설치된 서버 시간 기준임.
-	    LocalDate today = LocalDate.now();		// 서버 기준의 '오늘 날짜'
-	    LocalTime now = LocalTime.now();			// 서버 기준의 '현재 시간'
+	    // 서버가 어디에 있어도 항상 한국 시간으로 출근 시간이 기록
+	    LocalDate today = seoulNow.toLocalDate();
+	    LocalTime now = seoulNow.toLocalTime();
 	    
 	    // DB의 co_work_date, co_start_time 컬럼에 들어갈 값을 지정하는 부분임.
 	    dto.setCo_work_date(Date.valueOf(today));		// java.sql.Date로 변환하여 DB에 저장함.
@@ -71,11 +76,14 @@ public class CommuteService {
 	// 근태관리 - 퇴근 시간 저장 처리 + 자동 근무시간 계산
 	public String updateEndTime(CommuteDTO dto) {
 	    System.out.println("▶ CommuteService - 퇴근 시간 저장 처리");
-	    LocalDate today = LocalDate.now();
-	    String todayStr = today.toString(); // "2025-04-21" 이런 식
-	    dto.setCo_work_date(Date.valueOf(LocalDate.now())); // 필수!
 	    
-        Time endTime = Time.valueOf(LocalTime.now());
+	    LocalDate today = seoulNow.toLocalDate();
+	    LocalTime now = seoulNow.toLocalTime();
+	    
+	    String todayStr = today.toString(); // "2025-04-21" 이런 식
+	    dto.setCo_work_date(Date.valueOf(today));
+	    
+	    Time endTime = Time.valueOf(now);
         dto.setCo_end_time(endTime);
 	    
 	    // DB에서 오늘 출근기록 가져오기
@@ -89,15 +97,15 @@ public class CommuteService {
         LocalTime start = record.getCo_start_time().toLocalTime();
         LocalTime end = endTime.toLocalTime();
 
-        Duration duration = Duration.between(start, end);
-        Time totalTime = Time.valueOf(String.format("%02d:%02d:%02d",
-                duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart()));
-        
         // 출근시간이 미래로 잘 못 들어간 경우
         if (end.isBefore(start)) {
             return "시간 계산 오류 (종료 시간이 시작 시간보다 빠릅니다)";
         }
 
+        Duration duration = Duration.between(start, end);
+        Time totalTime = Time.valueOf(String.format("%02d:%02d:%02d",
+                duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart()));
+        
         dto.setCo_total_work_time(totalTime);
 
         long totalMinutes = duration.toMinutes();

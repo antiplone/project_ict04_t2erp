@@ -7,6 +7,7 @@ import TodayCommuteInfo from "#components/attendance/TodayCommuteInfo";
 import CommuteTable from "#components/attendance/CommuteTable";
 import AppConfig from "#config/AppConfig.json";
 import "#styles/attendance.css";
+import WeatherInfo from "#components/api/WeatherInfo.jsx";
 
 export default function Management() {
   const fetchURL = AppConfig.fetch["mytest"];
@@ -62,6 +63,9 @@ export default function Management() {
               attURL={attURL}
               onRefresh={toggleRefresh}
             />
+            <div style={{ marginTop: 30 }}>
+              <WeatherInfo />
+            </div>
           </Col>
 
           {/* 오른쪽: 테이블 + 페이징 */}

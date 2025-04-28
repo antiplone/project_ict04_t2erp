@@ -207,11 +207,10 @@ const ChatRoom = () => {
           </div>
           
           {/* 메시지 입력창 */}
-          <div className="inputBox">
+          <div className="inputChatBox">
             <Input
               value={input}
               onChange={setInput}
-              className="input"
             />
             <Button appearance="ghost" onClick={sendMessage} disabled={!isConnected}>
               보내기

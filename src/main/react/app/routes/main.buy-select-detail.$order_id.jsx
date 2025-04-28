@@ -202,9 +202,9 @@ export default function BuySelectDetail() {
 
       <Divider style={{ maxWidth: 1200 }} />
 
-      <div className="buyUpdateBtnBox">
+      <div className="buyBtnBox">
         <Link to={`/main/buy-order-update/${order_id}`}>
-          <Button appearance="ghost" color="blue" className="buyUpdateBtn">
+          <Button appearance="ghost" color="blue">
             수정
           </Button>
         </Link>
@@ -215,7 +215,7 @@ export default function BuySelectDetail() {
           </Button>
         </Link>
 
-        <Button appearance="ghost" color="red" className="buyUpdateBtn" onClick={() => deleteOrderItem(orderInfo.order_id)}>
+        <Button appearance="ghost" color="red" onClick={() => deleteOrderItem(orderInfo.order_id)}>
           삭제
         </Button>
 

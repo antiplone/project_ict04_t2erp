@@ -7,6 +7,9 @@
 .text_right{
     text-align: right;
 }
+.text_middle{
+    text-align: middle;
+}
 
 .area_fit{
     padding: 6px;

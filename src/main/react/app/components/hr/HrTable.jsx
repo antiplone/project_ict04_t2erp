@@ -9,28 +9,34 @@ export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActi
     <Table
       autoHeight
       virtualized={false}
-      width={1130}
       data={items}
       cellBordered
       style={{ marginTop: '25px', marginBottom: '50px', border: '1px solid #EEEEEE' }}
     >
-      {columns.map((col, index) => (
-        <Column
-          key={index}
-          width={col.width || 100}
-          align={col.align || "center"}
-          fixed={index === 0 ? 'left' : undefined}
-        >
-          <HeaderCell>{col.label || ""}</HeaderCell>
-          <Cell>
-            {(rowData, rowIndex) =>
-              col.renderCell
-                ? col.renderCell(rowData, rowIndex)
-                : rowData[col.dataKey]
-            }
-          </Cell>
-        </Column>
-      ))}
+      {columns.map((col, index) => {
+  
+  const isFlexible = ["c_note", "re_note", "sa_approval_comment"].includes(col.dataKey);  
+
+  return (
+    <Column
+      key={col.dataKey}
+      {...(isFlexible
+        ? { flexGrow: 1 }        // 비고 컬럼은 남는 공간 다 가져가기
+        : { width: col.width || 100 })} // 나머지는 width 고정
+      align={col.align || "center"}
+      fixed={index === 0 ? "left" : undefined}
+    >
+      <HeaderCell>{col.label || ""}</HeaderCell>
+      <Cell>
+        {(rowData, rowIndex) =>
+          col.renderCell
+            ? col.renderCell(rowData, rowIndex)
+            : rowData[col.dataKey]
+        }
+      </Cell>
+    </Column>
+  );
+})}
 
       <Column width={180} align="center" fixed="right">
         <HeaderCell>작업</HeaderCell>
@@ -134,68 +140,91 @@ export const HrAppointTable = ({ items, selectedIds, onSelectChange, columns }) 
   );
 };
 
-export const HrReadOnlyTable = ({ items, columns }) => {
+export const EmployeeSelectTable = ({ data, selectedId, onSelect, selectedEmployeeIds = [] }) => {
   return (
-    <Table
-      autoHeight
-      width={1050}
-      data={items}
-      cellBordered
-      style={{ marginTop: '25px', marginBottom: '50px', border: '1px solid #EEEEEE' }}
-    >
-      {columns.map((col, index) => (
-        <Column
-          key={index}
-          minWidth={col.minWidth || 100}
-          flexGrow={1}
-          align="center"
-          sortable
-        >
-          <HeaderCell>{col.label}</HeaderCell>
-          <Cell dataKey={col.dataKey} />
-        </Column>
-      ))}
-    </Table>
-  );
-};
-
-export const EmployeeSelectTable = ({ data, selectedId, onSelect }) => {
-  return (
-    <Table autoHeight data={data} bordered cellBordered>
-      <Column width={80} align="center">
+    <Table autoHeight data={data} bordered cellBordered>      
+      <Column width={63} align="center">
         <HeaderCell>선택</HeaderCell>
-        <Cell>
+        <Cell style={{ display:'flex', alignContent: 'center' }}>
           {rowData => (
             <Checkbox
               checked={selectedId === rowData.e_id}
+              disabled={selectedEmployeeIds.includes(rowData.e_id)}   // 이미 선택된 사원 비활성화
               onChange={() => onSelect(rowData.e_id)}
             />
           )}
         </Cell>
       </Column>
 
-      <Column width={120} align="center">
+      <Column width={90}align="center">
         <HeaderCell>사번</HeaderCell>
         <Cell dataKey="e_id" />
       </Column>
 
-      <Column width={120} align="center">
+      <Column width={130} align="center">
         <HeaderCell>이름</HeaderCell>
         <Cell dataKey="e_name" />
       </Column>
 
-      <Column width={120} align="center">
+      <Column width={130} align="center">
         <HeaderCell>직위</HeaderCell>
-        <Cell dataKey="e_status" />
+        <Cell dataKey="e_position" />
       </Column>
 
-      <Column width={150} align="center">
+      <Column width={130} align="center">
         <HeaderCell>부서</HeaderCell>
         <Cell dataKey="d_name" />
       </Column>
     </Table>
   );
 };
+
+const displayOrDash = (value) => (value ? value : '-');
+
+export const HrAppointListTable = ({ items, columns }) => {
+  return (
+    <div style={{ width: '100%', overflowX: 'auto' }}>
+      <Table
+        autoHeight
+        data={items}
+        cellBordered
+        style={{ width: '100%', minWidth: '1400px', marginTop: '25px', marginBottom: '50px', border: '1px solid #EEEEEE' }}
+      >
+        {columns.map((col, index) => {
+          const isFlexible = col.dataKey === 'appoint_note'; // 비고 컬럼 체크
+
+          return (
+            <Column
+              key={index}
+              {...(isFlexible
+                ? { flexGrow: 1, minWidth: col.width || 250 }
+                : { width: col.width || 100 })}
+              align="center" // 헤더 center
+            >
+              <HeaderCell>{col.label}</HeaderCell>
+              <Cell>
+                {(rowData) => {
+                  const value =
+                    col.dataKey === 'appoint_date'
+                      ? (rowData.appoint_date ? new Date(rowData.appoint_date).toISOString().slice(0, 10) : '-')
+                      : (rowData[col.dataKey] || '-');
+
+                  // 비고 왼쪽 정렬
+                  return isFlexible ? (
+                    <div style={{ textAlign: 'left', width: '100%' }}>{value}</div>
+                  ) : (
+                    value
+                  );
+                }}
+              </Cell>
+            </Column>
+          );
+        })}
+      </Table>
+    </div>
+  );
+};
+
 
 
 

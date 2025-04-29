@@ -153,6 +153,9 @@ const sell_status_select = () => {
 	const submitStatusSearch = (e) => {
 		e.preventDefault();
 		
+		// 검색 시작할 때 로딩 true로
+		setIsLoading(true);
+
 		const payload = {
 			order_date_start: formatDate(orderDate && orderDate[0] ? orderDate[0] : null),
   			order_date_end: formatDate(orderDate && orderDate[1] ? orderDate[1] : null),
@@ -180,6 +183,7 @@ const sell_status_select = () => {
 			})
 			.catch((error) => {
 				console.error("검색 오류:", error);
+				setIsLoading(false);  // 에러 나도 로딩 꺼야 함
 			});
 	};
 
@@ -214,14 +218,7 @@ const sell_status_select = () => {
 				판매현황
 			</Message>
 
-			{/* 로딩 중일 때 */}
-			<>
-				{isLoading ? (
-				<Container>
-					<Placeholder.Paragraph rows={16} />
-					<Loader center content="불러오는중..." />
-				</Container>
-				) : (
+			
 				<div className="result_final">
 					<Form className="addForm" layout="inline">
 						<div className="form_div">
@@ -372,79 +369,93 @@ const sell_status_select = () => {
 								<hr />
 
 							<div className="addTabel">
-								{isSearched && searchResultList.length === 0 ? (
-									<div style={{ padding: '20px', textAlign: 'center', fontSize: '16px', color: 'gray' }}>
-										해당 정보로 조회되는 리스트가 없습니다.
-									</div>
-								) : (
-								<Table 
-									height={400} 
-									// data={statusData}
-									data={isSearched ? searchResultList : statusData}
-										// 검색 결과가 있으면 해당 데이터 보여주고, 없으면 전체 목록 보여주기
-								>	
+								{/* 로딩 중일 때 */}
+								<>
+									{isLoading ? (
+										<Container>
+											<Placeholder.Paragraph rows={12} />
+											<Loader center content="불러오는중..." />
+										</Container>
+										) : isSearched && searchResultList.length === 0 ? (
+										<div style={{ padding: '20px', textAlign: 'center', fontSize: '16px', color: 'gray' }}>
+											해당 정보로 조회되는 리스트가 없습니다.
+										</div>
+									) : (
+									<Table 
+										height={400} 
+										// data={statusData}
+										data={isSearched ? searchResultList : statusData}
+											// 검색 결과가 있으면 해당 데이터 보여주고, 없으면 전체 목록 보여주기
+									>	
 
-									<Column width={150} className="text_center">
-										<HeaderCell style={styles}>등록일자_No.</HeaderCell>
-										<Cell>{(rowData) => `${rowData.order_date}_${rowData.date_no}`}</Cell>
-									</Column>
-									
-									<Column width={150}>
-										<HeaderCell className="text_center" style={styles}>거래처명</HeaderCell>
-										<Cell className="text_left">{(rowData) => rowData.client_name}</Cell>
-									</Column>
+										<Column width={120} className="text_center">
+											<HeaderCell style={styles}>등록일자_No.</HeaderCell>
+											<Cell>{(rowData) => `${rowData.order_date}_${rowData.date_no}`}</Cell>
+										</Column>
+										
+										<Column width={130} className="text_center">
+											<HeaderCell style={styles}>주문번호</HeaderCell>
+											<Cell className="text_left">{(rowData) => rowData.order_id}</Cell>
+										</Column>
 
-									<Column width={250}>
-										<HeaderCell className="text_center" style={styles}>품목명</HeaderCell>
-										<Cell className="text_left">{(rowData) => rowData.item_display}</Cell>
-									</Column>
+										<Column width={150}>
+											<HeaderCell className="text_center" style={styles}>거래처명</HeaderCell>
+											<Cell className="text_left">{(rowData) => rowData.client_name}</Cell>
+										</Column>
 
-									<Column width={120} className="text_center">
-										<HeaderCell style={styles}>수량</HeaderCell>
-										<Cell>{(rowData) => rowData.quantity}</Cell>
-									</Column>
+										<Column width={250}>
+											<HeaderCell className="text_center" style={styles}>품목명</HeaderCell>
+											<Cell className="text_left">{(rowData) => rowData.item_display}</Cell>
+										</Column>
 
-									<Column width={150}>
-										<HeaderCell className="text_center" style={styles}>단가</HeaderCell>
-										<Cell style={{ textAlign: 'right' }}>
-											{(rowData) => new Intl.NumberFormat().format(rowData.price)}
-										</Cell>
-									</Column>
+										<Column width={100} className="text_center">
+											<HeaderCell style={styles}>수량</HeaderCell>
+											<Cell>{(rowData) => rowData.quantity}</Cell>
+										</Column>
 
-									<Column width={150}>
-										<HeaderCell className="text_center" style={styles}>공급가액</HeaderCell>
-										<Cell style={{ textAlign: 'right' }}>
-											{(rowData) => new Intl.NumberFormat().format(rowData.supply)}
-										</Cell>
-									</Column>
+										<Column width={150}>
+											<HeaderCell className="text_center" style={styles}>단가</HeaderCell>
+											<Cell style={{ textAlign: 'right' }}>
+												{(rowData) => new Intl.NumberFormat().format(rowData.price)}
+											</Cell>
+										</Column>
 
-									<Column width={150}>
-										<HeaderCell className="text_center" style={styles}>부가세</HeaderCell>
-										<Cell style={{ textAlign: 'right' }}>
-											{(rowData) => new Intl.NumberFormat().format(rowData.vat)}
-										</Cell>
-									</Column>
+										<Column width={150}>
+											<HeaderCell className="text_center" style={styles}>공급가액</HeaderCell>
+											<Cell style={{ textAlign: 'right' }}>
+												{(rowData) => new Intl.NumberFormat().format(rowData.supply)}
+											</Cell>
+										</Column>
 
-									<Column width={150}>
-										<HeaderCell className="text_center" style={styles}>금액합계</HeaderCell>
-										<Cell style={{ textAlign: 'right' }}>
-											{(rowData) => new Intl.NumberFormat().format(rowData.total)}
-										</Cell>
-									</Column>
-									
-									<Column width={150}>
-										<HeaderCell className="text_center" style={styles}>출하여부</HeaderCell>
-										<Cell className="text_center">
-											{(rowData) => {
-												if (rowData.income_confirm === null || rowData.income_confirm === 'N') {
-													return '미완료'; // null 또는 'N'이면 미완료 표시
-												} else if (rowData.income_confirm === 'Y') {
-													return '완료'; // 'Y'이면 완료 표시
-												}
-											}}
-										</Cell>
-									</Column>
-								</Table>)}
+										<Column width={150}>
+											<HeaderCell className="text_center" style={styles}>부가세</HeaderCell>
+											<Cell style={{ textAlign: 'right' }}>
+												{(rowData) => new Intl.NumberFormat().format(rowData.vat)}
+											</Cell>
+										</Column>
+
+										<Column width={150}>
+											<HeaderCell className="text_center" style={styles}>금액합계</HeaderCell>
+											<Cell style={{ textAlign: 'right' }}>
+												{(rowData) => new Intl.NumberFormat().format(rowData.total)}
+											</Cell>
+										</Column>
+										
+										<Column width={150}>
+											<HeaderCell className="text_center" style={styles}>출하여부</HeaderCell>
+											<Cell className="text_center">
+												{(rowData) => {
+													if (rowData.income_confirm === null || rowData.income_confirm === 'N') {
+														return '미완료'; // null 또는 'N'이면 미완료 표시
+													} else if (rowData.income_confirm === 'Y') {
+														return '완료'; // 'Y'이면 완료 표시
+													}
+												}}
+											</Cell>
+										</Column>
+								</Table>
+								)}
+								</>
 							</div>
 
 							<div className="resultBtn">
@@ -479,8 +490,8 @@ const sell_status_select = () => {
 							/>
 					</Form>
 				</div>
-				)}
-  			</>
+				
+
 		</div>
 	);
 };

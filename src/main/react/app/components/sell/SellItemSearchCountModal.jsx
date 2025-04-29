@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Checkbox, InputGroup, Input } from "rsuite";
+import { Button, Table, Modal, Checkbox, InputGroup, Input, Container, Placeholder, Loader } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 import readingGlasses from "#images/common/readingGlasses.png";
 
@@ -7,8 +7,9 @@ const { Column, HeaderCell, Cell } = Table;
 
 // SellItemSearchModal => 판매 입력 및 수정 페이지에서 사용하는 아이템 검색 모달 페이지. (재고값이 조회됨)
 
-const SellItemSearchCountModal = ({ title, confirm, cancel, onItemSelect, storage_code, isOpen, handleClose } /* = props:속성 */) => {
+const SellItemSearchCountModal = ({ onItemSelect, storage_code, isOpen, handleClose } /* = props:속성 */) => {
 	
+	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
 	const [itemList, setItemList] = useState([]);
 	const [keyword, setKeyword] = useState("");
 	const [selectedItem, setSelectedItem] = useState(null);
@@ -25,7 +26,10 @@ const SellItemSearchCountModal = ({ title, confirm, cancel, onItemSelect, storag
 				method: "GET"
 			})
 				.then(res => res.json())
-				.then(res => setItemList(res));
+				.then(res => {
+					setItemList(res);
+					setIsLoading(false);
+				});
 		}
 	}, [isOpen, storage_code]);
 
@@ -39,14 +43,20 @@ const SellItemSearchCountModal = ({ title, confirm, cancel, onItemSelect, storag
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setItemList(res));
+			.then(res => {
+				setItemList(res);
+				setIsLoading(false);
+			});
 		} else {
 			// 키워드로 검색 요청
 			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchItemCount/${storage_code}/${keyword}`, {
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setItemList(res));
+			.then(res => {
+				setItemList(res);
+				setIsLoading(false);
+			});
 		}
 	}
 
@@ -76,7 +86,10 @@ const SellItemSearchCountModal = ({ title, confirm, cancel, onItemSelect, storag
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setItemList(res));
+			.then(res => {
+				setItemList(res);
+				setIsLoading(false);
+			});
 		}
 	}, [isOpen]);
 
@@ -114,9 +127,15 @@ const SellItemSearchCountModal = ({ title, confirm, cancel, onItemSelect, storag
 						/>
 					</InputGroup.Addon>
 				</InputGroup>
-
+				
+				{/* 로딩 중일 때 */}
+				{isLoading ? (
+					<Container>
+						<Placeholder.Paragraph rows={16} />
+						<Loader center content="불러오는중..." />
+					</Container>
+				) : (
 				<Table height={400} data={itemList} >
-
 					<Column width={50} align="center" fixed>
 						<HeaderCell>선택</HeaderCell>
 						
@@ -150,6 +169,7 @@ const SellItemSearchCountModal = ({ title, confirm, cancel, onItemSelect, storag
 						<Cell>{(rowData) => rowData.stock_amount}</Cell>
 					</Column>
 				</Table>
+				)}
 			</Modal.Body>
 
 			<Modal.Footer>

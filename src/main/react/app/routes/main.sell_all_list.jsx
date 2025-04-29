@@ -1,4 +1,4 @@
-import { Table, Button, Tabs, Message, ButtonToolbar, Modal } from 'rsuite';
+import { Table, Button, Tabs, Container, Placeholder, Loader, ButtonToolbar, Modal } from 'rsuite';
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate  } from "react-router-dom";
 import SellSlipAll from '#components/sell/SellSlipAll';
@@ -6,7 +6,6 @@ import "#styles/sell.css";
 import AppConfig from "#config/AppConfig.json";
 import SellInvoice from '#components/sell/SellInvoice.jsx';
 import MessageBox from '../components/common/MessageBox';
-
 // sell_all_list => 판매 조회 페이지
 
 const { Column, HeaderCell, Cell } = Table;
@@ -15,6 +14,7 @@ const sell_all_list = () => {
 
 	const fetchURL = AppConfig.fetch['mytest'];
 	const navigate = useNavigate();
+	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
 
 	// 전체 리스트
 	const [allList, setAllList] = useState([]);
@@ -99,6 +99,7 @@ const sell_all_list = () => {
 			console.log(1, res);
 			const numbered = getNumberedList(res);
 			setAllList(numbered);
+			setIsLoading(false);
 		});
 	}, []);
 	  
@@ -135,6 +136,14 @@ const sell_all_list = () => {
 				<Tabs.Tab eventKey="3" title={`승인 (${allList.filter(r => r.order_status === '승인').length})`} />
 			</Tabs>
 
+			{/* 로딩 중일 때 */}
+			{/* Placeholder.Paragraph : 여러 줄의 더미 텍스트 박스. 스켈레톤(skeleton) 로딩 UI를 자동 생성 */}
+			{isLoading ? (
+			<Container>
+				<Placeholder.Paragraph rows={16} />
+				<Loader center content="불러오는중..." />
+			</Container>
+			) : (
 			<Table 
 				className="all_table"
 				height={500}
@@ -242,7 +251,7 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 			</Table>
-
+			)}
 			<Modal open={open1} onClose={handleClose1} 
 				style={{ 
 					position: 'fixed',

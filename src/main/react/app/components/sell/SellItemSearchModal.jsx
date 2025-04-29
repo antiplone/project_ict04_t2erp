@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Checkbox, InputGroup, Input } from "rsuite";
+import { Button, Table, Modal, Checkbox, InputGroup, Input, Container, Placeholder, Loader } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 import readingGlasses from "#images/common/readingGlasses.png";
 
@@ -10,7 +10,7 @@ const { Column, HeaderCell, Cell } = Table;
 const SellItemSearchModal = ({ onItemSelect, handleOpen, handleClose } /* = props:속성 */) => {
 	
 	const fetchURL = AppConfig.fetch['mytest'];
-
+	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
 	const [itemList, setItemList] = useState([]);
 	const [keyword, setKeyword] = useState("");
 	const [selectedItem, setSelectedItem] = useState(null);
@@ -32,13 +32,19 @@ const SellItemSearchModal = ({ onItemSelect, handleOpen, handleClose } /* = prop
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setItemList(res));
+			.then(res => {
+				setItemList(res)
+				setIsLoading(false);
+			});
 		} else {
 			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchDetailItemList/${keyword}`, {	// 키워드 리스트
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setItemList(res));
+			.then(res => {
+				setItemList(res)
+				setIsLoading(false);
+			});
 		}
 	}
 
@@ -60,7 +66,10 @@ const SellItemSearchModal = ({ onItemSelect, handleOpen, handleClose } /* = prop
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setItemList(res));
+			.then(res => {
+				setItemList(res)
+				setIsLoading(false);
+			});
 		}
 	}, [handleOpen]);
 
@@ -98,6 +107,13 @@ const SellItemSearchModal = ({ onItemSelect, handleOpen, handleClose } /* = prop
 				</InputGroup.Addon>
 			</InputGroup>
 
+			{/* 로딩 중일 때 */}
+			{isLoading ? (
+				<Container>
+					<Placeholder.Paragraph rows={16} />
+					<Loader center content="불러오는중..." />
+				</Container>
+			) : (
 			<Table
 				height={400}
 				data={itemList}
@@ -132,6 +148,7 @@ const SellItemSearchModal = ({ onItemSelect, handleOpen, handleClose } /* = prop
 					<Cell>{(rowData) => rowData.item_standard}</Cell>
 				</Column>
 	  		</Table>
+			)}
 			</Modal.Body>
 
 			<Modal.Footer>

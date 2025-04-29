@@ -373,7 +373,7 @@ const sell_status_select = () => {
 								<>
 									{isLoading ? (
 										<Container>
-											<Placeholder.Paragraph rows={16} />
+											<Placeholder.Paragraph rows={12} />
 											<Loader center content="불러오는중..." />
 										</Container>
 										) : isSearched && searchResultList.length === 0 ? (

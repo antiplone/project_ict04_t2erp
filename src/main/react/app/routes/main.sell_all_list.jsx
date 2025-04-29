@@ -140,7 +140,7 @@ const sell_all_list = () => {
 			{/* Placeholder.Paragraph : 여러 줄의 더미 텍스트 박스. 스켈레톤(skeleton) 로딩 UI를 자동 생성 */}
 			{isLoading ? (
 			<Container>
-				<Placeholder.Paragraph rows={16} />
+				<Placeholder.Paragraph rows={15} />
 				<Loader center content="불러오는중..." />
 			</Container>
 			) : (

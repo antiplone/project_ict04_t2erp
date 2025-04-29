@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Message, Form, Divider, ButtonToolbar, Button, FlexboxGrid,
-    Panel, Grid, Row, Col, Input, toaster } from 'rsuite';
+    Panel, Grid, Row, Col, Input, toaster, Container, Placeholder, Loader } from 'rsuite';
 import { useParams, useNavigate } from "react-router-dom";
 import { useDaumPostcodePopup } from "react-daum-postcode";
 import "#styles/sell.css";
@@ -15,7 +15,9 @@ const Textarea = React.forwardRef((props, ref) => (
   Textarea.displayName = "Textarea";
 
   const SellRequestUpdateClient = () => {
+
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
     const { sc_id } = useParams(); // URL에서 /sell/reqClientDetail/:sc_id 가져오기
 
     const [clientAdd, setClientAdd] = useState({
@@ -38,7 +40,7 @@ const Textarea = React.forwardRef((props, ref) => (
     const [rowData, setRowData] = useState({}); // 서버에서 가져온 데이터
     const fetchURL = AppConfig.fetch['mytest'];
 
-    // 내역 조회 - fetch()를 통해 톰캣서버에게 데이터를 요청
+    // 내역 조회
     useEffect(() => {
         if (!sc_id) return; // undefined 방지
 
@@ -64,6 +66,7 @@ const Textarea = React.forwardRef((props, ref) => (
                     sc_note: res.sc_note,
                     sc_req_d_name: res.sc_req_d_name,
                 });
+                setIsLoading(false);
             }
         });
     }, [sc_id]);  // sc_id 바뀌면 다시 fetch
@@ -313,6 +316,13 @@ const Textarea = React.forwardRef((props, ref) => (
                   bordered
                   style={{ background: "#fff" }}
                 >
+                  {/* 로딩 중일 때 */}
+                  {isLoading ? (
+                    <Container>
+                      <Placeholder.Paragraph rows={16} />
+                      <Loader center content="불러오는중..." />
+                    </Container>
+                  ) : (
                   <Form fluid onSubmit={submitclientAdd}>
                     <Grid fluid>
                       <Row gutter={16}>
@@ -474,6 +484,7 @@ const Textarea = React.forwardRef((props, ref) => (
                       </Row>
                     </Grid>
                   </Form>
+                  )}
                 </Panel>
               </FlexboxGrid.Item>
             </FlexboxGrid>

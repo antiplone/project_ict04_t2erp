@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Checkbox, InputGroup, Input } from "rsuite";
+import { Button, Table, Modal, Checkbox, InputGroup, Input, Container, Placeholder, Loader } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 import readingGlasses from "#images/common/readingGlasses.png";
 
@@ -7,10 +7,10 @@ import readingGlasses from "#images/common/readingGlasses.png";
 
 const { Column, HeaderCell, Cell } = Table;
 
-const SellEmployeeSearchModal = ({ title, confirm, cancel, onInchargeSelect, handleOpen, handleClose } /* = props:속성 */) => {
+const SellEmployeeSearchModal = ({ onInchargeSelect, handleOpen, handleClose } /* = props:속성 */) => {
 	
 	const fetchURL = AppConfig.fetch['mytest'];
-
+	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
 	const [employeeList, setEmployeeList] = useState([]);
 	const [keyword, setKeyword] = useState("");
 	const [selectedIncharge, setSelectedIncharge] = useState(null);
@@ -31,13 +31,19 @@ const SellEmployeeSearchModal = ({ title, confirm, cancel, onInchargeSelect, han
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setEmployeeList(res));
+			.then(res => {
+				setEmployeeList(res);
+				setIsLoading(false);
+			});
 		} else {
 			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchDetailEmployee/${keyword}`, {	// 키워드 결과 리스트
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setEmployeeList(res));
+			.then(res => {
+				setEmployeeList(res);
+				setIsLoading(false);
+			});
 		}
 	}
 
@@ -59,7 +65,10 @@ const SellEmployeeSearchModal = ({ title, confirm, cancel, onInchargeSelect, han
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setEmployeeList(res));
+			.then(res => {
+				setEmployeeList(res);
+				setIsLoading(false);
+			});
 		}
 	}, [handleOpen]);
 
@@ -97,7 +106,14 @@ const SellEmployeeSearchModal = ({ title, confirm, cancel, onInchargeSelect, han
 						/>
 					</InputGroup.Addon>
 				</InputGroup>
-
+				
+				{/* 로딩 중일 때 */}
+				{isLoading ? (
+					<Container>
+						<Placeholder.Paragraph rows={16} />
+						<Loader center content="불러오는중..." />
+					</Container>
+				) : (
 				<Table height={400} data={employeeList} >
 					<Column width={100} align="center" fixed>
 						<HeaderCell>선택</HeaderCell>
@@ -126,6 +142,7 @@ const SellEmployeeSearchModal = ({ title, confirm, cancel, onInchargeSelect, han
 						<Cell>{(rowData) => rowData.d_name}</Cell>
 					</Column>
 				</Table>
+				)}
 			</Modal.Body>
 
 			<Modal.Footer>

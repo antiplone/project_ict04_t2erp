@@ -1,24 +1,39 @@
 package com.spring.erp_ordit.controller.finance;
 
-import java.util.Map;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.spring.erp_ordit.dto.finance.TransacOrderDTO;
+import com.spring.erp_ordit.service.finance.VoucherService;
 
 @RequestMapping(value = "/voucher")
 @CrossOrigin
 @RestController
 public class VoucherController {
 
-	@PostMapping(value = "/signin/{v_id}")
-	public ResponseEntity<?> signin(@PathVariable(value = "v_id") int id) {
+	@Autowired
+	private VoucherService service;
+
+	@GetMapping(value = "/transactions")
+	public ResponseEntity<?> transactionList() {
 		ResponseEntity<?> entity;
 
-		System.out.println("id: " + id);
+		entity = ResponseEntity.ok(service.transactionList());
+
+		return entity;
+	}
+
+	@PostMapping(value = "/signin")
+	public ResponseEntity<?> signin(@RequestBody TransacOrderDTO dto) {
+		ResponseEntity<?> entity;
+
+		service.createVoucher(null);
 
 		return null;
 	}

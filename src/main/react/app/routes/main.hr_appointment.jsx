@@ -3,6 +3,7 @@ import { Button, Message, Tabs } from "rsuite";
 import HrAppointEditTable from "#components/hr/HrAppoint";
 import MessageBox from "#components/common/MessageBox.jsx";
 import { HrAppointListTable } from "#components/hr/HrTable.jsx";
+import HrModal from "#components/hr/HrModal.jsx";
 
 export default function HrEmpAppointment() {
   const [employees, setEmployees] = useState([
@@ -22,6 +23,8 @@ export default function HrEmpAppointment() {
 
   const [confirmedAppointments, setConfirmedAppointments] = useState([]);
   const [departmentList, setDepartmentList] = useState([]);
+  const [smsModalOpen, setSmsModalOpen] = useState(false); // 문자 모달 열기
+  const [smsText, setSmsText] = useState('');  // 문자 내용
 
   useEffect(() => {
     fetchHrDeptList();
@@ -83,26 +86,26 @@ export default function HrEmpAppointment() {
     }
   }
 
-    let successCount = 0;
+  let successCount = 0;
   let failCount = 0;
 
   const requests = employees.map((emp) => {
     // 부서명을 부서코드로 변환
-    const foundDept = departmentList.find(dep => dep.label === emp.new_department);
-    const deptCode = foundDept ? foundDept.value : '';  // 부서코드
-  
-    const appointData = {
-      e_id: emp.e_id,
-      e_name: emp.e_name,
-      appoint_type: emp.appoint_type,
-      old_position: emp.old_position,
-      new_position: emp.new_position,
-      old_department: emp.old_department,
-      new_department: emp.new_department,     // 부서명
-      appoint_note: emp.appoint_note,
-      appoint_date: emp.appoint_date,
-      d_code: deptCode
-    };
+  const foundDept = departmentList.find(dep => dep.label === emp.new_department);
+  const deptCode = foundDept ? foundDept.value : '';  // 부서코드
+
+  const appointData = {
+    e_id: emp.e_id,
+    e_name: emp.e_name,
+    appoint_type: emp.appoint_type,
+    old_position: emp.old_position,
+    new_position: emp.new_position,
+    old_department: emp.old_department,
+    new_department: emp.new_department,     // 부서명
+    appoint_note: emp.appoint_note,
+    appoint_date: emp.appoint_date,
+    d_code: deptCode
+  };
   
     console.log('appointData:', appointData);
   
@@ -167,6 +170,46 @@ export default function HrEmpAppointment() {
     appoint_date: null
   });
 
+  // 문자 발송
+  const handleSendSms = async () => {
+    if (selectedIds.length === 0) {
+      alert('문자를 보낼 사원을 선택하세요.');
+      return;
+    }
+  
+    if (!smsText.trim()) {
+      alert('문자 내용을 입력하세요.');
+      return;
+    }
+  
+    try {
+      for (const appointId of selectedIds) {
+        const emp = confirmedAppointments.find(emp => emp.appoint_id === appointId);
+        if (!emp) continue;
+
+        const cleanPhoneNumber = emp.e_tel.replace(/-/g, '');   // 01012345678 로 변환, replace(문자열.replace(찾을내용, 바꿀내용) //로 감싼 건 패턴을 찾는다는 뜻, g(global)은 문자열 전체에서 전부 찾으라는 뜻)
+  
+        await fetch('http://localhost:8081/sms/sendSms', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: cleanPhoneNumber,    // emp.e_phone 사원의 전화번호
+            text: smsText
+          })
+        });
+      }
+  
+      alert('문자 발송 완료!');
+      setSmsModalOpen(false);
+      setSmsText('');
+    } catch (error) {
+      console.error('문자 발송 실패:', error);
+      alert('문자 발송 실패');
+    }
+  };
+
+  const [selectedIds, setSelectedIds] = useState([]);
+
   const appointColumns = [
     { label: "사번", dataKey: "e_id", width: 130 },
     { label: "성명", dataKey: "e_name", width: 145 },
@@ -204,7 +247,43 @@ export default function HrEmpAppointment() {
         </Tabs.Tab>
 
         <Tabs.Tab eventKey="2" title="발령 현황">
-          <HrAppointListTable items={confirmedAppointments} columns={appointColumns} />
+          <HrAppointListTable 
+            items={confirmedAppointments}
+            columns={appointColumns}
+            selectedIds={selectedIds}
+            onSelect={setSelectedIds}
+          />
+          <div style={{ textAlign: "left", marginTop: "25px" }}>
+          <Button
+            appearance="primary"
+            onClick={() => {
+              if (selectedIds.length === 0) {
+                alert('문자를 보낼 사원을 선택하세요.');
+                return;
+              }
+              setSmsModalOpen(true); // 사원 선택한 경우에만 모달 열기
+            }}
+          >
+              문자 발송
+            </Button>
+          </div>
+
+          <HrModal
+            open={smsModalOpen}
+            handleClose={() => setSmsModalOpen(false)}
+            title="문자 발송"
+            onRegister={handleSendSms}  // 보내기 눌렀을 때 문자 보내기
+            confirmText="보내기"
+          >
+            <textarea
+              rows={5}
+              style={{ width: '100%', boxSizing: 'border-box', resize: 'none', padding: '10px', fontSize: '16px', border: '1px solid #ccc',
+              borderRadius: '6px' }}
+              placeholder="보낼 문자 내용을 입력하세요."
+              value={smsText}
+              onChange={(e) => setSmsText(e.target.value)}
+            />
+          </HrModal>
         </Tabs.Tab>
       </Tabs>
     </div>

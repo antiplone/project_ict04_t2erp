@@ -80,7 +80,7 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
     { label: "출근시간", dataKey: "co_start_time", width: 100 },
     { label: "퇴근시간", dataKey: "co_end_time", width: 100 },
     { label: "근무시간", dataKey: "co_total_work_time", width: 100 },
-    { label: "상태", dataKey: "co_status", width: 100 },
+    { label: "상태", dataKey: "co_status", width: 120 },
     { label: "상태비고", dataKey: "co_status_note", width: 240 },
   ];
 
@@ -162,7 +162,7 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
       ) : (
         <>
           {/* 사원용 탭 + 날짜 필터 */}
-          <div style={{ display: "flex", justifyContent: "space-between", minWidth: 910, marginBottom: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", minWidth: 980, marginBottom: 16 }}>
             <Tabs activeKey={activeKey} onSelect={setActiveKey} appearance="pills">
               <Tabs.Tab eventKey="1" title="내 출퇴근 조회" />
               <Tabs.Tab eventKey="2" title="퇴직 신청" />

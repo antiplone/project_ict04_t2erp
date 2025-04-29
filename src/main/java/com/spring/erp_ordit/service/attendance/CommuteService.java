@@ -10,6 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.spring.erp_ordit.dao.attendance.CommuteMapper;
@@ -21,9 +22,6 @@ public class CommuteService {
 	@Autowired
 	private CommuteMapper dao;
 
-    // 'Asia/Seoul' 시간대 기준으로 현재 날짜와 시간 가져오기
-    ZonedDateTime seoulNow = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-    
 	// 전체 근태 리스트
 	public List<CommuteDTO> attendanceList() {
 	    System.out.println("▶ CommuteService - 출퇴근 리스트");
@@ -47,6 +45,9 @@ public class CommuteService {
 	// 근태관리 - 출근 시간 저장 처리 => 시간 변조를 방지하기 위해 서버 시간 기준으로 출근 처리하는 방식
 	public String insertStartTime(CommuteDTO dto) {
 	    System.out.println("▶ CommuteService - 출근 시간 저장 처리");
+
+	    // 'Asia/Seoul' 시간대 기준으로 현재 날짜와 시간 가져오기
+	    ZonedDateTime seoulNow = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 	    
 	    // 서버가 어디에 있어도 항상 한국 시간으로 출근 시간이 기록
 	    LocalDate today = seoulNow.toLocalDate();
@@ -77,6 +78,8 @@ public class CommuteService {
 	public String updateEndTime(CommuteDTO dto) {
 	    System.out.println("▶ CommuteService - 퇴근 시간 저장 처리");
 	    
+	    // 'Asia/Seoul' 시간대 기준으로 현재 날짜와 시간 가져오기
+	    ZonedDateTime seoulNow = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
 	    LocalDate today = seoulNow.toLocalDate();
 	    LocalTime now = seoulNow.toLocalTime();
 	    
@@ -132,4 +135,38 @@ public class CommuteService {
 	    System.out.println("▶ CommuteService - 퇴근 시간 저장 처리");
 	    return dao.updateCommute(dto);
 	}
+	
+//	// ✅ 퇴근 안 한 사람 6시에 자동 퇴근처리
+//    @Scheduled(cron = "0 0 6 * * ?") // 매일 6시
+//    public void autoCloseIncompleteCommutes() {
+//        System.out.println("▶ CommuteService - 퇴근 자동 처리 스케줄러 실행");
+//
+//        List<CommuteDTO> incompleteList = dao.noCompleteCommute();
+//
+//        for (CommuteDTO commute : incompleteList) {
+//            LocalTime forcedEnd = LocalTime.of(6, 0); // 06:00:00
+//            LocalTime start = commute.getCo_start_time().toLocalTime();
+//
+//            long workedSeconds = Duration.between(start, forcedEnd).getSeconds();
+//            if (workedSeconds <= 0) {
+//                // 출근이 6시 이후였던 경우 (예외처리)
+//                workedSeconds = 0;
+//            }
+//
+//            Time totalTime = Time.valueOf(LocalTime.ofSecondOfDay(workedSeconds));
+//
+//            commute.setCo_end_time(Time.valueOf(forcedEnd));
+//            commute.setCo_total_work_time(totalTime);
+//
+//            if (workedSeconds == 0) {
+//                commute.setCo_status("결근");
+//            } else {
+//                commute.setCo_status("비정상 퇴근");
+//            }
+//
+//            commute.setCo_status_note("자동 퇴근 처리");
+//
+//            dao.autoUpdateCommute(commute);
+//        }
+//    }
 }

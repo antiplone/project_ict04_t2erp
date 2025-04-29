@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Checkbox, InputGroup, Input } from "rsuite";
+import { Button, Table, Modal, Checkbox, InputGroup, Input, Container, Placeholder, Loader } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 import readingGlasses from "#images/common/readingGlasses.png";
 
@@ -10,7 +10,7 @@ const { Column, HeaderCell, Cell } = Table;
 const SellStorageSearchModal = ({ onStorageSelect, handleOpen, handleClose } /* = props:속성 */) => {
 	
 	const fetchURL = AppConfig.fetch['mytest'];
-
+	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
 	const [storageList, setStorageList] = useState([]);
 	const [keyword, setKeyword] = useState("");
 	const [selectedStorage, setSelectedStorage] = useState(null);
@@ -31,13 +31,19 @@ const SellStorageSearchModal = ({ onStorageSelect, handleOpen, handleClose } /* 
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setStorageList(res));
+			.then(res => {
+				setStorageList(res)
+				setIsLoading(false);
+			});
 		} else {
 			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchDetailStorage/${keyword}`, {	// 키워드 리스트
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setStorageList(res));
+			.then(res => {
+				setStorageList(res)
+				setIsLoading(false);
+			});
 		}
 	}
 
@@ -59,7 +65,10 @@ const SellStorageSearchModal = ({ onStorageSelect, handleOpen, handleClose } /* 
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setStorageList(res));
+			.then(res => {
+				setStorageList(res)
+				setIsLoading(false);
+			});
 		}
 	}, [handleOpen]);
 
@@ -96,9 +105,15 @@ const SellStorageSearchModal = ({ onStorageSelect, handleOpen, handleClose } /* 
 						/>
 					</InputGroup.Addon>
 				</InputGroup>
-
+				
+				{/* 로딩 중일 때 */}
+				{isLoading ? (
+					<Container>
+						<Placeholder.Paragraph rows={16} />
+						<Loader center content="불러오는중..." />
+					</Container>
+				) : (
 				<Table height={400} data={storageList} >
-
 					<Column width={100} align="center" fixed>
 						<HeaderCell>선택</HeaderCell>
 						{/* ?. : 옵셔널 체이닝 (Optional Chaining). 값이 null이나 undefined가 아니면, 그 다음 속성에 접근하라 */}
@@ -122,6 +137,7 @@ const SellStorageSearchModal = ({ onStorageSelect, handleOpen, handleClose } /* 
 						<Cell>{(rowData) => rowData.storage_name}</Cell>
 					</Column>
 				</Table>
+				)}
 			</Modal.Body>
 
 			<Modal.Footer>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Container, Placeholder, Loader } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 import "#styles/sell.css";
 
@@ -7,6 +8,7 @@ const SellInvoiceContent = ({ order_id, order_date, date_no }) => {
   const [clientInfo, setClientInfo] = useState(null); // 거래처 정보는 화면에 1회만 불러오기 위해 별도 생성
 
   const fetchURL = AppConfig.fetch['mytest'];
+  const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
 
   // 데이터 불러오기
   useEffect(() => {
@@ -21,6 +23,7 @@ const SellInvoiceContent = ({ order_id, order_date, date_no }) => {
                     ? res   // 응답이 배열이면 그대로
                     : (res.data && Array.isArray(res.data) ? res.data : []);  // 아니면 data가 배열인지 체크
         setData(result);
+        setIsLoading(false);
 
         if (result[0]) {
           const item = result[0];
@@ -53,6 +56,14 @@ const SellInvoiceContent = ({ order_id, order_date, date_no }) => {
 
   return (
     <>
+      {/* 로딩 중일 때 */}
+      {isLoading ? (
+        <Container>
+          <Placeholder.Paragraph rows={16} />
+          <Loader center content="불러오는중..." />
+        </Container>
+      ) : (
+        <>
       <div className="invocie_page">
         <div className="invoice-header">
           <div className="header-left">
@@ -148,6 +159,8 @@ const SellInvoiceContent = ({ order_id, order_date, date_no }) => {
       </div>
 
       <hr style={{ margin: '40px 0', border: '1px dashed #000' }} />
+      </>
+      )}
     </>
   );
 };

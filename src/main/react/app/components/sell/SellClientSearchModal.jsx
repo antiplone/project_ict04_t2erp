@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Checkbox, InputGroup, Input } from "rsuite";
+import { Button, Table, Modal, Checkbox, InputGroup, Input, Container, Placeholder, Loader } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 import readingGlasses from "#images/common/readingGlasses.png";
 
@@ -7,10 +7,10 @@ const { Column, HeaderCell, Cell } = Table;
 
 // SellClientSearchModal => 거래처 검색 모달 페이지
 
-const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen, handleClose } /* = props:속성 */) => {
+const SellClientSearchModal = ({ onClientSelect, handleOpen, handleClose } /* = props:속성 */) => {
 	
 	const fetchURL = AppConfig.fetch['mytest'];
-
+	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
 	const [clientList, setClientList] = useState([]);
 	const [keyword, setKeyword] = useState("");
 	const [selectedClient, setSelectedClient] = useState(null);
@@ -31,13 +31,19 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setClientList(res));
+			.then(res => {
+				setClientList(res);
+				setIsLoading(false);
+			});
 		} else {	// 키워드로 검색 요청
 			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchDetailClient/${keyword}`, {
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setClientList(res));
+			.then(res => {
+				setClientList(res);
+				setIsLoading(false);
+			});
 		}
 	}
 
@@ -59,7 +65,10 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 				method: "GET"
 			})
 			.then(res => res.json())
-			.then(res => setClientList(res));
+			.then(res => {
+				setClientList(res);
+				setIsLoading(false);
+			});
 		}
 	}, [handleOpen]);
 
@@ -97,7 +106,14 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 						/>
 					</InputGroup.Addon>
 				</InputGroup>
-
+				
+				{/* 로딩 중일 때 */}
+				{isLoading ? (
+					<Container>
+						<Placeholder.Paragraph rows={16} />
+						<Loader center content="불러오는중..." />
+					</Container>
+				) : (
 				<Table height={400} data={clientList} >
 					<Column width={50} align="center" fixed>
 						<HeaderCell>선택</HeaderCell>
@@ -121,6 +137,7 @@ const SellClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleO
 						<Cell>{(rowData) => rowData.client_name}</Cell>
 					</Column>
 				</Table>
+				)}
 			</Modal.Body>
 
 			<Modal.Footer>

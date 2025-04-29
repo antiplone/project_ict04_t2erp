@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Tabs, Message } from 'rsuite';
+import { Table, Button, Tabs, Message, Container, Placeholder, Loader } from 'rsuite';
 import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';	
 import AppConfig from "#config/AppConfig.json";
@@ -14,6 +14,7 @@ const SellRequestClientList = () => {
 
 	const navigate = useNavigate();
 	const fetchURL = AppConfig.fetch['mytest'];
+	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
 
 	// 전체 리스트
     const [reqClient, setReqClient] = useState([]);
@@ -39,6 +40,7 @@ const SellRequestClientList = () => {
 		.then(res => {
 			console.log(1, res);
 			setReqClient(res);
+			setIsLoading(false);
 		});
 	}, []);
 	
@@ -79,7 +81,15 @@ const SellRequestClientList = () => {
 				<Tabs.Tab eventKey="4" title="등록 요청" />
 			</Tabs>
 
-            {/* 요청 리스트 */}
+			{/* 로딩 중일 때 */}
+			{/* Placeholder.Paragraph : 여러 줄의 더미 텍스트 박스. 스켈레톤(skeleton) 로딩 UI를 자동 생성 */}
+			{isLoading ? (
+				<Container>
+					<Placeholder.Paragraph rows={16} />
+					<Loader center content="불러오는중..." />
+				</Container>
+			) : (
+			<>
 			{(activeTab === "1" || activeTab === "2" || activeTab === "3") && (
             <Table
 				height={400}
@@ -143,11 +153,10 @@ const SellRequestClientList = () => {
 					</Cell>
 				</Column>
 			</Table> )}
-				
-				{activeTab === "4" && (
-					<SellRequestClient />
-				)}
 			
+			{activeTab === "4" && <SellRequestClient />}
+		</>
+		)}
         </div>
     );
 };

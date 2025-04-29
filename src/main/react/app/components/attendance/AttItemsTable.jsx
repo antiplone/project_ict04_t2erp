@@ -6,6 +6,7 @@ import AttUpdateModal from "./AttUpdateModal";
 import AppConfig from "#config/AppConfig.json";
 import Btn from "./Btn";
 import { useToast } from '#components/common/ToastProvider';
+import "#styles/common.css";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -63,13 +64,13 @@ const AttItemsTable = ({ data, columns, onReloading }) => {
         cellBordered
       >
         {columns.map(col => (
-          <Column key={col.dataKey} width={col.width} align="center">
+          <Column key={col.dataKey} width={col.width} className="text_center">
             <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
             <Cell dataKey={col.dataKey} />
           </Column>
         ))}
 
-        <Column width={110} align="center">
+        <Column width={110} className="text_center">
           <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>작업</HeaderCell>
           <Cell>
             {(rowData) => (

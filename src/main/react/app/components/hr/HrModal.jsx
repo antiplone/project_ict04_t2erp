@@ -2,7 +2,7 @@
 import React from 'react';
 import { Modal, Button } from 'rsuite';
 
-const HrModal = ({ open, handleClose, title, children, onRegister }) => {
+const HrModal = ({ open, handleClose, title, children, onRegister, confirmText = "등록" }) => {
   return (
     <Modal
       open={open}   // 모달 열기(true일 때)
@@ -17,7 +17,7 @@ const HrModal = ({ open, handleClose, title, children, onRegister }) => {
         {children}
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={onRegister} appearance="primary">등록</Button>
+        <Button onClick={onRegister} appearance="primary">{confirmText}</Button>
         <Button onClick={handleClose} appearance="subtle">취소</Button>
       </Modal.Footer>
     </Modal>

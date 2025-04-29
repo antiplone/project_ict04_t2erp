@@ -1,6 +1,10 @@
 package com.spring.erp_ordit.controller.personnel;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.time.ZoneId;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,13 +43,23 @@ public class EmpAuthController {
 	@PostMapping(value = "/get")
 	public ResponseEntity<?> getAuth(@RequestBody Map<String, Object> form) {
 		System.out.println("인증 정보: " + form);
+
+		DateFormat dateFormat = DateFormat.getInstance();
+		TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.SHORT_IDS.get("JST")));
+		dateFormat.setTimeZone(TimeZone.getDefault());
+
 		ResponseEntity<?> entity;
 		Map<String, Object> auth = service.getTransaction(form);
 
 		if (auth != null) {
+
+			String curDate = dateFormat.format(new Date(System.currentTimeMillis()));
+			auth.put("timestamp", curDate);
+
 			entity = ResponseEntity.ok()
 //									.header(null, null)
 					.body(auth);
+
 			System.out.println("entity: " + entity);
 		} else {
 			entity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

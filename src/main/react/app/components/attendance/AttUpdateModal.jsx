@@ -1,9 +1,10 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
 import { useEffect, useState } from "react";
-import { Modal, Form, Radio, RadioGroup, Button, ButtonGroup, Schema } from "rsuite";
+import { Modal, Form, Radio, RadioGroup, Schema } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 import Btn from "./Btn";
+import { useToast } from '#components/common/ToastProvider';  // 경고창
 
 const { StringType } = Schema.Types;
 
@@ -17,6 +18,8 @@ const model = Schema.Model({
 const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
   const fetchURL = AppConfig.fetch['mytest'];
   const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
+  
+  const { showToast } = useToast();
 
   const [att, setAtt] = useState({
     a_code: "",
@@ -45,8 +48,8 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
   // 저장버튼을 누르면 서버에 PUT 요청을 보내고, 성공 시 onReloading 실행.
   const handleSubmit = async () => {
     if (!att.a_code) {
-      alert("수정할 항목이 없습니다.");
-      return
+      showToast(`수정할 항목이 없습니다.`, "warning");
+      return;
     }
 
     const check = model.check(att);
@@ -63,16 +66,16 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
       });
       const result = await res.text();
       if (result === "1") {
-        alert("수정 완료되었습니다.");
+        showToast(`수정 완료되었습니다.`, "success");
         onClose();
         // onReloading(); // fetcher로 테이블 재로딩
         window.location.reload();
       } else {
-        alert("수정에 실패했습니다.");
+        showToast(`수정에 실패했습니다.`, "error");
       }
     } catch (error) {
       console.error("수정 중 오류 발생:", error);
-      alert("오류가 발생했습니다.");
+      showToast(`오류가 발생했습니다.`, "error");
     }
   };
 

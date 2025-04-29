@@ -1,30 +1,59 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
 import React, { useState } from "react";
-import { Table } from "rsuite";
+import { Button, ButtonToolbar, Notification, Table, toaster } from "rsuite";
 import VacaUpdateModal from "./VacaUpdateModal";
 import AppConfig from "#config/AppConfig.json";
 import Btn from "./Btn";
 import "#styles/common.css";
+import { useToast } from '#components/common/ToastProvider';  // 경고창
 
 const { Column, HeaderCell, Cell } = Table;
+
+// 삭제 confirm 창(확인/취소)
+function confirmDelete() {
+  return new Promise((resolve) => {
+    let key = null;
+
+    const message = (
+      <Notification type="warning" header="근태 삭제" closable>
+        <p>삭제하면 되돌릴 수 없습니다.</p><p>삭제하시겠습니까?</p>
+        <hr />
+        <ButtonToolbar>
+          <Button appearance="primary" onClick={() => { toaster.remove(key); resolve(true); }}>확인</Button>
+          <Button appearance="default" onClick={() => { toaster.remove(key); resolve(false); }}>취소</Button>
+        </ButtonToolbar>
+      </Notification>
+    );
+
+    key = toaster.push(message, { placement: 'topCenter' });
+  });
+}
 
 // url : 컴포넌트를 선언한 곳(main.Att-regVacaItems.jsx)에서 지정한 url 주소를 받음
 // columns : columns 를 props로 받아 동적으로 설정할 수 있도록 변경
 const VacaItemsTable = ({ data, columns, onReloading }) => {
   const fetchURL = AppConfig.fetch['mytest'];
   const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
+  const { showToast } = useToast();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRow, setEditingRow] = useState(null);
 
   const deleteVaca = async (v_code, v_name) => {
 
-    // 만약 휴가코드가 없다면 alert창을 반환.
-    if (!v_code) return alert("삭제할 항목이 없습니다.");
+    // 만약 휴가코드가 없다면 경고창을 반환.
+    if (!v_code) {
+      showToast("삭제할 항목이 없습니다.", "warning");
+      return;
+    };
 
-    const isDel = confirm(`삭제하면 되돌릴 수 없습니다.\n휴가명 '${v_name}'를 삭제하시겠습니까?`);
-    if (!isDel) return alert("삭제가 취소되었습니다.");
+    const isDel = await confirmDelete();
+
+    if (!isDel) {
+      showToast("삭제가 취소되었습니다.", "warning");
+      return;
+    }
 
     try {
       // fetch를 통해 데이터를 서버(백엔드)에서 가져와 vacaList 변수에 저장
@@ -41,14 +70,14 @@ const VacaItemsTable = ({ data, columns, onReloading }) => {
       const result = await res.text();
 
       if (result === "1") {
-        alert("삭제되었습니다.");
+        showToast("삭제되었습니다.", "success");
         window.location.reload(); // 추후 fetcher로 대체 가능. remix 에서는 권장x
       } else {
-        alert("삭제 실패했습니다. 서버에서 처리하지 못했습니다.");
+        showToast(`삭제 실패했습니다.\n서버에서 처리하지 못했습니다.`, "error");
       }
     } catch(error) {
       console.error("삭제 중 오류:", error);
-      alert("삭제 요청 중 오류가 발생했습니다.");
+      showToast(`삭제 요청 중 오류가 발생했습니다.`, "error");
     }
   };
   

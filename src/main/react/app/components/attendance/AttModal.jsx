@@ -108,7 +108,7 @@ const AttModal = ({ open, onClose, onReloading }) => {
     };
 
     if (att.a_type === "휴가" && !att.v_code) {
-      showToast("휴가유형을 선택한 경우, 휴가코드를 반드시 선택해야 합니다.", "info");
+      showToast("휴가유형을 선택한 경우, 휴가코드를 반드시 선택해야 합니다.", "warning");
       return;
     }
 

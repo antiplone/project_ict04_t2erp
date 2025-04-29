@@ -134,3 +134,12 @@ Version: 2.32.3
 #### - pip show beautifulsoup4
 Name: beautifulsoup4
 Version: 4.12.3
+
+### coolsms API
+#### pom.xml
+    <!-- coolSMS 의존성 주입 -->
+    <dependency>
+        <groupId>net.nurigo</groupId>
+        <artifactId>sdk</artifactId>
+        <version>4.3.2</version>
+    </dependency>

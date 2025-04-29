@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Image, Table, Popover, Whisper, Checkbox, Dropdown, IconButton } from 'rsuite';
+import { Image, Table, Popover, Whisper, Checkbox, Dropdown, Button, IconButton } from 'rsuite';
+
+import "#styles/common.css";
 
 import moreImage from "#images/common/more-info.png";
 
 import AppConfig from "#config/AppConfig.json";
+
 
 let data = [
 	{
@@ -24,7 +27,7 @@ const { Column, HeaderCell, Cell } = Table;
 /**
  * https://rsuitejs.com/components/table/#custom-cell
  */
-const Component = () => {
+const Component = ({ opener, data }) => {
 
 	const renderMenu = ({ onClose, left, top, className }, ref) => {
 		const handleSelect = eventKey => {
@@ -74,12 +77,12 @@ const Component = () => {
 	const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
 		<Cell {...props} style={{ padding: 0 }}>
 			<div style={{ lineHeight: '46px' }}>
-				<Checkbox
+				{rowData.order_status === "결재중" ? <Checkbox
 					value={rowData[dataKey]}
 					inline
 					onChange={onChange}
 					checked={checkedKeys.some(item => item === rowData[dataKey])}
-				/>
+				/> : null}
 			</div>
 		</Cell>
 	);
@@ -127,7 +130,7 @@ const Component = () => {
 	}
 
 	const handleCheckAll = (value, checked) => {
-		const keys = checked ? data.map(item => item.id) : [];
+		const keys = checked ? data.map(item => item.order_id) : [];
 		setCheckedKeys(keys);
 	};
 	const handleCheck = (value, checked) => {
@@ -135,68 +138,15 @@ const Component = () => {
 		setCheckedKeys(keys);
 	};
 
-	const getNumberedList = (data) => {
-		let result = [];
-		let groupedByDate = {};
-
-		// 날짜별로 그룹핑
-		data.forEach(item => {
-			if (!groupedByDate[item.order_date]) {
-				groupedByDate[item.order_date] = [];
-			}
-			groupedByDate[item.order_date].push(item);
-		});
-
-		// 날짜별로 처리
-		Object.keys(groupedByDate).forEach(date => {
-			// groupedByDate : 날짜별로 데이터를 묶어둔 객체
-			// ex: { '2025-04-10': [item1, item2, ...], '2025-04-11': [item3, ...] }
-			let orders = groupedByDate[date];	// 해당 날짜(date)의 전체 주문 데이터 배열
-			let seenOrderIds = new Set();	// 중복된 주문(order_id)을 한 번만 처리하기 위해 사용
-			let count = 1;
-
-			orders.forEach(item => {
-				if (seenOrderIds.has(item.order_id)) return;	 // 이미 처리한 주문번호(order_id)는 무시
-				seenOrderIds.add(item.order_id);
-
-				// 같은 order_id의 품목 모으기
-				const sameOrderItems = orders.filter(x => x.order_id === item.order_id);
-				// 주문번호와 item 주문번호가 같은 걸 배열로 만들기
-				const firstItemName = sameOrderItems[0].item_name;
-				const displayName = sameOrderItems.length > 1
-					? `${firstItemName} 외 ${sameOrderItems.length - 1}건`
-					: firstItemName;
-
-				// 한 줄만 push
-				result.push({
-					...item,
-					date_no: count,
-					item_display: displayName
-				});
-
-				count++;
-			});
-		});
-
-		return result;
-	};
-
-	const [allList, setAllList] = useState([]);
-	const fetchURL = AppConfig.fetch['mytest'];
-	useEffect(() => {
-		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/allList`, {
-			method: "GET"
-		})
-			.then(res => res.json())
-			.then(res => {
-				console.log(1, res);
-				const numbered = getNumberedList(res);
-				setAllList(numbered);
-			});
-	}, []);
 
 	return (
-		<Table width={window.innerWidth * 0.72} height={window.innerHeight * 0.75} data={allList/*data*/} id="table">
+		<Table
+			virtualized
+			bordered
+			height={window.innerHeight * 0.75}
+			data={data}
+			id="table"
+		>
 
 			<Column width={50} align="center">
 				<HeaderCell style={{ padding: 0 }}>
@@ -209,20 +159,20 @@ const Component = () => {
 						/>
 					</div>
 				</HeaderCell>
-				<CheckCell dataKey="id" checkedKeys={checkedKeys} onChange={handleCheck} />
+				<CheckCell dataKey="order_id" checkedKeys={checkedKeys} onChange={handleCheck} />
 			</Column>
 
-			<Column width={140} sortable>
+			<Column width={140}>
 				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>전표번호</HeaderCell>
 				<Cell>
 					{(rowData) => (
-						<span
-							onClick={() => allListDetail(rowData.order_id)}
-							// style={{ cursor: 'pointer' }}
-							className="allList-date"
+						<Button
+							appearance="link"
+							style={{padding: 0}}
+							onClick={() => opener(true)}
 						>
 							{`${rowData.order_date}_${rowData.date_no}`}
-						</span>
+						</Button>
 					)}
 				</Cell>
 				{/*<NameCell dataKey="name" />*/}
@@ -230,13 +180,8 @@ const Component = () => {
 
 			<Column width={200}>
 				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>거래유형</HeaderCell>
-				<Cell>{rowData => rowData.order_type === 1 ? "매출전표" : "매입전표"}</Cell>
+				<Cell>{rowData => rowData.t_class}</Cell>
 				{/*<NameCell dataKey="name" />*/}
-			</Column>
-
-			<Column width={160} resizable>
-				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>금액</HeaderCell>
-				<Cell>{rowData => `${formatter.format(rowData.total_sum)}`}</Cell>
 			</Column>
 
 			<Column width={180} resizable>
@@ -245,21 +190,39 @@ const Component = () => {
 				{/*<NameCell dataKey="name" />*/}
 			</Column>
 
+			<Column width={160} resizable>
+				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>금액</HeaderCell>
+				<Cell className="text_right">{rowData => `${formatter.format(rowData.total)}`}</Cell>
+			</Column>
+
 			<Column width={560} resizable>
 				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>적요</HeaderCell>
 				<Cell>{rowData => rowData.item_standard}</Cell>
 				{/*<NameCell dataKey="name" />*/}
 			</Column>
 
-			<Column width={120} resizable>
+			<Column width={120}>
 				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>진행상태</HeaderCell>
-				<Cell>{rowData => rowData.order_status}</Cell>
+				<Cell className="text_center">{rowData => rowData.order_status}</Cell>
 				{/*<NameCell dataKey="name" />*/}
 			</Column>
 
-			<Column width={40}>
-				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>-</HeaderCell>
-				<ActionCell dataKey="id" />
+			<Column width={60}>
+				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>승인</HeaderCell>
+				<Cell>{( rowData ) => (
+					rowData.order_status === "결재중" ?
+						<Button
+							color="green"
+							appearance="ghost"
+							size="xs"
+							onClick={() => {
+								rowData.ordet_status = "승인";
+							}}>
+							처리
+						</Button>
+					: null
+				)}</Cell>
+				{/*<ActionCell dataKey="id" />*/}
 			</Column>
 
 		</Table>

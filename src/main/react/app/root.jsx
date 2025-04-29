@@ -3,6 +3,7 @@
 import "rsuite/dist/rsuite.min.css";
 import "#styles/common.css";
 import ToastProvider from "#components/common/ToastProvider";  // 경로 수정
+import koKR from "rsuite/locales/ko_KR"
 
 import {
 	Links,
@@ -11,7 +12,7 @@ import {
 	Scripts,
 	ScrollRestoration,
 } from "@remix-run/react";
-import { Placeholder, Loader, Container } from "rsuite";
+import { CustomProvider, Placeholder, Loader, Container } from "rsuite";
 
 import AppConfig from "#config/AppConfig.json"
 
@@ -30,9 +31,9 @@ export function Layout({ children }) {
 					{AppConfig.isDev ? <span style={{ textAlign: "center", fontWeight: "bold", color: "royalblue" }}>
 						개발버전입니다.
 					</span> : null}
-					<ToastProvider>
+					<CustomProvider locale={koKR} /*formatDate={(date, format) => {return format}}*/><ToastProvider>
 						{children}{/* 자식페이지들이 보여질부분 */}
-					</ToastProvider>
+					</ToastProvider></CustomProvider>
 				</div>
 				<ScrollRestoration />
 				<Scripts />

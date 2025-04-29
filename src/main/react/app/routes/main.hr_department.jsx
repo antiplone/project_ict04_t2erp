@@ -125,7 +125,7 @@ export default function Hr_department() {
   ];
 
   return (
-    <div style={{ padding: '30px', width: '100%' }}>
+    <div style={{ width: '100%' }}>
       <Message type="success" className="main_title">부서 관리</Message>
 
       <div style={{ maxWidth: '1450px' }}>

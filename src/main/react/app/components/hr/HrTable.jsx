@@ -181,7 +181,7 @@ export const EmployeeSelectTable = ({ data, selectedId, onSelect, selectedEmploy
 
 const displayOrDash = (value) => (value ? value : '-');
 
-export const HrAppointListTable = ({ items, columns }) => {
+export const HrAppointListTable = ({ items, columns, selectedIds, onSelect }) => {
   return (
     <div style={{ width: '100%', overflowX: 'auto' }}>
       <Table
@@ -190,8 +190,34 @@ export const HrAppointListTable = ({ items, columns }) => {
         cellBordered
         style={{ width: '100%', minWidth: '1400px', marginTop: '25px', marginBottom: '50px', border: '1px solid #EEEEEE' }}
       >
+        {/* 체크박스 고정 컬럼 추가 */}
+        <Column width={60} align="center" fixed>
+          <HeaderCell>선택</HeaderCell>
+          
+          <Cell>
+            {(rowData) => (
+              <div 
+                style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Checkbox
+                  checked={selectedIds.includes(rowData.e_id)}
+                  onChange={(value, checked) => {
+                    if (checked) {
+                      onSelect([rowData.e_id]);
+                    } else {
+                      onSelect([]);
+                    }
+                  }}
+                />
+              </div>
+            )}
+          </Cell>
+        </Column>
+
+        {/* 기존 컬럼들 */}
         {columns.map((col, index) => {
-          const isFlexible = col.dataKey === 'appoint_note'; // 비고 컬럼 체크
+          const isFlexible = col.dataKey === 'appoint_note';
 
           return (
             <Column
@@ -199,7 +225,7 @@ export const HrAppointListTable = ({ items, columns }) => {
               {...(isFlexible
                 ? { flexGrow: 1, minWidth: col.width || 250 }
                 : { width: col.width || 100 })}
-              align="center" // 헤더 center
+              align="center"
             >
               <HeaderCell>{col.label}</HeaderCell>
               <Cell>
@@ -209,7 +235,6 @@ export const HrAppointListTable = ({ items, columns }) => {
                       ? (rowData.appoint_date ? new Date(rowData.appoint_date).toISOString().slice(0, 10) : '-')
                       : (rowData[col.dataKey] || '-');
 
-                  // 비고 왼쪽 정렬
                   return isFlexible ? (
                     <div style={{ textAlign: 'left', width: '100%' }}>{value}</div>
                   ) : (
@@ -221,6 +246,8 @@ export const HrAppointListTable = ({ items, columns }) => {
           );
         })}
       </Table>
+
+      
     </div>
   );
 };

@@ -90,7 +90,13 @@
 			<artifactId>mariadb-java-client</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-
+		
+		<!-- coolSMS 의존성 주입 -->
+		<dependency>
+            <groupId>net.nurigo</groupId>
+            <artifactId>sdk</artifactId>
+            <version>4.3.2</version>
+        </dependency>
 
 		<!-- Spring Boot Mail Starter -->
       <dependency>

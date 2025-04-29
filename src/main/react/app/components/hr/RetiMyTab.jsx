@@ -3,6 +3,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Table, Button, Tooltip, Whisper } from "rsuite";
+import "#styles/common.css";
 const { Column, HeaderCell, Cell } = Table;
 
 export default function RetiMyTab({ retiColumns, retiData }) {
@@ -30,7 +31,7 @@ export default function RetiMyTab({ retiColumns, retiData }) {
             {...(isFlexible
               ? { flexGrow: 1 }
               : { width: col.width })}      // width or flexGrow
-            align="center"
+            className="text_center"
           >
             <HeaderCell style={{ backgroundColor: "#f8f9fa" }}>
               {col.label}

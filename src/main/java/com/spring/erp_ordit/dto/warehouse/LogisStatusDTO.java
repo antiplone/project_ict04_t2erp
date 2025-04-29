@@ -24,6 +24,7 @@ public class LogisStatusDTO {
 	private String end_date;			// 등록일자
 	private int e_id;					// 사원코드
 	private String e_name;				// 사원명
+	private String d_name;				// 부서명
 	private int client_code;			// 거래처코드
 	private String client_name;			// 거래처명
 	private Date delivery_date;			// 납기일자

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Button, Container, DatePicker, Form, Radio, RadioGroup, Schema, Grid, Row, Col, FlexboxGrid, Panel, Divider, ButtonToolbar, SelectPicker } from "rsuite";
 import MessageBox from "#components/common/MessageBox.jsx";
 import { useToast } from '#components/common/ToastProvider';
+import "#styles/common.css";
 
 const model = Schema.Model({
   re_type: Schema.Types.StringType().isRequired("퇴직 유형은 필수입니다"),
@@ -92,7 +93,7 @@ export default function HrRetirementDetail() {
     <Container>
       <MessageBox text="퇴직 정보 검토"/>
 
-      <FlexboxGrid justify="center" align="middle" style={{ minHeight: "70vh", marginTop: 30, marginBottom: 50 }}>
+      <FlexboxGrid justify="center" className="text_middle" style={{ minHeight: "70vh", marginTop: 30, marginBottom: 50 }}>
         <FlexboxGrid.Item colspan={20} style={{ maxWidth: 700, width: "100%" }} >
           <Panel header={<div>📄 퇴직 정보 검토</div>} bordered style={{ background: "#fff" }} >
             <Form fluid model={model} formValue={retiData}    // => formValue={retiData} 에서 값을 전달받으므로 개별 value={...}를 사용안해도 됨

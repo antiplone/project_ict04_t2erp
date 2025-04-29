@@ -29,8 +29,8 @@ export default function CurrentDateTime() {
 
   return (
     <>
-      <div style={{ fontSize: "18px", marginTop: 10 }}>{todayFormatted}</div>
-      <div style={{ fontSize: "30px", fontWeight: "bold",marginTop: 10 }}>{timeFormatted}</div>
+      <div style={{ fontSize: "18px", marginTop: 10, letterSpacing: 1 }}>{todayFormatted}</div>
+      <div style={{ fontSize: "30px", fontWeight: "bold", marginTop: 10,  letterSpacing: 3 }}>{timeFormatted}</div>
     </>
   );
 }

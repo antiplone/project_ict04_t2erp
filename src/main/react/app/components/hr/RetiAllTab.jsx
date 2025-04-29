@@ -4,6 +4,7 @@ import React from "react";
 import Btn from "#components/attendance/Btn.jsx";
 import { useNavigate } from "react-router-dom";
 import { Table } from "rsuite";
+import "#styles/common.css";
 const { Column, HeaderCell, Cell } = Table;
 
 // 전체 퇴직 리스트: 관리자용
@@ -37,7 +38,7 @@ export default function RetiAllTab({ retiData, retiColumns }) {
             {...(isFlexible
               ? { flexGrow: 1 }
               : { width: col.width })}
-            align="center"
+            className="text_center"
           >
             <HeaderCell style={{ backgroundColor: "#f8f9fa" }}>
               {col.label}
@@ -59,7 +60,7 @@ export default function RetiAllTab({ retiData, retiColumns }) {
                   }
                   const color =
                     status === "승인"
-                      ? "#27ae60"
+                      ? "#007bff"
                       : status === "반려"
                       ? "#e74c3c"
                       : "#2980b9";
@@ -100,7 +101,7 @@ export default function RetiAllTab({ retiData, retiColumns }) {
       })}
 
       {/* 처리 버튼 컬럼 (고정폭) */}
-      <Column width={70} fixed="right" align="center">
+      <Column width={70} fixed="right" className="text_center">
         <HeaderCell style={{ backgroundColor: "#f8f9fa" }}>
           처리
         </HeaderCell>

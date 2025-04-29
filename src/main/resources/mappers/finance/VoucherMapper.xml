@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.erp.mapper.VoucherMapper">
+    <insert id="insertVoucher" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO voucher 
+        (voucher_date, company_code, status)
+        VALUES
+        (#{voucherDate}, #{companyCode}, #{status})
+    </insert>
+
+    <insert id="insertVoucherAccount">
+        INSERT INTO voucher_account 
+        (voucher_id, account_code, debit_amount, credit_amount)
+        VALUES
+        (#{voucherId}, #{accountCode}, #{debitAmount}, #{creditAmount})
+    </insert>
+
+    <insert id="insertVoucherEvidence">
+        INSERT INTO voucher_evidence 
+        (voucher_id, file_name, file_path, upload_time)
+        VALUES
+        (#{voucherId}, #{fileName}, #{filePath}, #{uploadTime})
+    </insert>
+</mapper>

@@ -17,9 +17,11 @@
       a.old_department,
       d.d_name AS new_department,
       a.appoint_note,
-      a.appoint_date
+      a.appoint_date,
+      e.e_tel		<!-- 문자발송할 전화번호 -->
     FROM appointment_tbl a
     LEFT JOIN department_tbl d ON a.new_department = d.d_code
+    LEFT JOIN employee_tbl e ON a.e_id = e.e_id
     ORDER BY a.appoint_id
 </select>
 

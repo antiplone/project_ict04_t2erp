@@ -13,7 +13,7 @@ export default function HrEmpAppointment() {
       e_name: "",
       old_position: "",
       old_department: "",
-      appoint_type: "",
+      appoint_type: [],
       new_position: "",
       new_department: "",
       appoint_note: "",
@@ -71,20 +71,22 @@ export default function HrEmpAppointment() {
       return;
     }
 
-  for (const emp of employees) {
-    if (emp.appoint_type === '부서 이동' && !emp.new_department) {
-      alert(`사번 ${emp.e_id || '(미입력)'}: 부서 이동인 경우 발령 부서는 필수입니다.`);
-      return;
+    for (const emp of employees) {
+      const appointTypeArr = Array.isArray(emp.appoint_type) ? emp.appoint_type : [];
+    
+      if (appointTypeArr.includes('부서 이동') && !emp.new_department) {
+        alert(`사번 ${emp.e_id || '(미입력)'}: 부서 이동인 경우 발령 부서는 필수입니다.`);
+        return;
+      }
+      if (appointTypeArr.includes('직위 변경') && !emp.new_position) {
+        alert(`사번 ${emp.e_id || '(미입력)'}: 직급 변경인 경우 발령 직급은 필수입니다.`);
+        return;
+      }
+      if (!emp.appoint_date) {
+        alert(`사번 ${emp.e_id || '(미입력)'}: 발령일자를 선택해주세요.`);
+        return;
+      }
     }
-    if (emp.appoint_type === '직위 변경' && !emp.new_position) {
-      alert(`사번 ${emp.e_id || '(미입력)'}: 직위 변경인 경우 발령 직급은 필수입니다.`);
-      return;
-    }
-    if (!emp.appoint_date) {
-      alert(`사번 ${emp.e_id || '(미입력)'}: 발령일자를 선택해주세요.`);
-      return;
-    }
-  }
 
   let successCount = 0;
   let failCount = 0;
@@ -97,7 +99,7 @@ export default function HrEmpAppointment() {
   const appointData = {
     e_id: emp.e_id,
     e_name: emp.e_name,
-    appoint_type: emp.appoint_type,
+    appoint_type: Array.isArray(emp.appoint_type) ? emp.appoint_type.join(', ') : emp.appoint_type,
     old_position: emp.old_position,
     new_position: emp.new_position,
     old_department: emp.old_department,

@@ -26,6 +26,12 @@ public class LogisOrderItemDTO {
 	private String item_name;			// 품목명
 	private String item_standard;		// 규격
 	private String item_status;			// 품목상태
-	private Date item_reg_date;			// 등록 날짜
 	private String income_confirm;		// 입고 컨펌
+	private Date item_reg_date;			// 등록 날짜
+	private Date order_date;			// 수주 일자
+	private int e_id;					// 담당자 번호
+	private String e_name;				// 담당자명
+	private String d_name;				// 담당부서명
+	private Date shipment_order_date;			// 납기일
+	private String storage_name;		// 창고명
 }

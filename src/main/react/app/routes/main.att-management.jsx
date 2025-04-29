@@ -77,34 +77,6 @@ export default function Management() {
               attURL={attURL}
               refresh={refresh}
             />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: 10,
-              }}
-            >
-              {/* <Pagination
-                prev
-                next
-                first
-                last
-                ellipsis
-                boundaryLinks
-                maxButtons={5}
-                size="md"
-                total={commuteList.length}
-                limit={limit}
-                layout={['pager']}
-                limitOptions={[5, 10, 20, 50]}
-                activePage={currentPage}
-                onChangePage={setCurrentPage}
-                onChangeLimit={(l) => {
-                  setCurrentPage(1);
-                  setLimit(l);
-                }}
-              /> */}
-            </div>
           </Col>
         </Row>
       </Grid>

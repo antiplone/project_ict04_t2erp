@@ -74,12 +74,12 @@ const VacaModal = ({ open, onClose }) => {
     });
   
     if (res.status === 201) {
-      // alert("등록 성공");
+      showToast("등록에 성공했습니다.", "success");
       onClose();
       // onReloading();    // 테이블 리로딩
       window.location.reload();
     } else {
-      alert("등록 실패");
+      showToast("등록 실패.", "error");
     }
   };
 

@@ -94,7 +94,7 @@ const BasicClientDetail = () => {
 
                     <Form.Group>
                       <Form.ControlLabel>사업자등록번호</Form.ControlLabel>
-                      <Form.Control name="c_biz_num" value={client.c_biz_num || ''} onChange={(val) => handleChange('c_biz_num', val)} />
+                      <Form.Control name="c_biz_num" value={client.c_biz_num || ''} onChange={(val) => handleChange('c_biz_num', val)} readOnly />
                     </Form.Group>
 
                     <Form.Group>

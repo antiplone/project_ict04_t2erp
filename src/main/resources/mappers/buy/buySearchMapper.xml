@@ -7,11 +7,12 @@
 
 	 <select id="buyInchargeList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
 	      select e.e_id 
-		  	  , e.e_name 
-		   	  , d.d_name 
-		   from employee_tbl e
-		   join department_tbl d
-		 	 on e.d_code = d.d_code
+		  	   , e.e_name 
+		   	   , d.d_name 
+		    from employee_tbl e
+		    join department_tbl d
+		  	  on e.d_code = d.d_code
+		   where e.d_code = 'D004'
   	 </select>
 	
 	 <select id="buyClientList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">

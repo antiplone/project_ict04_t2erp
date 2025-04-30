@@ -49,7 +49,7 @@ const ChatRoom = () => {
           username: emp.e_name
         })));
       } catch (err) {
-        console.error("직원 목록 불러오기 실패:", err);
+        //console.error("직원 목록 불러오기 실패:", err);
       }
     };
     fetchPartners();
@@ -92,7 +92,7 @@ const ChatRoom = () => {
           });
 
         } catch (err) {
-          console.error("채팅 내역 불러오기 실패:", err);
+          //console.error("채팅 내역 불러오기 실패:", err);
         }
       },
     });

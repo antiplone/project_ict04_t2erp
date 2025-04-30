@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import AppConfig from "#config/AppConfig.json";
 import React, { useState, useEffect } from "react";
-import { Button, Table, Modal, Checkbox, InputGroup, Input } from "rsuite";
+import { Button, Table, Modal, Checkbox, InputGroup, Input, Container, Placeholder, Loader } from "rsuite";
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -14,6 +14,8 @@ const ClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen,
 	const [selectedClient, setSelectedClient] = useState(null);
 	const [searchKeyword, setSearchKeyword] = useState("");
 
+	const [loading, setLoading] = useState(true); // 페이지 로딩중
+
 	// fetch()를 통해 톰캣서버에게 데이터를 요청
 	useEffect(() => {
 		fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyClientList`, {
@@ -22,6 +24,11 @@ const ClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen,
 			.then(res => res.json())
 			.then(res => {
 				setClientList(res);
+				setLoading(false); // 로딩완료
+			})
+			.catch((err) => {
+				//console.error("거래처 조회 실패:", err);
+				setLoading(false);  // 실패해도 로딩 종료 처리
 			});
 	}, []);
 
@@ -42,72 +49,81 @@ const ClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen,
 	};
 
 	return (
-		<Modal open={handleOpen} onClose={handleColse} size="xs">
-			<Modal.Header>
-				<Modal.Title>거래처 검색</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
-				<InputGroup style={{ marginBottom: 10 }}>
-					<Input
-						placeholder="거래처명 또는 코드로 검색"
-						value={searchKeyword}
-						onChange={setSearchKeyword}
-					/>
-				</InputGroup>
-				<Table
-					height={400}
-					data={clientList.filter(client =>
-					(!searchKeyword ||
-						client.client_name?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-						client.client_code?.toString().includes(searchKeyword)
-					)
-					)}
-				>
-
-					<Column width={100} align="center" fixed>
-						<HeaderCell>선택</HeaderCell>
-
-						<Cell>{(clientData) => (
-							<Checkbox
-								checked={selectedClient?.client_code === clientData.client_code}
-								onChange={(_, checked) =>
-									handleCheckboxChange(checked, clientData)}
+		<>
+			{loading ? (
+				<Container>
+					<Placeholder.Paragraph rows={15} />
+					<Loader center content="불러오는 중..." />
+				</Container>
+			) : (
+				<Modal open={handleOpen} onClose={handleColse} size="xs">
+					<Modal.Header>
+						<Modal.Title>거래처 검색</Modal.Title>
+					</Modal.Header>
+					<Modal.Body>
+						<InputGroup style={{ marginBottom: 10 }}>
+							<Input
+								placeholder="거래처명 또는 코드로 검색"
+								value={searchKeyword}
+								onChange={setSearchKeyword}
 							/>
-						)}
-						</Cell>
-					</Column>
+						</InputGroup>
+						<Table
+							height={400}
+							data={clientList.filter(client =>
+							(!searchKeyword ||
+								client.client_name?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+								client.client_code?.toString().includes(searchKeyword)
+							)
+							)}
+						>
 
-					<Column width={100} align="center" fixed>
-						<HeaderCell>거래처 코드</HeaderCell>
-						<Cell>{(clientData) => clientData.client_code}</Cell>
-					</Column>
+							<Column width={100} align="center" fixed>
+								<HeaderCell>선택</HeaderCell>
 
-					<Column width={250}>
-						<HeaderCell>거래처명</HeaderCell>
-						<Cell>{(clientData) => clientData.client_name}</Cell>
-					</Column>
-				</Table>
-			</Modal.Body>
-			<Modal.Footer>
-				<Button
-					appearance="primary"
-					onClick={() => {
-						if (selectedClient) {
-							onClientSelect(selectedClient.client_code, selectedClient.client_name);
-						} else {
-							// 선택 안 했을 경우 null 전달
-							onClientSelect(null, null);
-						}
-						handleColse(); // 모달 닫기
-					}}
-				>
-					{confirm}
-				</Button>
-				<Button onClick={handleColse} appearance="subtle">
-					{cancel}
-				</Button>
-			</Modal.Footer>
-		</Modal>
+								<Cell>{(clientData) => (
+									<Checkbox
+										checked={selectedClient?.client_code === clientData.client_code}
+										onChange={(_, checked) =>
+											handleCheckboxChange(checked, clientData)}
+									/>
+								)}
+								</Cell>
+							</Column>
+
+							<Column width={100} align="center" fixed>
+								<HeaderCell>거래처 코드</HeaderCell>
+								<Cell>{(clientData) => clientData.client_code}</Cell>
+							</Column>
+
+							<Column width={250}>
+								<HeaderCell>거래처명</HeaderCell>
+								<Cell>{(clientData) => clientData.client_name}</Cell>
+							</Column>
+						</Table>
+					</Modal.Body>
+					<Modal.Footer>
+						<Button
+							appearance="primary"
+							onClick={() => {
+								if (selectedClient) {
+									onClientSelect(selectedClient.client_code, selectedClient.client_name);
+								} else {
+									// 선택 안 했을 경우 null 전달
+									onClientSelect(null, null);
+								}
+								handleColse(); // 모달 닫기
+							}}
+						>
+							{confirm}
+						</Button>
+						<Button onClick={handleColse} appearance="subtle">
+							{cancel}
+						</Button>
+					</Modal.Footer>
+				</Modal>
+			)}
+		</>
 	);
 };
 

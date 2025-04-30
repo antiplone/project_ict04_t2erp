@@ -73,13 +73,13 @@ export default function BuySelectTabCheck() {
             .then(res => res.json() // 응답이 오면 javascript object로 바꾸겠다.
             )
             .then(res => {
-                console.log(1, res);
+                //console.log(1, res);
                 const numbered = getNumberedList(res);
                 setBuyOrderCheckList(numbered);
             }
             )
             .catch(error => {
-                console.error("데이터 가져오기 오류:", error);
+                //console.error("데이터 가져오기 오류:", error);
                 setBuyOrderCheckList([]); // 오류 발생 시 빈 배열 설정 
             });
     }, []); // []은 디펜던시인데, setState()로 렌더링될때 실행되면 안되고, 1번만 실행하도록 빈배열을 넣어둔다.

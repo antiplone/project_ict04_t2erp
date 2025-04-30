@@ -180,7 +180,7 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 	public List<BuyStatusDTO> getBuyStatusAllList() {
 			
 			return buyOrderMapper.buyStatusAllList();
-		}
+	}
 
 	// 구매 현황 <검색> 조회
 	public List<BuyStatusDTO> getBuyStatusSearch(String start_date, String end_date, String client_code, String e_id,
@@ -195,6 +195,7 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 		
 		return buyOrderMapper.getBuyStockStatusAllList();
 	}
+	
 	// 입고 현황 <검색> 조회
 	public List<BuyStockStatusDTO> getBuyStockStatusSearch(String start_date, String end_date, String order_id, String client_code,
 			String item_code, String storage_code, String stock_amount, String safe_stock, String last_date) {

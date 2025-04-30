@@ -307,7 +307,7 @@ export default function BuyInsert() {
                 </Button>
             </div>
 
-            <Divider />
+            <Divider style={{maxWidth: 1400}}/>
 
             {/* 거래처 모달 관리 */}
             <ClientSearchModal
@@ -423,7 +423,7 @@ export default function BuyInsert() {
                 </Column>
             </Table>
 
-            <Divider />
+            <Divider style={{maxWidth: 1400}}/>
             <div className="insertTotalSum">총액 합계: {totalSum.toLocaleString()} 원</div>
             <div style={{ display: 'flex', marginLeft: 10 }}>
                 <Button appearance="ghost" onClick={handleSubmit}>저장</Button>

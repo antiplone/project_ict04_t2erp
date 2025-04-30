@@ -48,12 +48,6 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 		return buyOrderMapper.buyOrderPayingList();
 	}
 	
-	// 구매조회 탭 <결재중> "건수" 조회
-	public List<BuyOrderDTO> getBuyOrderPayingCount() {
-		
-		return buyOrderMapper.buyOrderPayingCount();
-	}
-	
 	// 구매조회 탭 진행상태별 "건수" 조회
 	public Map<String, Long> getBuyOrderStatusCount() {
 		
@@ -182,7 +176,13 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 	}
 
 	// -------------  구매현황 페이지 --------------------------------------------------------------------------------------
-	// 구매 현황 조회 
+	// 구매 현황 <전체> 조회
+	public List<BuyStatusDTO> getBuyStatusAllList() {
+			
+			return buyOrderMapper.buyStatusAllList();
+		}
+
+	// 구매 현황 <검색> 조회
 	public List<BuyStatusDTO> getBuyStatusSearch(String start_date, String end_date, String client_code, String e_id,
             								 	 String storage_code, String item_code, String transaction_type) {
 		
@@ -190,7 +190,12 @@ public class BuyOrderServiceImpl {	// 작성자 - hjy, 구매조회(전체,결�
 	}
 	
 	// -------------  구매관리 - 입고조회 페이지 --------------------------------------------------------------------------------------
-	// 입고현황 조회
+	// 입고 현황 <전체> 조회
+	public List<BuyStockStatusDTO> getBuyStockStatusAllList() {
+		
+		return buyOrderMapper.getBuyStockStatusAllList();
+	}
+	// 입고 현황 <검색> 조회
 	public List<BuyStockStatusDTO> getBuyStockStatusSearch(String start_date, String end_date, String order_id, String client_code,
 			String item_code, String storage_code, String stock_amount, String safe_stock, String last_date) {
 		

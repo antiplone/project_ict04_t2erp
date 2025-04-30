@@ -9,12 +9,12 @@ const { Column, HeaderCell, Cell } = Table;
 
 const InchargeSearchModal = ({ confirm, cancel, onInchargeSelect, handleOpen, handleColse } /* = props:속성 */) => {
 
+	const fetchURL = AppConfig.fetch["mytest"];
+
 	const [employeeList, setEmployeeList] = useState([]);
 	const [selectedIncharge, setSelectedIncharge] = useState(null);
 	const [searchKeyword, setSearchKeyword] = useState("");
-
-	const fetchURL = AppConfig.fetch["mytest"];
-
+	
 	// fetch()를 통해 톰캣서버에게 데이터를 요청
 	useEffect(() => {
 		fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyInchargeList`, {

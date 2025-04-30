@@ -60,13 +60,6 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		return new ResponseEntity<>(buyOrderService.getBuyOrderPayingList(), HttpStatus.OK); //200
 	}
 	
-	// 구매조회 탭 <결재중> "건수" 조회 GetMapping => http://localhost:8081/buy/buyOrderPayingCount
-	@GetMapping("/buyOrderPayingCount")
-	public ResponseEntity<?> buyOrderPayingCount() {	
-		
-		return new ResponseEntity<>(buyOrderService.getBuyOrderPayingCount(), HttpStatus.OK); //200
-	}
-
 	// 구매조회 탭 진행상태별 "건수" 조회 GetMapping => http://localhost:8081/buy/buyOrderStatusCounts
 	@GetMapping("/buyOrderStatusCounts")
 	public ResponseEntity<Map<String, Long>> buyOrderStatusCount() {	
@@ -131,7 +124,14 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 	}
 	
 	// -------------  구매현황 페이지 --------------------------------------------------------------------------------------
-	// 구매 현황 조회 GetMapping => http://localhost:8081/buy/buyStatusSearch
+	// 구매 현황 <전체> 조회 GetMapping => http://localhost:8081/buy/buyStatusAllList
+	@GetMapping("/buyStatusAllList")
+	public ResponseEntity<?> buyStatusAllList() {	// ?를 주면 자동으로 적용된다. T 와 같은 의미, 데이터가 아직 결정되지 않았다는 뜻 => Integer 또는 ? 를 주면 된다. 
+		
+		return new ResponseEntity<>(buyOrderService.getBuyStatusAllList(), HttpStatus.OK); //200
+	}
+	
+	// 구매 현황 <검색> 조회 GetMapping => http://localhost:8081/buy/buyStatusSearch
 	@GetMapping("/buyStatusSearch")
 	public ResponseEntity<List<BuyStatusDTO>> buyStatusSearch(	// ?를 주면 자동으로 적용된다. T 와 같은 의미, 데이터가 아직 결정되지 않았다는 뜻 => Integer 또는 ? 를 주면 된다. 
 		// @RequestParam은 GET 요청의 쿼리 파라미터를 바인딩할 때 사용 => ex)clientCode=1001&buyType=부과세율 적용
@@ -270,8 +270,15 @@ public class BuyOrderController { // 작성자 - hjy 주문관련 controller => 
 		}
 	
 	// -------------  구매관리 - 입고조회 페이지 --------------------------------------------------------------------------------------
-	// 구매관리 - 입고조회 GetMapping => http://localhost:8081/buy/buyStockStatusSearch
-	@GetMapping("/buyStockStatusSearch")
+	// 구매 입고현황 <전체> 조회 GetMapping => http://localhost:8081/buy/buyStockStatusAllList
+	@GetMapping("/stockStatusAllList")
+	public ResponseEntity<?> buyStockStatusAllList() {	// ?를 주면 자동으로 적용된다. T 와 같은 의미, 데이터가 아직 결정되지 않았다는 뜻 => Integer 또는 ? 를 주면 된다. 
+		
+		return new ResponseEntity<>(buyOrderService.getBuyStockStatusAllList(), HttpStatus.OK); //200
+	}
+	
+	// 구매관리 - 입고현황 - 검색한 내역조회 GetMapping => http://localhost:8081/buy/buyStockStatusSearch
+	@GetMapping("/stockStatusSearch")
 	public ResponseEntity<List<BuyStockStatusDTO>> buyStockStatusSearch(
 		// @RequestParam은 GET 요청의 쿼리 파라미터를 바인딩할 때 사용 => ex)clientCode=1001&buyType=부과세율 적용
 		// required = false: 선택적인 파라미터 → 안 보내도 null로 들어가게 하려고 씀.

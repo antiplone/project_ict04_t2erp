@@ -21,7 +21,7 @@ public class BuyOrderDTO extends TransacOrderDTO {	// 작성자 hjy - 주문정�
 	// 주문정보
 	private Long order_id ; 				// 주문번호
 	private int order_type;				// 주문타입 type 1 판매팀, type 2 구매팀
-	private LocalDate order_date;			// 등록일자
+	private LocalDate order_date;		// 등록일자
 	private int e_id;					// 사원코드
 	private String e_name;				// 사원명
 	private int client_code;			// 거래처코드

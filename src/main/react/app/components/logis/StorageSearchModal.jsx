@@ -35,9 +35,11 @@ const StorageSearchModal = ({ title = "입고창고 검색",  confirm = "확인"
 	// 선택 완료 처리
 	const handleSubmit = () => {
 		if (selectedStorage) {
-			onStorageSelect( selectedStorage?.storage_code ?? null, selectedStorage?.storage_name ?? null );
-			handleColse();
+			onStorageSelect(selectedStorage.storage_code, selectedStorage.storage_name);
+		} else {
+			onStorageSelect('', '')
 		}
+		handleColse();
 	};
 
 	return (

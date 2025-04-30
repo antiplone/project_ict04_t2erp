@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Button, Container, DateRangePicker, Input, InputGroup, Divider } from 'rsuite'; 
+import { Button, Container, DateRangePicker, Input, InputGroup, Divider } from 'rsuite';
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table';
 
 import Appconfig from "#config/AppConfig.json";
 import "#styles/common.css";
 import ItemSearchModal from "#components/logis/ItemSearchModal.jsx";
 import ClientSearchModal from "#components/logis/ClientSearchModal.jsx";
+import EmailFormModal from "#components/email/EmailFormModal.jsx";
 import StorageSearchModal from "#components/logis/StorageSearchModal.jsx";
 import readingGlasses from "#images/common/readingGlasses.png";
 import MessageBox from '#components/common/MessageBox';
@@ -17,17 +18,24 @@ const StockItemsList = () => {
 	const [logisStockList, setLogisStockList] = useState([]);	// 초기값을 모르므로 빈배열로 logisStockList에 대입
 	const [orderDate, setOrderDate] = useState(null);			// 컬럼 정리 버튼
 
-	const [sortColumn, setSortColumn] = React.useState();		
+	const [sortColumn, setSortColumn] = React.useState();
 	const [sortType, setSortType] = React.useState();
-	const [selectedClient, setSelectedClient] = useState(null);
-	const [selectedClientName, setSelectedClientName] = useState(null);
-	const [isClientModalOpen, setClientModalOpen] = useState(false);
+	
 	const [selectedItem, setSelectedItem] = useState(null);
 	const [selectedItemName, setSelectedItemName] = useState(null);
 	const [isItemModalOpen, setItemModalOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+	
 	const [selectedStorage, setSelectedStorage] = useState(null);
 	const [selectedStorageName, setSelectedStorageName] = useState(null);
 	const [isStorageModalOpen, setStorageModalOpen] = useState(false);
+
+    // 모달 열기/닫기
+	const handleOpenModal = () => {
+		resetSearch_btn();      // 검색 조건 초기화 실행
+		setModalOpen(true);     // 모달 열기
+	};
+    const handleCloseModal = () => setModalOpen(false); // 모달 닫기
 
 	// fetch()를 통해 서버에게 데이터를 요청
 	useEffect(() => { // 통신 시작 하겠다.
@@ -48,33 +56,21 @@ const StockItemsList = () => {
 
 
 	/* 검색 시작*/
-
-
 	// 날짜 선택
 	const handleDateChange = (value) => {
 		console.log("선택된 날짜 범위:", value); // [startDate, endDate]
 		setOrderDate(value);
 	};
 
-	
+
 	// 초기화 버튼
 	const resetSearch_btn = () => {
 		// 검색 조건 초기화
-		setSalesDate(null);          // salesDate도 초기화
-		setSelectedClient('');       // client 선택값 초기화
-		setSelectedClientName('');   // client 이름 선택값 초기화
+		setOrderDate(null);          // salesDate도 초기화
 		setSelectedItem('');    	 // 품번 초기화
 		setSelectedItemName(''); // 품명 초기화
 		setSelectedStorage('');      // 창고 초기화
 		setSelectedStorageName('');  // 창고명 초기화
-
-		setSearchParams = {
-			start_date: startDate,
-			end_date: endDate,
-			item_code: selectedItem,
-			client_code: selectedClient,
-			storage_code: selectedStorage,
-		};
 	};
 
 
@@ -87,6 +83,13 @@ const StockItemsList = () => {
 			endDate = orderDate[1].toLocaleDateString('sv-SE');
 		}
 
+		const searchParams = {
+			start_date: startDate,
+			end_date: endDate,
+			item_code: selectedItem,
+			storage_code: selectedStorage,
+		};
+
 		// 빈 값, 널 제거
 		const cleanedParams = Object.fromEntries(
 			Object.entries(searchParams).filter(([_, value]) => value !== null && value !== '')
@@ -97,6 +100,7 @@ const StockItemsList = () => {
 		try {
 			const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/logisstock/logisStockSearch?${query}`);
 			const result = await res.json();
+			console.log('검색 결과:', result);
 			const validatedResult = Array.isArray(result) ? result : [];
 			setLogisStockList(validatedResult);
 			if (validatedResult.length === 0) {
@@ -142,7 +146,7 @@ const StockItemsList = () => {
 		}, 500);
 	};
 	// 컬럼 정리 버튼 끝
-	
+
 	const handleExcelDownload = () => {
 		const params = {
 			start_date: orderDate && orderDate.length === 2 ? orderDate[0].toLocaleDateString('sv-SE') : '',
@@ -157,173 +161,135 @@ const StockItemsList = () => {
 		window.open(`${fetchURL.protocol}${fetchURL.url}${apiPath}?${new URLSearchParams(params)}`, '_blank');
 	};
 
-	// 페이징
-
-	/* Pagnation */
-/*	const [limit, setLimit] = useState(30); // 한 페이지에 보여줄 데이터 수
-	const [currentPage, setPage] = React.useState(1);
-	const handleChangeLimit = dataKey => {
-		setPage(1);
-		setLimit(dataKey);
-	};
-
-	const pagedData = useMemo(() => {
-		// 데이터를 가져오고 정렬된 결과를 구합니다.
-		const sorted = getData();
-
-		// row_num을 추가합니다.
-		const stockListWithRowNum = sorted.map((stock, index) => ({
-			...stock,
-			row_num: index + 1,
-		}));
-
-		// 페이징 처리
-		const start = (currentPage - 1) * limit;
-		const end = start + limit;
-		return stockListWithRowNum.slice(start, end);
-	}, [logisStockList, sortColumn, sortType, currentPage, limit]);*/
-
 	return (
 		<div>
-			<MessageBox type="warning" text="재고 목록"/>
-			<Container style={{margin: '0 auto', maxWidth : '1480px'}}>
-				<div className="inputBox">
-					<InputGroup className="input" style={{ width: 300 }}>
-						<InputGroup.Addon style={{ width: 80 }}>입고 일자</InputGroup.Addon>
-						<DateRangePicker
-							value={orderDate}
-							onChange={handleDateChange}
-							format="yyyy-MM-dd"
-							placeholder="날짜 선택"
-						/>
-					</InputGroup>
+			<MessageBox type="warning" text="재고 목록" />
+			<Container style={{ margin: '0 auto', maxWidth: '1480px' }}>
+				<div className='main_table'>
+					<div className="inputBox">
+						<div className="input">
+							<InputGroup className="input_date_type" style={{ width: 350 }}>
+								<InputGroup.Addon style={{ width: 80 }} className='text_center'>입고 일자</InputGroup.Addon>
+								<DateRangePicker
+									value={orderDate}
+									onChange={handleDateChange}
+									format="yyyy-MM-dd"
+									placeholder="날짜 선택"
+								/>
+							</InputGroup>
+						</div>
+						<div className="input">
+							<InputGroup className="inputModal">
+								<InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
+								<Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
+								<InputGroup.Addon>
+									<img
+										src={readingGlasses}
+										alt="돋보기"
+										width={20}
+										height={20}
+									/>
+								</InputGroup.Addon>
+							</InputGroup>
+							<Input value={selectedStorageName || ""} readOnly className="inputModalSide" />
+						</div>
 
-					<InputGroup className="input" style={{ width: 190 , marginLeft: '140px'}}>
-						<InputGroup.Addon style={{ width: 80 }} className='text_center'>품목</InputGroup.Addon>
-						<Input value={selectedItem || ""} readOnly onClick={() => setItemModalOpen(true)} />
-						<InputGroup.Button tabIndex={-1}>
-							<img
-								src={readingGlasses}
-								alt="돋보기"
-								width={20}
-								height={20}
-								style={{ cur: "pointer" }}
-							/>
-						</InputGroup.Button>
-					</InputGroup>
-					<Input value={selectedItemName || ""} readOnly style={{ width: 250 }} />
+						<div className="input">
+							<InputGroup className="inputModal">
+								<InputGroup.Addon style={{ width: 80 }}> 품목코드</InputGroup.Addon>
+								<Input value={selectedItem || ""} readOnly onClick={() => setItemModalOpen(true)} />
+								<InputGroup.Addon>
+									<img
+										src={readingGlasses}
+										alt="돋보기"
+										width={20}
+										height={20}
+									/>
+								</InputGroup.Addon>
+							</InputGroup>
+							<Input value={selectedItemName || ""} readOnly style={{ width: 150 }} />
+						</div>
 
-				</div>
-				<div className="inputBox">
-					<InputGroup className="input" style={{ width: 170 }}>
-						<InputGroup.Addon style={{ width: 80 }} className='text_center'>거래처</InputGroup.Addon>
-						<Input value={selectedClient || ""} readOnly onClick={() => setClientModalOpen(true)} />
-						<InputGroup.Addon>
-							<img
-								src={readingGlasses}
-								alt="돋보기"
-								width={20}
-								height={20}
-								style={{ cur: "pointer" }}
-							/>
-						</InputGroup.Addon>
-					</InputGroup>
-					<Input value={selectedClientName || ""} readOnly style={{ width: 250 }} />
-                    <InputGroup className="input" style={{ width: 190 }}>
-                        <InputGroup.Addon style={{ width: 80 }} className='text_center'>보관창고</InputGroup.Addon>
-                        <Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
-                        <InputGroup.Addon>
-                            <img
-                                src={readingGlasses}
-                                alt="돋보기"
-                                width={20}
-                                height={20}
-                                style={{ cur: "pointer" }}
-                            />
-                        </InputGroup.Addon>
-                    </InputGroup>
-                    <Input value={selectedStorageName || ""} readOnly style={{ width: 250 }} />
-				</div>
+						<StorageSearchModal handleOpen={isStorageModalOpen} handleColse={() => setStorageModalOpen(false)} onStorageSelect={(code, name) => { setSelectedStorage(code); setSelectedStorageName(name); }} />
+						<ItemSearchModal handleOpen={isItemModalOpen} handleColse={() => setItemModalOpen(false)} onItemSelect={(code, name) => { setSelectedItem(code); setSelectedItemName(name); }} />
+					</div>
 
-				<ItemSearchModal handleOpen={isItemModalOpen} handleColse={() => setItemModalOpen(false)} onItemSelect={(code, name) => { setSelectedItem(code); setSelectedItemName(name); }} />
-				<ClientSearchModal handleOpen={isClientModalOpen} handleColse={() => setClientModalOpen(false)} onClientSelect={(code, name) => { setSelectedClient(code); setSelectedClientName(name); }} />
-				<StorageSearchModal handleOpen={isStorageModalOpen} handleColse={() => setStorageModalOpen(false)} onStorageSelect={(code, name) => { setSelectedStorage(code); setSelectedStorageName(name); }} />
+					<div className="buyBtnBox BtnBoxLeftMargin">
+						<Button appearance="ghost" color="green" onClick={handleSearch} className="statusSearchBtn">
+							검색
+						</Button>
+						<Button appearance="ghost" onClick={resetSearch_btn}>
+							초기화
+						</Button>
+						<Button appearance="ghost" color="blie" onClick={handleExcelDownload} className="statusExcelBtn">
+							엑셀 다운로드
+						</Button>
+					</div>
 
-				<div className="buyBtnBox BtnBoxLeftMargin">
-					<Button appearance="ghost" color="green" onClick={handleSearch} className="statusSearchBtn">
-						검색
-					</Button>
-					<Button appearance="ghost" onClick={resetSearch_btn}>
-						초기화
-					</Button>
-					<Button appearance="ghost" color="blie" onClick={handleExcelDownload} className="statusExcelBtn">
-						엑셀 다운로드
-					</Button>
-				</div>
+					<Divider style={{ width: '1480px' }} />
 
-				<Divider style={{width : '1480px'}} />
+					{/*<Table height={400} data={pagedData} sortColumn={sortColumn} sortType={sortType} onSortColumn={handleSortColumn} className='text_center'>*/}
+					<Table width={1470} height={400} data={stockListWithRowNum} sortColumn={sortColumn} sortType={sortType} onSortColumn={handleSortColumn} className='text_center'>
+						<Column width={100} align="center" fixed>
+							<HeaderCell className='text_center'>번호</HeaderCell>
+							<Cell dataKey="row_num" className='text_center' />
+						</Column>
 
-				{/*<Table height={400} data={pagedData} sortColumn={sortColumn} sortType={sortType} onSortColumn={handleSortColumn} className='text_center'>*/}
-				<Table width={1470} height={400} data={stockListWithRowNum} sortColumn={sortColumn} sortType={sortType} onSortColumn={handleSortColumn} className='text_center'>
-					<Column width={100} align="center" fixed>
-						<HeaderCell className='text_center'>번호</HeaderCell>
-						<Cell dataKey="row_num" className='text_center' />
-					</Column>
+						<Column width={100} align="center" fixed sortable>
+							<HeaderCell className='text_center'>품목코드</HeaderCell>
+							<Cell dataKey="item_code" className='text_center' />
+						</Column>
 
-					<Column width={100} align="center" fixed sortable>
-						<HeaderCell className='text_center'>품목코드</HeaderCell>
-						<Cell dataKey="item_code" className='text_center' />
-					</Column>
+						<Column width={260}>
+							<HeaderCell className='text_center'>품목명</HeaderCell>
+							<Cell dataKey="item_name" className='text_center' />
+						</Column>
 
-					<Column width={260}>
-						<HeaderCell className='text_center'>품목명</HeaderCell>
-						<Cell dataKey="item_name" className='text_center' />
-					</Column>
+						<Column width={320}>
+							<HeaderCell className='text_center'>품목 규격</HeaderCell>
+							<Cell dataKey="item_standard" className='text_center' />
+						</Column>
 
-					<Column width={320}>
-						<HeaderCell className='text_center'>품목 규격</HeaderCell>
-						<Cell dataKey="item_standard" className='text_center' />
-					</Column>
+						<Column width={100}>
+							<HeaderCell className='text_center'>현 재고량</HeaderCell>
+							<Cell dataKey="stock_amount" className='text_center'>
+								{(rowData) => (
+									<span
+										style={{
+											color: rowData.stock_amount < rowData.safe_stock ? 'red' : 'inherit',
+											fontWeight: rowData.stock_amount < rowData.safe_stock ? 'bold' : 'normal'
+										}}
+									>
+										{rowData.stock_amount}
+									</span>
+								)}
+							</Cell>
+						</Column>
 
-					<Column width={100}>
-						<HeaderCell className='text_center'>현 재고량</HeaderCell>
-						<Cell dataKey="stock_amount" className='text_center'>
-							{(rowData) => (
-								<span
-									style={{
-										color: rowData.stock_amount < rowData.safe_stock ? 'red' : 'inherit',
-										fontWeight: rowData.stock_amount < rowData.safe_stock ? 'bold' : 'normal'
-									}}
-								>
-									{rowData.stock_amount}
-								</span>
-							)}
-						</Cell>
-					</Column>
+						<Column width={120}>
+							<HeaderCell className='text_center'>안전 재고</HeaderCell>
+							<Cell dataKey="safe_stock" className='text_center' />
+						</Column>
 
-					<Column width={120}>
-						<HeaderCell className='text_center'>안전 재고</HeaderCell>
-						<Cell dataKey="safe_stock" className='text_center' />
-					</Column>
+						<Column width={170} fixed sortable>
+							<HeaderCell className='text_center'>최근 입고일</HeaderCell>
+							<Cell dataKey="last_date" className='text_center' />
+						</Column>
 
-					<Column width={170} fixed sortable>
-						<HeaderCell className='text_center'>최근 입고일</HeaderCell>
-						<Cell dataKey="last_date" className='text_center' />
-					</Column>
+						<Column width={170}>
+							<HeaderCell className='text_center'>보관창고</HeaderCell>
+							<Cell dataKey="storage_name" className='text_center' />
+						</Column>
 
-					<Column width={170}>
-						<HeaderCell className='text_center'>보관창고</HeaderCell>
-						<Cell dataKey="storage_name" className='text_center' />
-					</Column>
+						<Column width={120} fixed sortable>
+							<HeaderCell className='text_center'>창고코드</HeaderCell>
+							<Cell dataKey="storage_code" className='text_center' />
+						</Column>
+					</Table>
+					
+					
 
-					<Column width={120} fixed sortable>
-						<HeaderCell className='text_center'>창고코드</HeaderCell>
-						<Cell dataKey="storage_code" className='text_center' />
-					</Column>
-				</Table>
-
-
-				{/*<Pagination
+					{/*<Pagination
 					prev="이전"
 					next="다음"
 					first="첫 페이지"
@@ -343,7 +309,19 @@ const StockItemsList = () => {
 					className='logis_pagination'
 				/>*/}
 
-				<br />
+					<br />
+					<div style={{ display: 'flex', margin: '10px' }}>
+						{/* Email Modal */}
+						<div width={50} height={50} style={{ marginRight: '20px' }}>
+							<Button appearance="primary" onClick={handleOpenModal}>
+								이메일 보내기
+							</Button>
+						</div>
+
+						{/* EmailFormModal Component */}
+						<EmailFormModal open={modalOpen} onClose={() => handleCloseModal(false)} />
+					</div>
+				</div>
 			</Container>
 		</div>
 	)

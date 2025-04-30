@@ -51,7 +51,6 @@ public class LogisOrderlController {
 		@RequestParam(required = false) String start_date, 
 		@RequestParam(required = false) String end_date, 
 	    @RequestParam(required = false) String client_code,
-	    @RequestParam(required = false) String e_id,
 	    @RequestParam(required = false) Integer storage_code
 	) {
 	    System.out.println("<<< logisOrderSearch >>>");
@@ -59,12 +58,11 @@ public class LogisOrderlController {
 	    System.out.println("start_date: " + start_date);
 	    System.out.println("end_date: " + end_date);
 	    System.out.println("client_code: " + client_code);
-	    System.out.println("e_id: " + e_id);
 	    System.out.println("storage_code: " + storage_code);
 	    
 	    // 서비스 메서드 호출 (파라미터 전달)
 	    List<LogisStatusDTO> result = orderService.logisOrderSearch(
-	    		start_date, end_date, client_code, e_id, storage_code
+	    		start_date, end_date, client_code, storage_code
 	    );
 	    
 	    

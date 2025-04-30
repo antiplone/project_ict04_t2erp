@@ -34,8 +34,7 @@ public interface LogisMapper {
 		public List<LogisOrderDTO> logisOrderList();
 
 		public List<LogisStatusDTO> logisOrderSearch(@Param("start_date") String start_date,
-				@Param("end_date") String end_date, @Param("client_code") String client_code,
-				@Param("e_id") String e_id, @Param("storage_code") Integer storage_code);
+				@Param("end_date") String end_date, @Param("client_code") String client_code, @Param("storage_code") Integer storage_code);
 		
 		public List<LogisOrderDTO> findByLogisOrderId(int order_id);
 		

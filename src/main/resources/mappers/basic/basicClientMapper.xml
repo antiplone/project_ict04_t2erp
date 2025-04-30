@@ -77,4 +77,11 @@
 	 WHERE client_code=#{client_code}
 </delete>
 
+<!-- 거래처 중복 확인 -->
+<select id="basicBizNumCheck" resultType="int">
+	SELECT COUNT(*)
+	  FROM client_tbl
+	 WHERE c_biz_num = #{c_biz_num}
+</select>
+
 </mapper>

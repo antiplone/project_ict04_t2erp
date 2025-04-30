@@ -10,8 +10,10 @@ import HrRadio from '#components/hr/HrRadio';
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 import { Link } from '@remix-run/react';
 import MessageBox from '#components/common/MessageBox.jsx';
+import { useToast } from '#components/common/ToastProvider';
 
 const HrEmpCardPage = () => {
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState('1');
   const [items, setItems] = useState([]);
   const [form, setForm] = useState({
@@ -77,9 +79,17 @@ const HrEmpCardPage = () => {
       })
       .catch(() => setUploading(false));
   };
-  
 
+  // 인사카드 등록
   const handleRegister = () => {
+  const requiredFields = ['e_name', 'e_tel', 'e_birth', 'e_email', 'e_position', 'd_code', 'e_status', 'e_salary_account_bank', 'e_salary_account_num', 'e_salary_account_owner'];
+  const hasEmptyRequiredField = requiredFields.some(field => !form[field]);
+
+  if (hasEmptyRequiredField) {
+    showToast('필수 항목을 모두 입력해주세요.', 'error');
+    return;
+  }
+  
     fetch('http://localhost:8081/hrCard/hrCardInsert', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -98,7 +108,8 @@ const HrEmpCardPage = () => {
           setPhotoPreview(null);
           setActiveTab('1');
           fetch('http://localhost:8081/hrCard/hrCardList')
-            .then(res => res.json()).then(data => setItems(data));
+            .then(res => res.json())
+            .then(data => setItems(data));
         }
       });
   };
@@ -214,7 +225,7 @@ const HrEmpCardPage = () => {
                         <Form.Group>
                           <Form.ControlLabel>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span>주소 *</span>
+                              <span>주소</span>
                               <Button size="xs" appearance="ghost" onClick={handleAddress}>
                                 우편번호 검색
                               </Button>

@@ -174,7 +174,7 @@ export default function Item() {
         <HrTable columns={columns} items={items} onEditClick={handleEditClick} onDeleteClick={handleDeleteClick}/> 
 
         {/* 상품 등록 버튼 */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end'}}>
+        <div style={{ display: 'flex', justifyContent: 'flex-start'}}>
           <HrButton hrBtn="상품 등록" onClick={handleOpen} />
         </div>
       </div>

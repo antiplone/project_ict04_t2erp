@@ -8,11 +8,11 @@ const { Column, HeaderCell, Cell } = Table;
 
 const StorageSearchModal = ({ title, confirm, cancel, onStorageSelect, handleOpen, handleColse } /* = props:속성 */) => {
 
+	const fetchURL = AppConfig.fetch["mytest"];
+
 	const [storageList, setStorageList] = useState([]);
 	const [selectedStorage, setSelectedStorage] = useState(null);
 	const [searchKeyword, setSearchKeyword] = useState("");
-
-	const fetchURL = AppConfig.fetch["mytest"];
 
 	// fetch()를 통해 톰캣서버에게 데이터를 요청
 	useEffect(() => {

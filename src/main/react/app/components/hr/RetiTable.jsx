@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import RetiAllTab from "#components/hr/RetiAllTab.jsx";
 import RetiMyTab from "#components/hr/RetiMyTab.jsx";
+import { Loader, Placeholder } from "rsuite";
 
 export default function RetiTable({ url, retiColumns, hrURL, e_id }) {
   const [retiData, setRetiData] = useState([]); // 전체 퇴직 데이터를 저장하는 상태 변수.
+  const [isLoading, setIsLoading] = useState(true);	// 데이터를 가져오는 중인지 표시 (true/false)
 
 	// 로그인 시 저장해둔 사용자 직위를 가져오고, 관리자급 직위로만 다시 나누기
 	const position = localStorage.getItem("e_position");  // 예: '관리자' 또는 '사원'
@@ -20,13 +22,25 @@ export default function RetiTable({ url, retiColumns, hrURL, e_id }) {
     .then(res => {
       // console.log("Oh! 잘 들어옵니다^^ ", res);  // 여기까지 잘 오는지 확인용
       setRetiData(res);
-      console.log("받은 데이터:", res); // 로그 추가
+      // console.log("받은 데이터:", res); // 로그 추가
+      setIsLoading(false);
     })
     .catch(error => {
       console.error("퇴사자 데이터를 불러오지 못했습니다ㅠ => ", error);
       setRetiData([]); // 에러 났을 때도 빈 배열로
+      setIsLoading(false);
     });
   }, [url]);
+
+  // 로딩 중일 때
+  if (isLoading) {
+    return (
+      <>
+        <Placeholder.Paragraph rows={16} />
+        <Loader center content="불러오는 중..." />
+      </>
+    );
+  }
 
   if (adminPositions.includes(position?.trim())) {
     return <RetiAllTab retiColumns={retiColumns} retiData={retiData} />;

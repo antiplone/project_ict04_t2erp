@@ -1,9 +1,10 @@
-// routes/main/schedule.jsx
 /* eslint-disable react/react-in-jsx-scope */
-import { Container } from "rsuite";
+import { useEffect, useState } from "react";
+import { Container, Loader, Placeholder } from "rsuite";
 import MessageBox from "#components/common/MessageBox";
 import AppConfig from "#config/AppConfig.json";
-import Calendar from "#components/api/Calendar.jsx";
+// import Calendar from "#components/api/calendar/Calendar";
+import HolidayCalendar from "#components/api/calendar/HolidayCalendar";
 
 export function meta() {
   return [
@@ -13,12 +14,34 @@ export function meta() {
 }
 
 export default function SchedulePage() {
+  const [isLoading, setIsLoading] = useState(true);	// 데이터를 가져오는 중인지 표시 (true/false)
+
+  // 로딩 해제 (1초 후)
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <Container>
       <MessageBox text="공휴일 일정" />
-      <div style={{ marginTop: "20px" }}>
-        <Calendar />
-      </div>
+
+        {/* 로딩 중일 때 */}
+        {isLoading ? (
+          <>
+            <Placeholder.Paragraph rows={16} />
+            <Loader center content="불러오는 중..." />
+          </>
+        ) : (
+        // 로딩 후 달력 표시
+        <div style={{ marginTop: "20px" }}>
+          {/* <Calendar /> */}
+          <HolidayCalendar />
+        </div>
+      )}
+
+      {/* 크롤링 뉴스는 항상 아래에 표시 */}
+      {/* <CrawlingNews /> */}
     </Container>
   );
 }

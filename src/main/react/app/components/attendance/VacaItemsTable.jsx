@@ -94,24 +94,60 @@ const VacaItemsTable = ({ data, columns, onReloading }) => {
         {/* React.Fragment: 가상 컴포넌트. <></> 와 같은 역할임. key 객체를 쓰기 위해서 가상컴포넌트를 사용함. */}
         {columns
           .filter(col => !["v_start", "v_end"].includes(col.dataKey)) // 기존 start, end 컬럼 제거
-          .map(col => (
-          <React.Fragment key={col.dataKey}>
-            <Column key={col.dataKey} width={col.width} className="text_center">
-              <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
-              <Cell dataKey={col.dataKey} />
-            </Column>
+          .map(col => {
+            const isFlexible = ["v_note"].includes(col.dataKey); // 💡 긴 컬럼 조건
 
-          {/* ✅ '휴가명' 뒤에만 휴가기간 컬럼 끼워넣기 */}
-          {col.dataKey === "v_name" && (
-            <Column width={250} className="text_center">
-              <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>휴가기간</HeaderCell>
-              <Cell>
-                {(rowData) => `${rowData.v_start} ~ ${rowData.v_end}`}
-              </Cell>
-            </Column>
-          )}
-          </React.Fragment>
-        ))}
+            return (
+              <React.Fragment key={col.dataKey}>
+                <Column
+                  key={col.dataKey}
+                  {...(isFlexible ? { flexGrow: 1 } : { width: col.width })}
+                  className="text_center"
+                >
+                  <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>
+                    {col.label}
+                  </HeaderCell>
+
+                  {isFlexible ? (
+                    // ✅ 긴 텍스트 칼럼은 말줄임 처리 + 툴팁
+                    <Cell>
+                      {(rowData) => {
+                        const text = rowData[col.dataKey] || "";
+                        return (
+                          <span
+                            title={text}
+                            className="text_left"
+                            style={{
+                              display: "inline-block",
+                              width: "100%",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              paddingLeft: "8px",
+                            }}
+                          >
+                            {text}
+                          </span>
+                        );
+                      }}
+                    </Cell>
+                  ) : (
+                    <Cell dataKey={col.dataKey} />
+                  )}
+                </Column>
+
+                {/* ✅ '휴가명' 뒤에만 휴가기간 컬럼 끼워넣기 */}
+                {col.dataKey === "v_name" && (
+                  <Column width={250} className="text_center">
+                    <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>휴가기간</HeaderCell>
+                    <Cell>
+                      {(rowData) => `${rowData.v_start} ~ ${rowData.v_end}`}
+                    </Cell>
+                  </Column>
+                )}
+              </React.Fragment>
+            );
+          })}
 
         <Column width={110} className="text_center">
           <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>작업</HeaderCell>

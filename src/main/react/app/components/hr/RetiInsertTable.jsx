@@ -25,7 +25,6 @@ const model = Schema.Model({
 const typeOptions = [
   { label: "사직", value: "사직" },
   { label: "퇴사", value: "퇴사" },
-  { label: "면직", value: "면직" },
   { label: "기타", value: "기타" },
 ];
 

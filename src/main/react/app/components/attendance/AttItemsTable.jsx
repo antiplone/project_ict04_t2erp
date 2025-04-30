@@ -90,12 +90,47 @@ export default function AttItemsTable({ data, columns, onReloading }) {
         data={data ?? []}
         cellBordered
       >
-        {columns.map(col => (
-          <Column key={col.dataKey} width={col.width} className="text_center">
-            <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
-            <Cell dataKey={col.dataKey} />
-          </Column>
-        ))}
+        {columns.map(col => {
+          const isFlexible = ["a_note"].includes(col.dataKey);
+
+          return (
+            <Column
+              key={col.dataKey}
+              {...(isFlexible ? { flexGrow: 1 } : { width: col.width })}
+              className="text_center"
+            >
+              <HeaderCell style={{ backgroundColor: "#f8f9fa" }}>
+                {col.label}
+              </HeaderCell>
+
+              {isFlexible ? (
+                <Cell>
+                  {(rowData) => {
+                    const text = rowData[col.dataKey] || "";
+                    return (
+                      <span
+                        title={text}
+                        className="text_left"
+                        style={{
+                          display: "inline-block",
+                          width: "100%",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          paddingLeft: "8px",
+                        }}
+                      >
+                        {text}
+                      </span>
+                    );
+                  }}
+                </Cell>
+              ) : (
+                <Cell dataKey={col.dataKey} />
+              )}
+            </Column>
+          );
+        })}
 
         <Column width={110} className="text_center">
           <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>작업</HeaderCell>

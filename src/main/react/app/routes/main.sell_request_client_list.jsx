@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Tabs, Message } from 'rsuite';
+import { Table, Button, Tabs, Message, Container, Placeholder, Loader } from 'rsuite';
 import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';	
 import AppConfig from "#config/AppConfig.json";
@@ -14,6 +14,7 @@ const SellRequestClientList = () => {
 
 	const navigate = useNavigate();
 	const fetchURL = AppConfig.fetch['mytest'];
+	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
 
 	// 전체 리스트
     const [reqClient, setReqClient] = useState([]);
@@ -39,6 +40,7 @@ const SellRequestClientList = () => {
 		.then(res => {
 			console.log(1, res);
 			setReqClient(res);
+			setIsLoading(false);
 		});
 	}, []);
 	
@@ -79,75 +81,82 @@ const SellRequestClientList = () => {
 				<Tabs.Tab eventKey="4" title="등록 요청" />
 			</Tabs>
 
-            {/* 요청 리스트 */}
-			{(activeTab === "1" || activeTab === "2" || activeTab === "3") && (
-            <Table
-				height={400}
-				width={1200}
-				margin='0 auto'
-				data={filteredList}
-				onRowClick={rowData => {
-					console.log(rowData);
-				}}
-			>
+			{/* 로딩 중일 때 */}
+			{/* Placeholder.Paragraph : 여러 줄의 더미 텍스트 박스. 스켈레톤(skeleton) 로딩 UI를 자동 생성 */}
+			{isLoading ? (
+				<Container>
+					<Placeholder.Paragraph rows={12} />
+					<Loader center content="불러오는중..." />
+				</Container>
+			) : (
+				<>
+				{(activeTab === "1" || activeTab === "2" || activeTab === "3") && (
+				<Table
+					height={400}
+					width={1200}
+					margin='0 auto'
+					data={filteredList}
+					onRowClick={rowData => {
+						console.log(rowData);
+					}}
+				>
 
-				<Column width={70} className="text_center">
-					<HeaderCell style={styles}>순번</HeaderCell>
-					<Cell>{(rowData) => rowData.rownum}</Cell>
-				</Column>
+					<Column width={70} className="text_center">
+						<HeaderCell style={styles}>순번</HeaderCell>
+						<Cell>{(rowData) => rowData.rownum}</Cell>
+					</Column>
+					
+					<Column width={100} className="text_center">
+						<HeaderCell style={styles}>승인상태</HeaderCell>
+						<Cell>{(rowData) => rowData.sa_approval_status}</Cell>
+					</Column>
+
+
+					<Column width={120} className="text_center">
+						<HeaderCell style={styles}>거래처명</HeaderCell>
+						<Cell>{(rowData) => rowData.sc_client_name}</Cell>
+					</Column>
+
+					<Column width={120} className="text_center">
+						<HeaderCell style={styles}>대표자명</HeaderCell>
+						<Cell>{(rowData) => rowData.sc_ceo}</Cell>
+					</Column>
+
+					<Column width={150} className="text_center">
+						<HeaderCell style={styles}>사업자등록번호</HeaderCell>
+						<Cell>{(rowData) => rowData.sc_biz_num}</Cell>
+					</Column>
+
+					<Column width={170} className="text_center">
+						<HeaderCell style={styles}>이메일</HeaderCell>
+						<Cell>{(rowData) => rowData.sc_email}</Cell>
+					</Column>
+
+					<Column width={170} className="text_center">
+						<HeaderCell style={styles}>연락처</HeaderCell>
+						<Cell>{(rowData) => rowData.sc_tel}</Cell>
+					</Column>
+
+					<Column width={170} className="text_center">
+						<HeaderCell style={styles}>등록일</HeaderCell>
+						<Cell>{(rowData) => rowData.sc_date}</Cell>
+					</Column>
+
+					<Column width={70} className="text_center">
+						<HeaderCell style={styles}>상세보기</HeaderCell>
+						<Cell>
+							{(rowData) => (
+							<Button color="green" appearance="ghost" size="xs" onClick={() => detailReqClient(rowData.sc_id)} style={{ marginTop: -7 }}>
+								조회
+							</Button>
+							)}
+						</Cell>
+					</Column>
+				</Table> )}
 				
-				<Column width={100} className="text_center">
-					<HeaderCell style={styles}>승인상태</HeaderCell>
-					<Cell>{(rowData) => rowData.sa_approval_status}</Cell>
-				</Column>
-
-
-				<Column width={120} className="text_center">
-					<HeaderCell style={styles}>거래처명</HeaderCell>
-					<Cell>{(rowData) => rowData.sc_client_name}</Cell>
-				</Column>
-
-				<Column width={120} className="text_center">
-					<HeaderCell style={styles}>대표자명</HeaderCell>
-					<Cell>{(rowData) => rowData.sc_ceo}</Cell>
-				</Column>
-
-				<Column width={150} className="text_center">
-					<HeaderCell style={styles}>사업자등록번호</HeaderCell>
-					<Cell>{(rowData) => rowData.sc_biz_num}</Cell>
-				</Column>
-
-				<Column width={170} className="text_center">
-					<HeaderCell style={styles}>이메일</HeaderCell>
-					<Cell>{(rowData) => rowData.sc_email}</Cell>
-				</Column>
-
-				<Column width={170} className="text_center">
-					<HeaderCell style={styles}>연락처</HeaderCell>
-					<Cell>{(rowData) => rowData.sc_tel}</Cell>
-				</Column>
-
-				<Column width={170} className="text_center">
-					<HeaderCell style={styles}>등록일</HeaderCell>
-					<Cell>{(rowData) => rowData.sc_date}</Cell>
-				</Column>
-
-				<Column width={70} className="text_center">
-					<HeaderCell style={styles}>상세보기</HeaderCell>
-					<Cell>
-						{(rowData) => (
-						<Button color="green" appearance="ghost" size="xs" onClick={() => detailReqClient(rowData.sc_id)} style={{ marginTop: -7 }}>
-							조회
-						</Button>
-						)}
-					</Cell>
-				</Column>
-			</Table> )}
-				
-				{activeTab === "4" && (
-					<SellRequestClient />
-				)}
-			
+				{activeTab === "4" && <SellRequestClient />}
+			</>
+			)}
         </div>
     );
 };

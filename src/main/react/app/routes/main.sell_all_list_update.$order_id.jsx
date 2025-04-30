@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Button, ButtonToolbar, Message, DatePicker, Form, 
-		 InputGroup, Input, InputPicker,
+		 InputGroup, Input, InputPicker, Container, Placeholder, Loader,
 		 Divider, toaster } from "rsuite";
 import { useParams } from "react-router-dom";
 import "#styles/sell.css";
@@ -24,10 +24,10 @@ const sellType = ["부과세율 적용", "부가세율 미적용"].map(
 	})
 );
 
-
 const sell_all_list_update = (props) => {
 	const fetchURL = AppConfig.fetch['mytest'];
 	const navigate = useNavigate();
+	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
 
 	const propsparam = useParams();
 	const order_id = propsparam.order_id;
@@ -183,6 +183,7 @@ const sell_all_list_update = (props) => {
 			}));
 
 			setSellAdd(fixedRes);	// 수정 가능한 배열로 저장
+			setIsLoading(false);
 			setOriginalItems(fixedRes);	// 원본 백업 (삭제 비교용)
 
 			// 첫 번째 항목을 기준으로 상단 입력값 세팅
@@ -352,11 +353,17 @@ const sell_all_list_update = (props) => {
 		<div>
 			<Message type="info" className="main_title">판매 정보 수정페이지 - 주문번호: {order_id}</Message>
 
+			{/* 로딩 중일 때 */}
+			{isLoading ? (
+				<Container>
+					<Placeholder.Paragraph rows={16} />
+					<Loader center content="불러오는중..." />
+				</Container>
+			) : (
 			<Form layout="horizontal">
 
 			{/* 입력 상위 칸 */}
 			<div className="add_final">
-
 				<div className="form_div">
 					<div className="add_div">
 						<InputGroup className="insert_input">
@@ -663,6 +670,7 @@ const sell_all_list_update = (props) => {
 				/>
 			{/* <hr></hr> */}
 			</Form>
+			)}
 		</div>
 		
 	);

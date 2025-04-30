@@ -1,4 +1,4 @@
--- [근태항목관리 테이블] ---------------------------------------------------
+-- [근태관리-근태항목관리 테이블] ---------------------------------------------------
 create table attendance_tbl(   
    a_list_no INT AUTO_INCREMENT primary key,   -- 근태 게시글번호(자동증가), PK
    a_code INT UNIQUE not NULL,               -- 근태번호, UK
@@ -38,7 +38,7 @@ CREATE TABLE commute_tbl(
 );
 
 
--- [휴가항목관리 테이블] ---------------------------------------------------
+-- [근태관리-휴가항목관리 테이블] ---------------------------------------------------
 drop table vacation_tbl;
 create table vacation_tbl(	
 	v_list_no INT AUTO_INCREMENT primary key,	-- 휴가 게시글번호(자동증가), PK
@@ -52,7 +52,7 @@ create table vacation_tbl(
 );
 
 
--- [사원 - 퇴직 테이블] ---------------------------------------------------
+-- [인사관리-퇴직 테이블] ---------------------------------------------------
 DROP TABLE retirement_tbl;
 CREATE TABLE retirement_tbl(
 	resi_list_no INT auto_increment PRIMARY KEY,			-- 퇴직 테이블의 번호, PK
@@ -73,4 +73,38 @@ CREATE TABLE retirement_tbl(
 	e_name VARCHAR(60),		-- 사원명
 	e_position VARCHAR(40),	-- 직위
 	d_name VARCHAR(100)		-- 부서명
+);
+
+-- API
+-- [ 날씨 API 테이블 ] ---------------------------------------------------
+DROP TABLE weather_info;
+CREATE TABLE weather_info (
+    weather_id INT AUTO_INCREMENT PRIMARY KEY,	-- 기본키
+    weather_date DATE NOT NULL,					-- 예보 날짜
+    weather_time TIME NOT NULL,          		-- 예보 시간
+    weather_temperature DECIMAL(5,2),    		-- 기온 (섭씨):소수점 2자리까지, 예: 15.25도
+    weather_rain_probability INT,        		-- 강수확률 (0~100, 비올 확률 %)
+    weather_humidity INT,                		-- 습도 (0~100, 대기 중 수분 %)
+    weather_description VARCHAR(100),    		-- 사람이 읽는 날씨 설명 (맑음, 흐림 등)
+    weather_created_at DATETIME DEFAULT CURRENT_TIMESTAMP-- 이 데이터가 저장된 시간 (기본 현재시간 자동 기록)
+);
+
+-- [ Full Calendar ] ---------------------------------------------------
+DROP TABLE calendar_event_tbl;
+CREATE TABLE calendar_event_tbl (
+    cal_event_id INT AUTO_INCREMENT PRIMARY KEY,   -- 일정 고유 ID
+    cal_title VARCHAR(100) NOT NULL,                -- 일정 제목
+    cal_start_date DATETIME NOT NULL,               -- 시작 날짜 및 시간
+    cal_end_date DATETIME,                          -- 종료 날짜 및 시간 (nullable)
+    cal_all_day CHAR(1) DEFAULT 'N',              	-- 종일 여부. Y라면 하루 종일 표시됨.
+    cal_description TEXT,                           -- 일정 상세 설명
+    cal_location VARCHAR(100),                      -- 장소
+    cal_event_type VARCHAR(100),  -- 일정 유형
+    e_id INT,                     -- 작성자 (사원명 또는 관리자 ID)
+    cal_created_at DATETIME DEFAULT CURRENT_TIMESTAMP, -- 등록일시(=현재시간)
+    cal_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 수정일시. UPDATE 쿼리가 발생할 때 자동으로 수정 시간을 최신으로 갱신함.
+    FOREIGN KEY(e_id)
+    	REFERENCES employee_tbl(e_id)
+    		ON DELETE CASCADE
+    		ON UPDATE CASCADE
 );

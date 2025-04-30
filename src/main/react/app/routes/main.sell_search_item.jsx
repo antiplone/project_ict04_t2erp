@@ -1,4 +1,4 @@
-import { Table, Button, Tabs, Message, ButtonToolbar } from 'rsuite';
+import { Table, Button, Tabs, Container, ButtonToolbar, Placeholder, Loader } from 'rsuite';
 import React, { useState,  useEffect } from "react";
 import SellSearchModal from '#components/sell/SellSearchModal';
 import AppConfig from "#config/AppConfig.json";
@@ -12,6 +12,7 @@ const { Column, HeaderCell, Cell } = Table;
 
 const sell_search_item = () => {
 	
+	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
 	const [itemList, setItemList] = useState([]);	// 전체 리스트
 	const [searchResultList, setSearchResultList] = useState(null); // 검색 모달창에서 가져온 결과 리스트
 	const fetchURL = AppConfig.fetch['mytest'];
@@ -32,6 +33,7 @@ const sell_search_item = () => {
 		.then(res => {
 			console.log(1, res);
 			setItemList(res);
+			setIsLoading(false);
 		});
 	}, []);
 
@@ -52,12 +54,20 @@ const sell_search_item = () => {
 				<Tabs.Tab eventKey="1" title="전체" />
 			</Tabs>
 
-			{/* 검색 설정한 결과 값이 null이 아니고, 아예 없으면 '결과 없음' */}
-			{searchResultList !== null && searchResultList.length === 0 ? 
-			(
-			<div style={{ textAlign: 'center', marginTop: '20px', color: 'gray' }}>
+			
+			{/* 로딩 중일 때 */}
+			{/* Placeholder.Paragraph : 여러 줄의 더미 텍스트 박스. 스켈레톤(skeleton) 로딩 UI를 자동 생성 */}
+			{isLoading ? (
+				<Container>
+					<Placeholder.Paragraph rows={12} />
+					<Loader center content="불러오는중..." />
+				</Container>
+			) : (
+			// 로딩 끝난 후
+			searchResultList !== null && searchResultList.length === 0 ? (
+				<div style={{ textAlign: 'center', marginTop: '20px', color: 'gray' }}>
 				검색 결과가 없습니다.
-			</div>
+				</div>
 			) : (
 			<Table 
 				className="search_table"
@@ -100,6 +110,7 @@ const sell_search_item = () => {
 			</Column>
 			
 			</Table> 
+			 )
 			)}
 
 			<div className="search_btn">

@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/react-in-jsx-scope */
-import { Modal, Button, Form, Schema, Notification } from "rsuite";
+import { Modal, Button, Form, Schema } from "rsuite";
 import { useState, useEffect } from "react";
+import { useToast } from '#components/common/ToastProvider';  // 경고창
 
 const { StringType } = Schema.Types;
 
@@ -11,15 +12,7 @@ const model = Schema.Model({
 });
 
 export default function CommuteRequestModal({ open, onClose, rowData, attURL, onRefresh }) {
-  const showToster = (message, type, header) => {
-    toaster.push(
-      <Notification type={type} header={header} closable>
-        {message}
-      </Notification>,
-      { placement: 'topCenter' }
-    );
-  };
-
+  const { showToast } = useToast();   // 경고창
   const [formValue, setFormValue] = useState({});
 
   useEffect(() => {
@@ -31,8 +24,7 @@ export default function CommuteRequestModal({ open, onClose, rowData, attURL, on
     const { co_start_time, co_end_time } = formValue;
   
     if (!co_start_time || !co_end_time) {
-
-      alert("출근/퇴근 시간을 모두 입력해주세요.");
+      showToast(`출근/퇴근 시간을 모두 입력해주세요.`, "warning");
       return;
     }
   
@@ -40,7 +32,7 @@ export default function CommuteRequestModal({ open, onClose, rowData, attURL, on
     const start = new Date(`1970-01-01T${co_start_time}`);
     const end = new Date(`1970-01-01T${co_end_time}`);
     if (start >= end) {
-      alert("퇴근 시간은 출근 시간보다 늦어야 합니다.");
+      showToast(`퇴근 시간은 출근 시간보다 늦어야 합니다.`, "warning");
       return;
     }
   
@@ -56,7 +48,7 @@ export default function CommuteRequestModal({ open, onClose, rowData, attURL, on
       })
     });
   
-    alert("수정되었습니다.");
+    showToast(`수정되었습니다.`, "success");
     onClose();   // 모달 닫기
     window.location.reload();
   };

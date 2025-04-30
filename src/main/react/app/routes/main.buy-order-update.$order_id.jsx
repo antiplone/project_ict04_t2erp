@@ -139,7 +139,7 @@ export default function BuyOrderUpdate() {
                 }
             })
             .catch(err => {
-                console.error("데이터 가져오기 오류:", err);
+                //console.error("데이터 가져오기 오류:", err);
                 setOrderInfo({}); // 상태 초기화
                 setOrderItems([]);
                 setLoading(false);  // 실패해도 로딩 종료 처리

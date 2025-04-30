@@ -7,7 +7,7 @@ import TodayCommuteInfo from "#components/attendance/TodayCommuteInfo";
 import CommuteTable from "#components/attendance/CommuteTable";
 import AppConfig from "#config/AppConfig.json";
 import "#styles/attendance.css";
-import WeatherInfo from "#components/api/WeatherInfo.jsx";
+import WeatherInfo from "#components/api/weather/WeatherInfo.jsx";
 
 export default function Management() {
   const fetchURL = AppConfig.fetch["mytest"];

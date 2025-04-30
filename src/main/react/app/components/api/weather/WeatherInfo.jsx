@@ -57,7 +57,7 @@ export default function WeatherInfo() {
   // 렌더링
   // 성공이면 데이터를 가져오는 동안에는 "불러오는 중"을 표시, 실패라면 "날씨 정보를 가져올 수 없습니다"를 표시
   if (isLoading) return <div>날씨 정보를 불러오는 중...</div>;
-  if (!weather || weather.cod !== 200) return <div>오늘 날씨 정보를 가져올 수 없습니다.</div>;
+  if (!weather || weather.cod !== 200) return <div>오늘 날씨 정보를 가져올 수 없습니다...</div>;
 
   return (
     <Panel bordered header="오늘의 날씨" style={{ maxWidth: 200 }}>

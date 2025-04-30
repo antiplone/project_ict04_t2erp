@@ -24,7 +24,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellSearchDTO> sellSearchList() {
-		System.out.println("서비스 - sellSearchList");
+//		System.out.println("서비스 - sellSearchList");
 		
 		return mapper.sellSearchList();
 	}
@@ -33,7 +33,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellSearchDTO> sellSearchResultList(SellSearchDTO dto) {
-		System.out.println("서비스 - sellSearchResultList");
+//		System.out.println("서비스 - sellSearchResultList");
 		
 		return mapper.sellSearchResultList(dto);
 	}
@@ -42,7 +42,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	@Override
 	@Transactional
 	public List<SellSearchDTO> sellSearchItemDetailList(String keyword) {
-		System.out.println("서비스 - sellSearchResultList");
+//		System.out.println("서비스 - sellSearchResultList");
 		
 		return mapper.sellSearchItemDetailList(keyword);
 	}
@@ -51,7 +51,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellSearchDTO> sellItemList() {
-		System.out.println("서비스 - sellItemList");
+//		System.out.println("서비스 - sellItemList");
 		
 		return mapper.sellItemList();
 	}
@@ -60,7 +60,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellSearchDTO> storage_itemListKey(int storage_code, String keyword) {
-		System.out.println("서비스 - storage_itemList");
+//		System.out.println("서비스 - storage_itemList");
 
 		return mapper.storage_itemListKey(storage_code, keyword);
 	}
@@ -69,7 +69,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellSearchDTO> storage_itemList(int storage_code) {
-		System.out.println("서비스 - storage_itemList");
+//		System.out.println("서비스 - storage_itemList");
 		
 		return mapper.storage_itemList(storage_code);
 	}
@@ -78,7 +78,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellSearchClientDTO> sellSearchClientDetailList(String keyword) {
-		System.out.println("서비스 - sellSearchClientDetailList");
+//		System.out.println("서비스 - sellSearchClientDetailList");
 
 		return mapper.sellSearchClientDetailList(keyword);
 	}
@@ -87,7 +87,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellSearchClientDTO> sellClientList() {
-		System.out.println("서비스 - sellClientList");
+//		System.out.println("서비스 - sellClientList");
 		
 		return mapper.sellClientList();
 	}
@@ -96,7 +96,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellSearchEmployeeDTO> sellSearchEmployeeDetailList(String keyword) {
-		System.out.println("서비스 - sellSearchEmployeeDetailList");
+//		System.out.println("서비스 - sellSearchEmployeeDetailList");
 		
 		return mapper.sellSearchEmployeeDetailList(keyword);
 	}
@@ -105,7 +105,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellSearchEmployeeDTO> sellEmployeeList() {
-		System.out.println("서비스 - sellEmployeeList");
+//		System.out.println("서비스 - sellEmployeeList");
 		
 		return mapper.sellEmployeeList();
 	}
@@ -114,7 +114,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellSearchStorageDTO> sellWarehouseDetailList(String keyword) {
-		System.out.println("서비스 - sellWarehouseDetailList");
+//		System.out.println("서비스 - sellWarehouseDetailList");
 		
 		return mapper.sellSearchWarehouseDetailList(keyword);
 	}
@@ -123,7 +123,7 @@ public class SellSearchServiceImpl implements SellSearchService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellSearchStorageDTO> sellWarehouseList() {
-		System.out.println("서비스 - sellWarehouseList");
+//		System.out.println("서비스 - sellWarehouseList");
 		
 		return mapper.sellWarehouseList();
 	}

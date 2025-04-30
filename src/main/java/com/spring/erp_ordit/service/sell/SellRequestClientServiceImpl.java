@@ -19,7 +19,7 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellRequestClientDTO> RequestClientList() {
-		System.out.println("서비스 - sellRequestClientList");
+//		System.out.println("서비스 - sellRequestClientList");
 		
 		return mapper.requestClientList();
 	}
@@ -28,11 +28,11 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 	@Override
 	@Transactional
 	public int insertClient(SellRequestClientDTO dto) {
-		System.out.println("서비스 - insertCliet");
+//		System.out.println("서비스 - insertCliet");
 		
 		// 1. request_client_tbl에 insert
 		int insertResult = mapper.insertClient(dto);
-		System.out.println("서비스 - insertResult: " + insertResult);
+//		System.out.println("서비스 - insertResult: " + insertResult);
 		
 		// insert 실패 시 바로 false 리턴
 		if (insertResult == 0) {
@@ -58,7 +58,7 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 	@Override
 	@Transactional(readOnly=true)
 	public SellRequestClientDTO detailClient(int sc_id) {
-		System.out.println("서비스 - detailClient");
+//		System.out.println("서비스 - detailClient");
 		
 		return mapper.detailClient(sc_id);
 	}
@@ -67,7 +67,7 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 	@Override
 	@Transactional
     public int updateClient(int sc_id, SellRequestClientDTO dto) {	// BoardDTO 리턴: 상세페이지로 리턴하기 위해
-		System.out.println("서비스 - SellRequestClientDTO");
+//		System.out.println("서비스 - SellRequestClientDTO");
 		
 		dto.setSc_id(sc_id);
 		
@@ -78,7 +78,7 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 	@Override
 	@Transactional
 	public String deleteClient(int sc_id) {
-		System.out.println("서비스 - deleteClient");
+//		System.out.println("서비스 - deleteClient");
 		mapper.deleteClient(sc_id);
 		
 		return "ok";
@@ -88,7 +88,7 @@ public class SellRequestClientServiceImpl implements SellRequestClientService {
 	@Override
 	@Transactional
 	public int sellCheckReqClientBizNum(String sc_biz_num) {
-		System.out.println("서비스 - sellCheckReqClientBizNum");
+//		System.out.println("서비스 - sellCheckReqClientBizNum");
 
 	    return mapper.checkClientBizNum(sc_biz_num);
 	}

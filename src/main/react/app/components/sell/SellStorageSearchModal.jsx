@@ -25,7 +25,7 @@ const SellStorageSearchModal = ({ onStorageSelect, handleOpen, handleClose } /* 
 	
 	// 데이터 조회
 	const handleSearch = (keyword) => {
-		console.log("키워드: ", keyword);
+		// console.log("키워드: ", keyword);
 		if (keyword.trim() === "") {
 			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchStorage`, {	// 전체 리스트
 				method: "GET"
@@ -132,7 +132,7 @@ const SellStorageSearchModal = ({ onStorageSelect, handleOpen, handleClose } /* 
 						<Cell>{(rowData) => rowData.storage_code}</Cell>
 					</Column>
 
-					<Column width={150}>
+					<Column width={150} align="center">
 						<HeaderCell>창고명</HeaderCell>
 						<Cell>{(rowData) => rowData.storage_name}</Cell>
 					</Column>

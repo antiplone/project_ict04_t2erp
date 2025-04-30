@@ -17,7 +17,7 @@ const SellInvoiceContent = ({ order_id, order_date, date_no }) => {
     })
       .then(res => res.json())
       .then(res => {
-        console.log("res 확인:", res);
+        // console.log("res 확인:", res);
 
         const result = Array.isArray(res) 
                     ? res   // 응답이 배열이면 그대로
@@ -37,7 +37,7 @@ const SellInvoiceContent = ({ order_id, order_date, date_no }) => {
         }
       })
       .catch(err => {
-        console.error("데이터 요청 오류:", err);
+        // console.error("데이터 요청 오류:", err);
         setData([]);
       });
   }, [order_id]);

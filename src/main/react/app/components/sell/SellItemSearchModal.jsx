@@ -25,8 +25,7 @@ const SellItemSearchModal = ({ onItemSelect, handleOpen, handleClose } /* = prop
 	
 	// 키워드 검색 시 데이터 조회
 	const handleSearch = (keyword) => {
-		console.log("키워드: ", keyword);
-
+		// console.log("키워드: ", keyword);
 		if (keyword.trim() === "") {
 			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchItem`, {	// 전체 리스트
 				method: "GET"
@@ -138,12 +137,12 @@ const SellItemSearchModal = ({ onItemSelect, handleOpen, handleClose } /* = prop
 					<Cell>{(rowData) => rowData.item_code}</Cell>
 				</Column>
 
-				<Column width={200}>
+				<Column width={200} align="center">
 					<HeaderCell>물품명</HeaderCell>
 					<Cell>{(rowData) => rowData.item_name}</Cell>
 				</Column>
 
-				<Column width={250}>
+				<Column width={250} align="center">
 					<HeaderCell>규격</HeaderCell>
 					<Cell>{(rowData) => rowData.item_standard}</Cell>
 				</Column>

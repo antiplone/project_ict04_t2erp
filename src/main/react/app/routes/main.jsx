@@ -48,9 +48,18 @@ export default function Main() {
 	const pathname = location.pathname;   // 현재 URL 경로를 문자열로 가져와(=location.pathname) pathname 객체에 가져온 값을 저장한다.
 
 	useEffect(() => {
+
 		if (localStorage.length < 1) // 세션이 없으면, 로그인으로
 			nav("/", { replace: true });
-		else console.log(localStorage.getItem("e_auth_id")); // 세션정보출력
+		else {
+
+			console.log(localStorage.getItem("e_auth_id")); // 세션정보출력
+
+			if (localStorage.getItem("e_auth_id") == null) { // 임시적 처리, 비동기를 더 생각해봐야
+				localStorage.clear();
+				nav("/", { replace: true });
+			}
+		}
 	}, []);
 
 	const isMain = pathname === "/main";

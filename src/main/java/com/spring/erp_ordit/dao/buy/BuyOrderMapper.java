@@ -23,9 +23,6 @@ public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 상세조�
 	// 구매조회 탭 <결재중> 목록
 	public List<BuyOrderDTO> buyOrderPayingList();	
 	
-	// 구매조회 탭 <결재중 "건수"> 조회
-	public List<BuyOrderDTO> buyOrderPayingCount();	
-	
 	// 구매조회 탭 진행상태별 "건수" 조회
 	public Map<String, Long> buyOrderStatusCount();	
 	
@@ -52,7 +49,10 @@ public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 상세조�
 	// 구매 내역 삭제
 	public int buyOrderDelete(int order_id);
 	
-	// 구매 <현황> 조회 
+	// 구매 현황 <전체> 조회
+	public List<BuyStatusDTO> buyStatusAllList();	
+	
+	// 구매 현황 <검색> 조회
 	public List<BuyStatusDTO> buyStatusSearch(
 		
 		@Param("start_date") String start_date,
@@ -63,6 +63,9 @@ public interface BuyOrderMapper {	// 작성자 - hjy , 구매 조회, 상세조�
         @Param("item_code") String item_code,
         @Param("transaction_type") String transaction_type	
 	);
+	
+	// 입고 현황 <전체> 조회
+	public List<BuyStockStatusDTO> getBuyStockStatusAllList();
 	
 	// 입고현황 조회
 	public List<BuyStockStatusDTO> buyStockStatusSearch(

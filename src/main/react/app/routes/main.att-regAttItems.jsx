@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useEffect, useState } from "react";
 import { useFetcher } from "@remix-run/react";
-import { Container, Button } from "rsuite";
+import { Container, Button, Placeholder, Loader } from "rsuite";
 
 import AttItemsTable from "#components/attendance/AttItemsTable";
 import AttModal from "#components/attendance/AttModal";
@@ -20,6 +20,7 @@ export function meta() {
 export default function RegAttItems() {
   const fetchURL = AppConfig.fetch['mytest'];
   const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
+  const [isLoading, setIsLoading] = useState(true);	// 데이터를 가져오는 중인지 표시 (true/false)
 
   // 등록 버튼을 누르면 AttModal 을 보여줌.
   const [modalOpen, setModalOpen] = useState(false);
@@ -42,23 +43,38 @@ export default function RegAttItems() {
   // 데이터 로딩 & 리로딩 처리
   // 처음 렌더링(서버로부터 HTML 파일을 받아 브라우저에 뿌리는 과정)되면 이곳을 호출해서 데이터를 로딩한다.
   useEffect(() => {
-    fetch(`${attURL}/regAttItems`)
-      .then(res => res.json())
-      .then(data => setAttData(data));
+    fetch(`${attURL}/regAttItems`, { method: "GET" })
+    .then(res => res.json())
+    .then(data => {
+      setAttData(data);
+      setIsLoading(false);
+    })
+    .catch(error => {
+      console.error("근태 데이터를 불러오지 못했습니다ㅠ => ", error);
+      setAttData([]); // 에러 났을 때도 빈 배열로
+      setIsLoading(false);
+    });
   }, []);
-
 
   return (
     <Container>
       <MessageBox text="근태항목등록" />
 
       <Container className="tbl">
+        {/* 로딩 중일 때 */}
+        {isLoading ? (
+        <>
+          <Placeholder.Paragraph rows={16} />
+          <Loader center content="불러오는 중..." />
+        </>
+        ) : (
         <AttItemsTable
           url={`${attURL}/regAttItems`}
           data={attData}
           columns={attColumns}
           onReloading={() => fetcher.load("/main/att-regAttItems")}
         />
+        )}
         <Btn text="추가" size="sm" style={{ width: 60 }} onClick={() => setModalOpen(true)} />
         {/* <Button className="btn" onClick={() => setModalOpen(true)}>추가</Button> */}
       </Container>

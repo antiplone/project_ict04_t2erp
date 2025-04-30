@@ -1,8 +1,8 @@
 // 구매팀 - 입고현황 페이지
 /* eslint-disable react/react-in-jsx-scope */
 import AppConfig from "#config/AppConfig.json";
-import { DateRangePicker, Input, InputGroup, Table } from 'rsuite';
-import React, { useState } from "react";
+import { ButtonToolbar, DateRangePicker, Input, InputGroup, Loader, Placeholder, Table } from 'rsuite';
+import React, { useState, useEffect } from "react";
 import "../styles/buy.css";
 import { Button, Container, Divider, Message } from "rsuite";
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
@@ -23,13 +23,17 @@ const { Column, HeaderCell, Cell } = Table;
 
 export default function BuyStockStatus() {
 
+    const fetchURL = AppConfig.fetch['mytest'];
+    const [loading, setLoading] = useState(true); // 페이지 로딩중
+    const [stockStatusAllList, setStockStatusAllList] = useState([]); // 전체 목록
+
     const { showToast } = useToast();
 
     // 발주 일자
     const [orderDate, setOrderDate] = useState(null);
 
     // 날짜 선택
-    const handleDateChange = (value) => {
+    const dateChange = (value) => {
         console.log("선택된 날짜 범위:", value); // [startDate, endDate]
         setOrderDate(value);
     };
@@ -52,13 +56,74 @@ export default function BuyStockStatus() {
     // 발주번호 검색
     const [searchKeyword, setSearchKeyword] = useState("");
 
-    // 입고확인
-    const [buyStockStatus, setBuyStockStatus] = useState([]);
+    // 날짜 별로 순번 붙이기 (동일한 날짜+동일 주문건이면 동일한 No.)
+    const getNumberedList = (data) => {
+        const result = [];
+        const dateOrderMap = {}; // 날짜별로 order_id 별 순번을 추적
+        const dateCountMap = {}; // 날짜별 번호 증가용
+    
+        // 먼저 날짜 오름차순, 그 안에서 order_id 오름차순으로 정렬
+        const sortedData = [...data].sort((a, b) => {
+            if (a.order_date < b.order_date) return -1;
+            if (a.order_date > b.order_date) return 1;
+            if (a.order_id < b.order_id) return -1;
+            if (a.order_id > b.order_id) return 1;
+            return 0;
+        });
+    
+        sortedData.forEach(item => {
+            const date = item.order_date;
+            const orderId = item.order_id;
+    
+            if (!dateOrderMap[date]) {
+                dateOrderMap[date] = {};
+                dateCountMap[date] = 1;
+            }
+    
+            if (dateOrderMap[date][orderId] === undefined) {
+                dateOrderMap[date][orderId] = dateCountMap[date]++;
+            }
+    
+            result.push({
+                ...item,
+                display_date: `${date}_${dateOrderMap[date][orderId]}`
+            });
+        });
+    
+        return result;
+    };
 
-    const fetchURL = AppConfig.fetch['mytest']
+    // 전체 리스트 조회
+    useEffect(() => {
+        fetch(`${fetchURL.protocol}${fetchURL.url}/buy/stockStatusAllList`, {
+            method: "GET"
+        })
+            .then(res => res.json() // 응답이 오면 javascript object로 바꿈.
+            )
+            .then(res => {
+                console.log(1, res);
+                console.log("데이터 확인", res[0]);
+                const numbered = getNumberedList(res);
+                setStockStatusAllList(numbered);
+                setLoading(false);  // 로딩완료
+            }
+            )
+            .catch(error => {
+                console.error("데이터 가져오기 오류:", error);
+                setLoading(false);  // 실패해도 로딩 종료 처리
+            });
+    }, []);
 
-    // 선택한 조건 검색 
-    const handleSearch = async () => {
+     // 검색한 리스트 조회하기 : 검색값을 백엔드로 전달
+    const [searchResultList, setSearchResultList] = useState([]);
+
+    const [searched, setSearched] = useState(false);    
+
+    // 검색 결과 조회
+    const statusSearch = async () => {
+
+        setLoading(true); // 검색할때 로딩중 메시지 true
+
         let startDate = '';
         let endDate = '';
 
@@ -78,24 +143,31 @@ export default function BuyStockStatus() {
 
         // 빈 값, 널은 쿼리에서 제외 (정확한 검색 필터링을 위해)
         const cleanedParams = Object.fromEntries(
-            Object.entries(searchParams).filter(([_, value]) => value !== null && value !== '')
+            Object.entries(searchParams).filter(([_, value]) => 
+                value !== null && value !== '' && value !== 'null' && value !== 'undefined'
+            )
         );
 
         // URL 쿼리 생성
         const query = new URLSearchParams(cleanedParams).toString();
 
         try {
-            const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyStockStatusSearch?${query}`);
+            const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/buy/stockStatusSearch?${query}`);
             const result = await res.json();
             console.log("buyStockStatus:", result);
 
             if (result.length === 0) {
                 showToast("선택한 조건에 해당하는 입고정보가 없습니다.", "warning");
             }
+            const searchNumbered = getNumberedList(result);
+            setSearchResultList(searchNumbered);
 
-            setBuyStockStatus(result);
+            setSearched(true); 
+            setLoading(false); // 로딩완료
         } catch (err) {
             console.error("검색 실패:", err);
+            setSearched(false); // 실패 시 false
+            setLoading(false);  // 실패해도 로딩 종료 처리
         }
     };
 
@@ -126,17 +198,25 @@ export default function BuyStockStatus() {
         window.open(`${fetchURL.protocol}${fetchURL.url}/buy/exportStockStatusExcel?${query}`, "_blank");
     };
 
+    // 초기화 버튼 (전체 리스트로 돌아가기)
+    const statusList_btn = () => {
+        setSearchResultList([]);
+        setSearched(false); // 검색 상태 해제
+    }
+
     // 검색 필터 초기화
-	const submitStatusReset = () => {
-		setOrderDate(null);
-		setSelectedClient(null);
-		setSelectedClientName(null);
-		setSelectedStorage(null);
-		setSelectedStorageName(null);
-		setSelectedItem(null);
-		setSelectedItemName(null);
+    const submitStatusReset = () => {
+        setOrderDate(null);
+        setSelectedClient(null);
+        setSelectedClientName(null);
+        setSelectedStorage(null);
+        setSelectedStorageName(null);
+        setSelectedItem(null);
+        setSelectedItemName(null);
         setSearchKeyword(null);
-	}
+        setSearchResultList([]);
+        setSearched(false);
+    }
 
     return (
         <>
@@ -150,7 +230,7 @@ export default function BuyStockStatus() {
                             <InputGroup.Addon style={{ width: 90 }}>발주일자</InputGroup.Addon>
                             <DateRangePicker
                                 value={orderDate}
-                                onChange={handleDateChange}
+                                onChange={dateChange}
                                 placeholder="날짜 선택"
                                 format="yyyy-MM-dd"
                             />
@@ -223,6 +303,77 @@ export default function BuyStockStatus() {
                     </div>
                 </div>
 
+                <div className="buyBtnBox">
+                    <Button appearance="ghost" color="green" onClick={statusSearch}>검색</Button>
+                    <Button appearance="ghost" type="submit" onClick={submitStatusReset}>검색창 초기화</Button>
+                    <Button appearance="ghost" color="violet" onClick={downloadExcel}>엑셀 다운로드</Button>
+                </div>
+
+                <Divider />
+                <>
+                    {/* 로딩 중일 때 */}
+                    {loading ? (
+                        <Container>
+                            <Placeholder.Paragraph rows={12} />
+                            <Loader center content="불러오는중..." />
+                        </Container>
+                        ) : searched && searchResultList.length === 0 ? (
+                        <div style={{ padding: '20px', textAlign: 'center', fontSize: '16px', color: 'gray' }}>
+                            해당 정보로 조회되는 리스트가 없습니다.
+                        </div>
+                    ) : (
+                    <Table height={400} width={1150} data={searched ? searchResultList : stockStatusAllList}>
+
+                        <Column width={120} className='text_center'>
+                            <HeaderCell className='text_center'>발주일자</HeaderCell>
+                            <Cell dataKey="display_date" />
+                        </Column>
+
+                        <Column width={120} className='text_center'>
+                            <HeaderCell className='text_center'>발주번호</HeaderCell>
+                            <Cell dataKey="order_id" />
+                        </Column>
+
+                        <Column width={150} className='text_left'>
+                            <HeaderCell className='text_center'>거래처명</HeaderCell>
+                            <Cell dataKey="client_name" />
+                        </Column>
+
+                        <Column width={250} className='text_left'>
+                            <HeaderCell className='text_center'>물품명</HeaderCell>
+                            <Cell dataKey="item_name" />
+                        </Column>
+
+                        <Column width={150} className='text_left'>
+                            <HeaderCell className='text_center'>창고명</HeaderCell>
+                            <Cell dataKey="storage_name" />
+                        </Column>
+
+                        <Column width={120} className='text_center'>
+                            <HeaderCell className='text_center'>창고재고</HeaderCell>
+                            <Cell dataKey="stock_amount" />
+                        </Column>
+
+                        <Column width={120} className='text_center'>
+                            <HeaderCell className='text_center'>안전재고</HeaderCell>
+                            <Cell dataKey="safe_stock" />
+                        </Column>
+
+                        <Column width={120} className='text_center'>
+                            <HeaderCell className='text_center'>최근 입고일</HeaderCell>
+                            <Cell dataKey="last_date" />
+                        </Column>
+
+                    </Table>
+                    )}
+                </>
+
+                <div className="buyBtnBox">
+                    <ButtonToolbar>
+                        <Button appearance="ghost" onClick={statusList_btn}>내역 초기화</Button>
+                    </ButtonToolbar>
+                </div>
+
                 {/* 거래처 모달 관리 */}
                 <ClientSearchModal
                     handleOpen={isClientModalOpen}
@@ -253,62 +404,9 @@ export default function BuyStockStatus() {
                     }}
                 />
 
-                <div className="buyBtnBox">
-                    <Button appearance="ghost" color="green" onClick={handleSearch}>검색</Button>
-                    <Button appearance="ghost" type="submit" onClick={submitStatusReset}>검색창 초기화</Button>
-                    <Button appearance="ghost" color="violet" onClick={downloadExcel}>엑셀 다운로드</Button>
-                </div>
-
-                <Divider/>
-                <>
-                    <Table height={500} width={1200} data={buyStockStatus} onRowClick={ReceivingData => console.log(ReceivingData)}>
-                        
-                        <Column width={120} className='text_center'>
-                        <HeaderCell className='text_center'>발주일자</HeaderCell>
-                        <Cell dataKey="order_date" />
-                        </Column>
-
-                        <Column width={120} className='text_center'>
-                        <HeaderCell className='text_center'>발주번호</HeaderCell>
-                        <Cell dataKey="order_id" />
-                        </Column>
-
-                        <Column width={150} className='text_left'>
-                        <HeaderCell className='text_center'>거래처명</HeaderCell>
-                        <Cell dataKey="client_name" />
-                        </Column>
-
-                        <Column width={250} className='text_left'>
-                        <HeaderCell className='text_center'>물품명</HeaderCell>
-                        <Cell dataKey="item_name" />
-                        </Column>
-
-                        <Column width={150} className='text_left'>
-                        <HeaderCell className='text_center'>창고명</HeaderCell>
-                        <Cell dataKey="storage_name" />
-                        </Column>
-
-                        <Column width={120} className='text_center'>
-                        <HeaderCell className='text_center'>창고재고</HeaderCell>
-                        <Cell dataKey="stock_amount" />
-                        </Column>
-
-                        <Column width={120} className='text_center'>
-                        <HeaderCell className='text_center'>안전재고</HeaderCell>
-                        <Cell dataKey="safe_stock" />
-                        </Column>
-
-                        <Column width={120} className='text_center'>
-                        <HeaderCell className='text_center'>최근 입고일</HeaderCell>
-                        <Cell dataKey="last_date" />
-                        </Column>
-
-                    </Table>
-                </>
-
             </Container >
 
-            <Divider/>
+            <Divider />
 
         </>
     );

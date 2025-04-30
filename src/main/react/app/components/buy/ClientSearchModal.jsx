@@ -8,11 +8,11 @@ const { Column, HeaderCell, Cell } = Table;
 
 const ClientSearchModal = ({ title, confirm, cancel, onClientSelect, handleOpen, handleColse } /* = props:속성 */) => {
 
+	const fetchURL = AppConfig.fetch["mytest"];
+
 	const [clientList, setClientList] = useState([]);
 	const [selectedClient, setSelectedClient] = useState(null);
 	const [searchKeyword, setSearchKeyword] = useState("");
-
-	const fetchURL = AppConfig.fetch["mytest"];
 
 	// fetch()를 통해 톰캣서버에게 데이터를 요청
 	useEffect(() => {

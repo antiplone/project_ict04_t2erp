@@ -75,7 +75,7 @@ const SellItemSearchModal = ({ onItemSelect, handleOpen, handleClose } /* = prop
 
 	return (
 		<Modal open={handleOpen} onClose={handleClose}
-			style={{ width: 500, margin: 'auto', position: 'fixed', left: '40%' }} >
+			style={{ width: 700, margin: 'auto', position: 'fixed', left: '40%' }} >
 
 			<Modal.Header>
 				<Modal.Title>물품 선택</Modal.Title>

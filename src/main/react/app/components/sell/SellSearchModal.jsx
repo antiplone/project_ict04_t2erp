@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Form, InputGroup, AutoComplete, HStack, Input } from "rsuite";
-import ItemSearchModal from "./SellItemSearchModal";
 import StorageSearchModal from "./SellStorageSearchModal";
 import AppConfig from "#config/AppConfig.json";
 import readingGlasses from "#images/common/readingGlasses.png";
+import SellItemSearchModal from "./SellItemSearchModal";
 
 // SellSearchModal => 판매 물품 검색 > 물품, 창고 검색 가능한 모달 페이지
 
@@ -78,7 +78,7 @@ const SellSearchModal = ({ handleOpen, handleClose, onSearchResult } /* = props:
 	}, [handleOpen]);
 
 	return (
-		<Modal open={handleOpen} onClose={handleClose} >
+		<Modal open={handleOpen} onClose={handleClose}>
 			<Modal.Header>
 				<Modal.Title>물품 검색</Modal.Title>
 			</Modal.Header>
@@ -136,7 +136,7 @@ const SellSearchModal = ({ handleOpen, handleClose, onSearchResult } /* = props:
 					</Form.Group>
 					</div>
 
-					<ItemSearchModal
+					<SellItemSearchModal
 						onItemSelect={handleItemSelect}
 						handleOpen={isItemModalOpen}
 						handleClose={() => setItemModalOpen(false)}

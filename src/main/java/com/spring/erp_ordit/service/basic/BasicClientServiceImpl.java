@@ -55,5 +55,13 @@ public class BasicClientServiceImpl {
 		basicMapper.basicClientDelete(client_code);
 		return "ok";		
 	}
+	
+	// 거래처 중복 확인
+	@Transactional
+	public int basicBizNumCheck(String c_biz_num) {
+		System.out.println("<< BasicClientServiceImpl -  basicClientDetail >>");
+		
+		return basicMapper.basicBizNumCheck(c_biz_num);
+	}
 
 }

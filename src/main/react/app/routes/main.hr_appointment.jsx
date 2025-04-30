@@ -13,7 +13,7 @@ export default function HrEmpAppointment() {
       e_name: "",
       old_position: "",
       old_department: "",
-      appoint_type: "",
+      appoint_type: [],
       new_position: "",
       new_department: "",
       appoint_note: "",
@@ -71,20 +71,22 @@ export default function HrEmpAppointment() {
       return;
     }
 
-  for (const emp of employees) {
-    if (emp.appoint_type === '부서 이동' && !emp.new_department) {
-      alert(`사번 ${emp.e_id || '(미입력)'}: 부서 이동인 경우 발령 부서는 필수입니다.`);
-      return;
+    for (const emp of employees) {
+      const appointTypeArr = Array.isArray(emp.appoint_type) ? emp.appoint_type : [];
+    
+      if (appointTypeArr.includes('부서 이동') && !emp.new_department) {
+        alert(`사번 ${emp.e_id || '(미입력)'}: 부서 이동인 경우 발령 부서는 필수입니다.`);
+        return;
+      }
+      if (appointTypeArr.includes('직위 변경') && !emp.new_position) {
+        alert(`사번 ${emp.e_id || '(미입력)'}: 직급 변경인 경우 발령 직급은 필수입니다.`);
+        return;
+      }
+      if (!emp.appoint_date) {
+        alert(`사번 ${emp.e_id || '(미입력)'}: 발령일자를 선택해주세요.`);
+        return;
+      }
     }
-    if (emp.appoint_type === '직위 변경' && !emp.new_position) {
-      alert(`사번 ${emp.e_id || '(미입력)'}: 직위 변경인 경우 발령 직급은 필수입니다.`);
-      return;
-    }
-    if (!emp.appoint_date) {
-      alert(`사번 ${emp.e_id || '(미입력)'}: 발령일자를 선택해주세요.`);
-      return;
-    }
-  }
 
   let successCount = 0;
   let failCount = 0;
@@ -97,7 +99,7 @@ export default function HrEmpAppointment() {
   const appointData = {
     e_id: emp.e_id,
     e_name: emp.e_name,
-    appoint_type: emp.appoint_type,
+    appoint_type: Array.isArray(emp.appoint_type) ? emp.appoint_type.join(', ') : emp.appoint_type,
     old_position: emp.old_position,
     new_position: emp.new_position,
     old_department: emp.old_department,
@@ -183,17 +185,21 @@ export default function HrEmpAppointment() {
     }
   
     try {
+      // 최신 사원 정보 불러오기 (전화번호 최신화용)
+      const res = await fetch("http://localhost:8081/hrCard/hrCardList");
+      const empList = await res.json();
+  
       for (const appointId of selectedIds) {
-        const emp = confirmedAppointments.find(emp => emp.appoint_id === appointId);
+        const emp = empList.find(emp => emp.e_id === appointId);
         if (!emp) continue;
-
-        const cleanPhoneNumber = emp.e_tel.replace(/-/g, '');   // 01012345678 로 변환, replace(문자열.replace(찾을내용, 바꿀내용) //로 감싼 건 패턴을 찾는다는 뜻, g(global)은 문자열 전체에서 전부 찾으라는 뜻)
+  
+        const cleanPhoneNumber = emp.e_tel?.replace(/-/g, '');
   
         await fetch('http://localhost:8081/sms/sendSms', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            to: cleanPhoneNumber,    // emp.e_phone 사원의 전화번호
+            to: cleanPhoneNumber,
             text: smsText
           })
         });
@@ -207,6 +213,7 @@ export default function HrEmpAppointment() {
       alert('문자 발송 실패');
     }
   };
+  
 
   const [selectedIds, setSelectedIds] = useState([]);
 

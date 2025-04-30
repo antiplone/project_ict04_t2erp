@@ -38,6 +38,10 @@
     padding: 10px;
 }
 
+.padding_0px{
+    padding: 0px;
+}
+
 /**/
 .max_content_margin_10px_auto{
     margin: 10px auto;
@@ -131,7 +135,6 @@
     height: 100%;
 }
 
-
 /*물류 화면 크기 관련*/
 main.rs-content {
     min-height: 560px;
@@ -189,7 +192,6 @@ main.rs-content {
     font-weight: bold;
 }
 
-
 /* a 링크 크기 */
 .in_li{
     width: 100%;
@@ -216,7 +218,6 @@ main.rs-content {
     box-sizing: border-box;
     background-image: none;
 }
-
 
 /* 타이틀 스타일(title style) */
 .main_title {
@@ -259,7 +260,7 @@ ul.rs-dropdown-menu {
 .buyBtnBox {
     display: flex;
     gap: 20px;
-    margin: 10px 0px;
+    margin: 10px
 }
 
 .BtnBoxLeftMargin {
@@ -285,4 +286,10 @@ ul.rs-dropdown-menu {
 .rs-table-cell-header .rs-table-cell-content{
 	text-align : center;
 	background-color: rgb(248, 249, 250);
+}
+
+/* 버튼 중앙 정렬 */
+.align_middle{
+	justify-content : center;
+	align-items : center !important;
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { /* Link, */ Link, useNavigate, useParams } from '@remix-run/react';
 import { Button, Form, Message } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
+import '#styles/warehouse.css';
 import "#components/common/css/common.css";
 
 const StorageUpdate = () => {
@@ -89,7 +90,7 @@ const StorageUpdate = () => {
 			<Message type="error" className="main_title">
 				창고 정보 수정
 			</Message>
-            <Form className="text_center"> {/* submit 버튼 클릭 시 submitBoard 함수 호출, onClick으로 해도 된다.*/}
+            <Form className="custom_form text_center"> {/* submit 버튼 클릭 시 submitBoard 함수 호출, onClick으로 해도 된다.*/}
                 <Form.Group className="mb-3 display_flex" controlId="storage_code">
                     <Form.ControlLabel>창고코드</Form.ControlLabel>
                     <Form.Control type="text" name="storage_code" value={storage.storage_code} readOnly />

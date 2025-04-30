@@ -16,6 +16,8 @@ const model = Schema.Model({
 export default function HrRetirementDetail() {
   const fetchURL = AppConfig.fetch["mytest"];
   const hrURL = `${fetchURL.protocol}${fetchURL.url}/hr`;
+  const [isLoading, setIsLoading] = useState(true);	// 데이터를 가져오는 중인지 표시 (true/false)
+  
   const { showToast } = useToast();
   const navigate = useNavigate();
 
@@ -38,8 +40,7 @@ export default function HrRetirementDetail() {
   const type = [
     { label: "사직", value: "사직" },
     { label: "퇴사", value: "퇴사" },
-    { label: "면직", value: "면직" },
-    { label: "기타", value: "면직" },
+    { label: "기타", value: "기타" },
   ]
 
   

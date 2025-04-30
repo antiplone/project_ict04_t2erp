@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,18 +38,14 @@ public class CalendarController2 {
         }
     }
     
-    // 
+    // 일정 저장  http://localhost:8081/api/calendar/insertEvent
     @PostMapping("/insertEvent")
-    public ResponseEntity<String> insertEvent(@RequestBody CalendarDTO2 dto) {
-    	System.out.println("");
-        int result = service.insertEvent(dto);
-        if (result > 0) {
-            return ResponseEntity.ok("일정 추가 성공");
-        } else {
-            return ResponseEntity.internalServerError().body("일정 추가 실패");
-        }
+    public ResponseEntity<?> insertEvent(@RequestBody CalendarDTO2 dto) {
+    	System.out.println("컨트롤 - 일정을 저장합니다.");
+        return new ResponseEntity<>(service.insertEvent(dto), HttpStatus.CREATED);
     }
 
+    // 일정 조회  http://localhost:8081/api/calendar/getAllEvents
     @GetMapping("/getAllEvents")
     public ResponseEntity<List<CalendarDTO2>> getAllEvents() {
     	System.out.println("");

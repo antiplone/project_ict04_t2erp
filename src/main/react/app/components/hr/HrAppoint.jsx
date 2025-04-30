@@ -1,11 +1,11 @@
 SelectPicker/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
-import { Table, Input, DatePicker, SelectPicker, Modal, Button } from 'rsuite';
+import { Table, Input, DatePicker, SelectPicker, Modal, Button, CheckPicker } from 'rsuite';
 import { EmployeeSelectTable } from './HrTable';
 
 const { Column, HeaderCell, Cell } = Table;
 
-// 직위 리스트
+// 직급 리스트
 const positionList = [
   { label: '사원', value: '사원' },
   { label: '대리', value: '대리' },
@@ -120,7 +120,7 @@ const HrAppointEditTable = ({ rows, onChange, onDoubleClickCell, departmentList,
         </Column>
 
         <Column width={140} align="center">
-          <HeaderCell>현재 직위</HeaderCell>
+          <HeaderCell>현재 직급</HeaderCell>
           <Cell>
             {row => (
               <EditableInput
@@ -145,22 +145,31 @@ const HrAppointEditTable = ({ rows, onChange, onDoubleClickCell, departmentList,
           </Cell>
         </Column>
 
-        <Column width={150} align="center">
+        <Column width={180} align="center">
           <HeaderCell>발령 구분</HeaderCell>
           <Cell>
             {row => (
               <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <SelectPicker
+                <CheckPicker
                   placeholder="선택"
                   data={[
                     { label: '부서 이동', value: '부서 이동' },
-                    { label: '직위 변경', value: '직위 변경' }
+                    { label: '직급 변경', value: '직급 변경' }
                   ]}
-                  value={row.appoint_type}
-                  onChange={(value) => onChange(row.id, 'appoint_type', value)}
-                  style={{ width: 120 }}
+                  value={Array.isArray(row.appoint_type) ? row.appoint_type : []}
+                  onChange={(value) => {
+                    if (Array.isArray(value)) {
+                      onChange(row.id, 'appoint_type', value);
+                    } else {
+                      onChange(row.id, 'appoint_type', value ? [value] : []);
+                    }
+                  }}
+                  style={{ width: 160 }}
                   cleanable={false}
                   searchable={false}
+                  toggleOnSelect={false}
+                  popupAutoClose={false}
+                  renderValue={(value, items, selectedElement) => value.join(', ')}
                 />
               </div>
             )}
@@ -168,7 +177,7 @@ const HrAppointEditTable = ({ rows, onChange, onDoubleClickCell, departmentList,
         </Column>
 
         <Column width={150} align="center">
-          <HeaderCell>발령 직위</HeaderCell>
+          <HeaderCell>발령 직급</HeaderCell>
           <Cell>
             {row => (
               <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -197,7 +206,7 @@ const HrAppointEditTable = ({ rows, onChange, onDoubleClickCell, departmentList,
                   value={row.new_department}
                   onChange={(value) => onChange(row.id, 'new_department', value)}
                   style={{ width: 120 }}
-                  disabled={row.appoint_type === '직위 변경'}
+                  disabled={row.appoint_type === '직급 변경'}
                   searchable={false}
                 />
               </div>
@@ -229,6 +238,11 @@ const HrAppointEditTable = ({ rows, onChange, onDoubleClickCell, departmentList,
                   placeholder="날짜 선택"
                   format="yyyy-MM-dd"
                   style={{ width: 140, height: '36px' }}
+                  shouldDisableDate={(date) => {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    return date < today;
+                  }}
                 />
               </div>
             )}

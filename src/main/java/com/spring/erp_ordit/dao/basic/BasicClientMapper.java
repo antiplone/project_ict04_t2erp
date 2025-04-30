@@ -21,4 +21,6 @@ public interface BasicClientMapper {
 	public int basicClientUpdate(BasicClientDTO dto);	// 거래처 수정
 	
 	public int basicClientDelete(int client_code);		// 거래처 삭제
+	
+	public int basicBizNumCheck(String bizNum);			// 거래처 중복 확인
 }

@@ -6,6 +6,8 @@ import { HrTable } from '#components/hr/HrTable';
 import { Link } from '@remix-run/react';
 import { useDaumPostcodePopup } from 'react-daum-postcode';     // 다음 우편번호 api 커스텀 훅, 다음 우편번호 팝업을 띄우는 기능 제공
 import HrRadio from '#components/hr/HrRadio.jsx';
+import { useToast } from '#components/common/ToastProvider';
+import { BizNumCheckButton } from "#components/hr/HrButton";
 
 // textarea용 커스텀 컴포넌트
 const Textarea = React.forwardRef((props, ref) => (
@@ -16,6 +18,10 @@ Textarea.displayName = "Textarea";
 export default function Basic_client() {
   const [clients, setClients] = useState([]);
   const [requestClients, setRequestClients] = useState([]);
+  const { showToast } = useToast();
+  const [isBizNumChecked, setIsBizNumChecked] = useState(false);
+  const [isBizNumValid, setIsBizNumValid] = useState(false);
+
   const [form, setForm] = useState({
     client_name: '',
     c_ceo: '',
@@ -81,6 +87,13 @@ export default function Basic_client() {
   }, []);
 
   const handleRegister = () => {
+
+    // 중복확인 후 등록
+    if (!isBizNumValid) {
+      showToast("사업자등록번호 중복체크를 먼저 해주세요.", "warning");
+      return;
+    }
+
     const requiredFields = [
       { key: "client_name", label: "거래처명" },
       { key: "c_ceo", label: "대표자명" },
@@ -195,7 +208,12 @@ export default function Basic_client() {
         </div>
       )
     },
-    { label: "등록일", dataKey: "sc_date", width: 160 },
+    {
+      label: "등록일",
+      dataKey: "sc_date",
+      width: 160,
+      renderCell: (rowData) => rowData.sc_date.substring(0, 10)   // .substring(0.10) 앞 10글자만 잘라서 보여주기
+    },
     {
       label: "승인상태",
       dataKey: "sa_approval_status",
@@ -337,7 +355,19 @@ export default function Basic_client() {
                         </Form.Group>
 
                         <Form.Group>
-                          <Form.ControlLabel>사업자등록번호 *</Form.ControlLabel>
+                          <Form.ControlLabel>사업자등록번호 *
+                          <BizNumCheckButton 
+                            bizNum={form.c_biz_num} 
+                            onResult={(isValid) => {
+                              setIsBizNumChecked(true);
+                              setIsBizNumValid(isValid);
+
+                              if (!isValid) {
+                                setForm(prev => ({ ...prev, c_biz_num: "" }));
+                              }
+                            }}
+                          />
+                          </Form.ControlLabel>
                           <Form.Control name="c_biz_num" value={form.c_biz_num}
                             onChange={(val) => setForm({ ...form, c_biz_num: val })} />
                         </Form.Group>

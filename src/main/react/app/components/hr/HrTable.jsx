@@ -167,7 +167,7 @@ export const EmployeeSelectTable = ({ data, selectedId, onSelect, selectedEmploy
       </Column>
 
       <Column width={130} align="center">
-        <HeaderCell>직위</HeaderCell>
+        <HeaderCell>직급</HeaderCell>
         <Cell dataKey="e_position" />
       </Column>
 

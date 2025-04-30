@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Modal, Form, Radio, RadioGroup, Schema, DateRangePicker } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
 import Btn from "./Btn";
+import { useToast } from '#components/common/ToastProvider';  // 경고창
 
 const { StringType } = Schema.Types;
 
@@ -17,6 +18,7 @@ const model = Schema.Model({
 const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
   const fetchURL = AppConfig.fetch['mytest'];
   const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
+  const { showToast } = useToast();
 
   const [vaca, setVaca] = useState({
     v_code: "",
@@ -50,7 +52,10 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
 
   // 저장버튼을 누르면 서버에 PUT 요청을 보내고, 성공 시 onReloading 실행.
   const updateVaca = async () => {
-    if (!vaca.v_code) return alert("수정할 항목이 없습니다.");
+    if (!vaca.v_code) {
+      showToast("수정할 항목이 없습니다.", "warning");
+      return;
+    };
 
     const check = model.check(vaca);
     if (check.hasError) {
@@ -78,16 +83,16 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
       const result = await res.text();
 
       if (result === "1") {
-        alert("수정 완료되었습니다.");
+        showToast("수정 완료되었습니다.", "success");
         onClose();
         // onReloading(); // fetcher로 테이블 재로딩
-        window.location.reload();
+        // window.location.reload();
       } else {
-        alert("수정에 실패했습니다.");
+        showToast("수정에 실패했습니다.", "error");
       }
     } catch (error) {
       console.error("수정 중 오류 발생:", error);
-      alert("오류가 발생했습니다.");
+      showToast("수정 중에 오류가 발생했습니다.", "error");
     }
   };
 

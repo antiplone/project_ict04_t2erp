@@ -22,12 +22,14 @@ public class SmsController {
 	final DefaultMessageService messageService;
 
     public SmsController() {
+    	// 발신자를 바꿀 경우 key와 setFrom 번호만 바꿔주면 된다 
         // 발급받은 API KEY를 넣어준다
         this.messageService = NurigoApp.INSTANCE.initialize("NCS9LKDVEW3RAZKP", "FPS0RGTLNWMPJ4HSY0BXHUP29YCF8RWJ", "https://api.coolsms.co.kr");
     }
 	
 	@PostMapping("/sendSms")
     public SingleMessageSentResponse sendOne(@RequestBody Map<String, String> request) {	// 프론트에서 JSON 데이터를 자바코드로 받아온다
+		
         Message message = new Message();		// CoolSMS에서 제공하는 java 클래스
         // 발신번호 및 수신번호는 반드시 01012345678 형태로 입력되어야 합니다.
         message.setFrom("01068270904");		// 발신자 고정

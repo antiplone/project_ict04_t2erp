@@ -34,7 +34,7 @@ export default function BuyStockStatus() {
 
     // 날짜 선택
     const dateChange = (value) => {
-        console.log("선택된 날짜 범위:", value); // [startDate, endDate]
+        //console.log("선택된 날짜 범위:", value); // [startDate, endDate]
         setOrderDate(value);
     };
 
@@ -101,15 +101,15 @@ export default function BuyStockStatus() {
             .then(res => res.json() // 응답이 오면 javascript object로 바꿈.
             )
             .then(res => {
-                console.log(1, res);
-                console.log("데이터 확인", res[0]);
+                //console.log(1, res);
+                //console.log("데이터 확인", res[0]);
                 const numbered = getNumberedList(res);
                 setStockStatusAllList(numbered);
                 setLoading(false);  // 로딩완료
             }
             )
             .catch(error => {
-                console.error("데이터 가져오기 오류:", error);
+                //console.error("데이터 가져오기 오류:", error);
                 setLoading(false);  // 실패해도 로딩 종료 처리
             });
     }, []);
@@ -154,7 +154,7 @@ export default function BuyStockStatus() {
         try {
             const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/buy/stockStatusSearch?${query}`);
             const result = await res.json();
-            console.log("buyStockStatus:", result);
+            //console.log("buyStockStatus:", result);
 
             if (result.length === 0) {
                 showToast("선택한 조건에 해당하는 입고정보가 없습니다.", "warning");
@@ -165,7 +165,7 @@ export default function BuyStockStatus() {
             setSearched(true); 
             setLoading(false); // 로딩완료
         } catch (err) {
-            console.error("검색 실패:", err);
+            //console.error("검색 실패:", err);
             setSearched(false); // 실패 시 false
             setLoading(false);  // 실패해도 로딩 종료 처리
         }

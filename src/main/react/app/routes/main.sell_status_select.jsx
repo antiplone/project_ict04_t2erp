@@ -129,7 +129,7 @@ const sell_status_select = () => {
 		})
 		.then(res => res.json())
 		.then(res => {
-			console.log(1, res);
+			// console.log(1, res);
 			const numbered = getNumberedList(res);
 			setStatusData(numbered);
 			setIsLoading(false);
@@ -175,14 +175,14 @@ const sell_status_select = () => {
 		})
 			.then((res) => res.json())
 			.then((data) => {
-				console.log("검색 결과:", data);
+				// console.log("검색 결과:", data);
 				const searchNumbered = getNumberedList(data);
 				setSearchResultList(searchNumbered);
 				setIsSearched(true);
 				setIsLoading(false);
 			})
 			.catch((error) => {
-				console.error("검색 오류:", error);
+				// console.error("검색 오류:", error);
 				setIsLoading(false);  // 에러 나도 로딩 꺼야 함
 			});
 	};

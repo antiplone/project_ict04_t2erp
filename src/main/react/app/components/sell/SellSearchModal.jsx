@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Form, InputGroup, AutoComplete, HStack, Input } from "rsuite";
-import ItemSearchModal from "./SellItemSearchModal";
 import StorageSearchModal from "./SellStorageSearchModal";
 import AppConfig from "#config/AppConfig.json";
 import readingGlasses from "#images/common/readingGlasses.png";
+import SellItemSearchModal from "./SellItemSearchModal";
 
 // SellSearchModal => 판매 물품 검색 > 물품, 창고 검색 가능한 모달 페이지
 
@@ -44,8 +44,7 @@ const SellSearchModal = ({ handleOpen, handleClose, onSearchResult } /* = props:
 			storage_name: selectedStorageName,
 		};
 	
-		console.log("제출할 전체 데이터:", payload); // 확인용
-	
+		// console.log("제출할 전체 데이터:", payload); // 확인용
 		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchResultItemList`, {
 			method: "POST",		// 데이터를 Body에 JSON으로 넣어서 보냄(보통 조회 시 GET 사용하나, 넘길 값이 많거나 URL보안 필요 시 POST도 사용)
 			headers: {
@@ -55,7 +54,7 @@ const SellSearchModal = ({ handleOpen, handleClose, onSearchResult } /* = props:
 		})
 		.then((res) => res.json())
 		.then((data) => {
-			console.log("검색 결과:", data);
+			// console.log("검색 결과:", data);
 			setSearchResultList(data);
 				if (onSearchResult) {
 					onSearchResult(data); // 부모에게 전달
@@ -63,7 +62,7 @@ const SellSearchModal = ({ handleOpen, handleClose, onSearchResult } /* = props:
 			handleClose(); // 모달 닫기 추가!!
 		})
 		.catch((error) => {
-			console.error("검색 오류:", error);
+			// console.error("검색 오류:", error);
 		});
 	};
 
@@ -78,7 +77,7 @@ const SellSearchModal = ({ handleOpen, handleClose, onSearchResult } /* = props:
 	}, [handleOpen]);
 
 	return (
-		<Modal open={handleOpen} onClose={handleClose} >
+		<Modal open={handleOpen} onClose={handleClose}>
 			<Modal.Header>
 				<Modal.Title>물품 검색</Modal.Title>
 			</Modal.Header>
@@ -136,7 +135,7 @@ const SellSearchModal = ({ handleOpen, handleClose, onSearchResult } /* = props:
 					</Form.Group>
 					</div>
 
-					<ItemSearchModal
+					<SellItemSearchModal
 						onItemSelect={handleItemSelect}
 						handleOpen={isItemModalOpen}
 						handleClose={() => setItemModalOpen(false)}

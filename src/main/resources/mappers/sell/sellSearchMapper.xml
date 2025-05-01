@@ -101,7 +101,7 @@
 			        et.e_id LIKE CONCAT('%', #{keyword}, '%') OR
 			        et.e_name LIKE CONCAT('%', #{keyword}, '%') OR
 			        dt.d_name LIKE CONCAT('%', #{keyword}, '%')
-			    	);
+			    	)
    </select>
    
 	<!-- 판매 - 담당자 검색 모달 -->
@@ -116,6 +116,7 @@
 		    department_tbl dt
 		    ON et.d_code = dt.d_code
 	   WHERE et.e_id > 0
+	   	AND dt.d_name='판매팀'
    </select>
    
    <!-- 판매 - 창고 검색 모달(키워드로 검색) -->

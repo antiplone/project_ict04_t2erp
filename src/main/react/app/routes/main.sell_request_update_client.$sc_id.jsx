@@ -250,8 +250,7 @@ const Textarea = React.forwardRef((props, ref) => (
       };
   
       e.preventDefault();
-      console.log("폼 제출됨! 데이터:", finalClientAdd);
-  
+      // console.log("폼 제출됨! 데이터:", finalClientAdd);
       fetch(`${fetchURL.protocol}${fetchURL.url}/sell/reqClientUpdate/` + sc_id, {
           method: "PUT",
           headers: {

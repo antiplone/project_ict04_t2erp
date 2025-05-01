@@ -65,12 +65,12 @@ export default function Main() {
 	const isMain = pathname === "/main";
 
 	return (
-		<Container style={{display: "block", width: "1920px", margin: "0 auto"}}>
+		<Container style={{ display: "block", width: "1920px", margin: "0 auto" }}>
 
 			<Container>
 				<HeaderMenu />
 				{isMain ? <Management /> : <Outlet />}	{/* URL이 메인이면 근태, 아니라면 그 외 */}
-                <Chatbot width={150} height={150} style={{padding:'6px'}}/>
+				<Chatbot width={150} height={150} style={{ padding: '6px' }} />
 			</Container>
 
 		</Container>

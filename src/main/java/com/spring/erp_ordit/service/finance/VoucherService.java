@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.spring.erp_ordit.dao.finance.VoucherMapper;
-import com.spring.erp_ordit.dto.buy.BuyOrderDTO;
-import com.spring.erp_ordit.dto.finance.TransacOrderDTO;
-import com.spring.erp_ordit.dto.finance.Voucher;
-import com.spring.erp_ordit.dto.sell.SellOrderDTO;
+//import com.spring.erp_ordit.dto.finance.Voucher;
 
 
 @Service
@@ -20,20 +17,39 @@ public class VoucherService {
 	@Autowired
 	private VoucherMapper voucherMapper;
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Map<String, Object>> transactionList() {
 		
 		return voucherMapper.listTransaction();
 	}
 
+	@SuppressWarnings(value = "unchecked")
 	@Transactional
-	public Voucher createVoucher(TransacOrderDTO transac) {
+	public List<Map<String, Object>> createVoucher(Object transaction) {
 
-		if (transac instanceof SellOrderDTO) {
-			System.out.println("판매처 거래내역");
+		Map<String, Object> entity;
+		if (transaction instanceof List) {
+
+			System.out.println("여러건");
+			List<Map<String, Object>> vouchers = (List<Map<String, Object>>)transaction;
+			for (Object vou : vouchers) {
+
+				entity = (Map<String, Object>)vou;
+				entity.forEach((k, v) -> {
+					System.out.println(k + " : " + v);
+				});
+
+				voucherMapper.insertVoucher(entity);
+			}
 		}
-		else if (transac instanceof BuyOrderDTO) {
-			System.out.println("구매처 거래내역");
+		else if (transaction instanceof Map) {
+
+			System.out.println("단건");
+
+			entity = (Map<String, Object>)transaction;
+			voucherMapper.insertVoucher(entity);
+
+			System.out.println(entity);
 		}
 
 		// Voucher 저장
@@ -46,6 +62,6 @@ public class VoucherService {
 //		voucher.setV_description(request.getV_description());
 //		voucherMapper.insertVoucher(voucher);
 
-		return null;
+		return voucherMapper.listTransaction();
 	}
 }

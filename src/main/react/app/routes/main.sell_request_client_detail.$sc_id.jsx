@@ -60,7 +60,7 @@ const sell_request_client_detail = () => {
       .then((res) => {
          if (res != null) {   // 대소문자 주의
             alert('삭제가 완료되었습니다.');
-            navigate('/main/sell_request_client/');
+            navigate('/main/sell_request_client_list/');
          } else {
             alert('삭제에 실패하였습니다.');
          }

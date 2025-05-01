@@ -1,6 +1,7 @@
+import AppConfig from "#config/AppConfig.json";
 import React, { useState, useEffect } from 'react';
-import { Message, Form, Divider, ButtonToolbar, Button, FlexboxGrid, Panel, Grid, Row, Col, Input, Tabs, Placeholder, Checkbox, SelectPicker } from 'rsuite';
-import { useNavigate, useLocation  } from 'react-router-dom';
+import { Message, Form, Divider, ButtonToolbar, Button, FlexboxGrid, Panel, Grid, Row, Col, Input, Tabs, Placeholder, Checkbox, SelectPicker, Loader } from 'rsuite';
+import { useNavigate, useLocation  } from "@remix-run/react";
 import MessageBox from '#components/common/MessageBox';
 import { HrTable } from '#components/hr/HrTable';
 import { Link } from '@remix-run/react';
@@ -16,11 +17,15 @@ const Textarea = React.forwardRef((props, ref) => (
 Textarea.displayName = "Textarea";
 
 export default function Basic_client() {
+  const fetchURL = AppConfig.fetch["mytest"];
+  const basicURL = `${fetchURL.protocol}${fetchURL.url}/basic`;
+
   const [clients, setClients] = useState([]);
   const [requestClients, setRequestClients] = useState([]);
   const { showToast } = useToast();
   const [isBizNumChecked, setIsBizNumChecked] = useState(false);
   const [isBizNumValid, setIsBizNumValid] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     client_name: '',
@@ -74,7 +79,8 @@ export default function Basic_client() {
 
   // 거래처 목록
   useEffect(() => {
-    fetch('http://localhost:8081/basic/client')
+    setLoading(true);
+    fetch(`${basicURL}/client`)
       .then(response => response.json())
       .then(data => {
         const processedData = data.map(client => ({
@@ -83,7 +89,8 @@ export default function Basic_client() {
         }));
         setClients(processedData);
       })
-      .catch(error => console.error("데이터를 불러오지 못했습니다:", error));
+      .catch(error => console.error("데이터를 불러오지 못했습니다:", error))
+      .finally(() => setLoading(false));
   }, []);
 
   const handleRegister = () => {
@@ -121,7 +128,7 @@ export default function Basic_client() {
     console.log("전송 데이터 확인:", form)
   
     // 거래처 등록
-    fetch('http://localhost:8081/basic/clientInsert', {
+    fetch(`${basicURL}/clientInsert`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(finalForm)
@@ -130,7 +137,7 @@ export default function Basic_client() {
       .then(result => {
         console.log("등록 응답값:", result);
         if (result === "1") {
-          alert('거래처가 등록되었습니다.');
+          showToast('거래처가 등록되었습니다.', "success");
           setForm({
             client_name: '',
             c_ceo: '',
@@ -147,7 +154,7 @@ export default function Basic_client() {
           });
 
           // 등록 후 목록 다시 불러오고, 탭 전환
-          fetch('http://localhost:8081/basic/client')
+          fetch(`${basicURL}/client`)
             .then(response => response.json())
             .then(data => {
               setClients(data);
@@ -163,7 +170,7 @@ export default function Basic_client() {
 
   // 거래처 요청 목록
   useEffect(() => {
-    fetch('http://localhost:8081/basic/clientApproval')
+    fetch(`${basicURL}/clientApproval`)
       .then(res => res.json())
       .then(data => {
         setRequestClients(data); // 전체는 여기에 저장
@@ -172,14 +179,14 @@ export default function Basic_client() {
   }, []);
 
   const columns = [
-    { label: "거래처 코드", dataKey: "client_code", width: 150 },
-    { label: "거래처명", dataKey: "client_name", width: 160 },
-    { label: "대표자명", dataKey: "c_ceo", width: 160 },
-    { label: "사업자등록번호", dataKey: "c_biz_num", width: 180 },
-    { label: "이메일", dataKey: "c_email", width: 230 },
-    { label: "거래처 연락처", dataKey: "c_tel", width: 210 },
-    { label: "사용 상태", dataKey: "c_status", width: 150 },
-    { label: "등록일", dataKey: "c_reg_date", width: 210 }
+    { label: "거래처 코드", dataKey: "client_code", width: 165 },
+    { label: "거래처명", dataKey: "client_name", width: 240 },
+    { label: "대표자명", dataKey: "c_ceo", width: 180 },
+    { label: "사업자등록번호", dataKey: "c_biz_num", width: 220 },
+    { label: "이메일", dataKey: "c_email", width: 310 },
+    { label: "거래처 연락처", dataKey: "c_tel", width: 230 },
+    { label: "사용 상태", dataKey: "c_status", width: 165 },
+    { label: "등록일", dataKey: "c_reg_date", width: 220 }
   ];
   
   const requestColumns = [
@@ -196,11 +203,12 @@ export default function Basic_client() {
       renderCell: (rowData, rowIndex) => (
         <div style={{ width: '100%', display: 'flex', alignItems: 'center', height: '100%' }}>
           <Input
+            key={rowData.sc_id}
             size="sm"
-            value={rowData.sa_approval_comment || ""}
-            onChange={(val) => {
+            defaultValue={rowData.sa_approval_comment || ""}      // value, onChange로 구성된 컴포넌트를 쓸 경우 한글 조합이 깨지는 문제가 발생(입력 중에 리렌더링)
+            onBlur={(e) => {                                      // defaultValue는 조합 끝난 후 onBlur로 한 번에 저장
               const updated = [...requestClients];
-              updated[rowIndex].sa_approval_status = val;
+              updated[rowIndex].sa_approval_comment = e.target.value;
               setRequestClients(updated);
             }}
             style={{ width: '100%' }}
@@ -274,7 +282,8 @@ export default function Basic_client() {
       sa_approval_status: rowData.sa_approval_status || "진행중"
     };
   
-    fetch(`http://localhost:8081/basic/clientApprovalUpdate/${rowData.sc_id}`, {
+    // 거래처 수정
+    fetch(`${basicURL}/clientApprovalUpdate/${rowData.sc_id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -288,7 +297,7 @@ export default function Basic_client() {
         return response.text();
       })
       .then(result => {
-        alert("요청 처리가 완료되었습니다.");
+        showToast("요청 처리가 완료되었습니다.", "success");
       
         // 전체 목록에서 삭제
         setRequestClients(prev => prev.filter(item => item.sc_id !== rowData.sc_id));
@@ -297,7 +306,7 @@ export default function Basic_client() {
         setVisibleRequests(prev => prev.filter(item => item.sc_id !== rowData.sc_id));
       
         // 거래처 목록도 새로고침
-        fetch('http://localhost:8081/basic/client')
+        fetch(`${basicURL}/client`)
           .then(res => res.json())
           .then(data => setClients(data));
       })
@@ -321,17 +330,26 @@ export default function Basic_client() {
 
       <Tabs activeKey={activeTab} onSelect={setActiveTab} style={{ marginBottom: '30px' }}>   {/* setActiveTab 등록 성공시 거래처 목록으로 탭 전환 */}
         <Tabs.Tab eventKey="1" title="거래처 목록">
-          <HrTable
-            columns={columns}
-            items={clients}
-            renderActionButtons={(rowData) => (
-              <Link to={`/main/basic_client_detail/${rowData.client_code}`}>
-                <Button appearance='ghost' size='xs' color='green'>
-                  조회
-                </Button>
-              </Link>
-            )}
-          />
+        <div style={{ minHeight: 400, position: 'relative' }}>
+          {loading ? (
+            <>
+              <Placeholder.Paragraph rows={14} />
+              <Loader center content="불러오는 중..." />
+            </>
+          ) : (
+            <HrTable
+              columns={columns}
+              items={clients}
+              renderActionButtons={(rowData) => (
+                <Link to={`/main/basic_client_detail/${rowData.client_code}`}>
+                  <Button appearance='ghost' size='xs' color='green'>
+                    조회
+                  </Button>
+                </Link>
+              )}
+            />
+          )}
+        </div>  
         </Tabs.Tab>
 
         <Tabs.Tab eventKey="2" title="거래처 등록">

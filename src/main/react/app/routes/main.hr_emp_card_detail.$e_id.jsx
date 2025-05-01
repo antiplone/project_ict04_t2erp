@@ -1,3 +1,4 @@
+import AppConfig from "#config/AppConfig.json";
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from '@remix-run/react';
 import {
@@ -23,6 +24,8 @@ const handleImagePreview = (file, setEmp) => {
 };
 
 const HrEmpCardDetail = () => {
+  const fetchURL = AppConfig.fetch['mytest'];
+  const hrURL = `${fetchURL.protocol}${fetchURL.url}/hrCard`;
   const { e_id } = useParams();
   const navigate = useNavigate();
   const toaster = useToaster();
@@ -51,7 +54,7 @@ const HrEmpCardDetail = () => {
 
   // 상세 보기
   useEffect(() => {
-    fetch(`http://localhost:8081/hrCard/hrCardDetail/${e_id}`)
+    fetch(`${hrURL}/hrCardDetail/${e_id}`)
       .then(res => res.json())
       .then(data => {
         setEmp(data);
@@ -61,7 +64,7 @@ const HrEmpCardDetail = () => {
 
   // 부서 목록 불러오기
   useEffect(() => {
-    fetch('http://localhost:8081/hrDept/hrDeptList')
+    fetch(`${fetchURL.protocol}${fetchURL.url}/hrDept/hrDeptList`)
       .then(res => res.json())
       .then(data => {
         const mapped = data.map(dept => ({
@@ -79,7 +82,7 @@ const HrEmpCardDetail = () => {
 
   // 수정
   const handleUpdate = () => {
-    fetch(`http://localhost:8081/hrCard/hrCardUpdate/${e_id}`, {
+    fetch(`${hrURL}/hrCardUpdate/${e_id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(emp)
@@ -97,7 +100,7 @@ const HrEmpCardDetail = () => {
 
   // 삭제
   const handleDelete = () => {
-    fetch(`http://localhost:8081/hrCard/hrCardDelete/${e_id}`, {
+    fetch(`${hrURL}/hrCardDelete/${e_id}`, {
       method: 'DELETE'
     })
       .then(res => res.text())
@@ -127,7 +130,7 @@ const HrEmpCardDetail = () => {
                       <Uploader
                         fileListVisible={false}
                         listType="picture"
-                        action="http://localhost:8081/hrCard/hrCardPhoto"   // 다시 올릴 서버 주소
+                        action={`${hrURL}/hrCardPhoto`}   // 다시 올릴 서버 주소
                         name="file"
                         autoUpload={true}       // 파일 선택하면 바로 서버 전송
                         onUpload={(file) => {
@@ -163,7 +166,7 @@ const HrEmpCardDetail = () => {
                             src={
                               emp.e_photo.startsWith('http')
                                 ? emp.e_photo
-                                : `http://localhost:8081${emp.e_photo}`
+                                : `${fetchURL.protocol}${fetchURL.url}${emp.e_photo}`
                             }
                             alt="사진 미리보기"
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}

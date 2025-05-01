@@ -1,8 +1,10 @@
+import AppConfig from "#config/AppConfig.json";
 import React, { useState, useEffect } from 'react';
 import {
   Tabs, Input, ButtonToolbar, Button, Panel,
   Grid, Row, Col, Form, Divider, FlexboxGrid, Uploader,
-  Loader
+  Loader,
+  Placeholder
 } from 'rsuite';
 import { HrTable } from '#components/hr/HrTable';
 import HrDropdown from '#components/hr/HrDropdown';
@@ -13,6 +15,9 @@ import MessageBox from '#components/common/MessageBox.jsx';
 import { useToast } from '#components/common/ToastProvider';
 
 const HrEmpCardPage = () => {
+  const fetchURL = AppConfig.fetch["mytest"];
+  const hrURL = `${fetchURL.protocol}${fetchURL.url}/hrCard`;
+
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState('1');
   const [items, setItems] = useState([]);
@@ -26,11 +31,18 @@ const HrEmpCardPage = () => {
   const [uploading, setUploading] = useState(false);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [uploaderKey, setUploaderKey] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:8081/hrCard/hrCardList')
-      .then(res => res.json()).then(data => setItems(data));
-    fetch('http://localhost:8081/hrDept/hrDeptList')
+    setLoading(true);
+    // 인사카드 목록 불러오기
+    fetch(`${hrURL}/hrCardList`)
+      .then(res => res.json())
+      .then(data => setItems(data))
+      .finally(() => setLoading(false));
+
+    // 부서 목록 불러오기
+    fetch(`${fetchURL.protocol}${fetchURL.url}/hrDept/hrDeptList`)
       .then(res => res.json())
       .then(data => setDeptList(data.map(d => ({ label: d.d_name, value: d.d_code }))));
   }, []);
@@ -68,7 +80,7 @@ const HrEmpCardPage = () => {
     const formData = new FormData();
     formData.append('file', file.blobFile);
   
-    fetch('http://localhost:8081/hrCard/hrCardPhoto', {
+    fetch(`${hrURL}/hrCardPhoto`, {
       method: 'POST',
       body: formData
     })
@@ -90,7 +102,7 @@ const HrEmpCardPage = () => {
     return;
   }
   
-    fetch('http://localhost:8081/hrCard/hrCardInsert', {
+    fetch(`${hrURL}/hrCardInsert`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form)
@@ -107,7 +119,7 @@ const HrEmpCardPage = () => {
           });
           setPhotoPreview(null);
           setActiveTab('1');
-          fetch('http://localhost:8081/hrCard/hrCardList')
+          fetch(`${fetchURL.protocol}${fetchURL.url}/hrCard/hrCardList`)
             .then(res => res.json())
             .then(data => setItems(data));
         }
@@ -115,13 +127,13 @@ const HrEmpCardPage = () => {
   };
 
   const columns = [
-    { label: '사번', dataKey: 'e_id', width: 80 },
-    { label: '이름', dataKey: 'e_name', width: 120 },
-    { label: '이메일', dataKey: 'e_email', width: 250 },
-    { label: '부서', dataKey: 'd_name', width: 120 },
-    { label: '직위', dataKey: 'e_position', width: 120 },
-    { label: '재직 상태', dataKey: 'e_status', width: 120 },
-    { label: '등록일', dataKey: 'e_reg_date', width: 150 },
+    { label: '사번', dataKey: 'e_id', width: 190 },
+    { label: '이름', dataKey: 'e_name', width: 235 },
+    { label: '이메일', dataKey: 'e_email', width: 355 },
+    { label: '부서', dataKey: 'd_name', width: 235 },
+    { label: '직위', dataKey: 'e_position', width: 225 },
+    { label: '재직 상태', dataKey: 'e_status', width: 225 },
+    { label: '등록일', dataKey: 'e_reg_date', width: 255 },
   ];
 
   return (
@@ -129,17 +141,26 @@ const HrEmpCardPage = () => {
       <MessageBox text="인사카드 관리" />
       <Tabs activeKey={activeTab} onSelect={setActiveTab}>
         <Tabs.Tab eventKey="1" title="인사카드 목록">
-          <HrTable
-            columns={columns}
-            items={items}
-            renderActionButtons={(rowData) => (
-              <Link to={`/main/hr_emp_card_detail/${rowData.e_id}`}>
-                <Button appearance='ghost' size='xs' color='green'>
-                  조회
-                </Button>
-              </Link>
+          <div style={{ minHeight: 400, position: 'relative' }}>
+            {loading ? (
+              <>
+                <Placeholder.Paragraph rows={14} />
+                <Loader center content="불러오는 중..." />
+              </>
+            ) : (
+              <HrTable
+                columns={columns}
+                items={items}
+                renderActionButtons={(rowData) => (
+                  <Link to={`/main/hr_emp_card_detail/${rowData.e_id}`}>
+                    <Button appearance='ghost' size='xs' color='green'>
+                      조회
+                    </Button>
+                  </Link>
+                )}
+              />
             )}
-          />
+          </div>  
         </Tabs.Tab>
 
         <Tabs.Tab eventKey="2" title="인사카드 등록">
@@ -154,7 +175,7 @@ const HrEmpCardPage = () => {
                         <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
                           <Uploader
                             key={uploaderKey}
-                            action="http://localhost:8081/hrCard/hrCardPhoto"   // 백엔드 파일 업로드 URL
+                            action={`${hrURL}/hrCardPhoto`}   // 백엔드 파일 업로드 URL
                             name="file"                                         // form-data에서 사용할 키 이름
                             fileListVisible={false}
                             autoUpload={true}
@@ -221,7 +242,7 @@ const HrEmpCardPage = () => {
                       </Col>
                       <Col xs={12}>
                         <Form.Group><Form.ControlLabel>입사 구분</Form.ControlLabel><HrRadio value={form.e_entry} onChange={(val) => setForm({ ...form, e_entry: val })} options={['신입', '경력']} /></Form.Group>
-                        <Form.Group><Form.ControlLabel>재직 상태 *</Form.ControlLabel><Form.Control value={form.e_status} onChange={val => setForm({ ...form, e_status: val })} /></Form.Group>
+                        <Form.Group><Form.ControlLabel>재직 상태 *</Form.ControlLabel><Form.Control placeholder="ex) 재직, 휴직, 퇴직 등" value={form.e_status} onChange={val => setForm({ ...form, e_status: val })} /></Form.Group>
                         <Form.Group>
                           <Form.ControlLabel>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -266,7 +287,7 @@ const HrEmpCardPage = () => {
                   <Row>
                     <Col xs={24} style={{ textAlign: 'center' }}>
                       <ButtonToolbar>
-                        <Button appearance="ghost" color="green" onClick={handleRegister}>등록</Button>
+                        <Button appearance="ghost" onClick={handleRegister}>등록</Button>
                       </ButtonToolbar>
                     </Col>
                   </Row>

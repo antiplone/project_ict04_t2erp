@@ -6,31 +6,31 @@
 <mapper namespace="com.spring.erp_ordit.dao.buy.BuySearchMapper"> <!-- 모달검색 (담당자, 거래처, 입고창고, 물품코드) -->
 
 	 <select id="buyInchargeList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
-	      select e.e_id 
+	      SELECT e.e_id 
 		  	   , e.e_name 
 		   	   , d.d_name 
-		    from employee_tbl e
-		    join department_tbl d
-		  	  on e.d_code = d.d_code
+		    FROM employee_tbl e
+		    JOIN department_tbl d
+		  	  ON e.d_code = d.d_code
 		   where e.d_code = 'D004'
   	 </select>
 	
 	 <select id="buyClientList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
-	      select client_code 
+	      SELECT client_code 
 		  	   , client_name 
-		    from client_tbl
+		    FROM client_tbl
   	 </select>
   	 
   	 <select id="buyStorageList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
-	      select storage_code 
+	      SELECT storage_code 
 		  	   , storage_name 
-		    from warehouse_tbl
+		    FROM warehouse_tbl
   	 </select>
   	 
   	 <select id="buyItemList" resultType="com.spring.erp_ordit.dto.buy.BuySearchDTO">
-	      select item_code 
+	      SELECT item_code 
 		  	   , item_name 
-		    from item_tbl
+		    FROM item_tbl
   	 </select>
 
 </mapper>   

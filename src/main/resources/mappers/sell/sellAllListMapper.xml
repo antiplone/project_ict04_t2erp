@@ -11,8 +11,8 @@
     <insert id="sell_orderInsert" parameterType="com.spring.erp_ordit.dto.sell.SellOrderDTO"
     		useGeneratedKeys="true"
     		keyProperty="order_id"> <!-- useGeneratedKeys: DB에서 생성된 키를 사용하겠다는 설정 / keyProperty: 자동 생성된 키 값을 어느 DTO 필드에 넣을지 지정(keyProperty는 하나만 가능함) -->
-    	INSERT INTO order_tbl (order_type, e_id, client_code, storage_code, transaction_type, shipment_order_date)
-		VAlUES (1, #{e_id}, #{client_code}, #{storage_code}, #{transaction_type}, #{shipment_order_date});
+    	INSERT INTO order_tbl (order_date, order_type, e_id, client_code, storage_code, transaction_type, shipment_order_date)
+		VAlUES (#{order_date}, 1, #{e_id}, #{client_code}, #{storage_code}, #{transaction_type}, #{shipment_order_date});
     </insert>
     
     <!-- 아이템 정보 -->

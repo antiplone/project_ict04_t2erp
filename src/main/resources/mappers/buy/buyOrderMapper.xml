@@ -24,7 +24,8 @@
 			LEFT JOIN warehouse_tbl wt ON ot.storage_code = wt.storage_code
 			LEFT JOIN order_status_tbl ost ON ost.order_id = ot.order_id
 				WHERE order_show='Y'
-				AND ot.order_type = 2
+				AND ot.order_type = 2 
+			 ORDER BY ot.order_id DESC
   	</select>
   	
   	<!-- 구매조회 탭 결재중 목록 -->
@@ -48,6 +49,7 @@
 			WHERE order_show='Y'
 			  AND ost.order_status='결재중'
 			  AND ot.order_type = 2
+		 ORDER BY ot.order_id DESC
   	</select>
   	
   	<!-- 구매조회 진행상태별 "건수" 조회 -->
@@ -116,9 +118,10 @@
 			LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
 			LEFT JOIN warehouse_tbl wt ON ot.storage_code = wt.storage_code
 			LEFT JOIN order_status_tbl ost ON ost.order_id = ot.order_id
-				WHERE order_show='Y'
-				AND order_status='승인'
-				AND ot.order_type = 2
+		   WHERE order_show='Y'
+			 AND order_status='승인'
+			 AND ot.order_type = 2
+		 ORDER BY ot.order_id DESC
   	</select>
   	
   	<!-- 구매 상세 조회 매핑 -->
@@ -228,12 +231,12 @@
     <delete id="buyOrderDelete" parameterType="int">
 	       UPDATE order_tbl
 			  SET order_show = 'N'
-			WHERE order_id = #{order_id};
+			WHERE order_id = #{order_id}
   	 </delete>
   	 
   	<!-- 구매현황 전체 내역 조회 -->
   	<select id="buyStatusAllList" resultType="com.spring.erp_ordit.dto.buy.BuyStatusDTO">
-		     SELECT 
+	     SELECT 
 		        ot.order_date AS order_date,
 		        ot.order_id AS order_id,
 		        ot.e_id AS e_id,
@@ -248,11 +251,12 @@
 		        oit.total AS total,
 		        ot.transaction_type AS transaction_type
 		    FROM order_tbl ot
-		    LEFT JOIN order_item_tbl oit ON ot.order_id = oit.order_id
-		    LEFT JOIN item_tbl it ON oit.item_id = it.item_id
-		    LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
-		    WHERE order_show = 'Y'
-		      AND ot.order_type = 2
+	   LEFT JOIN order_item_tbl oit ON ot.order_id = oit.order_id
+	   LEFT JOIN item_tbl it ON oit.item_id = it.item_id
+	   LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
+	       WHERE order_show = 'Y'
+	         AND ot.order_type = 2
+	    ORDER BY ot.order_date ASC     
 	</select>
 		      
     <!-- 구매현황 검색 내역 조회 -->

@@ -322,44 +322,44 @@ export default function BuyStockStatus() {
                             해당 정보로 조회되는 리스트가 없습니다.
                         </div>
                     ) : (
-                    <Table height={400} width={1150} data={searched ? searchResultList : stockStatusAllList}>
+                    <Table height={400} data={searched ? searchResultList : stockStatusAllList}>
 
-                        <Column width={120} className='text_center'>
+                        <Column width={200} className='text_center'>
                             <HeaderCell className='text_center'>발주일자</HeaderCell>
                             <Cell dataKey="display_date" />
                         </Column>
 
-                        <Column width={120} className='text_center'>
+                        <Column width={200} className='text_center'>
                             <HeaderCell className='text_center'>발주번호</HeaderCell>
                             <Cell dataKey="order_id" />
                         </Column>
 
-                        <Column width={150} className='text_left'>
+                        <Column width={250} className='text_left'>
                             <HeaderCell className='text_center'>거래처명</HeaderCell>
                             <Cell dataKey="client_name" />
                         </Column>
 
-                        <Column width={250} className='text_left'>
+                        <Column width={300} className='text_left'>
                             <HeaderCell className='text_center'>물품명</HeaderCell>
                             <Cell dataKey="item_name" />
                         </Column>
 
-                        <Column width={150} className='text_left'>
+                        <Column width={250} className='text_left'>
                             <HeaderCell className='text_center'>창고명</HeaderCell>
                             <Cell dataKey="storage_name" />
                         </Column>
 
-                        <Column width={120} className='text_center'>
+                        <Column width={230} className='text_center'>
                             <HeaderCell className='text_center'>창고재고</HeaderCell>
                             <Cell dataKey="stock_amount" />
                         </Column>
 
-                        <Column width={120} className='text_center'>
+                        <Column width={230} className='text_center'>
                             <HeaderCell className='text_center'>안전재고</HeaderCell>
                             <Cell dataKey="safe_stock" />
                         </Column>
 
-                        <Column width={120} className='text_center'>
+                        <Column width={250} className='text_center'>
                             <HeaderCell className='text_center'>최근 입고일</HeaderCell>
                             <Cell dataKey="last_date" />
                         </Column>

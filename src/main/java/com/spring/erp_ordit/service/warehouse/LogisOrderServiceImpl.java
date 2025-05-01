@@ -54,10 +54,10 @@ public class LogisOrderServiceImpl {
 	}
 	
 	// 입고 목록 조건 조회
-	public List<LogisStatusDTO> logisOrderSearch(String start_date, String end_date, String client_code, String e_id, Integer storage_code) {
+	public List<LogisStatusDTO> logisOrderSearch(String start_date, String end_date, String client_code, Integer storage_code) {
 		System.out.println("LogisOrderServiceImpl - logisOrderSearch");
-		System.out.println(start_date+ " " + end_date + " " +  client_code + " " +  e_id + " " +  storage_code);
-		return logisMapper.logisOrderSearch(start_date, end_date, client_code, e_id, storage_code);
+		System.out.println(start_date+ " " + end_date + " " +  client_code + " " +  storage_code);
+		return logisMapper.logisOrderSearch(start_date, end_date, client_code, storage_code);
 	}
 	
 

@@ -36,9 +36,11 @@ const InchargeSearchModal = ({ title = " 담당자 검색 " , confirm = " 확인
 		// 선택 완료 처리
 		const handleSubmit = () => {
 			if (selectedIncharge) {
-				onInchargeSelect(selectedIncharge?.e_id ?? null, selectedIncharge?.e_name ?? null);
-				handleColse();
+				onInchargeSelect(selectedIncharge.e_id, selectedIncharge.e_name);
+			} else{
+				onInchargeSelect('','');
 			}
+			handleColse();
 		};
 
 	return (

@@ -30,4 +30,6 @@ public class LogisSalesDTO {
 	private int client_code;			// 고객코드
 	private String client_name;			// 거래처명
 	private String income_confirm;		// 출고 컨펌
+	private String e_name;				// 직원명
+	private String d_name;				// 부서명
 }

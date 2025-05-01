@@ -1,8 +1,8 @@
 // 구매팀 - 구매현황 조회 페이지
 /* eslint-disable react/react-in-jsx-scope */
 import AppConfig from "#config/AppConfig.json";
-import { Divider, Table } from 'rsuite';
-import React, { useState } from "react";
+import { ButtonToolbar, Divider, Loader, Placeholder, Table } from 'rsuite';
+import React, { useState, useEffect } from "react";
 import "../styles/buy.css";
 import InchargeSearchModal from "#components/buy/InchargeSearchModal.jsx";
 import ClientSearchModal from "#components/buy/ClientSearchModal.jsx";
@@ -29,19 +29,23 @@ const buyType = ["부과세율 적용", "부가세율 미적용"].map(
 
 export default function BuyStatusSelect() {
 
+    const fetchURL = AppConfig.fetch["mytest"];
+    const [loading, setLoading] = useState(true); // 페이지 로딩중
+    const [buyStatusAllList, setBuyStatusAllList] = useState([]); // 전체 목록
+    
     const { showToast } = useToast();
 
     // 발주일자
     const [orderDate, setOrderDate] = useState(null);
 
-    // 날짜 선택
-    const handleDateChange = (value) => {
-        console.log("선택된 날짜 범위:", value); // [startDate, endDate]
-        setOrderDate(value);
-    };
-
     // 거래유형
     const [selectedType, setSelectedType] = useState('');
+
+    // 날짜 선택
+    const dateChange = (value) => {
+        //console.log("선택된 날짜 범위:", value); // [startDate, endDate]
+        setOrderDate(value);
+    };
 
     // 거래처 모달관리
     const [selectedClient, setSelectedClient] = useState(null);
@@ -63,13 +67,74 @@ export default function BuyStatusSelect() {
     const [selectedItemName, setSelectedItemName] = useState(null);
     const [isItemModalOpen, setItemModalOpen] = useState(false);
 
-    // 주문상태
-    const [orderstatus, setOrderstatus] = useState([]);
+    // 날짜 별로 순번 붙이기 (동일한 날짜+동일 주문건이면 동일한 No.)
+    const getNumberedList = (data) => {
+        const result = [];
+        const dateOrderMap = {}; // 날짜별로 order_id 별 순번을 추적
+        const dateCountMap = {}; // 날짜별 번호 증가용
+    
+        // 먼저 날짜 오름차순, 그 안에서 order_id 오름차순으로 정렬
+        const sortedData = [...data].sort((a, b) => {
+            if (a.order_date < b.order_date) return -1;
+            if (a.order_date > b.order_date) return 1;
+            if (a.order_id < b.order_id) return -1;
+            if (a.order_id > b.order_id) return 1;
+            return 0;
+        });
+    
+        sortedData.forEach(item => {
+            const date = item.order_date;
+            const orderId = item.order_id;
+    
+            if (!dateOrderMap[date]) {
+                dateOrderMap[date] = {};
+                dateCountMap[date] = 1;
+            }
+    
+            if (dateOrderMap[date][orderId] === undefined) {
+                dateOrderMap[date][orderId] = dateCountMap[date]++;
+            }
+    
+            result.push({
+                ...item,
+                display_date: `${date}_${dateOrderMap[date][orderId]}`
+            });
+        });
+    
+        return result;
+    };
 
-    const fetchURL = AppConfig.fetch["mytest"];
+    // 전체 리스트 조회
+    useEffect(() => {
+        fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyStatusAllList`, {
+            method: "GET"
+        })
+            .then(res => res.json() // 응답이 오면 javascript object로 바꿈.
+            )
+            .then(res => {
+                //console.log(1, res);
+                //console.log("데이터 확인", res[0]);
+                const numbered = getNumberedList(res);
+                setBuyStatusAllList(numbered);
+                setLoading(false);  // 로딩완료
+            }
+            )
+            .catch(error => {
+                //console.error("데이터 가져오기 오류:", error);
+                setLoading(false);  // 실패해도 로딩 종료 처리
+            });
+    }, []);
 
-    // 선택한 조건 검색
-    const handleSearch = async () => {
+    // 검색한 리스트 조회하기 : 검색값을 백엔드로 전달
+    const [searchResultList, setSearchResultList] = useState([]);
+
+    const [Searched, setSearched] = useState(false);
+
+    // 검색 결과 조회
+    const statusSearch = async () => {
+
+        setLoading(true); // 검색할때 로딩중 메시지 true
+
         let startDate = '';
         let endDate = '';
 
@@ -90,7 +155,9 @@ export default function BuyStatusSelect() {
 
         // 빈 값, 널은 쿼리에서 제외 (정확한 검색 필터링을 위해)
         const cleanedParams = Object.fromEntries(
-            Object.entries(searchParams).filter(([_, value]) => value !== null && value !== '')
+            Object.entries(searchParams).filter(([_, value]) => 
+                value !== null && value !== '' && value !== 'null' && value !== 'undefined'
+            )
         );
 
         // URL 쿼리 생성
@@ -99,14 +166,20 @@ export default function BuyStatusSelect() {
         try {
             const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyStatusSearch?${query}`);
             const result = await res.json();
-            console.log("result:", result);
+            //console.log("result:", result);
 
             if (result.length === 0) {
                 showToast("선택한 조건에 해당하는 구매정보가 없습니다.", "warning");
             }
-            setOrderstatus(result);
+            const searchNumbered = getNumberedList(result);
+            setSearchResultList(searchNumbered);
+
+            setSearched(true);
+            setLoading(false); // 로딩완료
         } catch (err) {
-            console.error("검색 실패:", err);
+            //console.error("검색 실패:", err);
+            setSearched(false); // 실패 시 false
+            setLoading(false);  // 실패해도 로딩 종료 처리
         }
     };
 
@@ -139,27 +212,30 @@ export default function BuyStatusSelect() {
         window.open(`${fetchURL.protocol}${fetchURL.url}/buy/exportOrderStatusExcel?${query}`, "_blank");
     };
 
-    // 검색 필터 초기화
-	const submitStatusReset = () => {
-		setOrderDate(null);
-		setSelectedClient(null);
-		setSelectedClientName(null);
-		setSelectedIncharge(null);
-		setSelectedInchargeName(null);
-		setSelectedType(null);
-		setSelectedStorage(null);
-		setSelectedStorageName(null);
-		setSelectedItem(null);
-		setSelectedItemName(null);
-	}
+    // 초기화 버튼 (전체 리스트로 돌아가기)
+    const statusList_btn = () => {
+        setSearchResultList([]);
+        setSearched(false); // 검색 상태 해제
+    }
 
-    const styles = {
-        backgroundColor: '#f8f9fa',
-    };
+    // 검색 필터 초기화
+    const submitStatusReset = () => {
+        setOrderDate(null);
+        setSelectedClient(null);
+        setSelectedClientName(null);
+        setSelectedIncharge(null);
+        setSelectedInchargeName(null);
+        setSelectedType(null);
+        setSelectedStorage(null);
+        setSelectedStorageName(null);
+        setSelectedItem(null);
+        setSelectedItemName(null);
+    }
 
     return (
-        <Container>
-            <>
+        <>
+
+            <Container>
                 <MessageBox type="info" text="구매현황" />
                 <br />
 
@@ -169,7 +245,7 @@ export default function BuyStatusSelect() {
                             <InputGroup.Addon style={{ width: 90 }}>발주일자</InputGroup.Addon>
                             <DateRangePicker
                                 value={orderDate}
-                                onChange={handleDateChange}
+                                onChange={dateChange}
                                 placeholder="날짜 선택"
                                 format="yyyy-MM-dd"
                             />
@@ -260,6 +336,89 @@ export default function BuyStatusSelect() {
                     </div>
                 </div>
 
+                <div className="buyBtnBox">
+                    <Button appearance="ghost" color="green" onClick={statusSearch}>검색</Button>
+                    <Button appearance="ghost" type="submit" onClick={submitStatusReset}>검색창 초기화</Button>
+                    <Button appearance="ghost" color="violet" onClick={downloadExcel}>엑셀 다운로드</Button>
+                </div>
+
+                <Divider />
+
+                {/* 로딩 중일 때 */}
+                {loading ? (
+                    <Container>
+                        <Placeholder.Paragraph rows={12} />
+                        <Loader center content="불러오는 중..." />
+                    </Container>
+                ) : Searched && searchResultList.length === 0 ? (
+                    <div style={{ padding: '20px', textAlign: 'center', fontSize: '16px', color: 'gray' }}>
+                        해당 정보로 조회되는 리스트가 없습니다.
+                    </div>
+                ) : (
+                    <Table height={400} width={1370} data={Searched ? searchResultList : buyStatusAllList}>
+
+                        <Column width={120} className='text_center'>
+                            <HeaderCell className='text_center'>발주일자</HeaderCell>
+                            <Cell dataKey="display_date" />
+                        </Column>
+
+                        <Column width={120} className='text_center'>
+                            <HeaderCell className='text_center'>발주번호</HeaderCell>
+                            <Cell dataKey="order_id" />
+                        </Column>
+
+                        <Column width={150} className='text_left'>
+                            <HeaderCell className='text_center'>거래처명</HeaderCell>
+                            <Cell dataKey="client_name" />
+                        </Column>
+
+                        <Column width={250} className='text_left'>
+                            <HeaderCell className='text_center'>품목명</HeaderCell>
+                            <Cell dataKey="item_name" />
+                        </Column>
+
+                        <Column width={120} className='text_center'>
+                            <HeaderCell className='text_center'>수량</HeaderCell>
+                            <Cell dataKey="quantity" />
+                        </Column>
+
+                        <Column width={150} className='text_right'>
+                            <HeaderCell className='text_center'>단가</HeaderCell>
+                            <Cell>
+                                {rowData => new Intl.NumberFormat().format(rowData.price ?? 0)}
+                            </Cell>
+                        </Column>
+
+                        <Column width={150} className='text_right'>
+                            <HeaderCell className='text_center'>공급가액</HeaderCell>
+                            <Cell>
+                                {rowData => new Intl.NumberFormat().format(rowData.supply ?? 0)}
+                            </Cell>
+                        </Column>
+
+                        <Column width={150} className='text_right'>
+                            <HeaderCell className='text_center'>부가세</HeaderCell>
+                            <Cell>
+                                {rowData => new Intl.NumberFormat().format(rowData.vat ?? 0)}
+                            </Cell>
+                        </Column>
+
+                        <Column width={150} className='text_right'>
+                            <HeaderCell className='text_center'>금액합계</HeaderCell>
+                            <Cell>
+                                {rowData => new Intl.NumberFormat().format(rowData.total ?? 0)}
+                            </Cell>
+                        </Column>
+
+                    </Table>
+                )}
+
+                <div className="buyBtnBox">
+                    <ButtonToolbar>
+                        <Button appearance="ghost" onClick={statusList_btn}>내역 초기화</Button>
+                    </ButtonToolbar>
+                </div>
+
                 {/* 거래처 모달 관리 */}
                 <ClientSearchModal
                     handleOpen={isClientModalOpen}
@@ -300,71 +459,11 @@ export default function BuyStatusSelect() {
                     }}
                 />
 
-                <div className="buyBtnBox">
-                    <Button appearance="ghost" color="green" onClick={handleSearch}>검색</Button>
-                    <Button appearance="ghost" type="submit" onClick={submitStatusReset}>검색창 초기화</Button>
-                    <Button appearance="ghost" color="violet" onClick={downloadExcel}>엑셀 다운로드</Button>
-                </div>
+            </Container>
 
-                <Divider style={{ maxWidth: 1400 }} />
+            <Divider />
 
-                <Table height={400} width={1400} data={orderstatus} onRowClick={itemData => console.log(itemData)}>
+        </>
 
-                    <Column width={120} className='text_center'>
-                        <HeaderCell style={styles} className='text_center'>발주일자</HeaderCell>
-                        <Cell dataKey="order_date" />
-                    </Column>
-
-                    <Column width={120} className='text_center'>
-                        <HeaderCell style={styles} className='text_center'>발주번호</HeaderCell>
-                        <Cell dataKey="order_id" />
-                    </Column>
-
-                    <Column width={150} className='text_left'>
-                        <HeaderCell style={styles} className='text_center'>거래처명</HeaderCell>
-                        <Cell dataKey="client_name" />
-                    </Column>
-
-                    <Column width={250} className='text_left'>
-                        <HeaderCell style={styles} className='text_center'>품목명</HeaderCell>
-                        <Cell dataKey="item_name" />
-                    </Column>
-
-                    <Column width={120} className='text_center'>
-                        <HeaderCell style={styles} className='text_center'>수량</HeaderCell>
-                        <Cell dataKey="quantity" />
-                    </Column>
-
-                    <Column width={150} className='text_right'>
-                        <HeaderCell style={styles} className='text_center'>단가</HeaderCell>
-                        <Cell>
-                            {priceData => new Intl.NumberFormat().format(priceData.price)}
-                        </Cell>
-                    </Column>
-
-                    <Column width={150} className='text_right'>
-                        <HeaderCell style={styles} className='text_center'>공급가액</HeaderCell>
-                        <Cell>
-                            {supplyData => new Intl.NumberFormat().format(supplyData.supply)}
-                        </Cell>
-                    </Column>
-
-                    <Column width={150} className='text_right'>
-                        <HeaderCell style={styles} className='text_center'>부가세</HeaderCell>
-                        <Cell>
-                            {vatData => new Intl.NumberFormat().format(vatData.vat)}
-                        </Cell>
-                    </Column>
-
-                    <Column width={150} className='text_right'>
-                        <HeaderCell style={styles} className='text_center'>금액합계</HeaderCell>
-                        <Cell>
-                            {totalData => new Intl.NumberFormat().format(totalData.total)}
-                        </Cell>
-                    </Column>
-
-                </Table>
-            </>
-        </Container>
     );
 };

@@ -1,6 +1,6 @@
 // 구매팀 - 구매조회 탭 전체
 import AppConfig from "#config/AppConfig.json";
-import { Table, Button, ButtonToolbar } from 'rsuite';
+import { Table, Button, ButtonToolbar, Modal } from 'rsuite';
 import React, { useEffect, useState } from 'react';
 import '../../styles/common.css';
 import '../../styles/buy.css';
@@ -10,56 +10,62 @@ const { Column, HeaderCell, Cell } = Table;
 
 export default function BuySelectTabAll() {
 
+    const fetchURL = AppConfig.fetch["mytest"];
+
     // 전체 목록
     const [buyOrderAllList, setBuyOrderAllList] = useState([]); // 초기값을 모르므로 빈배열로 buyList에 대입
 
+    // '불러온 전표' 모달
+    const [open2, setOpen2] = useState(false);
+    const handleOpen2 = () => setOpen2(true);
+    const handleClose2 = () => setOpen2(false);
+
+    // 날짜 별로 순번 붙이기 (동일한 날짜+동일 주문건이면 동일한 No.)
     const getNumberedList = (data) => {
-		let result = [];
-		let groupedByDate = {};
-	
-		// 날짜별로 그룹핑
-		data.forEach(item => {
-			if (!groupedByDate[item.order_date]) {
-				groupedByDate[item.order_date] = [];
-			}
-			groupedByDate[item.order_date].push(item);
-		});
-	
-		// 날짜별로 처리
-		Object.keys(groupedByDate).forEach(date => { 
-			// groupedByDate : 날짜별로 데이터를 묶어둔 객체
-			 // ex: { '2025-04-10': [item1, item2, ...], '2025-04-11': [item3, ...] }
-			let orders = groupedByDate[date];	// 해당 날짜(date)의 전체 주문 데이터 배열
-			let seenOrderIds = new Set();	// 중복된 주문(order_id)을 한 번만 처리하기 위해 사용
-			let count = 1;
-	
-			orders.forEach(item => {
-				if (seenOrderIds.has(item.order_id)) return;	 // 이미 처리한 주문번호(order_id)는 무시
-				seenOrderIds.add(item.order_id);
-	
-				// 같은 order_id의 품목 모으기
-				const sameOrderItems = orders.filter(x => x.order_id === item.order_id);
-													// 주문번호와 item 주문번호가 같은 걸 배열로 만들기
-				const firstItemName = sameOrderItems[0].item_name;
-				const displayName = sameOrderItems.length > 1
-					? `${firstItemName} 외 ${sameOrderItems.length - 1}건`
-					: firstItemName;
-	
-				// 한 줄만 push
-				result.push({
-					...item,
-					date_no: count,
-					item_display: displayName
-				});
-	
-				count++;
-			});
-		});
+        let result = [];
+        let groupedByDate = {};
 
-		return result;
-	};
+        // 날짜별로 그룹핑
+        data.forEach(item => {
+            if (!groupedByDate[item.order_date]) {
+                groupedByDate[item.order_date] = [];
+            }
+            groupedByDate[item.order_date].push(item);
+        });
 
-    const fetchURL = AppConfig.fetch["mytest"];
+        // 날짜별로 처리
+        Object.keys(groupedByDate).forEach(date => {
+            // groupedByDate : 날짜별로 데이터를 묶어둔 객체
+            // ex: { '2025-04-10': [item1, item2, ...], '2025-04-11': [item3, ...] }
+            let orders = groupedByDate[date];	// 해당 날짜(date)의 전체 주문 데이터 배열
+            let seenOrderIds = new Set();	// 중복된 주문(order_id)을 한 번만 처리하기 위해 사용
+            let count = 1;
+
+            orders.forEach(item => {
+                if (seenOrderIds.has(item.order_id)) return;	 // 이미 처리한 주문번호(order_id)는 무시
+                seenOrderIds.add(item.order_id);
+
+                // 같은 order_id의 품목 모으기
+                const sameOrderItems = orders.filter(x => x.order_id === item.order_id);
+                // 주문번호와 item 주문번호가 같은 걸 배열로 만들기
+                const firstItemName = sameOrderItems[0].item_name;
+                const displayName = sameOrderItems.length > 1
+                    ? `${firstItemName} 외 ${sameOrderItems.length - 1}건`
+                    : firstItemName;
+
+                // 한 줄만 push
+                result.push({
+                    ...item,
+                    date_no: count,
+                    item_display: displayName
+                });
+
+                count++;
+            });
+        });
+
+        return result;
+    };
 
     // fecth()를 통해 톰캣서버에세 데이터를 요청
     useEffect(() => {
@@ -69,13 +75,13 @@ export default function BuySelectTabAll() {
             .then(res => res.json() // 응답이 오면 javascript object로 바꿈.
             )
             .then(res => {
-                console.log(1, res);
+                //console.log(1, res);
                 const numbered = getNumberedList(res);
                 setBuyOrderAllList(numbered);
             }
             )
             .catch(error => {
-                console.error("데이터 가져오기 오류:", error);
+                //console.error("데이터 가져오기 오류:", error);
                 setBuyOrderAllList([]); // 오류 발생 시 빈 배열 설정 
             });
     }, []); // []은 디펜던시인데, setBuyOrderAllList()로 렌더링될때 실행되면 안되고, 1번만 실행하도록 빈배열을 넣어둔다.
@@ -83,17 +89,17 @@ export default function BuySelectTabAll() {
 
     return (
         <>
-            <Table height={500} data={buyOrderAllList}>
+            <Table height={500} width={1500} data={buyOrderAllList}>
 
                 <Column width={120} className='text_center'>
                     <HeaderCell className='text_center'>등록일자_No.</HeaderCell>
-                    <Cell> 
+                    <Cell>
                         {(orderDate) => (
                             <span
                                 onClick={() => buyOrderAllList(orderDate.order_id)}
                             >
                                 {`${orderDate.order_date}_${orderDate.date_no}`}
-                            </span>    
+                            </span>
                         )}
                     </Cell>
                 </Column>
@@ -136,26 +142,21 @@ export default function BuySelectTabAll() {
                     <Cell dataKey="delivery_date" />
                 </Column>
 
-                <Column width={120} className='text_center'>
+                <Column width={90} className='text_center'>
                     <HeaderCell className='text_center'>진행상태</HeaderCell>
                     <Cell dataKey="order_status" />
                 </Column>
 
-                {/*          
-                <Column width={150} fixed="right">
+                <Column width={90} className='text_center'>
                     <HeaderCell className='text_center'>불러온전표</HeaderCell>
-                    <Cell style={{ padding: '6px' }}>
-                        {rowData => (
-                            <Button color="blue" appearance='link'>
-                                조회
-                            </Button>
-                        )}
+                    <Cell>
+                        <Button color="yellow" appearance="ghost" size="xs" onClick={handleOpen2}>조회</Button>
                     </Cell>
                 </Column>
- */}
-                <Column width={60} className='text_center'>
-                    <HeaderCell className='text_center'>조회</HeaderCell>
-                    <Cell style={{ padding: '6px' }}>
+
+                <Column width={90} className='text_center'>
+                    <HeaderCell className='text_center'>상세조회</HeaderCell>
+                    <Cell>
                         {buyOrderAllList => (
                             <Link to={`/main/buy-select-detail/${buyOrderAllList.order_id}`}>
                                 <Button color="green" appearance='ghost' size="xs">
@@ -166,6 +167,26 @@ export default function BuySelectTabAll() {
                     </Cell>
                 </Column>
             </Table>
+
+            <Modal open={open2} onClose={handleClose2}
+                style={{
+                    position: 'fixed',
+                    left: '30%',
+                    width: 800
+                }}>
+                <Modal.Header>
+                    <Modal.Title>전표</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button onClick={handleClose2} appearance="default">닫기</Button>
+                </Modal.Footer>
+            </Modal>
+
             <>
                 <ButtonToolbar>
                     <Link to="/main/buy-insert">

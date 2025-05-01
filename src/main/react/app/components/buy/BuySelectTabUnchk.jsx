@@ -9,8 +9,11 @@ const { Column, HeaderCell, Cell } = Table;
 
 export default function BuySelectTabUnchk() {
 
+    const fetchURL = AppConfig.fetch["mytest"];
+
     const [buyOrderUnchkList, setBuyOrderUnchkList] = useState([]); // 초기값을 모르므로 빈배열로 buyList에 대입
 
+    // 날짜 별로 순번 붙이기 (동일한 날짜+동일 주문건이면 동일한 No.)
     const getNumberedList = (data) => {
         let result = [];
         let groupedByDate = {};
@@ -57,8 +60,6 @@ export default function BuySelectTabUnchk() {
         return result;
     };
 
-    const fetchURL = AppConfig.fetch["mytest"];
-
     // fecth()를 통해 톰캣서버에세 데이터를 요청
     useEffect(() => {
         fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrderUnchkList`, {
@@ -67,13 +68,13 @@ export default function BuySelectTabUnchk() {
             .then(res => res.json() // 응답이 오면 javascript object로 바꾸겠다.
             )
             .then(res => {
-                console.log(1, res);
+                //console.log(1, res);
                 const numbered = getNumberedList(res);
                 setBuyOrderUnchkList(numbered);
             }
             )
             .catch(error => {
-                console.error("데이터 가져오기 오류:", error);
+                //console.error("데이터 가져오기 오류:", error);
                 setBuyOrderUnchkList([]); // 오류 발생 시 빈 배열 설정 
             });
     }, []); // []은 디펜던시인데, setState()로 렌더링될때 실행되면 안되고, 1번만 실행하도록 빈배열을 넣어둔다.
@@ -90,7 +91,7 @@ export default function BuySelectTabUnchk() {
 
     return (
         <>
-            <Table height={500} data={buyOrderUnchkList}>
+            <Table height={500} width={1400} data={buyOrderUnchkList}>
 
                 <Column width={120} align="center">
                     <HeaderCell style={styles}>등록일자</HeaderCell>

@@ -50,16 +50,6 @@
 			  AND ot.order_type = 2
   	</select>
   	
-  	<!-- 구매조회 탭 결재중 "건수" 조회 -->
-	<select id="buyOrderPayingCount" resultType="int">
-			SELECT COUNT(DISTINCT os.order_id) AS buyOrderUnchkCount
-			  FROM order_status_tbl os
-			  JOIN order_tbl o ON os.order_id = o.order_id
-			  WHERE os.order_status = '결재중'
-			    AND o.order_show = 'Y'
-			    AND o.order_type = 2
-  	</select>
-  	
   	<!-- 구매조회 진행상태별 "건수" 조회 -->
   	<select id="buyOrderStatusCount" resultType="map">
 			 SELECT 
@@ -240,8 +230,32 @@
 			  SET order_show = 'N'
 			WHERE order_id = #{order_id};
   	 </delete>
-    
-    <!-- 구매현황조회 -->
+  	 
+  	<!-- 구매현황 전체 내역 조회 -->
+  	<select id="buyStatusAllList" resultType="com.spring.erp_ordit.dto.buy.BuyStatusDTO">
+		     SELECT 
+		        ot.order_date AS order_date,
+		        ot.order_id AS order_id,
+		        ot.e_id AS e_id,
+		        ct.client_code AS client_code,
+		        ct.client_name AS client_name,
+		        it.item_code AS item_code,
+		        it.item_name AS item_name,
+		        oit.quantity,
+		        oit.price,
+		        oit.supply,
+		        oit.vat,
+		        oit.total AS total,
+		        ot.transaction_type AS transaction_type
+		    FROM order_tbl ot
+		    LEFT JOIN order_item_tbl oit ON ot.order_id = oit.order_id
+		    LEFT JOIN item_tbl it ON oit.item_id = it.item_id
+		    LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
+		    WHERE order_show = 'Y'
+		      AND ot.order_type = 2
+	</select>
+		      
+    <!-- 구매현황 검색 내역 조회 -->
 	<select id="buyStatusSearch" resultType="com.spring.erp_ordit.dto.buy.BuyStatusDTO">
 	      SELECT 
 		        ot.order_date AS order_date,
@@ -287,7 +301,30 @@
 			ORDER BY ot.order_date ASC
   	</select>
   	
-  	<!-- 구매관리 - 입고조회  -->
+  	<!-- 구매관리 - 입고 전체조회 -->
+  	<select id="getBuyStockStatusAllList" resultType="com.spring.erp_ordit.dto.buy.BuyStockStatusDTO">
+  		  SELECT
+			    ot.order_date AS order_date,
+			    ot.order_id AS order_id,
+			    ct.client_code AS client_code,
+			    ct.client_name AS client_name,
+			    it.item_code AS item_code,
+			    it.item_name AS item_name,
+			    st.storage_code AS storage_code,
+			    st.storage_name AS storage_name,
+			    st.stock_amount AS stock_amount,
+			    st.safe_stock AS safe_stock,
+			    st.last_date AS last_date
+			FROM order_tbl ot
+			LEFT JOIN order_item_tbl oit ON ot.order_id = oit.order_id
+			LEFT JOIN item_tbl it ON oit.item_id = it.item_id
+			LEFT JOIN client_tbl ct ON ot.client_code = ct.client_code
+			LEFT JOIN stock_tbl st ON it.item_code = st.item_code
+			WHERE order_show = 'Y'
+		      AND ot.order_type = 2
+	</select>	      
+		      
+  	<!-- 구매관리 - 입고 검색한 내역 조회  -->
 	<select id="buyStockStatusSearch" resultType="com.spring.erp_ordit.dto.buy.BuyStockStatusDTO">
 	      SELECT
 			    ot.order_date AS order_date,

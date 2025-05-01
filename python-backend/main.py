@@ -1,14 +1,18 @@
+import joblib
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from transformers import pipeline
 from tensorflow_chatbot import TensorFlowChatbot
-import joblib
 
 from db_connector import get_order_count
 from db_connector import get_order_items
 from db_connector import get_sales_count
 from db_connector import get_sales_items
+
+import logging
+import traceback
+from datetime import datetime, timedelta  # datetime과 timedelta를 정확히 import
 
 app = FastAPI()
 
@@ -79,6 +83,7 @@ async def fetch_order_count():
             raise HTTPException(status_code=404, detail="No data found")
         return {"status": "success", "data": data}
     except Exception as e:
+        logging.error("Error fetching order count: {str(e)}")  # 오류 로그 추가
         raise HTTPException(status_code=500, detail="DB 조회 중 오류 발생: " + str(e))
         
 @app.get("/api/order/items")
@@ -94,11 +99,12 @@ async def fetch_order_items():
 @app.get("/api/sales/count")
 async def fetch_sales_count():
     try:
-        data = get_sales_count() # db_connector.py에서 데이터를 가져온다.
+        data = get_sales_count()  # db_connector.py에서 데이터를 가져온다.
         if not data:
             raise HTTPException(status_code=404, detail="No data found")
         return {"status": "success", "data": data}
     except Exception as e:
+        logging.error(f"Error fetching sales count: {traceback.format_exc()}")  # 오류 로그 추가
         raise HTTPException(status_code=500, detail="DB 조회 중 오류 발생: " + str(e))
         
 @app.get("/api/sales/items")

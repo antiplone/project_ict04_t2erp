@@ -31,5 +31,7 @@ public class LogisOrderDTO {
 	private String client_code;			// 거래처코드
 	private String client_name;			// 거래처명
 	private String income_confirm;		// 입고여부
+	private String e_name;				// 직원명
+	private String d_name;				// 부서명
 
 }

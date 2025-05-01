@@ -106,14 +106,8 @@
 	    <if test="start_date != null and end_date != null">
 		    AND ot.delivery_date BETWEEN #{start_date} AND #{end_date}
 		</if>
-	    <if test="e_id != null and e_id != ''">
-	        AND ot.e_id = #{e_id}
-	    </if>
 	    <if test="client_code != null and client_code != ''">
 	        AND ot.client_code = #{client_code}
-	    </if>
-	    <if test="e_id != null and e_id != ''">
-	        AND ot.e_id = #{e_id}
 	    </if>
 	    <if test="storage_code != null and storage_code != ''">
 	        AND ot.storage_code = #{storage_code, javaType=int, jdbcType=INTEGER}
@@ -123,12 +117,12 @@
 		ORDER BY ot.delivery_date ASC
   	</select>
   	
-  	<!-- 판매주문별 목록 상세조회 -->
+  	<!-- 입고주문별 목록 상세조회 -->
 	<select id="findByLogisOrderId" resultType="com.spring.erp_ordit.dto.warehouse.LogisOrderDTO">
 		select
 		    ot.order_id as 'order_id',
 		    ot.order_date as 'order_date',
-		    ot.shipment_order_date as 'shipment_order_date',
+		    ot.delivery_date as 'delivery_date',
 		    ot.order_type as 'order_type',
 		    ot.transaction_type as 'transaction_type',
 		    wt.storage_code  as 'storage_code',
@@ -174,11 +168,13 @@
 			it.item_standard,
 			it.item_status,
 			it.item_reg_date,
-			ot.order_date,
 			et.e_id,
 			et.e_name,
+			dt.d_name,
+			ot.order_date,
 			ot.delivery_date,
-			ot.shipment_order_date
+			ct.client_name,
+			wt.storage_name
 		FROM 
 			order_item_tbl oit
 		LEFT JOIN
@@ -189,12 +185,16 @@
 			employee_tbl et ON et.e_id = ot.e_id
 		LEFT JOIN
 			department_tbl dt ON dt.d_code = et.d_code
+		LEFT JOIN
+			warehouse_tbl wt ON wt.storage_code = ot.storage_code
+		LEFT JOIN
+			client_tbl ct ON ct.client_code = ot.client_code
 		WHERE 
 			oit.order_id = #{order_id} 
 			AND oit.item_code = #{item_code}
 			AND oit.order_type = #{order_type}
 		group by
-			oit.item_code, ot.e_id, dt.d_code
+			oit.item_code, ot.order_id, et.e_id, dt.d_code
 	</select>
 	
 	<!-- 판매 전체 목록 조회 --> <!-- 나중에 바꿔야됨 -->
@@ -270,7 +270,9 @@
 		ot.order_id = #{order_id}
 	AND
 		ot.order_type = 1
-	group BY
+	AND
+		ot.order_show = 'Y'
+	GROUP BY
 		oit.item_code
 	</select>
 	
@@ -453,7 +455,7 @@
 			st.safe_stock AS 'safe_stock',
 			st.last_date AS 'last_date',
 			st.storage_code,
-			st.storage_name,
+			st.storage_name
 		FROM 
 			item_tbl it
 		LEFT JOIN stock_tbl st ON it.item_code = st.item_code

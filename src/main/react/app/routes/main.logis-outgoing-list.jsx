@@ -11,17 +11,16 @@ import { useToast } from '#components/common/ToastProvider';//
 import InchargeSearchModal from "#components/logis/InchargeSearchModal.jsx";
 import ClientSearchModal from "#components/logis/ClientSearchModal.jsx";
 import StorageSearchModal from "#components/logis/StorageSearchModal.jsx";
-import ItemSearchModal from "#components/buy/ItemSearchModal.jsx";
 {/* 판매 추이 차트 */}
 import DBChartModal from '#components/chart/DBChartModal.jsx'; // 
 
 const OutgoingList = () => {
 	const fetchURL = Appconfig.fetch['mytest']
-  const [loading, setLoading] = useState(true); // 로딩 상태를 true로 초기화
+	const [loading, setLoading] = useState(true); // 로딩 상태를 true로 초기화
 	const [salesList, setSalesList] = useState([]); // 초기값을 모르므로 빈배열로 OutgoingList에 대입
 	const [salesDate, setSalesDate] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const { showToast } = useToast(); 
+	const [modalOpen, setModalOpen] = useState(false);
+	const { showToast } = useToast(); 
 	
 	// 거래처 모달  
 	const [selectedClient, setSelectedClient] = useState(null);
@@ -38,17 +37,15 @@ const OutgoingList = () => {
 	const [selectedStorageName, setSelectedStorageName] = useState(null);
 	const [isStorageModalOpen, setStorageModalOpen] = useState(false);
 	
-	// 물품 모달
-	const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedItemName, setSelectedItemName] = useState(null);
-  const [isItemModalOpen, setItemModalOpen] = useState(false);
-	
 	/* 차트 보기 모달 버튼 */
 	const [isChartModalOpen, setChartModalOpen] = useState(false);
 	
     // 모달 열기/닫기
-    const handleOpenModal = () => setModalOpen(true);
-    const handleCloseModal = () => setModalOpen(false);
+	const handleOpenModal = () => {
+		resetSearch_btn();      // 검색 조건 초기화 실행
+		setModalOpen(true);     // 모달 열기
+	};
+    const handleCloseModal = () => setModalOpen(false); // 모달 닫기
 	
     const fetchSales = async () => {
         setLoading(true);
@@ -63,7 +60,6 @@ const OutgoingList = () => {
             setSalesList([]);
             showToast("데이터를 가져오는 중 오류가 발생했습니다.", "error");
         } finally {
-            setLoading(false);
         }
     };
 	
@@ -72,10 +68,11 @@ const OutgoingList = () => {
 		fetchSales();  // 초기 데이터를 가져옵니다.
 	}, []);
 
-	const salesListWithRowNum = salesList.map((sales, index) => ({
-		...sales,
-		row_num: index + 1, // 1부터 시작하는 번호 부여
-	}));
+	const salesListWithRowNum = useMemo(() =>
+		salesList.map((sales, index) => ({
+			...sales,
+			row_num: index + 1,
+	})), [salesList]);
 
 	// 각 주문에 대한 아이템 데이터 가져오기
 	useEffect(() => {
@@ -84,6 +81,7 @@ const OutgoingList = () => {
 				setLoading(true); // 로딩 시작
 				const updatedSales = await Promise.all(
 					salesList.map(async (sales) => {
+						if (sales.itemDataList) return sales; // 이미 있으면 skip
 						try {
 							const res = await fetch(
 								`${fetchURL.protocol}${fetchURL.url}/logissales/salesDetail/${sales.order_id}`
@@ -93,17 +91,21 @@ const OutgoingList = () => {
 						} catch (err) {
 							console.error(err);
 							return { ...sales, itemDataList: [] };
-						}
+						} 
 					})
 				);
+				//itemDataList가 변경된 경우에만 갱신
+				const isChanged = updatedSales.some((updated, index) =>
+				JSON.stringify(updated.itemDataList) !== JSON.stringify(salesList[index].itemDataList)
+			);
 
-				setSalesList(updatedSales); // 아이템까지 포함된 setSalesList 업데이트
-				setLoading(false); // 로딩 완료
+			if (isChanged) setSalesList(updatedSales);
+			
+			setLoading(false);
 			};
-
 			fetchItemsForSales(); // 아이템 데이터 가져오기
 		}
-	}, [salesList.length]); // salesList 변경될 때마다 실행 (length로 조건 걸기)
+	}, [salesList]); // salesList 변경될 때마다 실행 (length로 조건 걸기)
 
 	// 날짜 선택
 	const handleDateChange = (value) => {
@@ -111,27 +113,38 @@ const OutgoingList = () => {
 		setSalesDate(value);
 	};
 	
-	// 검색 초건 설정
+	// 검색 조건 설정
 	const [searchParams, setSearchParams] = useState({
 		start_date: '',
 		end_date: '',
-		client_code: selectedClient,
-		e_id: selectedIncharge,
-		storage_code: selectedStorage,
+		client_code: '',
+		e_id: '',
+		storage_code: '',
 	});
 
     /* 검색 조건*/
 	const handleSearch = async () => {
 		setLoading(true);
 
+		let startDate = '';
+		let endDate = '';
+
 		if (salesDate && salesDate.length === 2) {
 			startDate = salesDate[0].toLocaleDateString('sv-SE');
 			endDate = salesDate[1].toLocaleDateString('sv-SE');
 		}
-
+		
+		const updatedParams = {
+			start_date: startDate,
+			end_date: endDate,
+			e_id: selectedIncharge || '',
+			client_code: selectedClient || '',
+			storage_code: selectedStorage || ''
+		};
+		
 		// 빈 값, 널 제거
 		const cleanedParams = Object.fromEntries(
-			Object.entries(searchParams).filter(([_, value]) => value !== null && value !== '' && value !== 'null')
+			Object.entries(updatedParams).filter(([_, value]) => value !== null && value !== '' && value !== 'null')
 		);
 
 		const query = new URLSearchParams(cleanedParams).toString();
@@ -145,18 +158,19 @@ const OutgoingList = () => {
 			console.error("검색 실패:", err);
 			setSalesList([]);
 		}
+		setLoading(false);
 	};
 
 	// 초기화 버튼
 	const resetSearch_btn = () => {
 	    // 검색 조건 초기화
-	    setSalesDate(null);          // salesDate도 초기화
-	    setSelectedClient('');       // client 선택값 초기화
-	    setSelectedClientName('');   // client 이름 선택값 초기화
-	    setSelectedIncharge('');     // 담당자 초기화
-	    setSelectedInchargeName(''); // 담당자 이름 초기화
-	    setSelectedStorage('');      // 창고 초기화
-	    setSelectedStorageName('');  // 창고명 초기화
+	    setSalesDate(null);				// salesDate도 초기화
+	    setSelectedClient('');			// client 선택값 초기화
+	    setSelectedClientName('');		// client 이름 선택값 초기화
+	    setSelectedIncharge('');		// 담당자 초기화
+	    setSelectedInchargeName('');	// 담당자 이름 초기화
+	    setSelectedStorage('');			// 창고 초기화
+	    setSelectedStorageName('');		// 창고명 초기화
 	
 	    setSearchParams({
 	        start_date: '',
@@ -168,7 +182,7 @@ const OutgoingList = () => {
 	};
 
 	// 아이템 비고 Cell
-	const ItemNameCell = ({ rowData, loading }) => {
+	const ItemNameCell = ({ rowData }) => {
 		const items = useMemo(() => rowData.itemDataList || [], [rowData.itemDataList]);
 		const firstItem = items.length > 0 ? items[0].item_name : "";
 		const totalCount = items.length - 1 > 0 ? `외 ${items.length - 1} 건` : "";
@@ -185,7 +199,7 @@ const OutgoingList = () => {
 	};
 	return (
 		<div>
-			<MessageBox type="info" text="금일 출고 목록"/>
+			<MessageBox type="info" text="출고 관리"/>
 			<Container style={{margin: '0 auto', maxWidth : '1480px'}}>
 				<div className='main_table'>
 					<div className="inputBox">
@@ -201,7 +215,7 @@ const OutgoingList = () => {
 							</InputGroup>
 						</div>
 
-            <div className="input">
+           				<div className="input">
 							<InputGroup className="inputModal">
 								<InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
 								<Input value={selectedIncharge || ""} readOnly onClick={() => setInchargeModalOpen(true)} />
@@ -251,26 +265,9 @@ const OutgoingList = () => {
 							<Input value={selectedStorageName || ""} readOnly className="inputModalSide" />
 						</div>
 	                    
-	                   <div className="input">
-							<InputGroup className="inputModal">
-								<InputGroup.Addon style={{ width: 80 }}> 품목코드</InputGroup.Addon>
-								<Input value={selectedItem || ""} readOnly onClick={() => setItemModalOpen(true)} />
-								<InputGroup.Addon>
-									<img
-										src={readingGlasses}
-										alt="돋보기"
-										width={20}
-										height={20}
-									/>
-								</InputGroup.Addon>
-							</InputGroup>
-							<Input value={selectedItemName || ""} readOnly style={{ width: 150 }} />
-						</div>
-	
 						<ClientSearchModal handleOpen={isClientModalOpen} handleColse={() => setClientModalOpen(false)} onClientSelect={(code, name) => { setSelectedClient(code); setSelectedClientName(name); }} />
 						<InchargeSearchModal handleOpen={isInchargeModalOpen} handleColse={() => setInchargeModalOpen(false)} onInchargeSelect={(id, name) => { setSelectedIncharge(id); setSelectedInchargeName(name); }} />
 						<StorageSearchModal handleOpen={isStorageModalOpen} handleColse={() => setStorageModalOpen(false)} onStorageSelect={(code, name) => { setSelectedStorage(code); setSelectedStorageName(name); }} />
-						<ItemSearchModal handleOpen={isItemModalOpen} handleColse={() => setItemModalOpen(false)} onItemSelect={(code, name) => { setSelectedItem(code); setSelectedItemName(name); }} />
 	
 					</div>
 					<div className="buyBtnBox BtnBoxLeftMargin">
@@ -284,68 +281,75 @@ const OutgoingList = () => {
 					</div>
 
 					<Divider style={{width : '1480px'}} />
-					
-					<Table  width={1470} height={400} data={salesListWithRowNum} className="text_center"  loading={loading}>
-						<Column width={100} align="center" fixed>
-							<HeaderCell className='text_center'>번호</HeaderCell>
-							<Cell dataKey="row_num" />
-						</Column>
+					{loading ? (
+						<div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+							<Loader size="md" content="데이터를 불러오는 중입니다..." />
+						</div>
+						) : (
+						<Table width={1470} height={400} data={salesListWithRowNum} className="text_center" loading={loading}>
+							<Column width={100} align="center" fixed>
+								<HeaderCell className='text_center'>번호</HeaderCell>
+								<Cell dataKey="row_num" />
+							</Column>
 
-						<Column width={100} align="center" fixed>
-							<HeaderCell className='text_center'>주문고유번호</HeaderCell>
-							<Cell dataKey="order_id" />
-						</Column>
-						
-						<Column width={100} align="center" fixed>
-							<HeaderCell className='text_center'>담당팀</HeaderCell>
-							<Cell dataKey="d_name" />
-						</Column>
-						
-						<Column width={100} align="center" fixed>
-							<HeaderCell className='text_center'>담당자</HeaderCell>
-							<Cell dataKey="e_name" />
-						</Column>
-	
-						<Column width={170}>
-							<HeaderCell className='text_center'>출고일자</HeaderCell>
-							<Cell dataKey="shipment_order_date" />
-						</Column>
-	
-						<Column width={300}>
-							<HeaderCell className="text_center">아이템 비고</HeaderCell>
-							<Cell dataKey="item_name">
-								{loading ? <Loader center content="로딩 중..." /> : rowData => <ItemNameCell rowData={rowData} loading={loading} />}
-							</Cell>
-						</Column>
-						
+							<Column width={100} align="center" fixed>
+								<HeaderCell className='text_center'>주문고유번호</HeaderCell>
+								<Cell dataKey="order_id" />
+							</Column>
+
+							<Column width={100} align="center" fixed>
+								<HeaderCell className='text_center'>담당팀</HeaderCell>
+								<Cell dataKey="d_name" />
+							</Column>
+
+							<Column width={100} align="center" fixed>
+								<HeaderCell className='text_center'>담당자</HeaderCell>
+								<Cell dataKey="e_name" />
+							</Column>
+
+							<Column width={170}>
+								<HeaderCell className='text_center'>출고일자</HeaderCell>
+								<Cell dataKey="shipment_order_date" />
+							</Column>
+
+							<Column width={300}>
+								<HeaderCell className="text_center">아이템 비고</HeaderCell>
+								<Cell>
+									{rowData =>
+										<ItemNameCell rowData={rowData} loading={loading} 
+									/>}
+								</Cell>
+							</Column>
+
 							<Column width={150}>
-							<HeaderCell className="text_center">주문상세</HeaderCell>
-							<Cell dataKey="item_name" style={{ padding: '6px' }}>
-                                {rowData => {
-                                    return (
-										<Link to={`/main/logis-sales-item-list/${rowData.order_id}`} className="btn btn-primary area_fit wide_fit">
-											보기
-										</Link>
-                                    );
-                                }}
-                            </Cell>
-						</Column>
+								<HeaderCell className="text_center">주문상세</HeaderCell>
+								<Cell dataKey="item_name" style={{ padding: '6px' }}>
+									{rowData => {
+										return (
+											<Link to={`/main/logis-sales-item-list/${rowData.order_id}`} className="btn btn-primary area_fit wide_fit">
+												아이템 전체 보기
+											</Link>
+										);
+									}}
+								</Cell>
+							</Column>
 
-						<Column width={180}>
-							<HeaderCell className='text_center'>발주처</HeaderCell>
-							<Cell dataKey="client_name" />
-						</Column>
-	
-						{/* <Table.Column width={120}>
+							<Column width={180}>
+								<HeaderCell className='text_center'>발주처</HeaderCell>
+								<Cell dataKey="client_name" />
+							</Column>
+
+							{/* <Table.Column width={120}>
 	                            <Table.HeaderCell>발주일</Table.HeaderCell>
 	                            <Table.Cell dataKey="order_date" />
 	                        </Table.Column> */}
-	
-						<Column width={240}>
-							<HeaderCell className='text_center'>입고창고</HeaderCell>
-							<Cell dataKey='storage_name' className='text_left'/>
-						</Column>
-					</Table>
+
+							<Column width={240}>
+								<HeaderCell className='text_center'>입고창고</HeaderCell>
+								<Cell dataKey='storage_name' className='text_left' />
+							</Column>
+						</Table>
+					)}
 					<div style={{ display: 'flex', margin : '10px' }}>
 						{	/* Email Modal */}
 						<div width={50} height={50} style={{ marginRight: '20px' }}>

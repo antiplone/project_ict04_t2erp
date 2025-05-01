@@ -1,4 +1,6 @@
 import tensorflow as tf
+import gc
+gc.collect()
 from tensorflow.keras.utils import to_categorical
 from transformers import TFAutoModelForSequenceClassification, AutoTokenizer
 import numpy as np

@@ -102,13 +102,13 @@ export default function BuyInsert() {
     const handleChange = (id, key, value) => {
         const updated = orderItems.map(order => {
             if (order.id === id) {
-
                 const newItem = { ...order, [key]: value };
                 const quantity = Number(newItem.quantity) || 0;
                 const price = Number(newItem.price) || 0;
-                const supply = quantity * price;               // 공급가액: 수량 × 단가
-                const vat = Math.floor(supply * 0.1);          // 부가세: 공급가액의 10% (소수점 버림)
-                const total = supply + vat;                    // 총액: 공급가액 + 부가세
+                const supply = quantity * price;                                 // 공급가액: 수량 × 단가
+                const VatIncluded = selectedType === "부과세율 적용";              // 부과세율 적용을 선택했을 때만 부가세 더하기
+                const vat = VatIncluded ? Math.floor(supply * 0.1) : 0;          // 부가세: 공급가액의 10% (소수점 버림)
+                const total = supply + vat;                                      // 총액: 공급가액 + 부가세
                 return { ...newItem, supply, vat, total };
             }
             return order;
@@ -198,7 +198,7 @@ export default function BuyInsert() {
             navigate("/main/buy-select");
 
         } catch (err) {
-            console.error(err);
+            //console.error(err);
             showToast("오류가 발생했습니다.", "error");
         }
     };
@@ -307,7 +307,7 @@ export default function BuyInsert() {
                 </Button>
             </div>
 
-            <Divider />
+            <Divider style={{maxWidth: 1400}}/>
 
             {/* 거래처 모달 관리 */}
             <ClientSearchModal
@@ -356,7 +356,7 @@ export default function BuyInsert() {
 
             <hr />
 
-            <Table height={400} data={orderItems} style={{ maxWidth: 1350, marginTop: -40 }}>
+            <Table height={400} data={orderItems} style={{ maxWidth: 1400, marginTop: -40 }}>
                 <Column width={170} align="center">
                     <HeaderCell>물품코드</HeaderCell>
                     <EditableCell
@@ -423,7 +423,7 @@ export default function BuyInsert() {
                 </Column>
             </Table>
 
-            <Divider />
+            <Divider style={{maxWidth: 1400}}/>
             <div className="insertTotalSum">총액 합계: {totalSum.toLocaleString()} 원</div>
             <div style={{ display: 'flex', marginLeft: 10 }}>
                 <Button appearance="ghost" onClick={handleSubmit}>저장</Button>

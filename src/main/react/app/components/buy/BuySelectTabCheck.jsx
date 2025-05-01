@@ -1,6 +1,6 @@
 // 구매팀 - 구매조회 탭 확인
 import AppConfig from "#config/AppConfig.json";
-import { Table, Button, ButtonToolbar } from 'rsuite';
+import { Table, Button, ButtonToolbar, Modal } from 'rsuite';
 import React, { useEffect, useState } from 'react';
 import '../../styles/buy.css';
 import { Link } from 'react-router-dom';
@@ -9,8 +9,16 @@ const { Column, HeaderCell, Cell } = Table;
 
 export default function BuySelectTabCheck() {
 
+    const fetchURL = AppConfig.fetch["mytest"];
+
     const [buyOrderCheckList, setBuyOrderCheckList] = useState([]); // 초기값을 모르므로 빈배열로 buyList에 대입
 
+    // '불러온 전표' 모달
+    const [open2, setOpen2] = useState(false);
+    const handleOpen2 = () => setOpen2(true);
+    const handleClose2 = () => setOpen2(false);
+
+    // 날짜 별로 순번 붙이기 (동일한 날짜+동일 주문건이면 동일한 No.)
     const getNumberedList = (data) => {
         let result = [];
         let groupedByDate = {};
@@ -57,8 +65,6 @@ export default function BuySelectTabCheck() {
         return result;
     };
 
-    const fetchURL = AppConfig.fetch["mytest"];
-
     // fecth()를 통해 톰캣서버에세 데이터를 요청
     useEffect(() => {
         fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrderCheckList`, {
@@ -67,13 +73,13 @@ export default function BuySelectTabCheck() {
             .then(res => res.json() // 응답이 오면 javascript object로 바꾸겠다.
             )
             .then(res => {
-                console.log(1, res);
+                //console.log(1, res);
                 const numbered = getNumberedList(res);
                 setBuyOrderCheckList(numbered);
             }
             )
             .catch(error => {
-                console.error("데이터 가져오기 오류:", error);
+                //console.error("데이터 가져오기 오류:", error);
                 setBuyOrderCheckList([]); // 오류 발생 시 빈 배열 설정 
             });
     }, []); // []은 디펜던시인데, setState()로 렌더링될때 실행되면 안되고, 1번만 실행하도록 빈배열을 넣어둔다.
@@ -81,7 +87,7 @@ export default function BuySelectTabCheck() {
 
     return (
         <>
-            <Table height={500} data={buyOrderCheckList}>
+            <Table height={500} width={1550} data={buyOrderCheckList}>
 
                 <Column width={120} className='text_center'>
                     <HeaderCell className='text_center'>등록일자</HeaderCell>
@@ -134,31 +140,26 @@ export default function BuySelectTabCheck() {
                     <Cell dataKey="delivery_date" />
                 </Column>
 
-                <Column width={120} className='text_center'>
+                <Column width={100} className='text_center'>
                     <HeaderCell className='text_center'>진행상태</HeaderCell>
                     <Cell dataKey="order_status" />
                 </Column>
 
-                <Column width={100} className='text_center'>
+                <Column width={80} className='text_center'>
                     <HeaderCell className='text_center'>입고현황</HeaderCell>
                     <Cell dataKey="income_confirm" />
                 </Column>
-
-                {/*          
-                <Column width={150} fixed="right">
-                    <HeaderCell>불러온전표</HeaderCell>
-                    <Cell style={{ padding: '6px' }}>
-                        {rowData => (
-                            <Button color="blue" appearance='link'>
-                                조회
-                            </Button>
-                        )}
+                
+                <Column width={80} className='text_center'>
+                    <HeaderCell className='text_center'>불러온전표</HeaderCell>
+                    <Cell>
+                        <Button color="yellow" appearance="ghost" size="xs" onClick={handleOpen2}>조회</Button>
                     </Cell>
                 </Column>
- */}
-                <Column width={60} align="center">
-                    <HeaderCell>조회</HeaderCell>
-                    <Cell style={{ padding: '6px' }}>
+           
+                <Column width={80} className='text_center'>
+                    <HeaderCell className='text_center'>조회</HeaderCell>
+                    <Cell>
                         {buyOrderCheckList => (
                             <Link to={`/main/buy-select-detail/${buyOrderCheckList.order_id}`}>
                                 <Button color="green" appearance='ghost' size="xs">
@@ -169,6 +170,25 @@ export default function BuySelectTabCheck() {
                     </Cell>
                 </Column>
             </Table>
+
+            <Modal open={open2} onClose={handleClose2}
+                style={{
+                    position: 'fixed',
+                    left: '30%',
+                    width: 800
+                }}>
+                <Modal.Header>
+                    <Modal.Title>전표</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button onClick={handleClose2} appearance="default">닫기</Button>
+                </Modal.Footer>
+            </Modal>
 
             <>
                 <ButtonToolbar>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from '@remix-run/react';
-import { Button, Container, Message, Table } from 'rsuite';
+import { Button, Container, Table } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
 import "#components/common/css/common.css";
+import MessageBox from '../components/common/MessageBox';
 
 const OrderItemList = () => {
 	const fetchURL = Appconfig.fetch['mytest']
@@ -151,13 +152,11 @@ const OrderItemList = () => {
     
     return (
         <div>
-            <Container>
-               	<Message type="success" className="main_title">
-                    주문 상세 목록 (주문 번호 : {order_id})
-                </Message>
+        	<MessageBox type="success" className="main_title"  text={`주문 상세 목록 (주문 번호 : ${order_id})`} />
+            <Container style={{margin: '0 auto', maxWidth : '1480px'}}>
                 <br />
-                <Table height={400} data={orderItemList} className='text_center'>
-	                <Table.Column width={80} align="center">
+                <Table width={1450} data={orderItemList} className='text_center'>
+	                <Table.Column width={100} align="center">
 	                    <Table.HeaderCell>
 	                        <input
 	                            type="checkbox"
@@ -185,13 +184,13 @@ const OrderItemList = () => {
                         <Table.Cell dataKey="item_code" />
                     </Table.Column>
 
-                    <Table.Column width={160}>
+                    <Table.Column width={260}>
                         <Table.HeaderCell className='text_center'>품목명</Table.HeaderCell>
                         <Table.Cell dataKey="item_name" />
                     </Table.Column>
 
-                    <Table.Column width={80}>
-                        <Table.HeaderCell className='text_center'>주문수량</Table.HeaderCell>
+                    <Table.Column width={100}>
+                        <Table.HeaderCell className='text_center'>판매수량</Table.HeaderCell>
                         <Table.Cell dataKey="quantity" />
                     </Table.Column>
                     
@@ -222,8 +221,8 @@ const OrderItemList = () => {
 						</Table.Cell>
 					</Table.Column>
 
-                    <Table.Column width={160}>
-                        <Table.HeaderCell className='text_left'>규격</Table.HeaderCell>
+                    <Table.Column width={320}>
+                        <Table.HeaderCell>규격</Table.HeaderCell>
                         <Table.Cell dataKey="item_standard" />
                     </Table.Column>
                     
@@ -246,24 +245,27 @@ const OrderItemList = () => {
                         </Table.Cell>
                     </Table.Column>
                     
-                     <Table.Column width={160}>
+                     <Table.Column width={100}>
                         <Table.HeaderCell className='text_center'>입고 창고 코드</Table.HeaderCell>
                         <Table.Cell dataKey="storage_code" />
                     </Table.Column>
                 </Table>
                 
-                <div className='display_flex'>
+				<div className='display_flex'>
 					<Button
+						appearance="primary"
 						className="btn btn-success"
 						onClick={handleSubmitSelected}
 						disabled={selectedItems.size === 0}
 					>
-						선택된 품목 입고 확정
+						입고 확정
 					</Button>
-                    <Link to={'/main/logis-income-list'} className="btn btn-primary area_fit wide_fit margin_0">입고 목록</Link>
+                    <Link to={'/main/logis-income-list'} className="btn btn-primary area_fit wide_fit margin_0 padding_0px">
+						<Button appearance="primary">
+                    		입고 목록
+						</Button>
+                    </Link>
                 </div>
-                
-               
             </Container>
         </div>
     )

@@ -127,7 +127,7 @@ const SellInvoice = ({ order_id, order_date, date_no }) => {
         <SellInvoiceContent order_id={order_id} order_date={order_date} date_no={date_no} />
       </div>
 
-          {isClient && <Button color="pink" appearance="ghost" onClick={handlePrint}>프린트</Button>}
+          {isClient && <Button appearance="ghost" onClick={handlePrint}>프린트</Button>}
     </>
   );
 };

@@ -14,7 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Builder
-public class SellSearchDTO {
+public class SellSearchDTO {	// 판매_ 아이템 검색 모달 DTO
 	
 	private int order_id;			// 주문번호
 	private int item_code;			// 물품코드
@@ -24,6 +24,6 @@ public class SellSearchDTO {
 	private int stock_amount;		// 수량
 	private int price;				// 단가
 	private String client_name;		// 거래처명
-	private Date item_reg_date;		//  등록일
+	private Date item_reg_date;		// 등록일
 	
 }

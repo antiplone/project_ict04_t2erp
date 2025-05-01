@@ -29,8 +29,11 @@ export default function FinanceVoucher() {
 	let location = useLocation();
 	console.log(location.pathname);
 
+	const dataState = useState([]);
+	const [allList, setAllList] = dataState;
 	const [open, setOpen] = useState(false);
-	const [allList, setAllList] = useState([]);
+	const rowState = useState([]);
+	const [rowData] = rowState;
 
 	const getNumberedList = (data) => {
 		let result = [];
@@ -38,6 +41,7 @@ export default function FinanceVoucher() {
 
 		// 날짜별로 그룹핑
 		data.forEach(item => {
+
 			if (!groupedByDate[item.order_date]) {
 				groupedByDate[item.order_date] = [];
 			}
@@ -53,6 +57,7 @@ export default function FinanceVoucher() {
 			let count = 1;
 
 			orders.forEach(item => {
+
 				if (seenOrderIds.has(item.order_id)) return;	 // 이미 처리한 주문번호(order_id)는 무시
 				seenOrderIds.add(item.order_id);
 
@@ -67,8 +72,9 @@ export default function FinanceVoucher() {
 				// 한 줄만 push
 				result.push({
 					...item,
-					date_no: count,
-					item_display: displayName
+					voucher_no: item.order_date + '_' + count,
+					item_display: displayName,
+					items: sameOrderItems
 				});
 
 				count++;
@@ -80,23 +86,33 @@ export default function FinanceVoucher() {
 		return result;
 	};
 
-	const fetchURL = AppConfig.fetch['mytest'];
 	useEffect(() => {
-		fetch(`${fetchURL.protocol}${fetchURL.url}/voucher/transactions`, {
-			method: "GET"
-		})
-			.then(res => {
-				const entity = res.json();
 
-				if (res.ok) {
-					entity.then(res => {
-						console.log(1, res);
-						const numbered = getNumberedList(res);
-						setAllList(numbered);
-					});
-				}
-			});
-	}, []);
+		if (allList.length < 1) {
+
+			const fetchURL = AppConfig.fetch['mytest'];
+			fetch(`${fetchURL.protocol}${fetchURL.url}/voucher/transactions`, {
+				method: "GET"
+			})
+				.then(res => {
+	
+					const entity = res.json();
+	
+					if (res.ok) {
+	
+						entity.then(res => {
+	
+//							console.log(1, res);
+							const numbered = getNumberedList(res);
+							setAllList(numbered);
+						});
+					}
+				});
+		}
+		else {
+			
+		}
+	}, [ allList ]);
 
 	return (
 		<Container>
@@ -110,7 +126,7 @@ export default function FinanceVoucher() {
 					<Placeholder.Paragraph rows={16} />
 					<Loader center content="불러오는중..." />
 				</Container>
-			: <VoucherTable opener={setOpen} data={allList} />}
+			: <VoucherTable opener={setOpen} dataState={dataState} rowState={rowState} />}
 
 			<Modal open={open} onClose={() => setOpen(false)}
 				style={{
@@ -123,7 +139,7 @@ export default function FinanceVoucher() {
 				</Modal.Header>
 
 				<Modal.Body>
-					<VoucherPrint />
+					<VoucherPrint target={rowData} />
 				</Modal.Body>
 
 				<Modal.Footer>

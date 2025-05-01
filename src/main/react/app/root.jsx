@@ -3,7 +3,7 @@
 import "rsuite/dist/rsuite.min.css";
 import "#styles/common.css";
 import ToastProvider from "#components/common/ToastProvider";  // 경로 수정
-import koKR from "rsuite/locales/ko_KR"
+//import koKR from "rsuite/locales/ko_KR"
 
 import {
 	Links,
@@ -29,9 +29,9 @@ export function Layout({ children }) {
 			<body>
 				<div style={{ display: "flex", flexDirection: "column" }}>
 					{AppConfig.isDev ? <span style={{ textAlign: "center", fontWeight: "bold", color: "royalblue" }}>
-						개발버전입니다.
+						개발버전입니다. {AppConfig.ver}
 					</span> : null}
-					<CustomProvider locale={koKR} /*formatDate={(date, format) => {return format}}*/><ToastProvider>
+					<CustomProvider /*locale={koKR}*/ /*formatDate={(date, format) => {return format}}*/><ToastProvider>
 						{children}{/* 자식페이지들이 보여질부분 */}
 					</ToastProvider></CustomProvider>
 				</div>

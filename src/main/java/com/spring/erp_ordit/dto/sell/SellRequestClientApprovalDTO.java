@@ -15,7 +15,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Builder
-public class SellRequestClientApprovalDTO {
+public class SellRequestClientApprovalDTO {	// 판매 _ 거래처요청 결재 DTO
 	
 	private int sa_approval_id; 		// 결재 번호
 	private int sa_request_id; 			// 요청 테이블의 요청 넘버 fk

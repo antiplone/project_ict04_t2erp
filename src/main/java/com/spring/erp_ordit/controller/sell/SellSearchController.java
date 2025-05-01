@@ -31,7 +31,7 @@ public class SellSearchController {
 	// 판매 물품 검색 - 물품 리스트
 	@GetMapping("/searchItemList")
 	public ResponseEntity<List<SellSearchDTO>> sell_searchList() {
-		System.out.println("<<< sell_searchList >>>");
+//		System.out.println("<<< sell_searchList >>>");
 
 		return new ResponseEntity<>(service.sellSearchList(), HttpStatus.OK);
 	}
@@ -40,7 +40,7 @@ public class SellSearchController {
 	// 판매 물품 검색 - 원하는 품목 선택 검색한 물품 리스트
 	@PostMapping("/searchResultItemList")
 	public ResponseEntity<List<SellSearchDTO>> sell_searchResultList(@RequestBody SellSearchDTO dto) {
-		System.out.println("<<< sell_searchResultList >>>");
+//		System.out.println("<<< sell_searchResultList >>>");
 
 		return new ResponseEntity<>(service.sellSearchResultList(dto), HttpStatus.OK);
 	}
@@ -49,7 +49,7 @@ public class SellSearchController {
 	// 판매 - 품목명 리스트 모달(키워드로 검색)
 	@GetMapping("/searchDetailItemList/{keyword}")
 	public ResponseEntity<List<SellSearchDTO>> searchDetail_itemList(@PathVariable String keyword) {
-		System.out.println("<<< sell_searchDetailItemList >>>");
+//		System.out.println("<<< sell_searchDetailItemList >>>");
 
 		return new ResponseEntity<>(service.sellSearchItemDetailList(keyword), HttpStatus.OK);
 	}
@@ -58,7 +58,7 @@ public class SellSearchController {
 	// 판매 - 품목명 리스트 모달
 	@GetMapping("/searchItem")
 	public ResponseEntity<List<SellSearchDTO>> search_itemList() {
-		System.out.println("<<< search_itemList >>>");
+//		System.out.println("<<< search_itemList >>>");
 
 		return new ResponseEntity<>(service.sellItemList(), HttpStatus.OK);
 	}
@@ -67,7 +67,7 @@ public class SellSearchController {
 	// 판매 입력 - 창고 선택 시 조회되는 품목 리스트 모달 (키워드로 검색)
 	@GetMapping("/searchItemCount/{storage_code}/{keyword}")
 	public ResponseEntity<List<SellSearchDTO>> storage_itemListKey(@PathVariable int storage_code, @PathVariable String keyword) {
-		System.out.println("<<< storage_itemListKey >>>");
+//		System.out.println("<<< storage_itemListKey >>>");
 
 		return new ResponseEntity<>(service.storage_itemListKey(storage_code, keyword), HttpStatus.OK);
 	}
@@ -76,7 +76,7 @@ public class SellSearchController {
 	// 판매 입력 - 창고 선택 시 조회되는 품목 리스트 모달
 	@GetMapping("/searchItemCode/{storage_code}")
 	public ResponseEntity<List<SellSearchDTO>> storage_itemList(@PathVariable int storage_code) {
-		System.out.println("<<< storage_itemList >>>");
+//		System.out.println("<<< storage_itemList >>>");
 		
 		return new ResponseEntity<>(service.storage_itemList(storage_code), HttpStatus.OK);
 	}
@@ -85,7 +85,7 @@ public class SellSearchController {
 	// 판매 - 거래처 조회 모달(키워드로 검색)
 	@GetMapping("/searchDetailClient/{keyword}")
 	public ResponseEntity<List<SellSearchClientDTO>> searchDetail_clientList(@PathVariable String keyword) {
-		System.out.println("<<< search_clientList >>>");
+//		System.out.println("<<< search_clientList >>>");
 
 		return new ResponseEntity<>(service.sellSearchClientDetailList(keyword), HttpStatus.OK);
 	}
@@ -94,7 +94,7 @@ public class SellSearchController {
 	// 판매 - 거래처 조회 모달
 	@GetMapping("/searchClient")
 	public ResponseEntity<List<SellSearchClientDTO>> search_clientList() {
-		System.out.println("<<< search_clientList >>>");
+//		System.out.println("<<< search_clientList >>>");
 
 		return new ResponseEntity<>(service.sellClientList(), HttpStatus.OK);
 	}
@@ -103,7 +103,7 @@ public class SellSearchController {
 	// 판매 - 담당자 조회 모달(키워드로 검색)
 	@GetMapping("/searchDetailEmployee/{keyword}")
 	public ResponseEntity<List<SellSearchEmployeeDTO>> searchDetail_employeeList(@PathVariable String keyword) {
-		System.out.println("<<< searchDetail_employeeList >>>");
+//		System.out.println("<<< searchDetail_employeeList >>>");
 
 		return new ResponseEntity<>(service.sellSearchEmployeeDetailList(keyword), HttpStatus.OK);
 	}
@@ -112,7 +112,7 @@ public class SellSearchController {
 	// 판매 - 담당자 조회 모달
 	@GetMapping("/searchEmployee")
 	public ResponseEntity<List<SellSearchEmployeeDTO>> search_employeeList() {
-		System.out.println("<<< search_employeeList >>>");
+//		System.out.println("<<< search_employeeList >>>");
 
 		return new ResponseEntity<>(service.sellEmployeeList(), HttpStatus.OK);
 	}
@@ -121,7 +121,7 @@ public class SellSearchController {
 	// 판매 - 창고 조회 모달(키워드로 검색)
 	@GetMapping("/searchDetailStorage/{keyword}")
 	public ResponseEntity<List<SellSearchStorageDTO>> searchDetail_storageList(@PathVariable String keyword) {
-		System.out.println("<<< searchDetail_storageList >>>");
+//		System.out.println("<<< searchDetail_storageList >>>");
 
 		return new ResponseEntity<>(service.sellWarehouseDetailList(keyword), HttpStatus.OK);
 	}
@@ -130,7 +130,7 @@ public class SellSearchController {
 	// 판매 - 창고 조회 모달
 	@GetMapping("/searchStorage")
 	public ResponseEntity<List<SellSearchStorageDTO>> search_storageList() {
-		System.out.println("<<< search_storageList >>>");
+//		System.out.println("<<< search_storageList >>>");
 		
 		return new ResponseEntity<>(service.sellWarehouseList(), HttpStatus.OK);
 	}

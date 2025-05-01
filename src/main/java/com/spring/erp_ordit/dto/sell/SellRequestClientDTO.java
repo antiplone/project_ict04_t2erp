@@ -15,7 +15,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Builder
-public class SellRequestClientDTO {
+public class SellRequestClientDTO {	// 판매_거래처 요청 DTO
 	
 	private int sc_id; 					// 요청 넘버
 	private int rownum; 				// 요청건들 순서 매기기

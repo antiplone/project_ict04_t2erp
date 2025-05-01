@@ -193,7 +193,10 @@ const Sellinsert = () => {
 		// 구조분해 할당. status, id는 버리고 나머지만 rest에 담기
 		const filteredSellAdd = sellAdd.map(({ status, id, ...rest }) => rest);
 
+		const orderDate = new Date().toLocaleString("sv-SE", {timeZone: "Asia/Seoul"}).replace(" ","T");
+		
 		const payload = {
+			order_date: orderDate,
 			shipment_order_date: shipmentOrderDate,
 			e_id: selectedIncharge,
 			e_name: selectedInchargeName,
@@ -205,6 +208,7 @@ const Sellinsert = () => {
 			orderItemList: filteredSellAdd,
 		};
 
+		
 		// console.log("제출할 전체 데이터:", payload); // 확인용
 		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/insert`, {
 			method: "POST",

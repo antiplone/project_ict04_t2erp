@@ -181,13 +181,14 @@ const sell_all_list_update = (props) => {
 				id: Number(item.id) || idx + 1  // id가 숫자면 그대로, 아니면 고유 id 부여
 			}));
 
-			setSellAdd(fixedRes);	// 수정 가능한 배열로 저장
+			// 기존 상태가 비어있을 때만 초기화
+			setSellAdd(prev => (prev.length === 0 ? fixedRes : prev));
 			setIsLoading(false);
 			setOriginalItems(fixedRes);	// 원본 백업 (삭제 비교용)
 
 			// 첫 번째 항목을 기준으로 상단 입력값 세팅
 			if (fixedRes.length > 0) {
-				const firstRow = res[0];
+				const firstRow = fixedRes[0];
 				
 				setShipmentOrderDate(new Date(firstRow.shipment_order_date)); // 날짜는 Date로 변환 필요
 				setSelectedIncharge(firstRow.e_id);

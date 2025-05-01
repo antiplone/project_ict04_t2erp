@@ -47,3 +47,19 @@ INNER JOIN (
 ) os on os.order_id = ot.order_id
 AND order_show='Y'
 ORDER BY ot.order_id DESC;
+
+
+CREATE OR REPLACE VIEW emp_info_view AS
+SELECT 
+	et.e_id AS e_id,
+	ea.e_auth_id AS e_auth_id,
+	et.e_name AS e_name,
+	et.e_position AS e_position,
+	dt.d_name AS d_name,
+	ea.e_token AS e_token
+FROM
+	employee_tbl AS et
+INNER JOIN
+	employee_auth_tbl AS ea ON et.e_id = ea.e_id
+INNER JOIN
+	department_tbl AS dt ON et.d_code = dt.d_code;

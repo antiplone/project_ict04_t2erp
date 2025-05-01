@@ -113,7 +113,7 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("sell_request_client_list") }}>거래처 관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu
-						title="물류"
+						title="물류관리"
 					>
 						<Nav.Item onSelect={() => { navigate("logis-income-list") }}>입고관리</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("logis-outgoing-list") }}>출고관리</Nav.Item>
@@ -121,7 +121,7 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("logis-warehouse") }}>창고관리</Nav.Item>
 					</Nav.Menu>
 					<Nav.Menu
-						title="회계"
+						title="기업회계"
 					>
 						<Nav.Item onSelect={() => { navigate("finance_main") }}>회계메인</Nav.Item>
 						<Nav.Item onSelect={() => { navigate("finance_sales_resume") }}>매출매입거래</Nav.Item>

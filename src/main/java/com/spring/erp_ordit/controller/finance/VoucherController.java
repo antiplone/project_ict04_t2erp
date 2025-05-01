@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spring.erp_ordit.dto.finance.TransacOrderDTO;
 import com.spring.erp_ordit.service.finance.VoucherService;
 
 @RequestMapping(value = "/voucher")
@@ -30,11 +29,11 @@ public class VoucherController {
 	}
 
 	@PostMapping(value = "/signin")
-	public ResponseEntity<?> signin(@RequestBody TransacOrderDTO dto) {
-		ResponseEntity<?> entity;
+	public ResponseEntity<?> signin(@RequestBody Object transaction) {
 
-		service.createVoucher(null);
+		ResponseEntity<?> entity = ResponseEntity
+									.ok(service.createVoucher(transaction));
 
-		return null;
+		return entity;
 	}
 }

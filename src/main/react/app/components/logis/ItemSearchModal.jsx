@@ -36,10 +36,12 @@ const ItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen, han
 	const handleSubmit = () => {
 		if (selectedItem) {
 			onItemSelect(selectedItem.item_code, selectedItem.item_name);
-			handleColse();
+		} else {
+			// 선택이 해제된 경우도 반영
+			onItemSelect('', '');
 		}
+		handleColse();  // 항상 닫기
 	};
-
 	return (
 		<Modal open={handleOpen} onClose={handleColse} size="xs">
 			<Modal.Header>
@@ -93,7 +95,7 @@ const ItemSearchModal = ({ title, confirm, cancel, onItemSelect, handleOpen, han
 
 ItemSearchModal.defaultProps = {
 	// props가 설정이 안되어있으면, 기본(default)으로 들어갑니다.
-	title: "제목을 입력해주세요.",
+	title: "품목명을 입력해주세요.",
 	confirm: "확인",
 	cancel: "취소",
 };

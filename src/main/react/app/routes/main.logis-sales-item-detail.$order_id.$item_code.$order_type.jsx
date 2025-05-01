@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from '@remix-run/react';
-import { Container, Divider, Message, Table } from 'rsuite';
+import {Button, Container, Divider, Table } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
 import "#components/common/css/common.css";
 import MessageBox from '../components/common/MessageBox';
@@ -21,11 +21,13 @@ const SalesItemDetail = () => {
       }).toString();
 
     const [salesItemDetail, setSalesItemDetail] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!order_id || !item_code) {
             console.error("필요한 파라미터가 없습니다.");
+            setLoading(false);
             return;
         }
 
@@ -42,9 +44,11 @@ const SalesItemDetail = () => {
         })
         .catch(err => {
             setError(err.message);
+            setLoading(false);
         });
     }, [order_id, item_code]);
 
+    if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
@@ -85,36 +89,42 @@ const SalesItemDetail = () => {
 					</Column>
 
 					<Column width={120} className="text_center">
-						<HeaderCell >납기일자</HeaderCell>
+						<HeaderCell >수주일자</HeaderCell>
 						<Cell dataKey="order_date" />
 					</Column>
 
 				</Table>
+				
 				<Divider width={940}/>
-					<Table height={100} width={870} data={salesItemDetail ? [salesItemDetail] : []} onRowClick={OrderData => console.log(OrderData)} style={{margin: '0 auto'}}>
+				
+				<Table height={100} width={870} data={salesItemDetail ? [salesItemDetail] : []} onRowClick={OrderData => console.log(OrderData)} style={{ margin: '0 auto' }}>
 
-						<Column width={120} className="text_center">
-							<HeaderCell >아이템 코드</HeaderCell>
-							<Cell dataKey="item_code" />
-						</Column>
+					<Column width={120} className="text_center">
+						<HeaderCell >아이템 코드</HeaderCell>
+						<Cell dataKey="item_code" />
+					</Column>
 
-						<Column width={260} className="text_center">
-							<HeaderCell >품목명</HeaderCell>
-							<Cell dataKey="item_name" />
-						</Column>
+					<Column width={260} className="text_center">
+						<HeaderCell >품목명</HeaderCell>
+						<Cell dataKey="item_name" />
+					</Column>
 
-						<Column width={340} className="text_center">
-							<HeaderCell >규격</HeaderCell>
-							<Cell dataKey="item_standard" />
-						</Column>
+					<Column width={340} className="text_center">
+						<HeaderCell >규격</HeaderCell>
+						<Cell dataKey="item_standard" />
+					</Column>
 
-						<Column width={150} className="text_center">
-							<HeaderCell >최근 등록일</HeaderCell>
-							<Cell dataKey="item_reg_date" />
-						</Column>
-					</Table>
+					<Column width={150} className="text_center">
+						<HeaderCell >최근 등록일</HeaderCell>
+						<Cell dataKey="item_reg_date" />
+					</Column>
+				</Table>
 
-					<Link to={`/main/logis-sales-item-list/${order_id}`} className="btn btn-primary area_fit wide_fit">주문 으로</Link>
+				<Link to={`/main/logis-sales-item-list/${order_id}`} className="btn btn-primary area_fit wide_fit">
+					<Button appearance="primary">
+						주문 으로
+					</Button>
+				</Link>
 			</Container>
         </div>
     );

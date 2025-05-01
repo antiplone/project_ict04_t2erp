@@ -31,7 +31,7 @@ const sell_search_item = () => {
 		})
 		.then(res => res.json())
 		.then(res => {
-			console.log(1, res);
+			// console.log(1, res);
 			setItemList(res);
 			setIsLoading(false);
 		});
@@ -124,7 +124,7 @@ const sell_search_item = () => {
 				handleOpen={isSearchModalOpen}
 				handleClose={() => setSearchModalOpen(false)}
 				onSearchResult={(resultList) => {
-				console.log("검색 결과:", resultList);
+				// console.log("검색 결과:", resultList);
 				setSearchResultList(resultList);
 				}}
 			/>

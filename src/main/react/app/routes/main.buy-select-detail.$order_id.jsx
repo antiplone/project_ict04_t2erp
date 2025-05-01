@@ -48,7 +48,7 @@ export default function BuySelectDetail() {
         return res.json();  // 응답 받은 내용을 json 형식으로 파싱
       })
       .then(json => {
-        console.log("buyOrderDetail 응답 확인:", json);
+        //console.log("buyOrderDetail 응답 확인:", json);
         if (Array.isArray(json) && json.length > 0) {
           setOrderInfo(json[0]);  // 주문정보
           setOrderItems(json[0].items || []); // 물품 목록
@@ -60,7 +60,7 @@ export default function BuySelectDetail() {
         }
       })
       .catch(error => {
-        console.error("buyOrderDetail 가져오기 오류:", error);
+        //console.error("buyOrderDetail 가져오기 오류:", error);
         setOrderInfo({}); // 상태값 초기화
         setOrderItems([]);
         setLoading(false);  // 실패해도 로딩 종료 처리
@@ -70,7 +70,7 @@ export default function BuySelectDetail() {
 
   // 삭제
   const deleteOrderItem = (order_id) => {
-    console.log("삭제할 주문 ID:", order_id); // 디버깅용 로그
+    //console.log("삭제할 주문 ID:", order_id); // 디버깅용 로그
 
     fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrder/` + order_id, {
       method: 'DELETE',
@@ -106,7 +106,7 @@ export default function BuySelectDetail() {
             <br />
 
             {/* data={[orderInfo]} 여기만 대괄호를 준 이유는 orderInfo는 하나의 객체 단일 주문 정보이기 때문에 배열로 감싸줬음 => rsuite의 <Table data={...}>는 배열형태의 데이터를 요구함*/}
-            <Table height={100} width={1200} data={[orderInfo]} onRowClick={OrderData => console.log(OrderData)}>
+            <Table height={100} width={1200} data={[orderInfo]}>
 
               <Column width={120} align="center">
                 <HeaderCell style={styles}>발주번호</HeaderCell>
@@ -163,7 +163,7 @@ export default function BuySelectDetail() {
 
             <Divider style={{ maxWidth: 1200 }} />
 
-            <Table height={400} width={1200} data={orderItems} onRowClick={itemData => console.log(itemData)}>
+            <Table height={400} width={1200} data={orderItems}>
               <Column width={120} align="center">
                 <HeaderCell style={styles}>물품코드</HeaderCell>
                 <Cell dataKey="item_code" />

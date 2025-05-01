@@ -30,12 +30,12 @@ export default function BuySelect() {
         fetch(`${fetchURL.protocol}${fetchURL.url}/buy/buyOrderStatusCounts`)
             .then((res) => res.json())
             .then((data) => {
-                console.log("진행상태별 건수:", data);
+                //console.log("진행상태별 건수:", data);
                 setStatusCounts(data); // JSON 응답을 그대로 state에 저장
                 setLoading(false); // 로딩완료
             })
             .catch((err) => {
-                console.error("진행상태별 건수 조회 실패:", err);
+                //console.error("진행상태별 건수 조회 실패:", err);
                 setLoading(false);  // 실패해도 로딩 종료 처리
             });
     }, []);

@@ -22,7 +22,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 	@Override
 	@Transactional
 	public int sellInsert(SellOrderDTO dto) {
-	System.out.println("서비스 - sellInsert");
+//	System.out.println("서비스 - sellInsert");
 	
 	// 1. order_tbl에 insert
 	int orderResult = Mapper.sell_orderInsert(dto);
@@ -49,7 +49,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 				Mapper.sell_approvalInsert(order_id);
 			}
 		}
-		System.out.println("서비스 - itemResult: " + itemResult);
+//		System.out.println("서비스 - itemResult: " + itemResult);
 		// 총 insert된 row 수 리턴 (order 1건 + item n건)
 		return 1 + itemResult;
 		}
@@ -59,7 +59,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellAllListDTO> sellAllList() {
-		System.out.println("서비스 - sellAllList");
+//		System.out.println("서비스 - sellAllList");
 		
 		return Mapper.sellAllList();
 	}
@@ -68,7 +68,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellAllListDTO> sellStatusSearchList(SellAllListDTO dto) {
-		System.out.println("서비스 - sellStatusSearchList");
+//		System.out.println("서비스 - sellStatusSearchList");
 		
 		return Mapper.sellStatusSearchList(dto);
 	}
@@ -78,7 +78,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 	@Override
 	@Transactional(readOnly=true)
 	public List<SellAllListDTO> detailAllList(int order_id) {
-		System.out.println("서비스 - detailAllList");
+//		System.out.println("서비스 - detailAllList");
 		
 		return Mapper.detailAllList(order_id);
 	}
@@ -87,7 +87,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 	@Override
 	@Transactional
 	public int updateAllList(int order_id, SellOrderDTO dto) {
-		System.out.println("서비스 - updateAllList");
+//		System.out.println("서비스 - updateAllList");
 
 			dto.setOrder_id(order_id);
 
@@ -128,7 +128,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 	@Override
 	@Transactional
 	public String deleteAllList(int order_id) {
-		System.out.println("서비스 - deleteAllList");
+//		System.out.println("서비스 - deleteAllList");
 		
 		Mapper.deleteAllList(order_id);
 		return "ok";
@@ -138,7 +138,7 @@ public class SellAllListServiceImpl implements SellAllListService {
 	@Override
 	@Transactional
 	public List<SellInvocieDTO> detailInvocie(int order_id) {
-		System.out.println("서비스 - detailInvocie");
+//		System.out.println("서비스 - detailInvocie");
 		
 		return Mapper.detailInvocie(order_id);
 	}

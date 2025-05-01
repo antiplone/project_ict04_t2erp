@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+.custom_form {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #fafafa;
+}
+
+.custom_form .display_flex {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.custom_form .display_flex:last-child {
+  border-bottom: none;
+}
+
+.custom_form .rs-form-control-label {
+  width: 120px;
+  font-weight: bold;
+  margin-right: 12px;
+}
+
+.custom_form .rs-form-control {
+  flex: 1;
+}

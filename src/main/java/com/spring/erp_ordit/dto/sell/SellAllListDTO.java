@@ -40,7 +40,7 @@ public class SellAllListDTO {	// 판매 입력건 조회
 	private String income_confirm;		// 출하여부
 	private Date order_date;		 	// 등록일
 	private Date shipment_order_date;	// 출하지시일
-	private String order_date_start;		// 판매현황 조회_날짜 검색 시작일
+	private String order_date_start;	// 판매현황 조회_날짜 검색 시작일
 	private String order_date_end;		// 판매현황 조회_날짜 검색 종료일
 	
 	

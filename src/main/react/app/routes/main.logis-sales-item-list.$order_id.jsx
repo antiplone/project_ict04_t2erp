@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from '@remix-run/react';
-import { Button, Container, Message, Table } from 'rsuite';
+import { Button, Container, Placeholder, Loader, Table } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
 import "#components/common/css/common.css";
 import MessageBox from '../components/common/MessageBox';
@@ -8,6 +8,7 @@ import MessageBox from '../components/common/MessageBox';
 const SalesItemList = () => {
 	const fetchURL = Appconfig.fetch['mytest']
     const { order_id } = useParams();
+	const [loading, setLoading] = useState(true);	// 로딩중일때
     const [salesItemList, setSalesItemList] = useState([]); // 초기값을 모르므로 빈배열로 salesItemList에 대입
     const [salesAmounts, setSalesAmounts] = useState({}); // 주문 수량 저장
 	const [selectedItems, setSelectedItems] = useState(new Set()); // 선택한 품목들 저장
@@ -24,6 +25,7 @@ const SalesItemList = () => {
             .then(res => res.json())
             .then(res => {
                 setSalesItemList(res || []);
+                setLoading(true);
             })
             .catch(err => console.error('Error fetching salesDetail:', err));
     }, [order_id]);
@@ -151,8 +153,15 @@ const SalesItemList = () => {
         <div>
             <MessageBox type="info" className="main_title"  text={`판매 상세 목록 (판매 번호 :${order_id})`} />
             <Container style={{margin: '0 auto', maxWidth : '1480px'}}>
-                <br />
-                <Table width={1450} height={400} data={salesItemList} className='text_center'>
+				{/* 로딩 중일 때 */}
+				{/* Placeholder.Paragraph : 여러 줄의 더미 텍스트 박스. 스켈레톤(skeleton) 로딩 UI를 자동 생성 */}
+				{loading ? (
+					<Container>
+						<Placeholder.Paragraph rows={15} />
+						<Loader center content="불러오는중..." />
+					</Container>
+				) : (
+                <Table width={1450} data={salesItemList} className='text_center'>
 					<Table.Column width={100} align="center">
 						<Table.HeaderCell>
 							<input
@@ -251,7 +260,7 @@ const SalesItemList = () => {
                     
                     
                 </Table>
-                
+                )}
 				<div className='display_flex'>
 					<Button
 						appearance="primary"
@@ -259,13 +268,13 @@ const SalesItemList = () => {
 						onClick={handleSubmitSelected}
 						disabled={selectedItems.size === 0}
 					>
-						입고 확정
+						출고 확정
 					</Button>
-                    <Link to={'/main/logis-outgoing-list'} className="btn btn-primary area_fit wide_fit margin_0">
-            	      <Button appearance="primary">
-				      	출고 목록
-				      </Button>
-					</Link>
+                    <Link to={'/main/logis-outgoing-list'} className="btn btn-primary area_fit wide_fit margin_0 padding_0px">
+						<Button appearance="primary">
+                    		출고 목록
+						</Button>
+                    </Link>
                 </div>
             </Container>
         </div>

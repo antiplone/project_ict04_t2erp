@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as rsuite from 'rsuite';
-const { Modal, Button, RadioGroup, Radio } = rsuite;
+const { Modal, Button, RadioGroup, Radio, Loader } = rsuite;
 import DBChart2 from '#components/chart/DBChart2';
 import axios from 'axios';
 import { useToast } from '#components/common/ToastProvider';// Import useToast here
@@ -12,12 +12,17 @@ const DBChartModal2 = ({ open, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchData = async () => {
-    const endpoint = selectedFunction === 'count' ? '/api/sales/count' : '/api/sales/items';
+  const fetchData = async (startDate, endDate) => {
+    const endpoint = selectedFunction === 'count' ? '/api/order/count' : '/api/order/items';
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(`http://localhost:8000${endpoint}`);
+      const response = await axios.get(`http://localhost:8000${endpoint}`,{
+		  params: {
+			  start_date: startDate,
+			  end_date: endDate,
+		  },
+	  });
       console.log("response => ", response.data);
       if (response.data.status === "success") {
         setChartData(response.data.data);
@@ -62,7 +67,16 @@ const DBChartModal2 = ({ open, onClose }) => {
           <Radio value="count">날짜별 입고 처리건수</Radio>
           <Radio value="items">품목별 처리건수</Radio>
         </RadioGroup>
-		<DBChart2 data={chartData} />
+		{loading 
+			? 
+			<Loader center content="로딩 중..." /> 
+			: 
+			<DBChart2
+				data={chartData}
+				selectedFunction={selectedFunction}
+				onSearch={(startDate, endDate) => fetchData(startDate, endDate)}
+			/>
+		}
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={onClose} appearance="subtle">

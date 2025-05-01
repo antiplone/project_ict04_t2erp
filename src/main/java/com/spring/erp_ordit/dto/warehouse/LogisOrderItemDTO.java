@@ -32,6 +32,7 @@ public class LogisOrderItemDTO {
 	private int e_id;					// 담당자 번호
 	private String e_name;				// 담당자명
 	private String d_name;				// 담당부서명
-	private Date shipment_order_date;			// 납기일
+	private Date delivery_date;			// 납기일
 	private String storage_name;		// 창고명
+	private String client_name;			// 고객명
 }

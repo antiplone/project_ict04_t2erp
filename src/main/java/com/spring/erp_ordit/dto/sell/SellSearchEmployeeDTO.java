@@ -12,7 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Builder
-public class SellSearchEmployeeDTO {
+public class SellSearchEmployeeDTO {	// 판매_담당자 검색 DTO
 	
 	private int e_id; // 사원번호
 	private String e_name;  // 담당자

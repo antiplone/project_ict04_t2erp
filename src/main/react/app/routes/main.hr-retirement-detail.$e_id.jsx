@@ -233,6 +233,15 @@ export default function HrRetirementDetail() {
 
                 <Row style={{ marginTop: 20 }}>
                   <Col xs={20}>
+                    <Form.Group controlId="re_reject_reason">
+                      <Form.ControlLabel>반려 사유</Form.ControlLabel>
+                      <Form.Control name="re_reject_reason" />
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <Row style={{ marginTop: 20 }}>
+                  <Col xs={20}>
                     <Form.Group controlId="re_note">
                       <Form.ControlLabel>결재 사유</Form.ControlLabel>
                       <Form.Control name="re_note" />

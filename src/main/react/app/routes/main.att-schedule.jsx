@@ -35,13 +35,9 @@ export default function SchedulePage() {
         ) : (
         // 로딩 후 달력 표시
         <div style={{ marginTop: "20px" }}>
-          {/* <Calendar /> */}
           <HolidayCalendar />
         </div>
       )}
-
-      {/* 크롤링 뉴스는 항상 아래에 표시 */}
-      {/* <CrawlingNews /> */}
     </Container>
   );
 }

@@ -55,7 +55,7 @@ export default function CommuteUpdateModal({ open, onClose, rowData, attURL, onR
   
 
   return (
-    <Modal open={open} onClose={onClose} size="sm">
+    <Modal open={open} onClose={onClose} size="sm" backdrop={false}>
       <Modal.Header>
         <Modal.Title>근무 기록 수정</Modal.Title>
       </Modal.Header>
@@ -63,11 +63,12 @@ export default function CommuteUpdateModal({ open, onClose, rowData, attURL, onR
         <Form fluid model={model} formValue={formValue} onChange={setFormValue}>
           <Form.Group>
             <Form.ControlLabel>출근 시간</Form.ControlLabel>
-            <Form.Control name="co_start_time" type="time" />
+            <Form.Control name="co_start_time" type="time" step="1" />
+            {/* step="1" : 초까지 입력 가능한 UI가 뜨도록 설정 */}
           </Form.Group>
           <Form.Group>
             <Form.ControlLabel>퇴근 시간</Form.ControlLabel>
-            <Form.Control name="co_end_time" type="time" />
+            <Form.Control name="co_end_time" type="time" step="1" />
           </Form.Group>
           <Form.Group>
             <Form.ControlLabel>상태</Form.ControlLabel>

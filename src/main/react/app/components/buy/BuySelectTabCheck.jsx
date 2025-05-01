@@ -87,9 +87,9 @@ export default function BuySelectTabCheck() {
 
     return (
         <>
-            <Table height={500} width={1550} data={buyOrderCheckList}>
+            <Table height={500} width={1920} data={buyOrderCheckList}>
 
-                <Column width={120} className='text_center'>
+                <Column width={150} className='text_center'>
                     <HeaderCell className='text_center'>등록일자</HeaderCell>
                     <Cell>
                         {(orderDate) => (
@@ -102,12 +102,12 @@ export default function BuySelectTabCheck() {
                     </Cell>
                 </Column>
 
-                <Column width={120} className='text_center'>
+                <Column width={150} className='text_center'>
                     <HeaderCell className='text_center'>발주번호</HeaderCell>
                     <Cell dataKey="order_id" />
                 </Column>
 
-                <Column width={150} className='text_left'>
+                <Column width={200} className='text_left'>
                     <HeaderCell className='text_center'>거래처명</HeaderCell>
                     <Cell dataKey="client_name" />
                 </Column>
@@ -117,7 +117,7 @@ export default function BuySelectTabCheck() {
                     <Cell dataKey="item_display" />
                 </Column>
 
-                <Column width={150} className='text_right'>
+                <Column width={170} className='text_right'>
                     <HeaderCell className='text_center'>금액합계</HeaderCell>
                     <Cell>
                         {(totalData) => new Intl.NumberFormat().format(totalData.total)}
@@ -125,40 +125,40 @@ export default function BuySelectTabCheck() {
                     </Cell>
                 </Column>
 
-                <Column width={150} className='text_center'>
+                <Column width={200} className='text_center'>
                     <HeaderCell className='text_center'>거래유형</HeaderCell>
                     <Cell dataKey="transaction_type" />
                 </Column>
 
-                <Column width={150} className='text_left'>
+                <Column width={200} className='text_left'>
                     <HeaderCell className='text_center'>입고창고</HeaderCell>
                     <Cell dataKey="storage_name" />
                 </Column>
 
-                <Column width={120} className='text_center'>
+                <Column width={150} className='text_center'>
                     <HeaderCell className='text_center'>납기일자</HeaderCell>
                     <Cell dataKey="delivery_date" />
                 </Column>
 
-                <Column width={100} className='text_center'>
+                <Column width={125} className='text_center'>
                     <HeaderCell className='text_center'>진행상태</HeaderCell>
                     <Cell dataKey="order_status" />
                 </Column>
 
-                <Column width={80} className='text_center'>
+                <Column width={125} className='text_center'>
                     <HeaderCell className='text_center'>입고현황</HeaderCell>
                     <Cell dataKey="income_confirm" />
                 </Column>
                 
-                <Column width={80} className='text_center'>
+                <Column width={100} className='text_center'>
                     <HeaderCell className='text_center'>불러온전표</HeaderCell>
                     <Cell>
                         <Button color="yellow" appearance="ghost" size="xs" onClick={handleOpen2}>조회</Button>
                     </Cell>
                 </Column>
            
-                <Column width={80} className='text_center'>
-                    <HeaderCell className='text_center'>조회</HeaderCell>
+                <Column width={100} className='text_center'>
+                    <HeaderCell className='text_center'>상세조회</HeaderCell>
                     <Cell>
                         {buyOrderCheckList => (
                             <Link to={`/main/buy-select-detail/${buyOrderCheckList.order_id}`}>

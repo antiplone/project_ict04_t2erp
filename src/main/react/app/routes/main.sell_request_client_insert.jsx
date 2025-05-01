@@ -178,9 +178,21 @@ const SellRequestClient = () => {
             );
             return;
         }
-      
+        
+        const now = new Date();
+
+        // 한국 시간 기준으로 날짜만 추출
+        const koreanDate = new Date(now.getTime() + (9 * 60 * 60 * 1000)); // UTC+9
+
+        const yyyy = koreanDate.getUTCFullYear();
+        const mm = String(koreanDate.getUTCMonth() + 1).padStart(2, '0');
+        const dd = String(koreanDate.getUTCDate()).padStart(2, '0');
+
+        const orderDate = `${yyyy}-${mm}-${dd}`;  // 'YYYY-MM-DD' 형식
+		
         const finalClientAdd = {
             ...clientAdd,
+            sc_date: orderDate,
             sc_email: getFullEmail()  // 이메일을 합쳐서 최종 값으로 설정
           };
 

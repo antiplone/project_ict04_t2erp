@@ -103,6 +103,7 @@ const Sellinsert = () => {
 	// 물품 검색 모달 관리
 	const [isItemModalOpen, setItemModalOpen] = useState(false);
 
+	// 입력 값이 생길때
 	const handleChange = (id, key, value) => {
 		const nextData = [...sellAdd];
 		const target = nextData.find(item => item.id === id);	// 수정하려는 행의 ID와 일치하는 데이터
@@ -192,7 +193,10 @@ const Sellinsert = () => {
 		// 구조분해 할당. status, id는 버리고 나머지만 rest에 담기
 		const filteredSellAdd = sellAdd.map(({ status, id, ...rest }) => rest);
 
+		const orderDate = new Date().toLocaleString("sv-SE", {timeZone: "Asia/Seoul"}).replace(" ","T");
+		
 		const payload = {
+			order_date: orderDate,
 			shipment_order_date: shipmentOrderDate,
 			e_id: selectedIncharge,
 			e_name: selectedInchargeName,
@@ -204,6 +208,7 @@ const Sellinsert = () => {
 			orderItemList: filteredSellAdd,
 		};
 
+		
 		// console.log("제출할 전체 데이터:", payload); // 확인용
 		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/insert`, {
 			method: "POST",

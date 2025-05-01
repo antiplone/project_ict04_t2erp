@@ -355,55 +355,55 @@ export default function BuyStatusSelect() {
                         해당 정보로 조회되는 리스트가 없습니다.
                     </div>
                 ) : (
-                    <Table height={400} width={1370} data={Searched ? searchResultList : buyStatusAllList}>
+                    <Table height={400} data={Searched ? searchResultList : buyStatusAllList}>
 
-                        <Column width={120} className='text_center'>
+                        <Column width={150} className='text_center'>
                             <HeaderCell className='text_center'>발주일자</HeaderCell>
                             <Cell dataKey="display_date" />
                         </Column>
 
-                        <Column width={120} className='text_center'>
+                        <Column width={150} className='text_center'>
                             <HeaderCell className='text_center'>발주번호</HeaderCell>
                             <Cell dataKey="order_id" />
                         </Column>
 
-                        <Column width={150} className='text_left'>
+                        <Column width={200} className='text_left'>
                             <HeaderCell className='text_center'>거래처명</HeaderCell>
                             <Cell dataKey="client_name" />
                         </Column>
 
-                        <Column width={250} className='text_left'>
+                        <Column width={300} className='text_left'>
                             <HeaderCell className='text_center'>품목명</HeaderCell>
                             <Cell dataKey="item_name" />
                         </Column>
 
-                        <Column width={120} className='text_center'>
+                        <Column width={150} className='text_center'>
                             <HeaderCell className='text_center'>수량</HeaderCell>
                             <Cell dataKey="quantity" />
                         </Column>
 
-                        <Column width={150} className='text_right'>
+                        <Column width={240} className='text_right'>
                             <HeaderCell className='text_center'>단가</HeaderCell>
                             <Cell>
                                 {rowData => new Intl.NumberFormat().format(rowData.price ?? 0)}
                             </Cell>
                         </Column>
 
-                        <Column width={150} className='text_right'>
+                        <Column width={240} className='text_right'>
                             <HeaderCell className='text_center'>공급가액</HeaderCell>
                             <Cell>
                                 {rowData => new Intl.NumberFormat().format(rowData.supply ?? 0)}
                             </Cell>
                         </Column>
 
-                        <Column width={150} className='text_right'>
+                        <Column width={240} className='text_right'>
                             <HeaderCell className='text_center'>부가세</HeaderCell>
                             <Cell>
                                 {rowData => new Intl.NumberFormat().format(rowData.vat ?? 0)}
                             </Cell>
                         </Column>
 
-                        <Column width={150} className='text_right'>
+                        <Column width={240} className='text_right'>
                             <HeaderCell className='text_center'>금액합계</HeaderCell>
                             <Cell>
                                 {rowData => new Intl.NumberFormat().format(rowData.total ?? 0)}

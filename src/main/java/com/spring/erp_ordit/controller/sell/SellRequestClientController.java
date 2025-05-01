@@ -30,7 +30,7 @@ public class SellRequestClientController {
 	// 판매_거래처 관리 - 요청리스트
 	@GetMapping("/reqClientList")
 	public ResponseEntity<List<SellRequestClientDTO>> list() {
-		System.out.println("<<< reqClientList >>>");
+//		System.out.println("<<< reqClientList >>>");
 
 		return new ResponseEntity<>(service.RequestClientList(), HttpStatus.OK);
 	}
@@ -39,7 +39,7 @@ public class SellRequestClientController {
 	// 판매_거래처 관리 - 등록 요청
 	@PostMapping("/reqClientInsert")
 	public ResponseEntity<Integer> insert(@RequestBody SellRequestClientDTO dto) {
-		System.out.println("<<< reqClientinsert >>>");
+//		System.out.println("<<< reqClientinsert >>>");
 
 		return new ResponseEntity<>(service.insertClient(dto), HttpStatus.CREATED);
 	}
@@ -48,7 +48,7 @@ public class SellRequestClientController {
 	// 판매_거래처 관리 - 1건 상세
 	@GetMapping("/reqClientDetail/{sc_id}")
 	public ResponseEntity<SellRequestClientDTO> detail_ReqClient(@PathVariable int sc_id) {
-		System.out.println("<<< detail_ReqClient >>>");
+//		System.out.println("<<< detail_ReqClient >>>");
 		
 		return new ResponseEntity<>(service.detailClient(sc_id), HttpStatus.OK);
 	}
@@ -57,7 +57,7 @@ public class SellRequestClientController {
 	// 판매_거래처 관리 - 수정
 	@PutMapping("/reqClientUpdate/{sc_id}")
 	public ResponseEntity<Integer> update_ReqClient(@PathVariable int sc_id, @RequestBody SellRequestClientDTO dto) {
-		System.out.println("<<< update_ReqClient >>>");
+//		System.out.println("<<< update_ReqClient >>>");
 
 		return new ResponseEntity<>(service.updateClient(sc_id, dto), HttpStatus.OK);
 	}
@@ -66,7 +66,7 @@ public class SellRequestClientController {
 	// 판매_거래처 관리 - 삭제
 	@DeleteMapping("/reqClientDel/{sc_id}")
 	public ResponseEntity<?> delete_ReqClient(@PathVariable int sc_id) {
-		System.out.println("<<< delete_ReqClient >>> sc_no: " + sc_id);
+//		System.out.println("<<< delete_ReqClient >>> sc_no: " + sc_id);
 		
 		return new ResponseEntity<>(service.deleteClient(sc_id), HttpStatus.OK);	// 200
 		
@@ -76,7 +76,7 @@ public class SellRequestClientController {
 	// 판매_거래처 관리 - 사업자등록번호 중복 체크
 	@GetMapping("/reqClientBizNum/{sc_biz_num}")
 	public ResponseEntity<Integer> check_ReqClientBizNum(@PathVariable String sc_biz_num) {
-		System.out.println("<<< check_ReqClientBizNum >>>");
+//		System.out.println("<<< check_ReqClientBizNum >>>");
 		
 		return new ResponseEntity<>(service.sellCheckReqClientBizNum(sc_biz_num), HttpStatus.OK);
 	}

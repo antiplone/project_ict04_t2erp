@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from '@remix-run/react';
-import { Button,/* Form, */ Table, Message } from 'rsuite';
+import { Button, Table, Container } from 'rsuite';
 import { useNavigate } from 'react-router-dom';
 import Appconfig from "#config/AppConfig.json";
 import "#components/common/css/common.css";
+import MessageBox from '#components/common/MessageBox';
 
 const StorageDetail = () => {
 	const fetchURL = Appconfig.fetch['mytest']
@@ -56,29 +57,37 @@ const StorageDetail = () => {
 
 	return (
 		<div>
-			<Message type="error" className="main_title">
-				창고 상세 - {storage.storage_name}
-			</Message>
-			<Table data={[storage]} bordered cellBordered autoHeight className="margin_0_auto detail_table" >
-				<Table.Column flexGrow={1}>
-					<Table.HeaderCell>창고코드</Table.HeaderCell>
-					<Table.Cell dataKey="storage_code" />
-				</Table.Column>
+			<MessageBox type="error" text={`창고 상세 - ${storage.storage_name}`} />
+			 <Container height={400} style={{margin: '0 auto', maxWidth : '760px'}}>
+				<Table data={[storage]} height={400} bordered cellBordered autoHeight className="margin_0_auto detail_table" >
+					<Table.Column flexGrow={1}>
+						<Table.HeaderCell >창고코드</Table.HeaderCell>
+						<Table.Cell dataKey="storage_code" className='text_center'/>
+					</Table.Column>
 
-				<Table.Column flexGrow={1}>
-					<Table.HeaderCell>창고명</Table.HeaderCell>
-					<Table.Cell dataKey="storage_name" />
-				</Table.Column>
+					<Table.Column flexGrow={1}>
+						<Table.HeaderCell>창고명</Table.HeaderCell>
+						<Table.Cell dataKey="storage_name" />
+					</Table.Column>
 
-				<Table.Column flexGrow={2}>
-					<Table.HeaderCell>창고 주소</Table.HeaderCell>
-					<Table.Cell dataKey="storage_location" />
-				</Table.Column>
-			</Table>
-			<div className="btn_space">
-				<Link to={`/main/logis-warehouse-update/${storage_code}`} className="btn btn-primary area_fit wide_fit">창고 수정</Link>
-				<Link to={'/main/logis-warehouse'} className="btn btn-primary area_fit wide_fit">목록으로</Link>
-				<Button variant="warning" onClick={deletestorage} className="btn btn-primary wide_fit">창고 삭제</Button>
+					<Table.Column flexGrow={4}>
+						<Table.HeaderCell>창고 주소</Table.HeaderCell>
+						<Table.Cell dataKey="storage_location" />
+					</Table.Column>
+				</Table>
+			</Container>
+			<div className="btn_space align_middle" >
+				<Link to={`/main/logis-warehouse-update/${storage_code}`} className="btn btn-primary area_fit wide_fit">
+					<Button appearance="primary" className="btn btn-primary wide_fit">
+						창고 수정
+					</Button>
+				</Link>
+				<Link to={'/main/logis-warehouse'} className="btn btn-primary area_fit wide_fit">
+					<Button appearance="primary" className="btn btn-primary wide_fit">
+						목록으로
+					</Button>
+				</Link>
+				<Button sytle={{height: '40px'}} appearance="primary" onClick={deletestorage} className="btn btn-primary wide_fit">창고 삭제</Button>
 			</div>
 		</div>
 	)

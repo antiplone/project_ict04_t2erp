@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as rsuite from 'rsuite';
-const { Modal, Button, RadioGroup, Radio } = rsuite;
+const { Modal, Button, RadioGroup, Radio, Loader } = rsuite;
 import DBChart from '#components/chart/DBChart';
-import DBChart2 from '#components/chart/DBChart2';
 import axios from 'axios';
 import { useToast } from '#components/common/ToastProvider';// Import useToast here
 
@@ -11,30 +10,28 @@ const DBChartModal = ({ open, onClose }) => {
   const [selectedFunction, setSelectedFunction] = useState('count');
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const fetchData = async () => {
-    const endpoint = selectedFunction === 'count' ? '/api/order/count' : '/api/order/items';
-    setLoading(true);
-    setError(null);
     try {
+      setLoading(true);
+      const endpoint = selectedFunction === 'count' ? '/api/sales/count' : '/api/sales/items';
+
       const response = await axios.get(`http://localhost:8000${endpoint}`);
+      
       console.log("response => ", response.data);
+      
       if (response.data.status === "success") {
         setChartData(response.data.data);
       } else {
         console.error("Server Error:", response.data.message);
-        setError("Server Error: " + response.data.message);
         showToast("Server Error: " + response.data.message, 'error');
       }
     } catch (err) {
       console.error("Axios Error:", err);
       if (err.response) {
         console.error("Response Error:", err.response.data);
-        setError("Request failed: " + err.response.data.detail);
         showToast("Request failed: " + err.response.data.detail, 'error');
       } else {
-        setError("An unknown error occurred");
         showToast("An unknown error occurred", 'error');
       }
     } finally {
@@ -44,9 +41,9 @@ const DBChartModal = ({ open, onClose }) => {
 
   useEffect(() => {
     if (open) {
-      fetchData();
+      fetchData(); // 데이터 fetch
     }
-  }, [open, selectedFunction]);
+  }, [open, selectedFunction]); // selectedFunction이 변경될 때마다 fetchData 호출
 
   return (
     <Modal open={open} onClose={onClose} size="lg">
@@ -58,16 +55,12 @@ const DBChartModal = ({ open, onClose }) => {
           inline
           name="chartFunction"
           value={selectedFunction}
-          onChange={setSelectedFunction}
+          onChange={setSelectedFunction} // selectedFunction 값 변경
         >
           <Radio value="count">날짜별 출고 처리건수</Radio>
           <Radio value="items">품목별 처리건수</Radio>
         </RadioGroup>
-			  {!loading && !error && (
-				  chartData?.length > 0
-					  ? <DBChart data={chartData} />
-					  : <DBChart2 />  // 데이터 없을 때 표시할 컴포넌트
-			  )}
+        {loading ? <Loader center content="로딩 중..." /> : <DBChart data={chartData} selectedFunction={selectedFunction} />}
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={onClose} appearance="subtle">

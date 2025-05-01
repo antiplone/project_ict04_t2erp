@@ -25,7 +25,7 @@ const SellEmployeeSearchModal = ({ onInchargeSelect, handleOpen, handleClose } /
 		
 	// 데이터 조회
 	const handleSearch = (keyword) => {
-		console.log("키워드: ", keyword);
+		// console.log("키워드: ", keyword);
 		if (keyword.trim() === "") {
 			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchEmployee`, {	// 전체 리스트
 				method: "GET"
@@ -132,12 +132,12 @@ const SellEmployeeSearchModal = ({ onInchargeSelect, handleOpen, handleClose } /
 						<Cell>{(rowData) => rowData.e_id}</Cell>
 					</Column>
 
-					<Column width={150}>
+					<Column width={150} align="center">
 						<HeaderCell>담당자명</HeaderCell>
 						<Cell>{(rowData) => rowData.e_name}</Cell>
 					</Column>
 
-					<Column width={150}>
+					<Column width={150} align="center">
 						<HeaderCell>부서</HeaderCell>
 						<Cell>{(rowData) => rowData.d_name}</Cell>
 					</Column>

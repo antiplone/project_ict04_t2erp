@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Message, /* Form, */ Table } from 'rsuite';
+import { Container, /* Form, */ Table } from 'rsuite';
 import '#components/common/css/common.css'
 import Appconfig from "#config/AppConfig.json";
+import MessageBox from '#components/common/MessageBox';
 
 
 const WareHouseList = () => {
@@ -30,12 +31,10 @@ const WareHouseList = () => {
 
     return (
         <div>
-            <Container>
-                <Message type="error" className="main_title">
-                    창고 목록
-                </Message>
+        	<MessageBox type="error" text="창고 관리"/>
+            <Container style={{margin: '0 auto', maxWidth : '760px'}}>
                 <br />
-                <Table height={400} data={storageList}>
+                <Table width={750} height={400} data={storageList}>
                     <Table.Column width={100} align="center" fixed>
                         <Table.HeaderCell className='text_center'>창고 코드</Table.HeaderCell>
                         <Table.Cell dataKey="storage_code" />
@@ -46,14 +45,14 @@ const WareHouseList = () => {
                         <Table.Cell dataKey="storage_name" />
                     </Table.Column>
 
-                    <Table.Column width={150}>
+                    <Table.Column width={320}>
                         <Table.HeaderCell className='text_center'>주소</Table.HeaderCell>
                         <Table.Cell dataKey="storage_location" />
                     </Table.Column>
 
-                    <Table.Column width={150} style={{padding:'6px'}}>
+                    <Table.Column width={120} style={{padding:'6px'}}>
                         <Table.HeaderCell className='text_center'>창고 상세보기</Table.HeaderCell>
-                        <Table.Cell dataKey="storage_code">
+                        <Table.Cell dataKey="storage_code" className='text_center'>
                         {(storageList) => (
                             <Link to={`/main/logis-warehouse-detail/${storageList.storage_code}`} className="btn btn-primary area_fit wide_fit" >창고 상세</Link>
                         )}

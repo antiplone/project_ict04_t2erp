@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
-import { useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useLocation, useNavigate, redirect, useSubmit } from "@remix-run/react";
 import {
 	Form, Schema,
@@ -78,6 +78,7 @@ export async function clientAction({ request }) { // non-GET
 				}
 				else {
 					alert("로그인을 실패했습니다.");
+					window.location.reload(); // reset()이 잘 안되서..
 				}
 			})
 			.finally(() => { // 통신실패시 예외처리
@@ -86,6 +87,7 @@ export async function clientAction({ request }) { // non-GET
 	}
 	else {
 		alert("세션이 남아있습니다. 세션을 만료합니다.");
+		window.location.reload(); // reset()이 잘 안되서..
 		localStorage.clear();
 	}
 
@@ -95,6 +97,7 @@ export async function clientAction({ request }) { // non-GET
 // @Remix:url(/login) - 사원로그인 페이지
 export default function Login() {
 
+	const formRef = useRef();
 	const location = useLocation();
 	const nav = useNavigate();
 	const submit = useSubmit();
@@ -119,8 +122,14 @@ export default function Login() {
 		>
 			<Stack.Item alignSelf="center">
 				<Panel header="사원정보를 입력해주세요" bordered style={{ width: 400 }}>
-					<Form fluid
-						onSubmit={(formValue) => submit(formValue, { method: "POST" })}
+					<Form ref={formRef}
+						fluid
+						formDefaultValue={{ eID: '', password: '' }}
+						onSubmit={(formValue) => {
+							formRef.current.reset(); // 잘 안되네
+							console.log(formRef.current);
+							submit(formValue, { method: "POST" });
+						}}
 						model={model}
 					>
 						<Form.Group>

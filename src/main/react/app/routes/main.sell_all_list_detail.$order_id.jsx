@@ -27,7 +27,7 @@ const sell_all_list_detail = () => {
 		})
 		.then(res => res.json())
 		.then(res => {
-			console.log(1, res);
+			// console.log(1, res);
 			setAllDetail(res);
 			setIsLoading(false);
 		});

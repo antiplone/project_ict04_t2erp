@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Image, Table, Popover, Whisper, Checkbox, Dropdown, Button, IconButton } from 'rsuite';
+import { Container, Image, Table, Popover, Whisper, Checkbox, Dropdown, Button, IconButton, ButtonToolbar } from 'rsuite';
 
 import "#styles/common.css";
 
@@ -7,17 +7,6 @@ import moreImage from "#images/common/more-info.png";
 
 import AppConfig from "#config/AppConfig.json";
 
-
-let data = [
-	{
-		id: false,
-		avatar: null,
-		name: "Heyo",
-		progress: 10,
-		rating: 4,
-		amount: "8888"
-	}
-];
 
 // 나중에 공통으로 빼야함
 let formatter = new Intl.NumberFormat(/*'ko-KR', { style: 'currency', currency: 'KRW' }*/);
@@ -27,9 +16,26 @@ const { Column, HeaderCell, Cell } = Table;
 /**
  * https://rsuitejs.com/components/table/#custom-cell
  */
-const Component = ({ opener, data }) => {
+const Component = ({ opener, dataState, rowState }) => {
+
+	const loadTasks = useState(false);
+	const [ loadTask, setLoadTask ] = loadTasks;
+	const [ data ] = dataState;
+	const [ , setVoucher ] = rowState;
+	let rowLoading = [];
+
+	if (data.length > 0) {
+
+		for (const d of data) {
+
+			d.loadingState = useState(false);
+			rowLoading.push(d.loadingState[0]);
+//			console.log("d.isLoading", d.isLoading);
+		}
+	}
 
 	const renderMenu = ({ onClose, left, top, className }, ref) => {
+
 		const handleSelect = eventKey => {
 			onClose();
 			console.log(eventKey);
@@ -77,7 +83,9 @@ const Component = ({ opener, data }) => {
 	const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => (
 		<Cell {...props} style={{ padding: 0 }}>
 			<div style={{ lineHeight: '46px' }}>
-				{rowData.order_status === "결재중" ? <Checkbox
+				{rowData.order_status === "결재중" && !rowData.loadingState[0]
+				?
+				<Checkbox
 					value={rowData[dataKey]}
 					inline
 					onChange={onChange}
@@ -87,37 +95,8 @@ const Component = ({ opener, data }) => {
 		</Cell>
 	);
 
-	/**
-	 * 
-	 */
-	const NameCell = ({ rowData, dataKey, ...props }) => {
-		const speaker = (
-			<Popover title="Description">
-				<p>
-					<b>Name:</b> {rowData.name}
-				</p>
-				<p>
-					<b>Gender:</b> {rowData.gender}
-				</p>
-				<p>
-					<b>City:</b> {rowData.city}
-				</p>
-				<p>
-					<b>Street:</b> {rowData.street}
-				</p>
-			</Popover>
-		);
-
-		return (
-			<Cell {...props}>
-				<Whisper placement="top" speaker={speaker}>
-					<a>{rowData[dataKey]}</a>
-				</Whisper>
-			</Cell>
-		);
-	};
-
 	const [checkedKeys, setCheckedKeys] = useState([]);
+	const [checkedRows, setCheckedRows] = useState([]);
 	let checked = false;
 	let indeterminate = false;
 
@@ -130,102 +109,201 @@ const Component = ({ opener, data }) => {
 	}
 
 	const handleCheckAll = (value, checked) => {
+
 		const keys = checked ? data.map(item => item.order_id) : [];
+		const rows = checked ? data : [];
 		setCheckedKeys(keys);
+		setCheckedRows(rows);
 	};
 	const handleCheck = (value, checked) => {
+
 		const keys = checked ? [...checkedKeys, value] : checkedKeys.filter(item => item !== value);
+		const rows = [];
+
+		for (const k of keys) {
+
+			let stacked = 0;
+			for (const d of data) {
+
+				if (k === d.order_id) {
+					rows.push(d);
+					stacked += 1;
+					break;
+				}
+			}
+
+			if (stacked >= keys.length) break;
+		}
+
 		setCheckedKeys(keys);
+		setCheckedRows(rows);
 	};
 
+	const createVoucher = ( data ) => {
+
+		if (data instanceof Array) { console.log("배열");
+			
+		}
+		else { console.log("객체");
+
+		}
+
+		const fetchURL = AppConfig.fetch['mytest'];
+		fetch(`${fetchURL.protocol}${fetchURL.url}/voucher/signin`, {
+			method: "POST",
+			mode: "cors",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		})
+			.then(res => {
+
+//					const entity = res.json();
+
+				if (res.ok) {
+					console.log("예예예옝");
+/*						entity.then(res => {
+
+							console.log(1, res);
+							const numbered = getNumberedList(res);
+							setAllList(numbered);
+						});
+*/					}
+			});
+	};
+
+	useEffect(() => {
+
+		if (loadTask) {
+
+			for (const l in rowLoading) {
+				// 나중에 처리로 들어간것만, 로딩으로 바뀌게 checkedKeys확인
+				data[l].loadingState[1](true);
+			}
+		}
+
+	}, [ loadTask, ...rowLoading ]);
 
 	return (
-		<Table
-			virtualized
-			bordered
-			height={window.innerHeight * 0.75}
-			data={data}
-			id="table"
-		>
+		<Container>
+			<Table
+				virtualized
+				bordered
+				height={window.innerHeight * 0.6}
+				data={data}
+				id="table"
+			>
 
-			<Column width={50} align="center">
-				<HeaderCell style={{ padding: 0 }}>
-					<div style={{ lineHeight: '40px' }}>
-						<Checkbox
-							inline
-							checked={checked}
-							indeterminate={indeterminate}
-							onChange={handleCheckAll}
-						/>
-					</div>
-				</HeaderCell>
-				<CheckCell dataKey="order_id" checkedKeys={checkedKeys} onChange={handleCheck} />
-			</Column>
+				<Column width={50} align="center">
+					<HeaderCell style={{ padding: 0 }}>
+						<div style={{ lineHeight: '40px' }}>
+							{!loadTask ?
+								<Checkbox
+									inline
+									checked={checked}
+									indeterminate={indeterminate}
+									onChange={handleCheckAll}
+								/>
+							: null}
+						</div>
+					</HeaderCell>
+					<CheckCell dataKey="order_id" checkedKeys={checkedKeys} onChange={handleCheck} />
+				</Column>
 
-			<Column width={140}>
-				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>전표번호</HeaderCell>
-				<Cell>
-					{(rowData) => (
-						<Button
-							appearance="link"
-							style={{padding: 0}}
-							onClick={() => opener(true)}
-						>
-							{`${rowData.order_date}_${rowData.date_no}`}
-						</Button>
-					)}
-				</Cell>
-				{/*<NameCell dataKey="name" />*/}
-			</Column>
+				<Column width={140}>
+					<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>전표번호</HeaderCell>
+					<Cell>
+						{(rowData) => (
+							<Button
+								appearance="link"
+								style={{ padding: 0 }}
+								onClick={() => {
+									setVoucher(rowData);
+									opener(true)
+								}}
+							>
+								{`${rowData.voucher_no}`}
+							</Button>
+						)}
+					</Cell>
+					{/*<NameCell dataKey="name" />*/}
+				</Column>
 
-			<Column width={200}>
-				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>거래유형</HeaderCell>
-				<Cell>{rowData => rowData.t_class}</Cell>
-				{/*<NameCell dataKey="name" />*/}
-			</Column>
+				<Column width={200}>
+					<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>거래유형</HeaderCell>
+					<Cell>{rowData => rowData.t_class}</Cell>
+					{/*<NameCell dataKey="name" />*/}
+				</Column>
 
-			<Column width={180} resizable>
-				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>거래처명</HeaderCell>
-				<Cell>{rowData => rowData.client_name}</Cell>
-				{/*<NameCell dataKey="name" />*/}
-			</Column>
+				<Column width={180} resizable>
+					<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>거래처명</HeaderCell>
+					<Cell>{rowData => rowData.client_name}</Cell>
+					{/*<NameCell dataKey="name" />*/}
+				</Column>
 
-			<Column width={160} resizable>
-				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>금액</HeaderCell>
-				<Cell className="text_right">{rowData => `${formatter.format(rowData.total)}`}</Cell>
-			</Column>
+				<Column width={160} resizable>
+					<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>금액</HeaderCell>
+					<Cell className="text_right">{rowData => `${formatter.format(rowData.total)}`}</Cell>
+				</Column>
 
-			<Column width={560} resizable>
-				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>적요</HeaderCell>
-				<Cell>{rowData => rowData.item_standard}</Cell>
-				{/*<NameCell dataKey="name" />*/}
-			</Column>
+				<Column width={560} resizable>
+					<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>적요</HeaderCell>
+					<Cell>{rowData => rowData.item_display}</Cell>
+					{/*<NameCell dataKey="name" />*/}
+				</Column>
 
-			<Column width={120}>
-				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>진행상태</HeaderCell>
-				<Cell className="text_center">{rowData => rowData.order_status}</Cell>
-				{/*<NameCell dataKey="name" />*/}
-			</Column>
+				<Column width={120}>
+					<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>진행상태</HeaderCell>
+					<Cell className="text_center">{rowData => rowData.order_status}</Cell>
+					{/*<NameCell dataKey="name" />*/}
+				</Column>
 
-			<Column width={60}>
-				<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>승인</HeaderCell>
-				<Cell>{( rowData ) => (
-					rowData.order_status === "결재중" ?
-						<Button
-							color="green"
-							appearance="ghost"
-							size="xs"
-							onClick={() => {
-								rowData.ordet_status = "승인";
-							}}>
-							처리
-						</Button>
-					: null
-				)}</Cell>
-				{/*<ActionCell dataKey="id" />*/}
-			</Column>
+				<Column width={60}>
+					<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>승인</HeaderCell>
+					<Cell>{(rowData, rowIndex) => (
+						rowData.order_status === "결재중" ?
+							<Button
+								color="green"
+								appearance="ghost"
+								size="xs"
+								loading={rowData.loadingState[0]}
+								onClick={() => {
 
-		</Table>
+									console.log(rowData);
+									setLoadTask(true);
+									rowData.loadingState[1](true);
+									createVoucher( rowData );
+								}}
+							>
+								처리
+							</Button>
+							: null
+					)}</Cell>
+					{/*<ActionCell dataKey="id" />*/}
+				</Column>
+
+			</Table>
+
+			<ButtonToolbar className="all_listBtn">
+				<Button
+					appearance="ghost"
+					disabled={checkedKeys.length < 1}
+					loading={loadTask}
+					onClick={() => {
+
+//						console.log("checkedRows :", checkedRows);
+
+						setLoadTask(true);
+						createVoucher( checkedRows );
+
+					}}
+				>
+					승인
+				</Button>
+			</ButtonToolbar>
+		</Container>
 	);
 }
 

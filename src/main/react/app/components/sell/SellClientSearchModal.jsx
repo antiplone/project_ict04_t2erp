@@ -25,7 +25,7 @@ const SellClientSearchModal = ({ onClientSelect, handleOpen, handleClose } /* = 
 
 	// 데이터 조회
 	const handleSearch = (keyword) => {
-		console.log("키워드: ", keyword);
+		// console.log("키워드: ", keyword);
 		if (keyword.trim() === "") { 	// 빈 검색어면 전체 리스트 불러오기
 			fetch(`${fetchURL.protocol}${fetchURL.url}/sell/searchClient`, {
 				method: "GET"
@@ -132,7 +132,7 @@ const SellClientSearchModal = ({ onClientSelect, handleOpen, handleClose } /* = 
 						<Cell>{(rowData) => rowData.client_code}</Cell>
 					</Column>
 
-					<Column width={150}>
+					<Column width={150} align="center">
 						<HeaderCell>거래처명</HeaderCell>
 						<Cell>{(rowData) => rowData.client_name}</Cell>
 					</Column>

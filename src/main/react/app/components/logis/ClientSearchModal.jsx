@@ -34,10 +34,11 @@ function ClientSearchModal ({title = "거래처 검색", confirm = "확인", can
 
 	// 선택 완료 처리
 	const handleSubmit = () => {
-		onClientSelect(
-			selectedClient?.client_code ?? null,
-			selectedClient?.client_name ?? null
-		);
+		if (selectedClient) {
+			onClientSelect(selectedClient.client_code, selectedClient.client_name); // 이게 맞음!
+		} else {
+			onClientSelect('', '');
+		}
 		handleColse();
 	};
 

@@ -10,7 +10,7 @@ public class WeatherService {
     // RestTemplate은 쉬운 동기 방식, WebClient는 빠른 비동기 방식
 	private final RestTemplate restTemplate = new RestTemplate();
 
-    private final String openWeatherApiKey = "7467d489fb6b46f917ab3607d4d3e4bc"; // 여기 직접 쓰기
+    private final String openWeatherApiKey = "7467d489fb6b46f917ab3607d4d3e4bc";
     private final String city = "Seoul";	// 날씨를 조회할 기본 도시를 지정함.
 
     public String getTodayWeather() {

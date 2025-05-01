@@ -6,8 +6,7 @@ import "#styles/sell.css";
 import AppConfig from "#config/AppConfig.json";
 import SellInvoice from '#components/sell/SellInvoice.jsx';
 import MessageBox from '../components/common/MessageBox';
-import NewsComponent from '#components/sell/newsList.jsx';
-import NewsList from '#components/sell/newsList.jsx';
+// import NewsList from '#components/sell/newsList.jsx';
 
 // sell_all_list => 판매 조회 페이지
 
@@ -130,7 +129,7 @@ const sell_all_list = () => {
 		<div>
 			<MessageBox type="success" text="판매조회"/>
 
-			<NewsList />
+			{/* <NewsList /> */}
 			
 			<Tabs 
 				activeKey={activeTab}

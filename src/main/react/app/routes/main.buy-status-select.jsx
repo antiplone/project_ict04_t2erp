@@ -355,7 +355,7 @@ export default function BuyStatusSelect() {
                         해당 정보로 조회되는 리스트가 없습니다.
                     </div>
                 ) : (
-                    <Table height={400} width={1920} data={Searched ? searchResultList : buyStatusAllList}>
+                    <Table height={400} data={Searched ? searchResultList : buyStatusAllList}>
 
                         <Column width={150} className='text_center'>
                             <HeaderCell className='text_center'>발주일자</HeaderCell>

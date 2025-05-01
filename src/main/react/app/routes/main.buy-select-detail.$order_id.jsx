@@ -103,7 +103,7 @@ export default function BuySelectDetail() {
             <br />
 
             {/* data={[orderInfo]} 여기만 대괄호를 준 이유는 orderInfo는 하나의 객체 단일 주문 정보이기 때문에 배열로 감싸줬음 => rsuite의 <Table data={...}>는 배열형태의 데이터를 요구함*/}
-            <Table height={100} width={1920} data={[orderInfo]}>
+            <Table height={100} data={[orderInfo]}>
 
               <Column width={200} className='text_center'>
                 <HeaderCell className='text_center'>발주번호</HeaderCell>
@@ -158,9 +158,9 @@ export default function BuySelectDetail() {
             */}
             </Table>
 
-            <Divider style={{ maxWidth: 1920 }} />
+            <Divider />
 
-            <Table height={400} width={1920} data={orderItems}>
+            <Table height={400} data={orderItems}>
               <Column width={200} className='text_center'>
                 <HeaderCell className='text_center'>물품코드</HeaderCell>
                 <Cell dataKey="item_code" />
@@ -205,7 +205,7 @@ export default function BuySelectDetail() {
               </Column>
             </Table>
 
-            <Divider style={{ maxWidth: 1920 }} />
+            <Divider />
 
             <div className="buyBtnBox">
               <Link to={`/main/buy-order-update/${order_id}`}>

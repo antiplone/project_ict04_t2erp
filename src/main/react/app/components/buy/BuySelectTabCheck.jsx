@@ -87,7 +87,7 @@ export default function BuySelectTabCheck() {
 
     return (
         <>
-            <Table height={500} width={1920} data={buyOrderCheckList}>
+            <Table height={500} data={buyOrderCheckList}>
 
                 <Column width={150} className='text_center'>
                     <HeaderCell className='text_center'>등록일자</HeaderCell>

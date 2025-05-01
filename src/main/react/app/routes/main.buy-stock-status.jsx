@@ -322,7 +322,7 @@ export default function BuyStockStatus() {
                             해당 정보로 조회되는 리스트가 없습니다.
                         </div>
                     ) : (
-                    <Table height={400} width={1920} data={searched ? searchResultList : stockStatusAllList}>
+                    <Table height={400} data={searched ? searchResultList : stockStatusAllList}>
 
                         <Column width={200} className='text_center'>
                             <HeaderCell className='text_center'>발주일자</HeaderCell>

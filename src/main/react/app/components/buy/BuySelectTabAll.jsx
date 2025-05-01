@@ -89,7 +89,7 @@ export default function BuySelectTabAll() {
 
     return (
         <>
-            <Table height={500} width={1920} data={buyOrderAllList}>
+            <Table height={500} data={buyOrderAllList}>
 
                 <Column width={150} className='text_center'>
                     <HeaderCell className='text_center'>등록일자_No.</HeaderCell>

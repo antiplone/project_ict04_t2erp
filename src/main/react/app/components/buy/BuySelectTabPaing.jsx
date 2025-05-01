@@ -87,7 +87,7 @@ export default function BuySelectTabPaing() {
 
     return (
         <>
-            <Table height={500} width={1920} data={buyOrderPayingList}>
+            <Table height={500} data={buyOrderPayingList}>
 
                 <Column width={150} className='text_center'>
                     <HeaderCell className='text_center'>등록일자</HeaderCell>

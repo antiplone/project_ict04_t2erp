@@ -356,7 +356,7 @@ export default function BuyInsert() {
 
             <hr />
 
-            <Table height={400} data={orderItems} style={{ maxWidth: 1920, marginTop: -40 }}>
+            <Table height={400} data={orderItems} style={{ marginTop: -40 }}>
                 <Column width={250} align="center">
                     <HeaderCell>물품코드</HeaderCell>
                     <EditableCell

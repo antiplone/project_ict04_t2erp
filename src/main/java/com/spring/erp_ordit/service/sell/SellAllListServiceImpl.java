@@ -88,40 +88,46 @@ public class SellAllListServiceImpl implements SellAllListService {
 	@Transactional
 	public int updateAllList(int order_id, SellOrderDTO dto) {
 //		System.out.println("서비스 - updateAllList");
+		
+		int result = 1; // 성공을 기본값으로 시작
+		
+		// 주문번호 저장
+	    dto.setOrder_id(order_id);
 
-			dto.setOrder_id(order_id);
+	    int orderResult = Mapper.updateAllList_order(dto);
+	    if (orderResult == 0) {
+	        return 0; // 주문 정보 수정 실패
+	    }
 
-			int orderResult = Mapper.updateAllList_order(dto);
-			if (orderResult == 0) {
-				return 0;
-			}
+	    // 삭제 처리
+	    if (dto.getDeletedItemIds() != null) {
+	        for (Integer deletedId : dto.getDeletedItemIds()) {
+	            int deleteResult = Mapper.deleteOrderItem(deletedId);
+	            if (deleteResult == 0) {
+	                result = 0; // 삭제 실패 시 실패로 표시
+	            }
+	        }
+	    }
 
-			int itemResult = 0;
+	    // 상세 항목 추가/수정
+	    for (SellOrderItemDTO item : dto.getOrderItemList()) {
+	        item.setOrder_id(order_id);
 
-			//  1. 삭제 처리 먼저 (루프 밖에서)
-			if (dto.getDeletedItemIds() != null) {
-			    for (Integer deletedId : dto.getDeletedItemIds()) {
-			        Mapper.deleteOrderItem(deletedId);
-			    }
-			}
+	        int itemOpResult = 0;
+	        
+	        // 새로운 아이템 추가 시
+	        if (item.getOrder_item_id() == null || item.getOrder_item_id().equals(0)) {
+	            itemOpResult = Mapper.sell_itemInsert(item);
+	        } else {	// 기존 아이템 수정 시
+	            itemOpResult = Mapper.updateAllList_item(item);
+	        }
 
-			//  2. 추가/수정 루프
-			for (SellOrderItemDTO item : dto.getOrderItemList()) {
-				item.setOrder_id(order_id);
+	        if (itemOpResult == 0) {
+	            result = 0; // 하나라도 실패하면 실패로 표시
+	        }
+	    }
 
-				// 추가 (새로운 항목)
-				if (item.getOrder_item_id() == null 
-					    || item.getOrder_item_id().equals(0)) {
-					itemResult += Mapper.sell_itemInsert(item);
-				}
-				// 수정 (기존 항목)
-				else {
-					itemResult += Mapper.updateAllList_item(item);
-				}
-			
-			}
-
-			return 1 + itemResult;
+	    return result;
 	}
 	
 	// 판매 조회 - 삭제

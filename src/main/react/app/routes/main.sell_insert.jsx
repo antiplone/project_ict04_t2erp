@@ -103,6 +103,7 @@ const Sellinsert = () => {
 	// 물품 검색 모달 관리
 	const [isItemModalOpen, setItemModalOpen] = useState(false);
 
+	// 입력 값이 생길때
 	const handleChange = (id, key, value) => {
 		const nextData = [...sellAdd];
 		const target = nextData.find(item => item.id === id);	// 수정하려는 행의 ID와 일치하는 데이터

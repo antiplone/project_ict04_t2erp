@@ -204,8 +204,7 @@ const Sellinsert = () => {
 			orderItemList: filteredSellAdd,
 		};
 
-		console.log("제출할 전체 데이터:", payload); // 확인용
-
+		// console.log("제출할 전체 데이터:", payload); // 확인용
 		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/insert`, {
 			method: "POST",
 			headers: {
@@ -215,14 +214,12 @@ const Sellinsert = () => {
 		})
 		// 결과를 돌려받는 곳
 		.then((res) => {
-			console.log(1, res);
-
+			// console.log(1, res);
 			if(res.status === 201) return res.json();   // 정상(201)이면 ture 리턴
 			else return null;
 		})
 		.then((result) => {
-			console.log('등록 결과:', result);
-		
+			// console.log('등록 결과:', result);
 			if (typeof result === 'number' && result > 0) {
 				toaster.push(
 					<Message showIcon type="success" closable>

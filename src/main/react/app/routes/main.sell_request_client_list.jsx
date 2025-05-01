@@ -38,7 +38,7 @@ const SellRequestClientList = () => {
 		})
 		.then(res => res.json())
 		.then(res => {
-			console.log(1, res);
+			// console.log(1, res);
 			setReqClient(res);
 			setIsLoading(false);
 		});
@@ -97,7 +97,7 @@ const SellRequestClientList = () => {
 					margin='0 auto'
 					data={filteredList}
 					onRowClick={rowData => {
-						console.log(rowData);
+						// console.log(rowData);
 					}}
 				>
 

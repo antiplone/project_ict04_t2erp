@@ -6,6 +6,8 @@ import "#styles/sell.css";
 import AppConfig from "#config/AppConfig.json";
 import SellInvoice from '#components/sell/SellInvoice.jsx';
 import MessageBox from '../components/common/MessageBox';
+// import NewsList from '#components/sell/newsList.jsx';
+
 // sell_all_list => 판매 조회 페이지
 
 const { Column, HeaderCell, Cell } = Table;
@@ -59,9 +61,9 @@ const sell_all_list = () => {
 	
 				// 같은 order_id의 품목 모으기
 				const sameOrderItems = orders.filter(x => x.order_id === item.order_id);
-				console.log("현재 처리 중인 order_id:", item.order_id);
-				console.log("해당 order_id로 묶인 품목 수:", sameOrderItems.length);
-				console.log("묶인 품목 목록:", sameOrderItems.map(x => x.item_name));
+				// console.log("현재 처리 중인 order_id:", item.order_id);
+				// console.log("해당 order_id로 묶인 품목 수:", sameOrderItems.length);
+				// console.log("묶인 품목 목록:", sameOrderItems.map(x => x.item_name));
 				
 				// 첫 번째 품목명을 표시용으로 사용
 				const firstItemName = sameOrderItems[0].item_name;
@@ -96,7 +98,7 @@ const sell_all_list = () => {
 		})
 		.then(res => res.json())
 		.then(res => {
-			console.log(1, res);
+			// console.log(1, res);
 			const numbered = getNumberedList(res);
 			setAllList(numbered);
 			setIsLoading(false);
@@ -126,6 +128,9 @@ const sell_all_list = () => {
 	return (
 		<div>
 			<MessageBox type="success" text="판매조회"/>
+
+			{/* <NewsList /> */}
+			
 			<Tabs 
 				activeKey={activeTab}
 				onSelect={(key) => setActiveTab(key)}
@@ -149,7 +154,7 @@ const sell_all_list = () => {
 				height={500}
 				data={filteredList}	// 탭 상태에 따라 조건 필터한 데이터
 				onRowClick={rowData => {
-					console.log(rowData);
+					// console.log(rowData);
 				}}
 			>	
 			

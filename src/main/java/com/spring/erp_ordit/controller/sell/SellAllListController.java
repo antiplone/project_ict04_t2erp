@@ -33,7 +33,7 @@ public class SellAllListController {
 	// 판매 입력 - 등록 요청
 	@PostMapping("/insert")
 	public ResponseEntity<Integer> sell_insert(@RequestBody SellOrderDTO dto) {
-		System.out.println("<<< sell_insert >>>");
+//		System.out.println("<<< sell_insert >>>");
 
 		return new ResponseEntity<>(service.sellInsert(dto), HttpStatus.CREATED);
 	}
@@ -42,7 +42,7 @@ public class SellAllListController {
 	// 판매 조회, 판매 현황 - 판매 입력한 전체 리스트
 	@GetMapping("/allList")
 	public ResponseEntity<List<SellAllListDTO>> sell_allList() {
-		System.out.println("<<< sell_allList >>>");
+//		System.out.println("<<< sell_allList >>>");
 
 		return new ResponseEntity<>(service.sellAllList(), HttpStatus.OK);
 	}
@@ -51,7 +51,7 @@ public class SellAllListController {
 	// 판매 현황 - 검색 후 나오는 전체 리스트
 	@PostMapping("/statusSearchList")
 	public ResponseEntity<List<SellAllListDTO>> sell_statusSearchList(@RequestBody SellAllListDTO dto) {
-		System.out.println("<<< sell_statusSearchList >>>");
+//		System.out.println("<<< sell_statusSearchList >>>");
 
 		return new ResponseEntity<>(service.sellStatusSearchList(dto), HttpStatus.OK);
 	}
@@ -60,7 +60,7 @@ public class SellAllListController {
 	// 판매 조회 - 1건 상세 조회
 	@GetMapping("/allDetail/{order_id}")
 	public ResponseEntity<List<SellAllListDTO>> detail_allList(@PathVariable int order_id) {
-		System.out.println("<<< detail_allList >>>");
+//		System.out.println("<<< detail_allList >>>");
 		
 		return new ResponseEntity<List<SellAllListDTO>>(service.detailAllList(order_id), HttpStatus.OK);
 	}
@@ -69,7 +69,7 @@ public class SellAllListController {
 	// 판매 조회 - 입력 건 수정
 	@PutMapping("/allListUpdate/{order_id}")
 		public ResponseEntity<Integer> update_allList(@PathVariable int order_id, @RequestBody SellOrderDTO dto) {
-		System.out.println("<<< update_allList >>>");
+//		System.out.println("<<< update_allList >>>");
 
 		return new ResponseEntity<>(service.updateAllList(order_id, dto), HttpStatus.OK);
 	}
@@ -78,17 +78,16 @@ public class SellAllListController {
 	// 판매 조회 - 삭제
 	@DeleteMapping("/allDelete/{order_id}")
 	public ResponseEntity<?> delete_allList(@PathVariable int order_id) {
-		System.out.println("<<< delete_allList >>>");
+//		System.out.println("<<< delete_allList >>>");
 		
 		return new ResponseEntity<>(service.deleteAllList(order_id), HttpStatus.OK);	// 200
-		
 	}
 	
 	// http://localhost:8081/sell/invocie
 	// 판매 조회 - 거래명세서 조회
 	@GetMapping("/invocie/{order_id}")
 	public ResponseEntity<List<SellInvocieDTO>> detail_invocie(@PathVariable int order_id) {
-		System.out.println("<<< detail_invocie >>>");
+//		System.out.println("<<< detail_invocie >>>");
 		
 		return new ResponseEntity<List<SellInvocieDTO>>(service.detailInvocie(order_id), HttpStatus.OK);
 	}

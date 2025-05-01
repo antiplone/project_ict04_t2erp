@@ -155,7 +155,7 @@ const sell_all_list_update = (props) => {
 		// 상태 업데이트 시 불변성을 유지하며 새로운 행을 추가
 		setSellAdd(prev => {
 			const updatedSellAdd = [newItem, ...prev];
-			console.log(updatedSellAdd);  // 상태 변경 후 값 확인
+			// console.log(updatedSellAdd);  // 상태 변경 후 값 확인
 			return updatedSellAdd;
 		  });
 	};
@@ -175,8 +175,7 @@ const sell_all_list_update = (props) => {
 		})
 		.then(res => res.json())
 		.then(res => {
-			console.log(1, res);
-
+			// console.log(1, res);
 			const fixedRes = res.map((item, idx) => ({
 				...item,
 				id: Number(item.id) || idx + 1  // id가 숫자면 그대로, 아니면 고유 id 부여
@@ -265,9 +264,9 @@ const sell_all_list_update = (props) => {
 			deletedItemIds: deletedItemIds
 		};
 
-		console.log("제출할 전체 데이터:", payload); // 확인용
-		console.log("제출할 전체 데이터:", filteredSellAdd.order_item_id);
-		console.log("제출할 전체 데이터:", payload.orderItemList.order_item_id);
+		// console.log("제출할 전체 데이터:", payload); // 확인용
+		// console.log("제출할 전체 데이터:", filteredSellAdd.order_item_id);
+		// console.log("제출할 전체 데이터:", payload.orderItemList.order_item_id);
 		// fetch(`${fetchURL.protocol}${fetchURL.url}/sell/allListUpdate/${order_id}/${sellAdd.order_item_id}`, {
 		fetch(`${fetchURL.protocol}${fetchURL.url}/sell/allListUpdate/${order_id}`, {
 			method: "PUT",
@@ -278,14 +277,12 @@ const sell_all_list_update = (props) => {
 		})
 		// 결과를 돌려받는 곳
 		.then((res) => {
-			console.log(1, res);
-
+			// console.log(1, res);
 			if(res.status === 201) return res.json();   // 정상(201)이면 ture 리턴
 			else return null;
 		})
 		.then((res) => {
-			console.log('정상', res);
-
+			// console.log('정상', res);
 			// 등록 성공 시 페이지 새로고침
 			if(res != 0) { 
 				toaster.push(
@@ -651,7 +648,7 @@ const sell_all_list_update = (props) => {
 				<SellItemSearchCountModal
 					isOpen={isItemModalOpen}
 					handleClose={() => {
-						console.log("모달 닫기 실행됨"); // 로그 확인용
+						// console.log("모달 닫기 실행됨"); // 로그 확인용
 						setItemModalOpen(false);
 					  }}
 					storage_code={selectedStorage}

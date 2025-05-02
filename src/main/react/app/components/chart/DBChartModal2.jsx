@@ -10,12 +10,10 @@ const DBChartModal2 = ({ open, onClose }) => {
   const [selectedFunction, setSelectedFunction] = useState('count');
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const fetchData = async (startDate, endDate) => {
-    const endpoint = selectedFunction === 'count' ? '/api/order/count' : '/api/order/items';
     setLoading(true);
-    setError(null);
+    const endpoint = selectedFunction === 'count' ? '/api/order/count' : '/api/order/items';
     try {
       const response = await axios.get(`http://localhost:8000${endpoint}`,{
 		  params: {
@@ -27,18 +25,13 @@ const DBChartModal2 = ({ open, onClose }) => {
       if (response.data.status === "success") {
         setChartData(response.data.data);
       } else {
-        console.error("Server Error:", response.data.message);
-        setError("Server Error: " + response.data.message);
         showToast("Server Error: " + response.data.message, 'error');
       }
     } catch (err) {
-      console.error("Axios Error:", err);
+		showToast("Axios Error:", err);
       if (err.response) {
-        console.error("Response Error:", err.response.data);
-        setError("Request failed: " + err.response.data.detail);
         showToast("Request failed: " + err.response.data.detail, 'error');
       } else {
-        setError("An unknown error occurred");
         showToast("An unknown error occurred", 'error');
       }
     } finally {

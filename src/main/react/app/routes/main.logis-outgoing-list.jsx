@@ -4,10 +4,10 @@ import { Button, Container, DateRangePicker, Input, InputGroup, Divider, Loader 
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table';
 import Appconfig from "#config/AppConfig.json";
 import "#styles/common.css";
-import EmailFormModal from "#components/email/EmailFormModal.jsx";
 import readingGlasses from "#images/common/readingGlasses.png";
 import MessageBox from '#components/common/MessageBox';
-import { useToast } from '#components/common/ToastProvider';//
+import { useToast } from '#components/common/ToastProvider';
+
 import InchargeSearchModal from "#components/logis/InchargeSearchModal.jsx";
 import ClientSearchModal from "#components/logis/ClientSearchModal.jsx";
 import StorageSearchModal from "#components/logis/StorageSearchModal.jsx";
@@ -15,11 +15,12 @@ import StorageSearchModal from "#components/logis/StorageSearchModal.jsx";
 import DBChartModal from '#components/chart/DBChartModal.jsx'; // 
 
 const OutgoingList = () => {
-	const fetchURL = Appconfig.fetch['mytest']
+	const rawFetchURL = Appconfig.fetch["mytest"];
+	const fetchURL = rawFetchURL.protocol + rawFetchURL.url;
+	
 	const [loading, setLoading] = useState(true); // 로딩 상태를 true로 초기화
 	const [salesList, setSalesList] = useState([]); // 초기값을 모르므로 빈배열로 OutgoingList에 대입
 	const [salesDate, setSalesDate] = useState(null);
-	const [modalOpen, setModalOpen] = useState(false);
 	const { showToast } = useToast(); 
 	
 	// 거래처 모달  
@@ -40,17 +41,10 @@ const OutgoingList = () => {
 	/* 차트 보기 모달 버튼 */
 	const [isChartModalOpen, setChartModalOpen] = useState(false);
 	
-    // 모달 열기/닫기
-	const handleOpenModal = () => {
-		resetSearch_btn();      // 검색 조건 초기화 실행
-		setModalOpen(true);     // 모달 열기
-	};
-    const handleCloseModal = () => setModalOpen(false); // 모달 닫기
-	
     const fetchSales = async () => {
-        setLoading(true);
+        /*setLoading(true);*/
         try {
-			const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/logissales/logisSalesList`, { // 스프링부트에 요청한다.
+			const res = await fetch(`${fetchURL}/logissales/logisSalesList`, { // 스프링부트에 요청한다.
 			method: "GET"
             });
             const orderjson = await res.json();
@@ -59,8 +53,7 @@ const OutgoingList = () => {
 			console.error("logisSalesList : ", error);
             setSalesList([]);
             showToast("데이터를 가져오는 중 오류가 발생했습니다.", "error");
-        } finally {
-        }
+        } 
     };
 	
 	// // fetch()를 통해 서버에게 데이터를 요청
@@ -68,23 +61,21 @@ const OutgoingList = () => {
 		fetchSales();  // 초기 데이터를 가져옵니다.
 	}, []);
 
-	const salesListWithRowNum = useMemo(() =>
-		salesList.map((sales, index) => ({
+	const salesListWithRowNum = salesList.map((sales, index) => ({
 			...sales,
 			row_num: index + 1,
-	})), [salesList]);
+	}));
 
 	// 각 주문에 대한 아이템 데이터 가져오기
 	useEffect(() => {
 		if (salesList.length > 0) {
 			const fetchItemsForSales = async () => {
-				setLoading(true); // 로딩 시작
 				const updatedSales = await Promise.all(
 					salesList.map(async (sales) => {
 						if (sales.itemDataList) return sales; // 이미 있으면 skip
 						try {
 							const res = await fetch(
-								`${fetchURL.protocol}${fetchURL.url}/logissales/salesDetail/${sales.order_id}`
+								`${fetchURL}/logissales/salesDetail/${sales.order_id}`
 							);
 							const data = await res.json();
 							return { ...sales, itemDataList: data }; // 아이템 데이터 추가
@@ -104,7 +95,10 @@ const OutgoingList = () => {
 			setLoading(false);
 			};
 			fetchItemsForSales(); // 아이템 데이터 가져오기
-		}
+		} else {
+		// ❗ salesList가 비어 있어도 로딩 상태 종료
+		setLoading(false);
+	}
 	}, [salesList]); // salesList 변경될 때마다 실행 (length로 조건 걸기)
 
 	// 날짜 선택
@@ -124,7 +118,7 @@ const OutgoingList = () => {
 
     /* 검색 조건*/
 	const handleSearch = async () => {
-		setLoading(true);
+		/*setLoading(true);*/
 
 		let startDate = '';
 		let endDate = '';
@@ -150,7 +144,7 @@ const OutgoingList = () => {
 		const query = new URLSearchParams(cleanedParams).toString();
 
 		try {
-			const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/logissales/logisSalesSearch?${query}`);
+			const res = await fetch(`${fetchURL}/logissales/logisSalesSearch?${query}`);
 			const result = await res.json();
 			setSalesList(result.length ? result : []);
 			if (result.length === 0) showToast("선택한 조건에 해당하는 판매정보가 없습니다.", "info");
@@ -187,10 +181,6 @@ const OutgoingList = () => {
 		const firstItem = items.length > 0 ? items[0].item_name : "";
 		const totalCount = items.length - 1 > 0 ? `외 ${items.length - 1} 건` : "";
 
-		if (loading) {
-			return <Loader center content="로딩 중..." />;
-		}
-
 		return (
 			<div>
 				{firstItem} {items.length > 0 ? `${totalCount}` : ""}
@@ -200,7 +190,7 @@ const OutgoingList = () => {
 	return (
 		<div>
 			<MessageBox type="info" text="출고 관리"/>
-			<Container style={{margin: '0 auto', maxWidth : '1480px'}}>
+			<Container style={{margin: '0 auto', maxWidth : '1920px'}}>
 				<div className='main_table'>
 					<div className="inputBox">
 						<div className="input">
@@ -280,39 +270,39 @@ const OutgoingList = () => {
 						</Button>
 					</div>
 
-					<Divider style={{width : '1480px'}} />
+					<Divider />
 					{loading ? (
 						<div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 							<Loader size="md" content="데이터를 불러오는 중입니다..." />
 						</div>
 						) : (
-						<Table width={1470} height={400} data={salesListWithRowNum} className="text_center" loading={loading}>
-							<Column width={100} align="center" fixed>
+						<Table width={1920} height={400} data={salesListWithRowNum} className="text_center" loading={loading}>
+							<Column width={120} align="center" fixed>
 								<HeaderCell className='text_center'>번호</HeaderCell>
 								<Cell dataKey="row_num" />
 							</Column>
 
-							<Column width={100} align="center" fixed>
+							<Column width={180} align="center" fixed>
 								<HeaderCell className='text_center'>주문고유번호</HeaderCell>
 								<Cell dataKey="order_id" />
 							</Column>
 
-							<Column width={100} align="center" fixed>
+							<Column width={180} align="center" fixed>
 								<HeaderCell className='text_center'>담당팀</HeaderCell>
 								<Cell dataKey="d_name" />
 							</Column>
 
-							<Column width={100} align="center" fixed>
+							<Column width={180} align="center" fixed>
 								<HeaderCell className='text_center'>담당자</HeaderCell>
 								<Cell dataKey="e_name" />
 							</Column>
 
-							<Column width={170}>
+							<Column width={200}>
 								<HeaderCell className='text_center'>출고일자</HeaderCell>
 								<Cell dataKey="shipment_order_date" />
 							</Column>
 
-							<Column width={300}>
+							<Column width={400}>
 								<HeaderCell className="text_center">아이템 비고</HeaderCell>
 								<Cell>
 									{rowData =>
@@ -321,7 +311,7 @@ const OutgoingList = () => {
 								</Cell>
 							</Column>
 
-							<Column width={150}>
+							<Column width={280}>
 								<HeaderCell className="text_center">주문상세</HeaderCell>
 								<Cell dataKey="item_name" style={{ padding: '6px' }}>
 									{rowData => {
@@ -339,28 +329,13 @@ const OutgoingList = () => {
 								<Cell dataKey="client_name" />
 							</Column>
 
-							{/* <Table.Column width={120}>
-	                            <Table.HeaderCell>발주일</Table.HeaderCell>
-	                            <Table.Cell dataKey="order_date" />
-	                        </Table.Column> */}
-
-							<Column width={240}>
+							<Column width={200}>
 								<HeaderCell className='text_center'>입고창고</HeaderCell>
 								<Cell dataKey='storage_name' className='text_left' />
 							</Column>
 						</Table>
 					)}
 					<div style={{ display: 'flex', margin : '10px' }}>
-						{	/* Email Modal */}
-						<div width={50} height={50} style={{ marginRight: '20px' }}>
-							<Button appearance="primary" onClick={handleOpenModal}>
-								이메일 보내기
-							</Button>
-						</div>
-
-						{/* EmailFormModal Component */}
-						<EmailFormModal open={modalOpen} onClose={() => handleCloseModal(false)} />
-
 						{/* ChartModal 버튼 */}
 						<Button appearance="primary" onClick={() => setChartModalOpen(true)}>
 							차트 보기

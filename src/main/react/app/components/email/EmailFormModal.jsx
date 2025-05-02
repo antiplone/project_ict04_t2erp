@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { Modal } from "rsuite";
-import AppConfig from "#config/AppConfig.json";
+import Appconfig from "#config/AppConfig.json";
 import axios from "axios";
-import styles from "#styles/emailstyle.module.css"; // email style import
+import styles from "#styles/emailstyle.module.css";
+import { useToast } from '#components/common/ToastProvider';
 
 const EmailFormModal = ({ open, onClose }) => {
-	const rawFetchURL = AppConfig.fetch["mytest"];
-	const fetchURL =
-		typeof rawFetchURL === "string"
-			? rawFetchURL
-			: `${rawFetchURL.protocol}${rawFetchURL.url}`;
+	const rawFetchURL = Appconfig.fetch["mytest"];
+	const fetchURL = rawFetchURL.protocol + rawFetchURL.url;
 
 	const [to, setTo] = useState("");
 	const [subject, setSubject] = useState("");
@@ -17,6 +15,7 @@ const EmailFormModal = ({ open, onClose }) => {
 	const [file, setFile] = useState(null);
 	const [message, setMessage] = useState("");
 	const [loading, setLoading] = useState(false);
+	const { showToast } = useToast(); 
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -35,7 +34,7 @@ const EmailFormModal = ({ open, onClose }) => {
 					"Content-Type": "multipart/form-data"
 				}
 			});
-			alert("이메일이 전송되었습니다!");
+			showToast("이메일이 전송되었습니다!", "error");
 			handleClose();
 		} catch (error) {
 			setMessage("메일 발송 오류: " + (error.response?.data?.message || error.message));
@@ -54,7 +53,7 @@ const EmailFormModal = ({ open, onClose }) => {
 	};
 
 	return (
-		<Modal open={open} onClose={handleClose} size="md">
+		<Modal open={open} onClose={handleClose} size="md" className='position_center'>
 			<Modal.Header>
 				<Modal.Title className={styles.modalTitle}>이메일 발송</Modal.Title>
 			</Modal.Header>

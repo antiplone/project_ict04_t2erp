@@ -15,6 +15,13 @@ export function meta() {
 	];
 };
 
+// 파비콘. 이미지는 public 폴더에 있습니다.
+export function links() {
+	return [
+	  	{ rel: "icon", type: "image/png", href: "/brand.png?v=2" } // 캐시 방지용 v=2 추가!
+	];
+}
+
 // @Remix:url(/) - 세션을 확인후 페이지 이동
 export default function Index() {
 

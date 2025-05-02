@@ -1,9 +1,11 @@
-SelectPicker/* eslint-disable react/prop-types */
+/* eslint-disable react/prop-types */
+import AppConfig from "#config/AppConfig.json";
 import React, { useState, useEffect } from 'react';
 import { Table, Input, DatePicker, SelectPicker, Modal, Button, CheckPicker } from 'rsuite';
 import { EmployeeSelectTable } from './HrTable';
 
 const { Column, HeaderCell, Cell } = Table;
+const fetchURL = AppConfig.fetch['mytest'];
 
 // 직급 리스트
 const positionList = [
@@ -43,7 +45,7 @@ const HrAppointEditTable = ({ rows, onChange, onDoubleClickCell, departmentList,
 
   // 사원 가져오기
   useEffect(() => {
-    fetch("http://localhost:8081/hrCard/hrCardList")
+    fetch(`${fetchURL.protocol}${fetchURL.url}/hrCard/hrCardList`)
       .then(res => res.json())
       .then(data => setEmpList(data))
       .catch(err => console.error("사원 불러오기 실패:", err));

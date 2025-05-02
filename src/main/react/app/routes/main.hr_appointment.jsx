@@ -1,3 +1,4 @@
+import AppConfig from "#config/AppConfig.json";
 import React, { useEffect, useState } from "react";
 import { Button, Message, Tabs } from "rsuite";
 import HrAppointEditTable from "#components/hr/HrAppoint";
@@ -6,6 +7,13 @@ import { HrAppointListTable } from "#components/hr/HrTable.jsx";
 import HrModal from "#components/hr/HrModal.jsx";
 
 export default function HrEmpAppointment() {
+  const fetchURL = AppConfig.fetch["mytest"];
+
+  const [confirmedAppointments, setConfirmedAppointments] = useState([]);
+  const [departmentList, setDepartmentList] = useState([]);
+  const [smsModalOpen, setSmsModalOpen] = useState(false); // 문자 모달 열기
+  const [smsText, setSmsText] = useState('');  // 문자 내용
+
   const [employees, setEmployees] = useState([
     {
       id: 1,
@@ -21,10 +29,6 @@ export default function HrEmpAppointment() {
     }
   ]);
 
-  const [confirmedAppointments, setConfirmedAppointments] = useState([]);
-  const [departmentList, setDepartmentList] = useState([]);
-  const [smsModalOpen, setSmsModalOpen] = useState(false); // 문자 모달 열기
-  const [smsText, setSmsText] = useState('');  // 문자 내용
 
   useEffect(() => {
     fetchHrDeptList();
@@ -32,7 +36,7 @@ export default function HrEmpAppointment() {
   }, []);
 
   const fetchHrDeptList = () => {
-    fetch("http://localhost:8081/hrDept/hrDeptList")
+    fetch(`${fetchURL.protocol}${fetchURL.url}/hrDept/hrDeptList`)
       .then(res => res.json())
       .then(data => {
         const converted = data.map(dep => ({
@@ -46,7 +50,7 @@ export default function HrEmpAppointment() {
 
   // 발령 현황 목록
   const fetchConfirmedAppointments = () => {
-    fetch('http://localhost:8081/hrAppoint/hrAppointList')
+    fetch(`${fetchURL.protocol}${fetchURL.url}/hrAppoint/hrAppointList`)
       .then(res => res.json())
       .then(data => {
         const formattedData = data.map(item => ({
@@ -111,7 +115,7 @@ export default function HrEmpAppointment() {
   
     console.log('appointData:', appointData);
   
-    return fetch('http://localhost:8081/hrAppoint/hrAppointInsert', {
+    return fetch(`${fetchURL.protocol}${fetchURL.url}/hrAppoint/hrAppointInsert`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(appointData)
@@ -186,7 +190,7 @@ export default function HrEmpAppointment() {
   
     try {
       // 최신 사원 정보 불러오기 (전화번호 최신화용)
-      const res = await fetch("http://localhost:8081/hrCard/hrCardList");
+      const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/hrCard/hrCardList`);
       const empList = await res.json();
   
       for (const appointId of selectedIds) {
@@ -195,7 +199,7 @@ export default function HrEmpAppointment() {
   
         const cleanPhoneNumber = emp.e_tel?.replace(/-/g, '');
   
-        await fetch('http://localhost:8081/sms/sendSms', {
+        await fetch(`${fetchURL.protocol}${fetchURL.url}/sms/sendSms`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

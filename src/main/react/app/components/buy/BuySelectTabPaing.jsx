@@ -1,9 +1,10 @@
 // 구매팀 - 구매조회 탭 결재중
 import AppConfig from "#config/AppConfig.json";
-import { Table, Button, ButtonToolbar, Modal } from 'rsuite';
+import { Table, Button, ButtonToolbar, Modal, Message } from 'rsuite';
 import React, { useEffect, useState } from 'react';
 import '../../styles/buy.css';
 import { Link } from 'react-router-dom';
+import { useToast } from '#components/common/ToastProvider';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -11,12 +12,9 @@ export default function BuySelectTabPaing() {
 
     const fetchURL = AppConfig.fetch["mytest"];
 
-    const [buyOrderPayingList, setBuyOrderPayingList] = useState([]); // 초기값을 모르므로 빈배열로 buyList에 대입
+    const { showToast } = useToast();
 
-    // '불러온 전표' 모달
-    const [open2, setOpen2] = useState(false);
-    const handleOpen2 = () => setOpen2(true);
-    const handleClose2 = () => setOpen2(false);
+    const [buyOrderPayingList, setBuyOrderPayingList] = useState([]); // 초기값을 모르므로 빈배열로 buyList에 대입
 
     // 날짜 별로 순번 붙이기 (동일한 날짜+동일 주문건이면 동일한 No.)
     const getNumberedList = (data) => {
@@ -85,6 +83,17 @@ export default function BuySelectTabPaing() {
     }, []); // []은 디펜던시인데, setState()로 렌더링될때 실행되면 안되고, 1번만 실행하도록 빈배열을 넣어둔다.
     // CORS 오류 : Controller 진입 직전에 적용된다. 외부에서 자바스크립트 요청이 오는 것을
 
+    // '불러온 전표' 모달
+    const [open2, setOpen2] = useState(false);
+    const handleOpen2 = (rowData) => {
+        if (rowData.order_status === '결재중') {
+            showToast("전표 처리 진행중입니다.", "warning");
+            return;
+        }
+        setOpen2(true);
+    };
+    const handleClose2 = () => setOpen2(false);
+
     return (
         <>
             <Table height={500} data={buyOrderPayingList}>
@@ -146,13 +155,6 @@ export default function BuySelectTabPaing() {
                 </Column>
 
                 <Column width={150} className='text_center'>
-                    <HeaderCell className='text_center'>불러온전표</HeaderCell>
-                    <Cell>
-                        <Button color="yellow" appearance="ghost" size="xs" onClick={handleOpen2}>조회</Button>
-                    </Cell>
-                </Column>
-
-                <Column width={150} className='text_center'>
                     <HeaderCell className='text_center'>상세조회</HeaderCell>
                     <Cell>
                         {buyOrderPayingList => (
@@ -161,6 +163,22 @@ export default function BuySelectTabPaing() {
                                     조회
                                 </Button>
                             </Link>
+                        )}
+                    </Cell>
+                </Column>
+
+                <Column width={150} className='text_center'>
+                    <HeaderCell className='text_center'>불러온전표</HeaderCell>
+                    <Cell>
+                        {rowData => (
+                            <Button
+                                color="yellow"
+                                appearance="ghost"
+                                size="xs"
+                                onClick={() => handleOpen2(rowData)}
+                            >
+                                조회
+                            </Button>
                         )}
                     </Cell>
                 </Column>

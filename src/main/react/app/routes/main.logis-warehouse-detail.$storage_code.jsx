@@ -7,17 +7,19 @@ import "#components/common/css/common.css";
 import MessageBox from '#components/common/MessageBox';
 
 const StorageDetail = () => {
-	const fetchURL = Appconfig.fetch['mytest']
+	const rawURL = Appconfig.fetch['mytest']
+	const fetchURL = rawURL.protocol + rawURL.url
 	const { storage_code } = useParams();
 
 	const navigator = useNavigate();
 
 	console.log("storage_code : ", storage_code)
 
-	const [storage, setStorageDetail] = useState({
-		storage_code: '',
-		storage: '',
-		storage_location: ''
+	const [storage, setStorage] = useState({
+      storage_name: "",
+      storage_zone_code: "",
+      storage_base_address: "",
+      storage_detail_address: ""
 	});
 
 	// console.log("storage_code : ", storage)
@@ -25,11 +27,11 @@ const StorageDetail = () => {
 	useEffect(() => {
 		if (!storage_code) return;
 
-		fetch(`${fetchURL.protocol}${fetchURL.url}/warehouse/findByStoragecode/${storage_code}`)
+		fetch(`${fetchURL}/warehouse/findByStoragecode/${storage_code}`)
 			.then(res => res.json())
 			.then(res => {
 				console.log("res : ", res)
-				setStorageDetail(res)
+				setStorage(res)
 			})
 			.catch(err => console.error('Error fetching storageDelete:', err));
 	}, []);
@@ -37,7 +39,7 @@ const StorageDetail = () => {
 	const deletestorage = () => {
 		if (!window.confirm(`${storage_code}번 창고를 정말 삭제하시겠습니까?`)) return;
 	
-		fetch(`${fetchURL.protocol}${fetchURL.url}/warehouse/deletebyStorageCode/${storage_code}`, {
+		fetch(`${fetchURL}/warehouse/deletebyStorageCode/${storage_code}`, {
 			method: "DELETE",
 		})
 		.then((res) => res.text())
@@ -58,21 +60,31 @@ const StorageDetail = () => {
 	return (
 		<div>
 			<MessageBox type="error" text={`창고 상세 - ${storage.storage_name}`} />
-			 <Container height={400} style={{margin: '0 auto', maxWidth : '760px'}}>
+			 <Container height={400} style={{margin: '0 auto', maxWidth : '1020px'}}>
 				<Table data={[storage]} height={400} bordered cellBordered autoHeight className="margin_0_auto detail_table" >
 					<Table.Column flexGrow={1}>
 						<Table.HeaderCell >창고코드</Table.HeaderCell>
 						<Table.Cell dataKey="storage_code" className='text_center'/>
 					</Table.Column>
 
-					<Table.Column flexGrow={1}>
+					<Table.Column flexGrow={2}>
 						<Table.HeaderCell>창고명</Table.HeaderCell>
-						<Table.Cell dataKey="storage_name" />
+						<Table.Cell dataKey="storage_name" className='text_center'/>
 					</Table.Column>
 
+					<Table.Column flexGrow={1}>
+						<Table.HeaderCell>우편번호</Table.HeaderCell>
+						<Table.Cell className='text_center' dataKey="storage_zone_code" />
+					</Table.Column>
+					
 					<Table.Column flexGrow={4}>
-						<Table.HeaderCell>창고 주소</Table.HeaderCell>
-						<Table.Cell dataKey="storage_location" />
+						<Table.HeaderCell>주소</Table.HeaderCell>
+						<Table.Cell dataKey="storage_base_address" />
+					</Table.Column>
+					
+					<Table.Column flexGrow={3}>
+						<Table.HeaderCell>상세주소</Table.HeaderCell>
+						<Table.Cell  className='text_center' dataKey="storage_detail_address" />
 					</Table.Column>
 				</Table>
 			</Container>

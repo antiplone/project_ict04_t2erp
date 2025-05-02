@@ -7,11 +7,10 @@ const { Column, HeaderCell, Cell } = Table;
 export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActionButtons }) => {
   return (
     <Table
-      autoHeight
+      height={400}
       virtualized={false}
       data={items}
       cellBordered
-      style={{ marginTop: '25px', marginBottom: '50px', border: '1px solid #EEEEEE' }}
     >
       {columns.map((col, index) => {
   
@@ -26,7 +25,11 @@ export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActi
       align={col.align || "center"}
       fixed={index === 0 ? "left" : undefined}
     >
-      <HeaderCell>{col.label || ""}</HeaderCell>
+      <HeaderCell>
+        <div style={{ textAlign: col.headerAlign || 'center', width: '100%' }}>
+          {col.label || ''}
+        </div>
+      </HeaderCell>
       <Cell>
         {(rowData, rowIndex) =>
           col.renderCell
@@ -38,7 +41,7 @@ export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActi
   );
 })}
 
-      <Column width={180} align="center" fixed="right">
+      <Column width={190} align="center" fixed="right">
         <HeaderCell>작업</HeaderCell>
         <Cell>
           {(rowData) => {

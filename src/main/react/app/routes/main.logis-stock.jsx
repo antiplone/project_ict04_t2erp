@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Button, Container, DateRangePicker, Input, InputGroup, Divider } from 'rsuite';
+import { Button, Container, DateRangePicker, Input, InputGroup, Divider, Loader } from 'rsuite';
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table';
 
 import Appconfig from "#config/AppConfig.json";
 import "#styles/common.css";
 import ItemSearchModal from "#components/logis/ItemSearchModal.jsx";
-import ClientSearchModal from "#components/logis/ClientSearchModal.jsx";
 import EmailFormModal from "#components/email/EmailFormModal.jsx";
 import StorageSearchModal from "#components/logis/StorageSearchModal.jsx";
 import readingGlasses from "#images/common/readingGlasses.png";
@@ -14,9 +13,11 @@ import MessageBox from '#components/common/MessageBox';
 
 
 const StockItemsList = () => {
-	const fetchURL = Appconfig.fetch['mytest']
+	const rawFetchURL = Appconfig.fetch["mytest"];
+	const fetchURL = rawFetchURL.protocol + rawFetchURL.url;
 	const [logisStockList, setLogisStockList] = useState([]);	// 초기값을 모르므로 빈배열로 logisStockList에 대입
 	const [orderDate, setOrderDate] = useState(null);			// 컬럼 정리 버튼
+	const [lading, setLoading] = useState(true);			// 컬럼 정리 버튼
 
 	const [sortColumn, setSortColumn] = React.useState();
 	const [sortType, setSortType] = React.useState();
@@ -39,7 +40,8 @@ const StockItemsList = () => {
 
 	// fetch()를 통해 서버에게 데이터를 요청
 	useEffect(() => { // 통신 시작 하겠다.
-		fetch(`${fetchURL.protocol}${fetchURL.url}/logisstock/logisStockList`, { // 스프링부트에 요청한다.
+    	setLoading(true)
+		fetch(`${fetchURL}/logisstock/logisStockList`, { // 스프링부트에 요청한다.
 			method: "GET" // "GET" 방식으로
 		}).then(
 			res => res.json() // 응답이 오면 javascript object로 바꾸겠다.
@@ -51,7 +53,8 @@ const StockItemsList = () => {
 		).catch(error => {
 			console.error("warehousing list:", error);
 			setLogisStockList([]); // 오류 시 빈 배열 설정
-		});
+		})
+    	setLoading(false)
 	}, []);
 
 
@@ -98,7 +101,7 @@ const StockItemsList = () => {
 		const query = new URLSearchParams(cleanedParams).toString();
 
 		try {
-			const res = await fetch(`${fetchURL.protocol}${fetchURL.url}/logisstock/logisStockSearch?${query}`);
+			const res = await fetch(`${fetchURL}/logisstock/logisStockSearch?${query}`);
 			const result = await res.json();
 			console.log('검색 결과:', result);
 			const validatedResult = Array.isArray(result) ? result : [];
@@ -164,7 +167,7 @@ const StockItemsList = () => {
 	return (
 		<div>
 			<MessageBox type="warning" text="재고 목록" />
-			<Container style={{ margin: '0 auto', maxWidth: '1480px' }}>
+			<Container style={{ margin: '0 auto', maxWidth: '1920px' }}>
 				<div className='main_table'>
 					<div className="inputBox">
 						<div className="input">
@@ -226,31 +229,31 @@ const StockItemsList = () => {
 						</Button>
 					</div>
 
-					<Divider style={{ width: '1480px' }} />
+					<Divider />
 
 					{/*<Table height={400} data={pagedData} sortColumn={sortColumn} sortType={sortType} onSortColumn={handleSortColumn} className='text_center'>*/}
-					<Table width={1470} height={400} data={stockListWithRowNum} sortColumn={sortColumn} sortType={sortType} onSortColumn={handleSortColumn} className='text_center'>
-						<Column width={100} align="center" fixed>
+					<Table width={1920} height={400} data={stockListWithRowNum} sortColumn={sortColumn} sortType={sortType} onSortColumn={handleSortColumn} className='text_center'>
+						<Column width={120} align="center" fixed>
 							<HeaderCell className='text_center'>번호</HeaderCell>
 							<Cell dataKey="row_num" className='text_center' />
 						</Column>
 
-						<Column width={100} align="center" fixed sortable>
+						<Column width={180} align="center" fixed sortable>
 							<HeaderCell className='text_center'>품목코드</HeaderCell>
 							<Cell dataKey="item_code" className='text_center' />
 						</Column>
 
-						<Column width={260}>
+						<Column width={400}>
 							<HeaderCell className='text_center'>품목명</HeaderCell>
 							<Cell dataKey="item_name" className='text_center' />
 						</Column>
 
-						<Column width={320}>
+						<Column width={340}>
 							<HeaderCell className='text_center'>품목 규격</HeaderCell>
 							<Cell dataKey="item_standard" className='text_center' />
 						</Column>
 
-						<Column width={100}>
+						<Column width={180}>
 							<HeaderCell className='text_center'>현 재고량</HeaderCell>
 							<Cell dataKey="stock_amount" className='text_center'>
 								{(rowData) => (
@@ -266,60 +269,38 @@ const StockItemsList = () => {
 							</Cell>
 						</Column>
 
-						<Column width={120}>
+						<Column width={180}>
 							<HeaderCell className='text_center'>안전 재고</HeaderCell>
 							<Cell dataKey="safe_stock" className='text_center' />
 						</Column>
 
-						<Column width={170} fixed sortable>
+						<Column width={200} fixed sortable>
 							<HeaderCell className='text_center'>최근 입고일</HeaderCell>
 							<Cell dataKey="last_date" className='text_center' />
 						</Column>
 
-						<Column width={170}>
+						<Column width={200}>
 							<HeaderCell className='text_center'>보관창고</HeaderCell>
 							<Cell dataKey="storage_name" className='text_center' />
 						</Column>
 
-						<Column width={120} fixed sortable>
+						<Column width={100} fixed sortable>
 							<HeaderCell className='text_center'>창고코드</HeaderCell>
 							<Cell dataKey="storage_code" className='text_center' />
 						</Column>
 					</Table>
 					
-					
-
-					{/*<Pagination
-					prev="이전"
-					next="다음"
-					first="첫 페이지"
-					last="마지막 페이지"
-					ellipsis="..."
-					boundaryLinks
-					maxButtons={5}
-					size="md"
-					layout={['total', '-', 'limit', '|', 'pager', 'skip']}
-					total={`${stockListWithRowNum.length}개`}
-					limit={limit}
-					limitOptions={[10, 30, 50]}
-					activePage={currentPage}
-					onChangePage={setPage}
-					onChangeLimit={handleChangeLimit}
-					style={{ justifyContent: 'center' }}
-					className='logis_pagination'
-				/>*/}
-
 					<br />
-					<div style={{ display: 'flex', margin: '10px' }}>
+					<div style={{ display: 'flex', margin: '10px'}}>
 						{/* Email Modal */}
-						<div width={50} height={50} style={{ marginRight: '20px' }}>
+						<div width={50} height={50} style={{ marginRight: '20px'}}>
 							<Button appearance="primary" onClick={handleOpenModal}>
 								이메일 보내기
 							</Button>
 						</div>
 
 						{/* EmailFormModal Component */}
-						<EmailFormModal open={modalOpen} onClose={() => handleCloseModal(false)} />
+						<EmailFormModal open={modalOpen} onClose={() => handleCloseModal(false)}/>
 					</div>
 				</div>
 			</Container>

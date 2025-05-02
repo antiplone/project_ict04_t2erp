@@ -112,7 +112,8 @@ public class SellAllListServiceImpl implements SellAllListService {
 	    // 상세 항목 추가/수정
 	    for (SellOrderItemDTO item : dto.getOrderItemList()) {
 	        item.setOrder_id(order_id);
-
+	        
+	        // 아이템 추가/수정 작업의 결과값
 	        int itemOpResult = 0;
 	        
 	        // 새로운 아이템 추가 시

@@ -268,7 +268,7 @@ ul.rs-dropdown-menu {
 }
 
 .BtnBoxLeftMargin {
-    margin-left: 10px;
+    margin-left: 10px !important;
 }
 
 .main_container{
@@ -296,4 +296,8 @@ ul.rs-dropdown-menu {
 .align_middle{
 	justify-content : center;
 	align-items : center !important;
+}
+
+.position_center{
+	top:70px;
 }

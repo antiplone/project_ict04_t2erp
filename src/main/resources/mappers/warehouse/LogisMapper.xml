@@ -14,8 +14,8 @@
    
 	<!-- 창고 등록 -->
 	<insert id="warehouseInsert" parameterType="com.spring.erp_ordit.dto.warehouse.LogisWarehouseDTO">
-		INSERT INTO warehouse_tbl(storage_name, storage_location)
-		VALUES(#{storage_name}, #{storage_location})
+		INSERT INTO warehouse_tbl(storage_name, storage_zone_code, storage_base_address, storage_detail_address)
+		VALUES(#{storage_name}, #{storage_zone_code}, #{storage_base_address}, #{storage_detail_address})
 	</insert>
 
 	<!-- 창고 상세 -->
@@ -27,7 +27,7 @@
 	<!-- 창고 수정 -->
 	<update id="updateWarehouse" parameterType="com.spring.erp_ordit.dto.warehouse.LogisWarehouseDTO">
 		UPDATE warehouse_tbl
-			SET storage_name=#{storage_name}, storage_location=#{storage_location}
+			SET storage_name=#{storage_name}, storage_zone_code=#{storage_zone_code}, storage_base_address=#{storage_base_address}, storage_detail_address=#{storage_detail_address}
 		WHERE storage_code = #{storage_code}
 	</update>
 
@@ -49,7 +49,9 @@
 				ot.transaction_type,
 				ot.storage_code,
 				wt.storage_name,
-				wt.storage_location,
+				wt.storage_zone_code,
+				wt.storage_base_address,
+				wt.storage_detail_address,
 		 		it.item_code,
 				oit.quantity,
 				it.item_name,
@@ -127,7 +129,9 @@
 		    ot.transaction_type as 'transaction_type',
 		    wt.storage_code  as 'storage_code',
 		    wt.storage_name  as 'storage_name',
-		    wt.storage_location  as 'storage_location',
+		    wt.storage_zone_code  as 'storage_zone_code',
+		    wt.storage_base_address  as 'storage_location',
+		    wt.storage_detail_address  as 'storage_location2',
 		    oit.item_code as 'item_code',
 		    oit.quantity as 'quantity',
 		    it.item_name as 'item_name',
@@ -197,7 +201,7 @@
 			oit.item_code, ot.order_id, et.e_id, dt.d_code
 	</select>
 	
-	<!-- 판매 전체 목록 조회 --> <!-- 나중에 바꿔야됨 -->
+	<!-- 판매 전체 목록 조회 -->
 	<select id="logisSalesList" resultType="com.spring.erp_ordit.dto.warehouse.LogisSalesDTO">
 		SELECT
 				ot.order_id,
@@ -207,7 +211,9 @@
 				ot.transaction_type,
 				wt.storage_code,
 				wt.storage_name,
-				wt.storage_location,
+				wt.storage_zone_code  as 'storage_zone_code',
+				wt.storage_base_address  as 'storage_location',
+				wt.storage_detail_address  as 'storage_location2',
 		 		it.item_code,
 				oit.quantity,
 				it.item_name,
@@ -248,7 +254,9 @@
 		ot.transaction_type as 'transaction_type',
 		wt.storage_code as 'storage_code',
 		wt.storage_name as 'storage_name',
-		wt.storage_location as 'storage_location',
+		wt.storage_zone_code  as 'storage_zone_code',
+		wt.storage_base_address  as 'storage_location',
+		wt.storage_detail_address  as 'storage_location2',
 		oit.item_code as 'item_code',
 		oit.quantity as 'quantity',
 		it.item_name as 'item_name',

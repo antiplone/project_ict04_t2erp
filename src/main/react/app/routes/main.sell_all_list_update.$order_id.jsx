@@ -361,7 +361,7 @@ const sell_all_list_update = (props) => {
 			<Form layout="horizontal">
 
 			{/* 입력 상위 칸 */}
-			<div className="add_final">
+			<div>
 				<div className="form_div">
 					<div className="add_div">
 						<InputGroup className="insert_input">
@@ -467,19 +467,19 @@ const sell_all_list_update = (props) => {
 				</div>
 
 					<ButtonToolbar>
-						<Button appearance="primary" onClick={handleAddRow}>
+						<Button appearance="ghost" onClick={handleAddRow}>
 							입력 추가하기
 						</Button>
 
-						<Button appearance="primary" type="submit" onClick={handleResetForm}>
+						<Button color="green" appearance="ghost" type="submit" onClick={handleResetForm}>
 							초기화
 						</Button>
 					</ButtonToolbar>
 
-						<hr />
+					<Divider />
 			</div>
 
-			<div className="updateItem">
+			<div>
 				{/* 입력 하위 칸 */}
 				{sellAdd.map((item, index) => (
                     <Form
@@ -610,15 +610,18 @@ const sell_all_list_update = (props) => {
                     </Form>
                 ))} </div>
 
-					<Divider style={{ maxWidth: 1500 }} />
+					<Divider />
 					
 					<div className="updateItem">
 						<div className="resultContainer">
 							<div className="resultBtn">
 							<ButtonToolbar >
-								<Button appearance="primary" onClick={submitSellUpInsert}>저장</Button>
-								<Button appearance="primary" onClick={handleResetForm}>다시 작성</Button>
-								<Button appearance="primary" onClick={allList}>목록</Button>
+								<Button appearance="ghost" onClick={submitSellUpInsert}>저장</Button>
+								<Button color="green" appearance="ghost" onClick={handleResetForm}>다시 작성</Button>
+								<Button style={{ border: '1px solid #22284C', color: '#22284C' }} 
+										appearance="ghost" onClick={allList}>
+									목록
+								</Button>
 							</ButtonToolbar>
 							</div>
 

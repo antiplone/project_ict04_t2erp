@@ -1,5 +1,5 @@
 import json
-import os
+import os        # 운영 체제와 상호작용할 수 있는 모듈입니다. 경로 설정, 디렉토리 존재 확인, 파일 목록 가져오기 등에 활용됩니다.
 import numpy as np
 import tensorflow as tf
 from datetime import datetime

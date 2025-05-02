@@ -65,7 +65,6 @@ const ChatRoom = () => {
       // 연결 성공하면
       onConnect: async () => {
         setIsConnected(true); // 연결상태 true 설정
-        setStompClient(client); // 전역에서 사용할 수 있도록 stompClient를 상태에 저장
 
         try {
           // 과거 채팅 내역 조회
@@ -81,8 +80,8 @@ const ChatRoom = () => {
           client.subscribe(`/topic/chat/${room_id}`, (message) => {
             const msg = JSON.parse(message.body);
 
-            setMessages(prev => [ // 새로 받은 메시지를 기존 메시지 리스트에 추가
-              ...prev,
+            setMessages(prevMessages  => [ // 새로 받은 메시지를 기존 메시지 리스트에 추가
+              ...prevMessages ,
               {
                 ...msg,
                 sender: msg.sender === senderId ? senderName : msg.sender,
@@ -90,21 +89,22 @@ const ChatRoom = () => {
               }
             ]);
           });
-
         } catch (err) {
           //console.error("채팅 내역 불러오기 실패:", err);
         }
       },
     });
 
+    setStompClient(client); // 전역에서 사용할 수 있도록 stompClient를 상태에 저장
     // WebSocket 연결 활성화 및 정리
     client.activate();  // activate() -> WebSocket 연결 시작
+
     return () => client.deactivate(); // deactivate() -> WebSocket 연결 정리
   }, [room_id]);
 
   // 메시지 보내기
   const sendMessage = () => {
-    if (!input || !stompClient || !isConnected) return;
+    if (!input || !stompClient || !stompClient.connected) return;
     
     const createdAt = new Date().toLocaleString("sv-SE", { timeZone: "Asia/Seoul" }).replace(" ", "T");
 
@@ -186,8 +186,6 @@ const ChatRoom = () => {
 
                     <div className={`chat-row ${isMe ? "right" : "left"}`}>  {/* 내 메시지는 오른쪽 정렬 */}
                       <div className={`chat-bubble ${isMe ? "mine" : "partner"}`}> {/* 상대 메시지는 왼쪽 정렬 */}
-                        
-                          <>
                             <div className="chatSender">{msg.sender}</div>
                             <div>{msg.content}</div>
                             <div className="createAT">
@@ -197,7 +195,6 @@ const ChatRoom = () => {
                                 hour12: true,
                               })}
                             </div>
-                          </>
                       </div>
                     </div>
                   </React.Fragment>

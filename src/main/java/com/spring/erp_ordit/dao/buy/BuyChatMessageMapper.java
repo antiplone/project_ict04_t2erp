@@ -26,7 +26,10 @@ public interface BuyChatMessageMapper { // 작성자 - hjy 물품정보 찾는 M
 	// 메시지 입력
 	public void insertMessage(BuyChatMessageDTO message); 
 	
-	// 채팅 내역 조회
+	// room_id에 대한 마지막 메시지 조회
+	public BuyChatMessageDTO selectLastInsertedMessageByRoom(String room_id);
+	
+	// 선택한 채팅방 내역 조회
 	public List<BuyChatMessageDTO> selectMessagesByRoomId(String room_id); 
 
 }

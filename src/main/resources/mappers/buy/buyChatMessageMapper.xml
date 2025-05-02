@@ -29,12 +29,19 @@
 	</insert>
 
 	<!-- 메시지 입력 -->
-	<insert id="insertMessage"
-		parameterType="com.spring.erp_ordit.dto.buy.BuyChatMessageDTO">
+	<insert id="insertMessage" parameterType="com.spring.erp_ordit.dto.buy.BuyChatMessageDTO" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO chat_message_tbl (room_id, sender, content, type, receiver,
 		created_at)
 		VALUES (#{room_id}, #{sender}, #{content}, #{type}, #{receiver}, #{created_at})
 	</insert>
+	
+	<!-- 마지막 조회한 채팅방 -->
+	<select id="selectLastInsertedMessageByRoom" resultType="com.spring.erp_ordit.dto.buy.BuyChatMessageDTO">
+	    SELECT * FROM chat_message_tbl
+	     WHERE room_id = #{room_id}
+	  ORDER BY created_at DESC
+	     LIMIT 1
+	</select>
 
 	<!-- 채팅 내역 조회 -->
 	<select id="selectMessagesByRoomId" parameterType="String" resultType="com.spring.erp_ordit.dto.buy.BuyChatMessageDTO">

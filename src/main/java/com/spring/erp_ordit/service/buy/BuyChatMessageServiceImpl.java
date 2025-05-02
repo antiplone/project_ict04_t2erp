@@ -26,10 +26,10 @@ public class BuyChatMessageServiceImpl { // 작성자 - hjy, 1:1 채팅 서비�
 	}
 	
 	// 메시지 저장
-	public void saveMessage(BuyChatMessageDTO message) {
+	public BuyChatMessageDTO saveMessage(BuyChatMessageDTO message) {
 		// JOIN 메시지는 저장하지 않음
 		if ("JOIN".equals(message.getType())) {
-			return; // 메시지 저장 없이 그냥 종료
+			return null; // 메시지 저장 없이 그냥 종료
 		}
 
 		// 채팅방이 없으면 생성
@@ -44,11 +44,18 @@ public class BuyChatMessageServiceImpl { // 작성자 - hjy, 1:1 채팅 서비�
 			paramMap.put("room_id", message.getRoom_id()); 
 			paramMap.put("user1_id", message.getSender());   // user1_id - 메시지 보낸사람
 			paramMap.put("user2_id", message.getReceiver()); // user2_id - 상대방
-
+			
+			// 채팅방 저장
 			buyChatMessageMapper.insertRoom(paramMap);
-		}
+		}	
+		
+		// CHAT 메시지만 저장
+		buyChatMessageMapper.insertMessage(message); 
 
-		buyChatMessageMapper.insertMessage(message); // CHAT 메시지만 저장
+		// 방금 저장한 메시지의 ID를 확인하고, 방금 저장한 메시지를 조회
+	    BuyChatMessageDTO savedMessage = buyChatMessageMapper.selectLastInsertedMessageByRoom(message.getRoom_id());
+
+	    return savedMessage; // 저장된 메시지 반환
 	}
 
 	// 사용자의 e_auth_id를 기준으로 room_id 생성

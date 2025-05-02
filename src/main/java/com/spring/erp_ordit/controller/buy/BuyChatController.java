@@ -34,8 +34,8 @@ public class BuyChatController {   // 작성자 hjy - 1:1 채팅 컨트롤러
 		// @Payload 화면에서 입력받은 json 데이터 자바 객체로 변환해서 받음
 		// @DestinationVariable URL의 {room_id} 값을 변수로 받음
 		
-		buyChatMessageService.saveMessage(chatMessage); // 메시지 저장
-		return chatMessage; // @SendTo 경로로 실시간 전송
+		BuyChatMessageDTO saved = buyChatMessageService.saveMessage(chatMessage); // 메시지 저장
+		return saved; // @SendTo 경로로 실시간 전송
 	}
 	
 	// 채팅 상대 선택시 직원 목록 조회 @GetMapping => http://localhost:8081/buy/chatEmployeeList

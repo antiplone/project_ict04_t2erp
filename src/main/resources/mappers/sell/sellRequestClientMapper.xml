@@ -21,8 +21,8 @@
     <insert id="insertClient" parameterType="com.spring.erp_ordit.dto.sell.SellRequestClientDTO"
     		useGeneratedKeys="true"
     		keyProperty="sc_id">
-    	INSERT INTO request_client_tbl (sc_req_d_name, sc_client_name, sc_ceo, sc_biz_num, sc_email, sc_tel, zone_code, base_address, detail_address, sc_type, sc_industry, sc_note)
-		VALUES (#{sc_req_d_name}, #{sc_client_name}, #{sc_ceo}, #{sc_biz_num}, #{sc_email}, #{sc_tel}, #{zone_code}, #{base_address}, #{detail_address}, #{sc_type}, #{sc_industry}, #{sc_note})
+    	INSERT INTO request_client_tbl (sc_date, sc_req_d_name, sc_client_name, sc_ceo, sc_biz_num, sc_email, sc_tel, zone_code, base_address, detail_address, sc_type, sc_industry, sc_note)
+		VALUES (#{sc_date}, #{sc_req_d_name}, #{sc_client_name}, #{sc_ceo}, #{sc_biz_num}, #{sc_email}, #{sc_tel}, #{zone_code}, #{base_address}, #{detail_address}, #{sc_type}, #{sc_industry}, #{sc_note})
     </insert>
     
     <!-- 결재 테이블 등록 -->

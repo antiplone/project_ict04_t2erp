@@ -17,6 +17,13 @@ export function meta() {
 	];
 };
 
+// 파비콘. 이미지는 public 폴더에 있습니다.
+export function links() {
+	return [
+	  	{ rel: "icon", type: "image/png", href: "/brand.png?v=2" } // 캐시 방지용 v=2 추가!
+	];
+}
+
 // @Remix:모듈함수 - 페이지가 처음 불려졌을때, 여기로 들어와서, 데이터를 가지고옵니다.
 clientLoader.hydrate = true;
 export async function clientLoader({ request/* or params */ }) {

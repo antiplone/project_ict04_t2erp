@@ -20,14 +20,7 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
   const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
   
   const { showToast } = useToast();
-
-  const [att, setAtt] = useState({
-    a_code: "",
-    a_name: "",
-    a_type: "",
-    a_use: "",
-    a_note: "",
-  });
+  const [att, setAtt] = useState({});
   const [formError, setFormError] = useState({});
 
   // editingRow 가 변경되면 useEffect 를 통해 모달 내부 폼을 초기화한다.
@@ -38,15 +31,15 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
     }
   }, [editingRow]);
 
-  // 사용자가 입력을 변경하면 handleChange 함수가 실행되어 입력값과 유효성 검사결과가 상태에 반영된다.
-  const handleChange = (formValue) => {
+  // 사용자가 입력을 변경하면 attChange 함수가 실행되어 입력값과 유효성 검사결과가 상태에 반영된다.
+  const attChange = (formValue) => {
     setAtt(formValue);
     const check = model.check(formValue);
     setFormError(check);
   };
 
   // 저장버튼을 누르면 서버에 PUT 요청을 보내고, 성공 시 onReloading 실행.
-  const handleSubmit = async () => {
+  const updateAtt = async () => {
     if (!att.a_code) {
       showToast(`수정할 항목이 없습니다.`, "warning");
       return;
@@ -68,8 +61,7 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
       if (result === "1") {
         showToast(`수정 완료되었습니다.`, "success");
         onClose();
-        // onReloading(); // fetcher로 테이블 재로딩
-        window.location.reload();
+        onReloading(); // fetcher로 테이블 재로딩
       } else {
         showToast(`수정에 실패했습니다.`, "error");
       }
@@ -80,15 +72,15 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
   };
 
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Modal open={isOpen} onClose={onClose} backdrop={false}>
       <Modal.Header>
-        <Modal.Title>근태 항목 수정</Modal.Title>
+        <Modal.Title>근태항목수정</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form fluid model={model} formValue={att} onChange={handleChange}>
+        <Form fluid model={model} formValue={att} onChange={attChange}>
           <Form.Group controlId="a_code">
             <Form.ControlLabel>근태코드</Form.ControlLabel>
-            <Form.Control name="a_code" value={att.a_code} disabled readOnly />
+            <Form.Control name="a_code" disabled readOnly />
           </Form.Group>
 
           <Form.Group controlId="a_name">
@@ -107,6 +99,7 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
               <Radio value="기본">기본</Radio>
               <Radio value="휴가">휴가</Radio>
               <Radio value="출/퇴근">출/퇴근</Radio>
+              <Radio value="기타">기타</Radio>
             </RadioGroup>
           </Form.Group>
 
@@ -130,7 +123,7 @@ const AttUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Btn text="저장" onClick={handleSubmit} size="sm" />
+        <Btn text="저장" onClick={updateAtt} size="sm" />
         <Btn text="취소" onClick={onClose} size="sm" style={{ color: "grey", borderColor: "grey" }} />
       </Modal.Footer>
     </Modal>

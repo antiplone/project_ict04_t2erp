@@ -11,11 +11,11 @@ import lombok.RequiredArgsConstructor;
 public class WeatherController {
 	
 	// @Autowired 은 서버 실행 중 문제가 터지고, final 은 서버 실행 전에 에러를 터트려서 문제를 더 빨리, 안전하게 발견가능
-    private final WeatherService weatherService;
+    private final WeatherService service;
 
     // http://localhost:8081/api/weather/today
     @GetMapping("/today")
     public String getTodayWeather() {
-        return weatherService.getTodayWeather();
+        return service.getTodayWeather();
     }
 }

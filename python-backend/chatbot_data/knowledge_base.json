@@ -202,5 +202,16 @@
 		"responses": [
 			"한국은 한국어 정식 명칭은 '대한민국' 영어로는 'KOREA'입니다."
 		]
+	},
+	"asset_management": {
+		"patterns": [
+			"날씨",
+			"WEATHER",
+			"구름",
+			"햇빛"
+		],
+		"responses": [
+			"날씨는 메인화면에서 볼 수 있습니다."
+		]
 	}
 }

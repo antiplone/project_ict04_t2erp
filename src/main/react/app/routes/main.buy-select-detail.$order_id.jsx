@@ -3,6 +3,7 @@
 import AppConfig from "#config/AppConfig.json";
 import React, { useEffect, useState } from "react";
 import "../styles/buy.css";
+import '../styles/common.css';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button, Container, Divider, Loader, Message, Placeholder, Table, toaster } from "rsuite";
 import { useToast } from '#components/common/ToastProvider';
@@ -88,10 +89,6 @@ export default function BuySelectDetail() {
       .catch(error => console.error("삭제 오류:", error));
   }
 
-  const styles = {
-    backgroundColor: '#f8f9fa',
-  };
-
   return (
     <>
       <Container>
@@ -106,50 +103,50 @@ export default function BuySelectDetail() {
             <br />
 
             {/* data={[orderInfo]} 여기만 대괄호를 준 이유는 orderInfo는 하나의 객체 단일 주문 정보이기 때문에 배열로 감싸줬음 => rsuite의 <Table data={...}>는 배열형태의 데이터를 요구함*/}
-            <Table height={100} width={1200} data={[orderInfo]}>
+            <Table height={100} data={[orderInfo]}>
 
-              <Column width={120} align="center">
-                <HeaderCell style={styles}>발주번호</HeaderCell>
+              <Column width={200} className='text_center'>
+                <HeaderCell className='text_center'>발주번호</HeaderCell>
                 <Cell dataKey="order_id" />
               </Column>
 
-              <Column width={120} align="center">
-                <HeaderCell style={styles}>발주일자</HeaderCell
+              <Column width={220} className='text_center'>
+                <HeaderCell className='text_center'>발주일자</HeaderCell
                 ><Cell dataKey="order_date" />
               </Column>
 
-              <Column width={120} align="center">
-                <HeaderCell style={styles}>구매요청 부서</HeaderCell>
+              <Column width={200} className='text_center'>
+                <HeaderCell className='text_center'>구매요청 부서</HeaderCell>
                 <Cell dataKey="order_type" />
               </Column>
 
-              <Column width={150} align="center">
-                <HeaderCell style={styles}>담당자명</HeaderCell>
+              <Column width={220} className='text_center'>
+                <HeaderCell className='text_center'>담당자명</HeaderCell>
                 <Cell dataKey="e_name" />
               </Column>
 
-              <Column width={150}>
-                <HeaderCell style={styles}>거래처명</HeaderCell>
+              <Column width={220} className='text_center'>
+                <HeaderCell className='text_center'>거래처명</HeaderCell>
                 <Cell dataKey="client_name" />
               </Column>
 
-              <Column width={150}>
-                <HeaderCell style={styles}>거래유형</HeaderCell>
+              <Column width={220} className='text_center'>
+                <HeaderCell className='text_center'>거래유형</HeaderCell>
                 <Cell dataKey="transaction_type" />
               </Column>
 
-              <Column width={150}>
-                <HeaderCell style={styles}>입고창고</HeaderCell>
+              <Column width={220} className='text_center'>
+                <HeaderCell className='text_center'>입고창고</HeaderCell>
                 <Cell dataKey="storage_name" />
               </Column>
 
-              <Column width={120} align="center">
-                <HeaderCell style={styles}>납기일자</HeaderCell>
+              <Column width={220} className='text_center'>
+                <HeaderCell className='text_center'>납기일자</HeaderCell>
                 <Cell dataKey="delivery_date" />
               </Column>
 
-              <Column width={120} align="center">
-                <HeaderCell style={styles}>진행상태</HeaderCell>
+              <Column width={200} className='text_center'>
+                <HeaderCell className='text_center'>진행상태</HeaderCell>
                 <Cell dataKey="order_status" />
               </Column>
 
@@ -161,54 +158,54 @@ export default function BuySelectDetail() {
             */}
             </Table>
 
-            <Divider style={{ maxWidth: 1200 }} />
+            <Divider />
 
-            <Table height={400} width={1200} data={orderItems}>
-              <Column width={120} align="center">
-                <HeaderCell style={styles}>물품코드</HeaderCell>
+            <Table height={400} data={orderItems}>
+              <Column width={200} className='text_center'>
+                <HeaderCell className='text_center'>물품코드</HeaderCell>
                 <Cell dataKey="item_code" />
               </Column>
 
-              <Column width={250}>
-                <HeaderCell style={styles}>물품명</HeaderCell>
+              <Column width={340} className='text_center'>
+                <HeaderCell className='text_center'>물품명</HeaderCell>
                 <Cell dataKey="item_name" />
               </Column>
 
-              <Column width={110} align="center">
-                <HeaderCell style={styles}>수량</HeaderCell>
+              <Column width={270} className='text_center'>
+                <HeaderCell className='text_center'>수량</HeaderCell>
                 <Cell dataKey="quantity" />
               </Column>
 
-              <Column width={180} align="right">
-                <HeaderCell style={styles}>단가</HeaderCell>
+              <Column width={270} className='text_right'>
+                <HeaderCell className='text_center'>단가</HeaderCell>
                 <Cell>
                   {priceData => new Intl.NumberFormat().format(priceData.price)}
                 </Cell>
               </Column>
 
-              <Column width={180} align="right">
-                <HeaderCell style={styles}>공급가액</HeaderCell>
+              <Column width={270} className='text_right'>
+                <HeaderCell className='text_center'>공급가액</HeaderCell>
                 <Cell>
                   {supplyData => new Intl.NumberFormat().format(supplyData.supply)}
                 </Cell>
               </Column>
 
-              <Column width={180} align="right">
-                <HeaderCell style={styles}>부가세</HeaderCell>
+              <Column width={270} className='text_right'>
+                <HeaderCell className='text_center'>부가세</HeaderCell>
                 <Cell>
                   {vatData => new Intl.NumberFormat().format(vatData.vat)}
                 </Cell>
               </Column>
 
-              <Column width={180} align="right">
-                <HeaderCell style={styles}>총액</HeaderCell>
+              <Column width={300} className='text_right'>
+                <HeaderCell className='text_center'>총액</HeaderCell>
                 <Cell>
                   {totalData => new Intl.NumberFormat().format(totalData.total)}
                 </Cell>
               </Column>
             </Table>
 
-            <Divider style={{ maxWidth: 1200 }} />
+            <Divider />
 
             <div className="buyBtnBox">
               <Link to={`/main/buy-order-update/${order_id}`}>

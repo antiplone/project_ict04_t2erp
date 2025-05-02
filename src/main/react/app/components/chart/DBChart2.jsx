@@ -11,24 +11,6 @@ function DBChart2({ data, selectedFunction, onSearch }) {
 	const [startDate, setStartDate] = useState('');
 	const [endDate, setEndDate] = useState('');
 
-	// 컴포넌트 내부
-	useEffect(() => {
-		if (startDate && endDate) {
-			onSearch(startDate, endDate);
-		}
-	}, [startDate, endDate]);
-	
-	useEffect(() => {
-		console.log('받은 데이터:', data); 
-		if (!startDate && !endDate && data.length > 0) {
-			const dates = data.map(d => new Date(d.delivery_date));
-			const minDate = new Date(Math.min(...dates));
-			const maxDate = new Date(Math.max(...dates));
-			setStartDate(minDate.toISOString().slice(0, 10));
-			setEndDate(maxDate.toISOString().slice(0, 10));
-		}
-	}, [data]);
-
 	if (!data || data.length === 0) {
 		return <div>조회된 데이터가 없습니다.</div>;
 	}
@@ -52,7 +34,7 @@ function DBChart2({ data, selectedFunction, onSearch }) {
 	}));
 
 	const pieData = formattedData.map(item => ({
-		name: isOrderCount ? item.date : `${item.item_name} (${item.date})`,
+		name: isOrderCount ? item.date : `${item.item_name}`,
 		value: item.value,
 	}));
 
@@ -113,18 +95,17 @@ function DBChart2({ data, selectedFunction, onSearch }) {
 				</label>
 			</div>
 
-			{/* 막대 차트 */}
-			<h4>{label} 차트</h4>
+
 			
 			{/* 원형 차트 */}
-			<h4>{label} 비율 (Pie Chart)</h4>
+			<h4 style={{ textAlign: 'center' }}>{label} 비율 (Pie Chart)</h4>
 			<PieChart width={600} height={selectedFunction === 'count' ? 300 : 400} style={{ margin: '0 auto' }}>
 				<Pie
 					data={pieData}
 					cx="50%"
 					cy="50%"
 					labelLine={false}
-					label={({ name, value, percent }) => `${name} ${value}건, "${(percent * 100).toFixed(1)}%"`}
+					label={({ name, value, percent }) => `${name}, ${value}건, "${(percent * 100).toFixed(1)}%"`}
 					outerRadius={80}
 					fill="#8884d8"
 					dataKey="value"
@@ -139,14 +120,20 @@ function DBChart2({ data, selectedFunction, onSearch }) {
 				<Tooltip />
 				<Legend />
 			</PieChart>
-			
-			<BarChart width={700} height={selectedFunction === 'count' ? 400 : 600 } data={formattedData} style={{ margin: '20px auto 5px' }}>
+			<br />
+			<br />
+			{/* 막대 차트 */}
+			<h4 style={{ textAlign: 'center' }}>{label} 차트</h4>
+			<BarChart width={700} height={selectedFunction === 'count' ? 300 : 400 } data={formattedData} style={{ margin: '20px auto 5px' }}>
 				<CartesianGrid strokeDasharray="3 3" />
 				<XAxis
 					dataKey={selectedFunction === 'count' ? "date" : "item_name"}
 					tick={selectedFunction === 'count' ? { angle: 0, textAnchor: 'middle' } : false}
 				/>
-				<YAxis />
+				<YAxis 
+					domain={[0, 'dataMax + 1']}
+					allowDecimals={false}
+				/>
 				<Tooltip />
 				<Legend />
 				<Bar dataKey="value" name={label}>

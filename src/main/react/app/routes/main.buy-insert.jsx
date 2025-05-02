@@ -307,7 +307,7 @@ export default function BuyInsert() {
                 </Button>
             </div>
 
-            <Divider style={{maxWidth: 1400}}/>
+            <Divider/>
 
             {/* 거래처 모달 관리 */}
             <ClientSearchModal
@@ -356,8 +356,8 @@ export default function BuyInsert() {
 
             <hr />
 
-            <Table height={400} data={orderItems} style={{ maxWidth: 1400, marginTop: -40 }}>
-                <Column width={170} align="center">
+            <Table height={400} data={orderItems} style={{ marginTop: -40 }}>
+                <Column width={250} align="center">
                     <HeaderCell>물품코드</HeaderCell>
                     <EditableCell
                         dataKey="item_code"
@@ -370,43 +370,43 @@ export default function BuyInsert() {
                     />
                 </Column>
 
-                <Column width={170} className='text_center'>
+                <Column width={250} className='text_center'>
                     <HeaderCell className='text_center'>물품명</HeaderCell>
                     <EditableCell dataKey="item_name" onChange={handleChange} editable />
                 </Column>
 
-                <Column width={160} className='text_center'>
+                <Column width={200} className='text_center'>
                     <HeaderCell className='text_center'>수량</HeaderCell>
                     <EditableNumberCell dataKey="quantity" onChange={handleChange} editable />
                 </Column>
 
-                <Column width={160} className='text_center'>
+                <Column width={250} className='text_center'>
                     <HeaderCell className='text_center'>단가</HeaderCell>
                     <EditableNumberCell dataKey="price" onChange={handleChange} editable />
                 </Column>
 
-                <Column width={160} className='text_right'>
+                <Column width={250} className='text_right'>
                     <HeaderCell className='text_center'>공급가액</HeaderCell>
                     <Cell>
                         {supplyData => new Intl.NumberFormat().format(supplyData.supply)}
                     </Cell>
                 </Column>
 
-                <Column width={160} className='text_right'>
+                <Column width={250} className='text_right'>
                     <HeaderCell className='text_center'>부가세</HeaderCell>
                     <Cell>
                         {vatData => new Intl.NumberFormat().format(vatData.vat)}
                     </Cell>
                 </Column>
 
-                <Column width={160} className='text_right'>
+                <Column width={250} className='text_right'>
                     <HeaderCell className='text_center'>금액합계</HeaderCell>
                     <Cell>
                         {totalData => new Intl.NumberFormat().format(totalData.total)}
                     </Cell>
                 </Column>
 
-                <Column width={180} className='text_center'>
+                <Column width={220} className='text_center'>
                     <HeaderCell className='text_center'>삭제</HeaderCell>
                     <Cell>
                         {rowData => (
@@ -423,7 +423,7 @@ export default function BuyInsert() {
                 </Column>
             </Table>
 
-            <Divider style={{maxWidth: 1400}}/>
+            <Divider/>
             <div className="insertTotalSum">총액 합계: {totalSum.toLocaleString()} 원</div>
             <div style={{ display: 'flex', marginLeft: 10 }}>
                 <Button appearance="ghost" onClick={handleSubmit}>저장</Button>

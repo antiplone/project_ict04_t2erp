@@ -18,8 +18,8 @@ const { Column, HeaderCell, Cell } = Table;
  */
 const Component = ({ opener, dataState, rowState }) => {
 
-	const loadTasks = useState(false);
-	const [ loadTask, setLoadTask ] = loadTasks;
+	const loadTaskstt = useState(false);
+	const [ loadTask, setLoadTask ] = loadTaskstt;
 	const [ data ] = dataState;
 	const [ , setVoucher ] = rowState;
 	let rowLoading = [];

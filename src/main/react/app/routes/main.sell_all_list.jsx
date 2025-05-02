@@ -244,7 +244,7 @@ const sell_all_list = () => {
 				<Cell>
 				{(rowData) => (
 					<Button
-					color="yellow"
+					color="green"
 					appearance="ghost"
 					size="xs"
 					onClick={() => {
@@ -267,7 +267,7 @@ const sell_all_list = () => {
 				<Cell dataKey="order_id">
 					{rowData => (
 						<Button
-						color="green"
+						color="yellow"
 						appearance="ghost"
 						size="xs"
 						onClick={() => {

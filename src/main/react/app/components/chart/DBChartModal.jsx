@@ -11,25 +11,25 @@ const DBChartModal = ({ open, onClose }) => {
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = async (startDate, endDate) => {
+	setLoading(true);
+  	const endpoint = selectedFunction === 'count' ? '/api/sales/count' : '/api/sales/items';
     try {
-      setLoading(true);
-      const endpoint = selectedFunction === 'count' ? '/api/sales/count' : '/api/sales/items';
-
-      const response = await axios.get(`http://localhost:8000${endpoint}`);
-      
+      const response = await axios.get(`http://localhost:8000${endpoint}`,{
+		  params: {
+			  start_date: startDate,
+			  end_date: endDate,
+		  },
+	  });
       console.log("response => ", response.data);
-      
       if (response.data.status === "success") {
         setChartData(response.data.data);
       } else {
-        console.error("Server Error:", response.data.message);
         showToast("Server Error: " + response.data.message, 'error');
       }
     } catch (err) {
-      console.error("Axios Error:", err);
+		showToast("Axios Error:", err);
       if (err.response) {
-        console.error("Response Error:", err.response.data);
         showToast("Request failed: " + err.response.data.detail, 'error');
       } else {
         showToast("An unknown error occurred", 'error');
@@ -60,7 +60,15 @@ const DBChartModal = ({ open, onClose }) => {
           <Radio value="count">날짜별 출고 처리건수</Radio>
           <Radio value="items">품목별 처리건수</Radio>
         </RadioGroup>
-        {loading ? <Loader center content="로딩 중..." /> : <DBChart data={chartData} selectedFunction={selectedFunction} />}
+        {loading 
+        	?
+        	<Loader center content="로딩 중..." />
+        	:
+        	<DBChart
+        		data={chartData}
+        		selectedFunction={selectedFunction}
+    			onSearch={(startDate, endDate) => fetchData(startDate, endDate)}
+    		/>}
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={onClose} appearance="subtle">

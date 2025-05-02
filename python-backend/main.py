@@ -1,5 +1,6 @@
 import joblib
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
+from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from transformers import pipeline
@@ -76,14 +77,17 @@ async def export_training_data(format: str = "json"):
         raise HTTPException(status_code=500, detail=str(e))
         
 @app.get("/api/order/count")
-async def fetch_order_count():
+async def fetch_order_count(
+    start_date: Optional[str] = Query(None),
+    end_date: Optional[str] = Query(None)
+):
     try:
-        data = get_order_count() # db_connector.py에서 데이터를 가져온다.
+        data = get_order_count(start_date=start_date, end_date=end_date) # db_connector.py에서 데이터를 가져온다.
         if not data:
             raise HTTPException(status_code=404, detail="No data found")
         return {"status": "success", "data": data}
     except Exception as e:
-        logging.error("Error fetching order count: {{traceback.format_exc()}")  # 오류 로그 추가
+        logging.error("Error fetching order count: " + traceback.format_exc())  # 오류 로그 추가
         raise HTTPException(status_code=500, detail="DB 조회 중 오류 발생: " + str(e))
         
 @app.get("/api/order/items")
@@ -97,9 +101,12 @@ async def fetch_order_items():
         raise HTTPException(status_code=500, detail="DB 조회 중 오류 발생: " + str(e))
         
 @app.get("/api/sales/count")
-async def fetch_sales_count():
+async def fetch_sales_count(
+    start_date: Optional[str] = Query(None),
+    end_date: Optional[str] = Query(None)
+):
     try:
-        data = get_sales_count()  # db_connector.py에서 데이터를 가져온다.
+        data = get_sales_count(start_date=start_date, end_date=end_date)  # db_connector.py에서 데이터를 가져온다.
         if not data:
             raise HTTPException(status_code=404, detail="No data found")
         return {"status": "success", "data": data}

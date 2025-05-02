@@ -268,7 +268,7 @@ ul.rs-dropdown-menu {
 }
 
 .BtnBoxLeftMargin {
-    margin-left: 10px;
+    margin-left: 10px !important;
 }
 
 .main_container{

@@ -1,16 +1,39 @@
 import React, { useState } from "react";
-import { Button, Form, Message } from "rsuite";
+import { Button, Container, Form, Message } from "rsuite";
 import { useNavigate } from "react-router-dom";
 import Appconfig from "#config/AppConfig.json";
+import { useDaumPostcodePopup } from 'react-daum-postcode';
 import "#components/common/css/common.css";
+import "#components/common/css/warehouseform.css";
 
 const WarehousSave = () => {
 	const fetchURL = Appconfig.fetch['mytest']
 	const navigate = useNavigate();
 	const [storage, setStorage] = useState({
       storage_name: "",
-      storage_location: ""
+      storage_zone_code: "",
+      storage_base_address: "",
+      storage_detail_address: ""
 	});
+
+	const open = useDaumPostcodePopup("https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
+	
+	const handleAddress = () => {
+		open({
+			onComplete: (data) => {
+				let baseAddress = data.address;
+				let extra = data.bname || '';
+				if (data.buildingName) extra += `, ${data.buildingName}`;
+				if (extra) baseAddress += ` (${extra})`;
+				setStorage(prev => ({
+					...prev,
+					storage_zone_code: data.zonecode,
+					storage_base_address: baseAddress,
+					storage_detail_address: ""
+				}));
+			}
+		});
+	};
 
 	const changeValue = (value, event) => {
       setStorage((prev) => ({
@@ -37,7 +60,7 @@ const WarehousSave = () => {
          });
 
          if (response.status === 201) {
-			alert("창고 등록에 설공했습니다.");
+			alert("창고 등록에 성공했습니다.");
             navigate("/main/logis-warehouse");
          } else {
             alert("창고 등록에 실패했습니다.");
@@ -52,48 +75,73 @@ const WarehousSave = () => {
 		   <Message type="error" className="main_title">
 			   창고 등록
 		   </Message>
-         <Form
-            fluid
-            onChange={setStorage}
-            formValue={storage}
-            className="text_center"
-         >
-            <Form.Group controlId="storage_code" className="display_flex">
-               <div className="div_left">
-      				창고코드
-			   </div>
-               <div className="div_input_save text_left">
-      				창고코드는 자동 생성됩니다.
-			   </div>
-            </Form.Group>
+			<Container style={{margin: '0 auto', maxWidth : '800px', alignItems : 'center'}}>
+			   <Form
+				   fluid
+				   onChange={setStorage}
+				   formValue={storage}
+				   className="storage-form"
+			   >
+				   <Form.Group controlId="storage_code" className="form-row" width={600}>
+					   <div className="form-label">창고코드</div>
+					   <div className="form-value">창고코드는 자동 생성됩니다.</div>
+				   </Form.Group>
 
-            <Form.Group controlId="storage_name" className="display_flex">
-               <Form.ControlLabel>창고명</Form.ControlLabel>
-               <Form.Control
-                  name="storage_name"
-                  placeholder="창고명을 입력하세요"
-                  onChange={changeValue}
-               />
-            </Form.Group>
+				   <Form.Group controlId="storage_name" className="form-row">
+					   <Form.ControlLabel className="form-label">창고명</Form.ControlLabel>
+					   <Form.Control
+						   name="storage_name"
+						   placeholder="창고명을 입력하세요"
+						   onChange={changeValue}
+						   className="form-input"
+					   />
+				   </Form.Group>
+					 <Form.Group>
+                          <Form.ControlLabel>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span>주소</span>
+                              <Button size="xs" appearance="ghost" onClick={handleAddress}>
+                                우편번호 검색
+                              </Button>
+                            </div>
+                          </Form.ControlLabel>
 
-            <Form.Group controlId="storage_location" className="display_flex">
-               <Form.ControlLabel>창고 주소</Form.ControlLabel>
-               <Form.Control
-                  name="storage_location"
-                  placeholder="창고 주소를 입력하세요"
-                  onChange={changeValue}
-               />
-            </Form.Group>
-         </Form>
-         
-         <Button 
-            appearance="primary" 
-            onClick={submitStorage}  
-            className="text_center margin_0_auto display_block" 
-            style={{ display: 'block' }}
-         >
-            창고 등록
-         </Button>
+                          {/* 우편번호 */}
+                          <Form.Control
+                            name="storage_zone_code"
+                            onChange={val => setStorage({ ...prev, storage_zone_code: val })}
+                            style={{ marginBottom: 8 }}
+                            placeholder="우편번호를 입력하세요"
+                          />
+
+                          {/* 기본주소 */}
+                          <Form.Control
+                            name="storage_base_address"
+                            onChange={val => setStorage({ ...prev, storage_base_address: val })}
+                            style={{ marginBottom: 8 }}
+                            placeholder="주소를 입력하세요"
+                          />
+
+                          {/* 상세주소 */}
+                          <Form.Control
+                            name="storage_detail_address"
+                            onChange={val => setStorage({ ...prev, storage_detail_address: val })}
+                            placeholder="상세주소를 입력하세요"
+                          />
+                        </Form.Group>
+			   </Form>
+
+				<div>
+				   <Button
+					   appearance="primary"
+					   onClick={submitStorage}
+					   className="text_center margin_0_auto display_block"
+					   style={{ display: 'block' }}
+				   >
+					   창고 등록
+				   </Button>
+			   </div>
+         </Container>
       </div>
    );
 };

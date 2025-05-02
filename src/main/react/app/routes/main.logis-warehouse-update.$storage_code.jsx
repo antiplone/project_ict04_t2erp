@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { /* Link, */ Link, useNavigate, useParams } from '@remix-run/react';
 import { Button, Form, Message } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
-import '#styles/warehouse.css';
+import { useDaumPostcodePopup } from 'react-daum-postcode';
+import '#components/common/css/warehouseform.css';
 import "#components/common/css/common.css";
 
 const StorageUpdate = () => {
-	const fetchURL = Appconfig.fetch['mytest']
+	const rawURL = Appconfig.fetch['mytest']
+	const fetchURL = rawURL.protocol + rawURL.url
 
     const propsParam = useParams();
     const storage_code = propsParam.storage_code;
@@ -14,18 +16,38 @@ const StorageUpdate = () => {
 
     console.log("storage_code : ", storage_code)
 
-    const [storage, setStorageDetail] = useState({
-        storage_code: '',
-        storage_name: '',
-        storage_location: ''
-    });
+	const [storage, setStorage] = useState({
+      storage_name: "",
+      storage_zone_code: "",
+      storage_base_address: "",
+      storage_detail_address: ""
+	});
 
+	const open = useDaumPostcodePopup("https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
+	
+	const handleAddress = () => {
+		open({
+			onComplete: (data) => {
+				let baseAddress = data.address;
+				let extra = data.bname || '';
+				if (data.buildingName) extra += `, ${data.buildingName}`;
+				if (extra) baseAddress += ` (${extra})`;
+				setStorage(prev => ({
+					...prev,
+					storage_zone_code: data.zonecode,
+					storage_base_address: baseAddress,
+					storage_detail_address: ""
+				}));
+			}
+		});
+	};
+	
     useEffect(() => {
-        fetch(`${fetchURL.protocol}${fetchURL.url}/warehouse/findByStoragecode/${storage_code}`)
+        fetch(`${fetchURL}/warehouse/findByStoragecode/${storage_code}`)
             .then(res => res.json())
             .then(res => {
                 console.log("res : ", res)
-                setStorageDetail(prevState => ({
+                setStorage(prevState => ({
                     ...prevState,
                     ...res // 기존 상태 유지 + 새 데이터 업데이트
                 }));
@@ -42,27 +64,21 @@ const StorageUpdate = () => {
         const name = event.target.name;
         // console.log(value);
         // console.log(name);
-        setStorageDetail(prevState => ({
-            ...prevState,
-            [name]: value
+		setStorage(prevState => ({
+			...prevState,
+			[event.target.name]: value,
         }));
     };
 
     const submitStorage = (e) => {
         if (e && e.preventDefault) e.preventDefault(); // e가 없을 경우 방어 코드 추가
 
-        if (!storage.storage_name || !storage.storage_location) {
+        if (!storage.storage_name || !storage.storage_zone_code || !storage.storage_base_address || !storage.storage_detail_address) {
             alert("모든 필수 정보를 입력해주세요.");
             return;
         }
         
-/*        const query = new URLSearchParams({
-			storage_code: storage.storage_code,
-            storage_name: storage.storage_name,
-            storage_location: storage.storage_location,
-        }).toString();*/
-
-		fetch(`${fetchURL.protocol}${fetchURL.url}/warehouse/warehouseUpdate`, {
+		fetch(`${fetchURL}/warehouse/warehouseUpdate`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json; charset=UTF-8", // utf-8 오타 수정
@@ -90,23 +106,76 @@ const StorageUpdate = () => {
 			<Message type="error" className="main_title">
 				창고 정보 수정
 			</Message>
-            <Form className="custom_form text_center"> {/* submit 버튼 클릭 시 submitBoard 함수 호출, onClick으로 해도 된다.*/}
-                <Form.Group className="mb-3 display_flex" controlId="storage_code">
-                    <Form.ControlLabel>창고코드</Form.ControlLabel>
-                    <Form.Control type="text" name="storage_code" value={storage.storage_code} readOnly />
-                </Form.Group>
+			<Form className="storage-form">
+				{/* 창고코드 */}
+				<div className="form-row">
+					<label className="form-label">창고코드</label>
+					<div className="form-value">창고코드는 자동 생성됩니다.</div>
+				</div>
 
-                <Form.Group className="mb-3 display_flex" controlId="storage_name">
-                    <Form.ControlLabel>창고명</Form.ControlLabel>
-                    <Form.Control type="text" placeholder="창고명을 입력하세요" onChange={changeValue} name="storage_name" value={storage.storage_name} />
-                </Form.Group>
+				{/* 창고명 */}
+				<div className="form-row">
+					<label htmlFor="storage_name" className="form-label">창고명</label>
+					<input
+						type="text"
+						id="storage_name"
+						name="storage_name"
+						className="form-input"
+						placeholder="창고명을 입력하세요"
+						value={storage.storage_name}
+						onChange={e => setStorage({ ...storage, storage_name: e.target.value })}
+					/>
+				</div>
 
-                <Form.Group className="mb-3 display_flex" controlId="storage_location">
-                    <Form.ControlLabel>창고 주소</Form.ControlLabel>
-                    <Form.Control type="text" placeholder="창고 주소를 입력하세요" onChange={changeValue} name="storage_location" value={storage.storage_location} />
-                </Form.Group>
+				{/* 우편번호 */}
+				<div className="form-row">
+					<label htmlFor="storage_zone_code" className="form-label">우편번호</label>
+					<div style={{ display: 'flex', gap: '8px' }}>
+						<input
+							type="text"
+							id="storage_zone_code"
+							name="storage_zone_code"
+							className="form-input"
+							placeholder="우편번호를 입력하세요"
+							value={storage.storage_zone_code}
+							onChange={e => setStorage({ ...storage, storage_zone_code: e.target.value })}
+							style={{ flex: 1 }}
+						/>
+						<Button size="xs" appearance="ghost" onClick={handleAddress}>
+							우편번호 검색
+						</Button>
+					</div>
+				</div>
 
-            </Form>
+				{/* 기본주소 */}
+				<div className="form-row">
+					<label htmlFor="storage_base_address" className="form-label">기본주소</label>
+					<input
+						type="text"
+						id="storage_base_address"
+						name="storage_base_address"
+						className="form-input"
+						placeholder="주소를 입력하세요"
+						value={storage.storage_base_address}
+						onChange={e => setStorage({ ...storage, storage_base_address: e.target.value })}
+					/>
+				</div>
+
+				{/* 상세주소 */}
+				<div className="form-row">
+					<label htmlFor="storage_detail_address" className="form-label">상세주소</label>
+					<input
+						type="text"
+						id="storage_detail_address"
+						name="storage_detail_address"
+						className="form-input"
+						placeholder="상세주소를 입력하세요"
+						value={storage.storage_detail_address}
+						onChange={e => setStorage({ ...storage, storage_detail_address: e.target.value })}
+					/>
+				</div>
+			</Form>
+
             <div className='display_flex'>
                 <Button appearance="primary" type="submit" onClick={submitStorage}>
                     수정 완료

@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { Modal } from "rsuite";
-import AppConfig from "#config/AppConfig.json";
+import Appconfig from "#config/AppConfig.json";
 import axios from "axios";
 import styles from "#styles/emailstyle.module.css"; // email style import
 
 const EmailFormModal = ({ open, onClose }) => {
-	const rawFetchURL = AppConfig.fetch["mytest"];
-	const fetchURL =
-		typeof rawFetchURL === "string"
-			? rawFetchURL
-			: `${rawFetchURL.protocol}${rawFetchURL.url}`;
+	const rawFetchURL = Appconfig.fetch["mytest"];
+	const fetchURL = rawFetchURL.protocol + rawFetchURL.url;
 
 	const [to, setTo] = useState("");
 	const [subject, setSubject] = useState("");

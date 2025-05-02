@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from '@remix-run/react';
-import { Button, Container, Table } from 'rsuite';
+import { Button, Container, Loader, Table } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
 import "#components/common/css/common.css";
 import MessageBox from '../components/common/MessageBox';
 
 const OrderItemList = () => {
 	const fetchURL = Appconfig.fetch['mytest']
+	const [loading, setLoading] = useState(true);	// 로딩중일때
     const { order_id } = useParams();
     const [orderItemList, setOrderItemList] = useState([]); // 초기값을 모르므로 빈배열로 orderItemList에 대입
     const [orderAmounts, setOrderAmounts] = useState({}); // 주문 수량 저장
@@ -18,14 +19,19 @@ const OrderItemList = () => {
             console.error("order_id가 없습니다.");
             return;
         }
-
+		setLoading(true);
 	/* fetch(`http://localhost:8081/logisorder/orderDetail/` + order_id)*/
         fetch(`${fetchURL.protocol}${fetchURL.url}/logisorder/orderDetail/` + order_id)
             .then(res => res.json())
             .then(res => {
 				setOrderItemList(res || []);
 			})
-            .catch(err => console.error('Error fetching orderDetail:', err));
+            .catch(err =>{ 
+            	console.error('Error fetching orderDetail:', err)
+            })
+            .finally(() => {
+            	setLoading(false);
+        	});
     }, [order_id]);
 	
     const toggleSelection = (item_code, isConfirmed) => {
@@ -153,10 +159,15 @@ const OrderItemList = () => {
     return (
         <div>
         	<MessageBox type="success" className="main_title"  text={`주문 상세 목록 (주문 번호 : ${order_id})`} />
-            <Container style={{margin: '0 auto', maxWidth : '1480px'}}>
+            <Container style={{margin: '0 auto', maxWidth : '1920px'}}>
                 <br />
-                <Table width={1450} data={orderItemList} className='text_center'>
-	                <Table.Column width={100} align="center">
+				{loading ? (
+					<div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+						<Loader size="md" content="데이터를 불러오는 중입니다..." />
+					</div>
+				) : (
+                <Table bordered width={1920} height={400} data={orderItemList} className='rs-table-bordered text_center'>
+	                <Table.Column width={80} align="center">
 	                    <Table.HeaderCell>
 	                        <input
 	                            type="checkbox"
@@ -167,7 +178,7 @@ const OrderItemList = () => {
 								}
 	                        />
 	                    </Table.HeaderCell>
-	                    <Table.Cell>
+	                    <Table.Cell >
 	                        {rowData => (
 	                            <input
 	                                type="checkbox"
@@ -179,17 +190,22 @@ const OrderItemList = () => {
 	                    </Table.Cell>
 	                </Table.Column>
 
-                    <Table.Column width={100}>
+                    <Table.Column width={180}>
                         <Table.HeaderCell className='text_center'>품목코드</Table.HeaderCell>
                         <Table.Cell dataKey="item_code" />
                     </Table.Column>
 
-                    <Table.Column width={260}>
+                    <Table.Column width={400}>
                         <Table.HeaderCell className='text_center'>품목명</Table.HeaderCell>
                         <Table.Cell dataKey="item_name" />
                     </Table.Column>
+                    
+                    <Table.Column width={340}>
+                        <Table.HeaderCell >규격</Table.HeaderCell>
+                        <Table.Cell dataKey="item_standard" className='text_left' />
+                    </Table.Column>
 
-                    <Table.Column width={100}>
+                    <Table.Column width={180}>
                         <Table.HeaderCell className='text_center'>판매수량</Table.HeaderCell>
                         <Table.Cell dataKey="quantity" />
                     </Table.Column>
@@ -221,19 +237,15 @@ const OrderItemList = () => {
 						</Table.Cell>
 					</Table.Column>
 
-                    <Table.Column width={320}>
-                        <Table.HeaderCell>규격</Table.HeaderCell>
-                        <Table.Cell dataKey="item_standard" />
-                    </Table.Column>
                     
-					<Table.Column width={200}>
+					<Table.Column width={220}>
 						<Table.HeaderCell className='text_center'>입고 상태</Table.HeaderCell>
 						<Table.Cell>
 							{renderIncomeConfirmCell}
 						</Table.Cell>
 					</Table.Column>
 
-                    <Table.Column width={150} style={{ padding: '6px' }}>
+                    <Table.Column width={160} style={{ padding: '6px' }}>
                         <Table.HeaderCell className='text_center'>창고 상세보기</Table.HeaderCell>
                         <Table.Cell dataKey="order_id">
                             {(rowData) => (
@@ -245,11 +257,17 @@ const OrderItemList = () => {
                         </Table.Cell>
                     </Table.Column>
                     
-                     <Table.Column width={100}>
+                     <Table.Column width={120}>
                         <Table.HeaderCell className='text_center'>입고 창고 코드</Table.HeaderCell>
                         <Table.Cell dataKey="storage_code" />
                     </Table.Column>
+                    
+                     <Table.Column width={120}>
+                        <Table.HeaderCell className='text_center'>입고 창고 명</Table.HeaderCell>
+                        <Table.Cell dataKey="storage_name" />
+                    </Table.Column>
                 </Table>
+                )}
                 
 				<div className='display_flex'>
 					<Button

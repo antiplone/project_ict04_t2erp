@@ -90,14 +90,14 @@ function DBChart({ data, selectedFunction }) {
       </div>
 
 		 {/* 원형 차트 */}
-      <h4>{label} 비율 (Pie Chart)</h4>
+      <h4 style={{ textAlign: 'center' }}>{label} 비율 (Pie Chart)</h4>
       <PieChart width={600} height={selectedFunction === 'count' ? 300 : 400} style={{ margin: '0 auto' }}>
         <Pie
           data={pieData}
           cx="50%"
           cy="50%"
           labelLine={false}
-          label={({ name, value, percent }) => `${name} ${value}건, "${(percent * 100).toFixed(1)}%"`}
+          label={({ name, value, percent }) => `${name}, ${value}건, "${(percent * 100).toFixed(1)}%"`}
           outerRadius={80}
           fill="#8884d8"
           dataKey="value"
@@ -112,16 +112,20 @@ function DBChart({ data, selectedFunction }) {
         <Tooltip />
         <Legend />
       </PieChart>
-      
+      <br />
+      <br />
       {/* 막대 차트 */}
-      <h4>{label} 차트</h4>
-      <BarChart width={700} height={selectedFunction === 'count' ? 400 : 600 } data={formattedData} style={{ margin: '20px auto 5px' }}>
+      <h4 style={{ textAlign: 'center' }}>{label} 차트</h4>
+      <BarChart width={700} height={selectedFunction === 'count' ? 300 : 400 } data={formattedData} style={{ margin: '20px auto 5px' }}>
         <CartesianGrid strokeDasharray="3 3" />
 		<XAxis 
 			dataKey={selectedFunction === 'count' ? "date" : "item_name"}
 			tick={selectedFunction === 'count' ? { angle: 0, textAnchor: 'middle' } : false}	
 		/>
-        <YAxis />
+        <YAxis 
+			  domain={[0, 'dataMax + 1']}
+			  allowDecimals={false}
+        />
         <Tooltip />
         <Legend />
 		<Bar dataKey="value" name={label}>

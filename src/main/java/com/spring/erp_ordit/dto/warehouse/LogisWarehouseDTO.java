@@ -14,7 +14,9 @@ import lombok.ToString;
 public class LogisWarehouseDTO {
 
 	private int storage_code;				// 글번호
-	private String storage_name;					// 글제목
-	private String storage_location;		// 글내용
+	private String storage_name;			// 글제목
+	private String storage_zone_code;             // 우편번호
+	private String storage_base_address;          // 기본주소
+	private String storage_detail_address;        // 상세주소
 	
 }

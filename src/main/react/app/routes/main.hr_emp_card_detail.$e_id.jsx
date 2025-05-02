@@ -1,3 +1,4 @@
+import AppConfig from "#config/AppConfig.json";
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from '@remix-run/react';
 import {
@@ -7,6 +8,7 @@ import {
 import HrDropdown from '#components/hr/HrDropdown';
 import HrRadio from '#components/hr/HrRadio';
 import { useDaumPostcodePopup } from 'react-daum-postcode';
+import { useToast } from '#components/common/ToastProvider';
 
 const Textarea = React.forwardRef((props, ref) => (
   <Input {...props} as="textarea" ref={ref} />
@@ -23,12 +25,15 @@ const handleImagePreview = (file, setEmp) => {
 };
 
 const HrEmpCardDetail = () => {
+  const fetchURL = AppConfig.fetch['mytest'];
+  const hrURL = `${fetchURL.protocol}${fetchURL.url}/hrCard`;
   const { e_id } = useParams();
   const navigate = useNavigate();
   const toaster = useToaster();
   const [emp, setEmp] = useState({});
   const [deptList, setDeptList] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const { showToast } = useToast();
 
   const open = useDaumPostcodePopup("https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");  // ⭐ 추가
 
@@ -51,7 +56,7 @@ const HrEmpCardDetail = () => {
 
   // 상세 보기
   useEffect(() => {
-    fetch(`http://localhost:8081/hrCard/hrCardDetail/${e_id}`)
+    fetch(`${hrURL}/hrCardDetail/${e_id}`)
       .then(res => res.json())
       .then(data => {
         setEmp(data);
@@ -61,7 +66,7 @@ const HrEmpCardDetail = () => {
 
   // 부서 목록 불러오기
   useEffect(() => {
-    fetch('http://localhost:8081/hrDept/hrDeptList')
+    fetch(`${fetchURL.protocol}${fetchURL.url}/hrDept/hrDeptList`)
       .then(res => res.json())
       .then(data => {
         const mapped = data.map(dept => ({
@@ -79,14 +84,14 @@ const HrEmpCardDetail = () => {
 
   // 수정
   const handleUpdate = () => {
-    fetch(`http://localhost:8081/hrCard/hrCardUpdate/${e_id}`, {
+    fetch(`${hrURL}/hrCardUpdate/${e_id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(emp)
     })
       .then(res => res.json())
       .then(() => {
-        alert('수정 완료되었습니다.');
+        showToast('인사카드가 수정되었습니다', 'success');
         navigate('/main/hr_emp_card');
       })
       .catch(err => {
@@ -97,13 +102,17 @@ const HrEmpCardDetail = () => {
 
   // 삭제
   const handleDelete = () => {
-    fetch(`http://localhost:8081/hrCard/hrCardDelete/${e_id}`, {
+
+    const confirmDelete = window.confirm("해당 인사카드를 삭제하시겠습니까?");
+    if (!confirmDelete) return;
+
+    fetch(`${hrURL}/hrCardDelete/${e_id}`, {
       method: 'DELETE'
     })
       .then(res => res.text())
       .then(result => {
         if (result) {
-          alert('삭제 완료되었습니다.');
+          showToast('인사카드가 삭제되었습니다.', 'success');
           navigate('/main/hr_emp_card');
         } else {
           alert('삭제 실패');
@@ -127,7 +136,7 @@ const HrEmpCardDetail = () => {
                       <Uploader
                         fileListVisible={false}
                         listType="picture"
-                        action="http://localhost:8081/hrCard/hrCardPhoto"   // 다시 올릴 서버 주소
+                        action={`${hrURL}/hrCardPhoto`}   // 다시 올릴 서버 주소
                         name="file"
                         autoUpload={true}       // 파일 선택하면 바로 서버 전송
                         onUpload={(file) => {
@@ -163,7 +172,7 @@ const HrEmpCardDetail = () => {
                             src={
                               emp.e_photo.startsWith('http')
                                 ? emp.e_photo
-                                : `http://localhost:8081${emp.e_photo}`
+                                : `${fetchURL.protocol}${fetchURL.url}${emp.e_photo}`
                             }
                             alt="사진 미리보기"
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}

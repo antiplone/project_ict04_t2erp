@@ -83,7 +83,7 @@ async def fetch_order_count():
             raise HTTPException(status_code=404, detail="No data found")
         return {"status": "success", "data": data}
     except Exception as e:
-        logging.error("Error fetching order count: {str(e)}")  # 오류 로그 추가
+        logging.error("Error fetching order count: {{traceback.format_exc()}")  # 오류 로그 추가
         raise HTTPException(status_code=500, detail="DB 조회 중 오류 발생: " + str(e))
         
 @app.get("/api/order/items")

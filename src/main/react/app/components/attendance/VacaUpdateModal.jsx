@@ -18,15 +18,9 @@ const model = Schema.Model({
 const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
   const fetchURL = AppConfig.fetch['mytest'];
   const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
-  const { showToast } = useToast();
 
-  const [vaca, setVaca] = useState({
-    v_code: "",
-    v_name: "",
-    v_period: "",
-    v_use: "",
-    v_note: "",
-  });
+  const { showToast } = useToast();
+  const [vaca, setVaca] = useState({});
   const [formError, setFormError] = useState({});
 
   useEffect(() => {
@@ -34,8 +28,8 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
       setVaca({
         ...editingRow,
         v_period: [
-          new Date(editingRow.v_start),
-          new Date(editingRow.v_end),
+          editingRow.v_start ? new Date(editingRow.v_start) : null,
+          editingRow.v_end ? new Date(editingRow.v_end) : null,
         ],
       });
       setFormError({});
@@ -85,8 +79,7 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
       if (result === "1") {
         showToast("수정 완료되었습니다.", "success");
         onClose();
-        // onReloading(); // fetcher로 테이블 재로딩
-        // window.location.reload();
+        onReloading();
       } else {
         showToast("수정에 실패했습니다.", "error");
       }
@@ -97,15 +90,15 @@ const VacaUpdateModal = ({ isOpen, onClose, editingRow, onReloading }) => {
   };
 
   return (
-    <Modal open={isOpen} onClose={onClose}>
+    <Modal open={isOpen} onClose={onClose} backdrop={false}>
       <Modal.Header>
-        <Modal.Title>휴가항목 수정</Modal.Title>
+        <Modal.Title>휴가항목수정</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form fluid model={model} formValue={vaca} onChange={vacaChange}>
           <Form.Group controlId="v_code">
             <Form.ControlLabel>휴가코드</Form.ControlLabel>
-            <Form.Control name="v_code" value={vaca.v_code} disabled readOnly />
+            <Form.Control name="v_code" disabled readOnly />
           </Form.Group>
 
           <Form.Group controlId="v_name">

@@ -13,22 +13,35 @@ const { Column, HeaderCell, Cell } = Table;
 // 삭제 confirm 창(확인/취소)
 function confirmDelete() {
   return new Promise((resolve) => {
-    let key = null;
+    const keyRef = { current: null };  // key 저장용 객체
+    const handleResolve = (result) => {
+      setTimeout(() => {
+        if (keyRef.current) {
+          toaster.remove(keyRef.current);   // 현재 보여지는 토스트 메시지를 제거
+        }
+      }, 100);
+      resolve(result);  // Promise를 성공적으로 완료시킴
+    };
 
-    const message = (
+    const notification = (
       <Notification type="warning" header="근태 삭제" closable>
-        <p>삭제하면 되돌릴 수 없습니다.</p><p>삭제하시겠습니까?</p>
-        <hr />
+        <p>삭제하면 되돌릴 수 없습니다.</p>
+        <p style={{marginBottom: 20}}>삭제하시겠습니까?</p>
         <ButtonToolbar>
-          <Button appearance="primary" onClick={() => { toaster.remove(key); resolve(true); }}>확인</Button>
-          <Button appearance="default" onClick={() => { toaster.remove(key); resolve(false); }}>취소</Button>
+          <Button appearance="primary" onClick={() => { toaster.remove(key); handleResolve(true); }}>확인</Button>
+          <Button appearance="default" onClick={() => { toaster.remove(key); handleResolve(false); }}>취소</Button>
         </ButtonToolbar>
       </Notification>
-    );
-
-    key = toaster.push(message, { placement: 'topCenter' });
-  });
-}
+      );
+  
+      const key = toaster.push(notification, {
+        placement: 'topCenter',
+        duration: 0, // 수동으로 닫을 때까지 유지
+      });
+  
+      keyRef.current = key;
+    });
+  }
 
 // url : 컴포넌트를 선언한 곳(main.Att-regAttItems.jsx)에서 지정한 url 주소를 받음
 // columns : columns 를 props로 받아 동적으로 설정할 수 있도록 변경
@@ -49,7 +62,6 @@ export default function AttItemsTable({ data, columns, onReloading }) {
     };
     
     const isDel = await confirmDelete();
-
     if (!isDel) {
       showToast("삭제가 취소되었습니다.", "warning");
       return;
@@ -61,17 +73,15 @@ export default function AttItemsTable({ data, columns, onReloading }) {
         method: "DELETE",
       });
 
-      console.log(res.status);  // 예: 200, 404, 500. 뭐라고 찍히는지 확인s
-
+      // console.log(res.status);  // 예: 200, 404, 500. 뭐라고 찍히는지 확인s
       // fetch 는 기본적으로 에러를 던지지 않기 때문에 강제에러 발생시킴(404 가 떠도 응답을 받긴 했으니 성공으로 인식함)
       // 응답 실패인 경우, Error 객체를 생성한 후 강제로 에러 발생시켜 아래쪽 코드로 못가도록 catch 블록으로 강제 이동시킴.
       if (!res.ok) throw new Error("네트워크 오류");
 
       const result = await res.text();
-
       if (result === "1") {
         showToast(`삭제되었습니다.`, "success");
-        window.location.reload(); // 추후 fetcher로 대체 가능. remix 에서는 권장x
+        onReloading();
       } else {
         showToast(`삭제 실패했습니다.\n서버에서 처리하지 못했습니다.`, "error");
       }
@@ -84,7 +94,6 @@ export default function AttItemsTable({ data, columns, onReloading }) {
   return (
     <>
       <Table
-        autoHeight
         height={500}
         style={{ marginBottom: "24px", minWidth: "600px" }}
         data={data ?? []}
@@ -150,7 +159,10 @@ export default function AttItemsTable({ data, columns, onReloading }) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         editingRow={editingRow}
-        onReloading={onReloading}
+        onReloading={() => {
+          onReloading();
+          setIsModalOpen(false);
+        }}
       />
     </>
   );

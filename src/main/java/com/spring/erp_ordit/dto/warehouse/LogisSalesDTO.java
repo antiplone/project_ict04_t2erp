@@ -22,7 +22,9 @@ public class LogisSalesDTO {
 	private String transaction_type;	// 결제 구분
 	private int storage_code;			// 창고코드
 	private String storage_name;		// 창고명
-	private String storage_location;	// 창고위치
+	private String storage_zone_code;		// 창고 우편번호
+	private String storage_base_address;	// 창고 우편주소
+	private String storage_detail_address;	// 창고 우편상세주소
 	private int item_code;				// 품명코드
 	private int quantity;				// 출고량
 	private String item_name;			// 품목명

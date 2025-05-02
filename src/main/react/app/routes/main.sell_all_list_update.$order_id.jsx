@@ -181,13 +181,14 @@ const sell_all_list_update = (props) => {
 				id: Number(item.id) || idx + 1  // id가 숫자면 그대로, 아니면 고유 id 부여
 			}));
 
-			setSellAdd(fixedRes);	// 수정 가능한 배열로 저장
+			// 기존 상태가 비어있을 때만 초기화
+			setSellAdd(prev => (prev.length === 0 ? fixedRes : prev));
 			setIsLoading(false);
 			setOriginalItems(fixedRes);	// 원본 백업 (삭제 비교용)
 
 			// 첫 번째 항목을 기준으로 상단 입력값 세팅
 			if (fixedRes.length > 0) {
-				const firstRow = res[0];
+				const firstRow = fixedRes[0];
 				
 				setShipmentOrderDate(new Date(firstRow.shipment_order_date)); // 날짜는 Date로 변환 필요
 				setSelectedIncharge(firstRow.e_id);
@@ -360,7 +361,7 @@ const sell_all_list_update = (props) => {
 			<Form layout="horizontal">
 
 			{/* 입력 상위 칸 */}
-			<div className="add_final">
+			<div>
 				<div className="form_div">
 					<div className="add_div">
 						<InputGroup className="insert_input">
@@ -466,19 +467,19 @@ const sell_all_list_update = (props) => {
 				</div>
 
 					<ButtonToolbar>
-						<Button appearance="primary" onClick={handleAddRow}>
+						<Button appearance="ghost" onClick={handleAddRow}>
 							입력 추가하기
 						</Button>
 
-						<Button appearance="primary" type="submit" onClick={handleResetForm}>
+						<Button color="green" appearance="ghost" type="submit" onClick={handleResetForm}>
 							초기화
 						</Button>
 					</ButtonToolbar>
 
-						<hr />
+					<Divider />
 			</div>
 
-			<div className="updateItem">
+			<div>
 				{/* 입력 하위 칸 */}
 				{sellAdd.map((item, index) => (
                     <Form
@@ -609,15 +610,18 @@ const sell_all_list_update = (props) => {
                     </Form>
                 ))} </div>
 
-					<Divider style={{ maxWidth: 1500 }} />
+					<Divider />
 					
 					<div className="updateItem">
 						<div className="resultContainer">
 							<div className="resultBtn">
 							<ButtonToolbar >
-								<Button appearance="primary" onClick={submitSellUpInsert}>저장</Button>
-								<Button appearance="primary" onClick={handleResetForm}>다시 작성</Button>
-								<Button appearance="primary" onClick={allList}>목록</Button>
+								<Button appearance="ghost" onClick={submitSellUpInsert}>저장</Button>
+								<Button color="green" appearance="ghost" onClick={handleResetForm}>다시 작성</Button>
+								<Button style={{ border: '1px solid #22284C', color: '#22284C' }} 
+										appearance="ghost" onClick={allList}>
+									목록
+								</Button>
 							</ButtonToolbar>
 							</div>
 

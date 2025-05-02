@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, /* Form, */ Table } from 'rsuite';
+import { Button, Container, /* Form, */ Table } from 'rsuite';
 import '#components/common/css/common.css'
 import Appconfig from "#config/AppConfig.json";
 import MessageBox from '#components/common/MessageBox';
@@ -32,25 +32,36 @@ const WareHouseList = () => {
     return (
         <div>
         	<MessageBox type="error" text="창고 관리"/>
-            <Container style={{margin: '0 auto', maxWidth : '760px'}}>
+            <Container style={{margin: '0 auto', maxWidth : '1020px'}}>
                 <br />
-                <Table width={750} height={400} data={storageList}>
-                    <Table.Column width={100} align="center" fixed>
+                <Table width={1020} height={600} data={storageList}>
+                    <Table.Column width={120} align="center" fixed>
                         <Table.HeaderCell className='text_center'>창고 코드</Table.HeaderCell>
                         <Table.Cell dataKey="storage_code" />
                     </Table.Column>
 
-                    <Table.Column width={200}>
+                    <Table.Column width={260}>
                         <Table.HeaderCell className='text_center'>창고명</Table.HeaderCell>
                         <Table.Cell dataKey="storage_name" />
                     </Table.Column>
 
-                    <Table.Column width={320}>
+                    <Table.Column width={340}>
                         <Table.HeaderCell className='text_center'>주소</Table.HeaderCell>
-                        <Table.Cell dataKey="storage_location" />
+                        <Table.Cell>
+                        {rowData  =>(
+                        	<div>
+                        	 {rowData.storage_base_address} {rowData.storage_detail_address}
+                        	</div>
+						)}
+                        </Table.Cell>
+                    </Table.Column>
+                    
+                    <Table.Column width={150} className='text_center'>
+                        <Table.HeaderCell className='text_center'>우편번호</Table.HeaderCell>
+                        <Table.Cell dataKey="storage_zone_code" />
                     </Table.Column>
 
-                    <Table.Column width={120} style={{padding:'6px'}}>
+                    <Table.Column width={150} style={{padding:'6px'}}>
                         <Table.HeaderCell className='text_center'>창고 상세보기</Table.HeaderCell>
                         <Table.Cell dataKey="storage_code" className='text_center'>
                         {(storageList) => (
@@ -59,7 +70,11 @@ const WareHouseList = () => {
                         </Table.Cell>
                     </Table.Column>
                 </Table>
-                <Link to={'/main/logis-warehouse-save'} className="btn btn-primary area_fit wide_fit">창고 등록</Link>
+                <Link  width={120} to={'/main/logis-warehouse-save'} className="text_center">
+                	<Button appearance="primary">
+                		창고 등록
+					</Button>
+                </Link>
             </Container>
         </div>
     )

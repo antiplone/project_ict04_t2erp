@@ -31,8 +31,8 @@ const model = Schema.Model({
 const AttModal = ({ open, onClose, onReloading }) => {
   const fetchURL = AppConfig.fetch['mytest'];
   const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
-  const { showToast } = useToast();
 
+  const { showToast } = useToast();
   const [formError, setFormError] = useState({});
   const [vacationList, setVacationList] = useState([]);
   const [att, setAtt] = useState({
@@ -42,7 +42,6 @@ const AttModal = ({ open, onClose, onReloading }) => {
     a_use: "Y",
     a_note: "",
     v_code: null,
-    // v_name: "",
   });
 
   // 값 변경 핸들링
@@ -83,16 +82,10 @@ const AttModal = ({ open, onClose, onReloading }) => {
 
   // 휴가코드 선택 시 휴가명 자동 설정
   const VacaCodeChange = (value) => {
-    // const selected = vacationList.find((item) => item.v_code === parseInt(value));
-
-    // if (selected) {
-      setAtt((prev) => ({
-        ...prev,
-        v_code: value,
-        // v_code: selected.v_code,
-        // v_name: selected.v_name,
-      }));
-    // }
+    setAtt((prev) => ({
+      ...prev,
+      v_code: value,
+    }));
   };
 
   const insertAtt = async () => {
@@ -122,8 +115,7 @@ const AttModal = ({ open, onClose, onReloading }) => {
     if (res.status === 201) {
       showToast("근태등록에 성공했습니다.", "success");
       onClose();
-      // onReloading();    // 테이블 리로딩
-      window.location.reload();
+      onReloading();    // 테이블 리로딩
     } else {
       showToast("근태등록에 실패했습니다.", "error");
     }
@@ -137,37 +129,36 @@ const AttModal = ({ open, onClose, onReloading }) => {
         a_type: "기본",
         a_use: "Y",
         a_note: "",
-        // v_code: null,
-        // v_name: "",
       });
       setFormError({});
     }
   }, [open]);
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} backdrop={false}>  {/* backdrop={false} 모달창이 아닌 바깥을 클릭했을 때, 모달창이 안 닫히도록 설정 */}
       <Modal.Header>
         <Modal.Title>근태항목등록</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form model={model} formValue={att} onChange={attChange} fluid>
           <Form.Group controlId="a_code">
-            <Form.ControlLabel>근태코드 *</Form.ControlLabel>
+            <Form.ControlLabel>근태코드 <span style={{ color: "red" }}>*</span></Form.ControlLabel>
             <Form.Control name="a_code" />
             <Form.HelpText>근태코드는 30000부터 시작합니다.</Form.HelpText>
           </Form.Group>
 
           <Form.Group controlId="a_name">
-            <Form.ControlLabel>근태명</Form.ControlLabel>
+            <Form.ControlLabel>근태명 <span style={{ color: "red" }}>*</span></Form.ControlLabel>
             <Form.Control name="a_name" />
           </Form.Group>
 
           <Form.Group controlId="a_type">
-            <Form.ControlLabel>근태유형</Form.ControlLabel>
+            <Form.ControlLabel>근태유형 <span style={{ color: "red" }}>*</span></Form.ControlLabel>
             <RadioGroup inline name="a_type" value={att.a_type} onChange={vNameChange}>
               <Radio value="기본">기본</Radio>
               <Radio value="휴가">휴가</Radio>
               <Radio value="출/퇴근">출/퇴근</Radio>
+              <Radio value="기타">기타</Radio>
             </RadioGroup>
           </Form.Group>
 

@@ -55,6 +55,7 @@ const SellRequestClientList = () => {
 		if (activeTab === "2")  {
 			return row.sa_approval_status && row.sa_approval_status.trim() === "진행중";}
 		if (activeTab === "3") return row.sa_approval_status && row.sa_approval_status.trim() === "승인";
+		if (activeTab === "4") return row.sa_approval_status && row.sa_approval_status.trim() === "반려";
 		return false;
 	});
 
@@ -77,7 +78,8 @@ const SellRequestClientList = () => {
 				<Tabs.Tab eventKey="1" title={`전체 (${reqClient.length})`} />
 				<Tabs.Tab eventKey="2" title={`진행중 (${reqClient.filter(r => r.sa_approval_status === '진행중').length})`} />
 				<Tabs.Tab eventKey="3" title={`승인 (${reqClient.filter(r => r.sa_approval_status === '승인').length})`} />
-				<Tabs.Tab eventKey="4" title="등록 요청" />
+				<Tabs.Tab eventKey="4" title={`반려 (${reqClient.filter(r => r.sa_approval_status === '반려').length})`} />
+				<Tabs.Tab eventKey="5" title="등록 요청" />
 			</Tabs>
 
 			{/* 로딩 중일 때 */}
@@ -89,7 +91,7 @@ const SellRequestClientList = () => {
 				</Container>
 			) : (
 				<>
-				{(activeTab === "1" || activeTab === "2" || activeTab === "3") && (
+				{(activeTab === "1" || activeTab === "2" || activeTab === "3" || activeTab === "4") && (
 				<Table
 					height={400}
 					margin='0 auto'
@@ -98,13 +100,12 @@ const SellRequestClientList = () => {
 						// console.log(rowData);
 					}}
 				>
-
-					<Column width={150} className="text_center">
-						<HeaderCell style={styles}>순번</HeaderCell>
-						<Cell>{(rowData) => rowData.rownum}</Cell>
+					<Column width={160} className="text_center">
+						<HeaderCell style={styles}>요청번호</HeaderCell>
+						<Cell>{(rowData) => rowData.sc_id}</Cell>
 					</Column>
-					
-					<Column width={213} className="text_center">
+
+					<Column width={200} className="text_center">
 						<HeaderCell style={styles}>승인상태</HeaderCell>
 						<Cell>{(rowData) => rowData.sa_approval_status}</Cell>
 					</Column>
@@ -152,7 +153,7 @@ const SellRequestClientList = () => {
 					</Column>
 				</Table> )}
 				
-				{activeTab === "4" && <SellRequestClient />}
+				{activeTab === "5" && <SellRequestClient />}
 			</>
 			)}
         </div>

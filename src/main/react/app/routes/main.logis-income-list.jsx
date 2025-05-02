@@ -173,7 +173,7 @@ const OrderIncomeList = () => {
 	};
 
 	// 아이템 비고 Cell
-	const ItemNameCell = ({ rowData, loading }) => {
+	const ItemNameCell = ({ rowData}) => {
 		const items = useMemo(() => rowData.itemDataList || [], [rowData.itemDataList]);
 		const firstItem = items.length > 0 ? items[0].item_name : "";
 		const totalCount = items.length - 1 > 0 ? `외 ${items.length - 1} 건` : "";

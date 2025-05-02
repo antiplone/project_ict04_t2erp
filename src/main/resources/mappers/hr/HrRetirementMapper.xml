@@ -29,6 +29,7 @@
 		FROM retirement_tbl r
 		JOIN employee_tbl e ON r.e_id = e.e_id
 		JOIN department_tbl d ON e.d_code = d.d_code
+		ORDER BY re_app_date DESC
 	</select>
 
 	<!-- 퇴직 상세 조회: 관리자+사원 -->

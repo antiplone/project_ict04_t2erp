@@ -1,11 +1,15 @@
+import AppConfig from "#config/AppConfig.json";
 import React, { useState, useEffect } from 'react';
 import { HrTable } from '#components/hr/HrTable';  // 테이블 컴포넌트
 import HrButton from '#components/hr/HrButton'; // 버튼 컴포넌트
 import HrModal from '#components/hr/HrModal'; // 모달 컴포넌트
-import { Input, Grid, Col, RadioGroup, Radio, Message } from 'rsuite'; // UI 컴포넌트
+import { Input, Grid, Col, RadioGroup, Radio, Message, Loader, Placeholder } from 'rsuite'; // UI 컴포넌트
 import MessageBox from '#components/common/MessageBox.jsx';
+import { useToast } from '#components/common/ToastProvider';
 
 export default function Item() {
+  const fetchURL = AppConfig.fetch["mytest"];
+  const basicURL = `${fetchURL.protocol}${fetchURL.url}/basic`;
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [status, setStatus] = useState('Y');
@@ -15,6 +19,8 @@ export default function Item() {
   const [message, setMessage] = useState('');
   const [isEditMode, setIsEditMode] = useState(false);  // 등록 setIsEditMode(false), 수정 setIsEditMode(true)
   const [regDate, setRegDate] = useState(''); // 등록일 저장
+  const { showToast } = useToast();
+  const [loading, setLoading] = useState(false);  // 로딩중
 
   // 모달 열기
   const handleOpen = () => {
@@ -38,10 +44,12 @@ export default function Item() {
 
   // 기초 등록 - 상품목록
   const fetchItems = () => {
-    fetch('http://localhost:8081/basic/itemList')
+    setLoading(true);  // 시작 시 로딩 true
+    fetch(`${basicURL}/itemList`)
       .then(response => response.json())
       .then(data => setItems(data))
-      .catch(error => console.error('데이터를 불러오지 못했습니다:', error)); // 요청 실패하면 console에 에러메세지 출력
+      .catch(error => console.error('데이터를 불러오지 못했습니다:', error)) // 요청 실패하면 console에 에러메세지 출력
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -56,6 +64,13 @@ export default function Item() {
 
   // 등록 버튼 클릭 시 호출
   const handleRegister = () => {
+
+    // 필수 입력 체크
+    if (!itemName.trim() || !itemStandard.trim()) {
+      showToast('필수 항목을 모두 입력해주세요.', 'error');
+      return;
+    }
+
     const newItem = {
       item_code: itemCode,
       item_name: itemName,
@@ -65,7 +80,7 @@ export default function Item() {
     };
 
     // 기초 등록 - 상품 등록
-    fetch('http://localhost:8081/basic/itemInsert', {
+    fetch(`${basicURL}/itemInsert`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -80,7 +95,9 @@ export default function Item() {
       })
       .then((data) => {
         if (data === 1 || data.success === true) {
+          showToast('상품이 등록되었습니다.', 'success')
           handleClose();
+          fetchItems();
         }
       })
       .catch((error) => {
@@ -110,7 +127,7 @@ export default function Item() {
     };
 
     // 기초 등록 - 상품 수정
-    fetch(`http://localhost:8081/basic/itemUpdate/${itemCode}`, {
+    fetch(`${basicURL}/itemUpdate/${itemCode}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -125,6 +142,7 @@ export default function Item() {
       })
       .then((data) => {
         if (data === 1 || data.success === true) {
+          showToast('상품이 수정되었습니다.', 'success')
           handleClose();
           fetchItems(); // 수정 후 목록 갱신
         }
@@ -139,7 +157,10 @@ export default function Item() {
     const item_code = rowData.item_code;
     console.log('삭제 요청한 item_code:', item_code);
 
-    fetch(`http://localhost:8081/basic/itemDelete/${item_code}`, {
+    const confirmDelete = window.confirm("해당 상품을 삭제하시겠습니까?");
+    if (!confirmDelete) return;
+
+    fetch(`${basicURL}/itemDelete/${item_code}`, {
       method: 'DELETE',
     })
       .then((response) => {
@@ -148,6 +169,7 @@ export default function Item() {
       })
       .then((text) => {
         console.log('삭제 성공:', text);
+        showToast('상품이 삭제되었습니다.');
         setItems([]);
         fetchItems(); // 삭제 후 목록 갱신
       })
@@ -158,20 +180,27 @@ export default function Item() {
   };
 
   const columns = [
-    { label: '상품 코드', dataKey: 'item_code', width: 150 },
-    { label: '상품명', dataKey: 'item_name', width: 300, align: 'left' },
-    { label: '물품 규격', dataKey: 'item_standard', width: 350, align: 'left' },
-    { label: '사용 구분', dataKey: 'item_status', width: 150 },
-    { label: '등록일', dataKey: 'item_reg_date', width: 250 },
+    { label: '상품 코드', dataKey: 'item_code', width: 230 },
+    { label: '상품명', dataKey: 'item_name', width: 500, align: 'left' },
+    { label: '물품 규격', dataKey: 'item_standard', width: 500, align: 'left' },
+    { label: '사용 구분', dataKey: 'item_status', width: 210 },
+    { label: '등록일', dataKey: 'item_reg_date', width: 280 },
   ];
 
   return (
     <div style={{ width: '100%' }}>
       <MessageBox text="기초등록 - 상품 등록" />
 
-      <div style={{ maxWidth: '1450px' }}>
+      <div>
         {/* 테이블 렌더링 */}
+        {loading ? (
+          <>
+            <Placeholder.Paragraph rows={15} />
+            <Loader center content="불러오는 중..." />
+          </>
+        ) : (
         <HrTable columns={columns} items={items} onEditClick={handleEditClick} onDeleteClick={handleDeleteClick}/> 
+        )}
 
         {/* 상품 등록 버튼 */}
         <div style={{ display: 'flex', justifyContent: 'flex-start'}}>

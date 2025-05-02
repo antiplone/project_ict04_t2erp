@@ -1,4 +1,4 @@
-import { Table, Button, Tabs, Container, Placeholder, Loader, ButtonToolbar, Modal } from 'rsuite';
+import { Table, Button, Tabs, Container, Placeholder, Loader, ButtonToolbar, Modal, toaster, Message } from 'rsuite';
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate  } from "react-router-dom";
 import SellSlipAll from '#components/sell/SellSlipAll';
@@ -16,6 +16,7 @@ const sell_all_list = () => {
 	const fetchURL = AppConfig.fetch['mytest'];
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
+	const [selectedRow, setSelectedRow] = useState(null); // 전표 클릭 시 선택한 행
 
 	// 전체 리스트
 	const [allList, setAllList] = useState([]);
@@ -30,7 +31,24 @@ const sell_all_list = () => {
 
 	// '불러온 전표' 모달
 	const [open2, setOpen2] = useState(false);
-	const handleOpen2 = () => setOpen2(true);
+	// 전표 버튼 클릭 핸들러
+	const handleOpen2 = (rowData) => {
+		if (!rowData || !rowData.order_status) {
+			return;
+		  }
+
+		if (rowData.order_status === '결재중') {
+			toaster.push(
+			<Message type="warning" showIcon closable>
+				전표 처리 진행중입니다.
+			</Message>,
+			{ placement: 'topCenter' }
+			);
+			return;
+		}
+		setSelectedRow(rowData);
+		setOpen2(true);
+	};
 	const handleClose2 = () => setOpen2(false);
 
 	// 등록일자_No.과 대표 상품명 입력 설정하기
@@ -226,7 +244,7 @@ const sell_all_list = () => {
 				<Cell>
 				{(rowData) => (
 					<Button
-					color="yellow"
+					color="green"
 					appearance="ghost"
 					size="xs"
 					onClick={() => {
@@ -246,8 +264,19 @@ const sell_all_list = () => {
 
 			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>불러온 전표</HeaderCell>
-				<Cell>
-					<Button color="green" appearance="ghost" size="xs" onClick={handleOpen2}>조회</Button>
+				<Cell dataKey="order_id">
+					{rowData => (
+						<Button
+						color="yellow"
+						appearance="ghost"
+						size="xs"
+						onClick={() => {
+							handleOpen2(rowData);
+						  }}
+						>
+						조회
+						</Button>
+					)}
 				</Cell>
 			</Column>
 			</Table>

@@ -1,4 +1,4 @@
-import { Table, Button, Tabs, Container, Placeholder, Loader, ButtonToolbar, Modal } from 'rsuite';
+import { Table, Button, Tabs, Container, Placeholder, Loader, ButtonToolbar, Modal, toaster, Message } from 'rsuite';
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate  } from "react-router-dom";
 import SellSlipAll from '#components/sell/SellSlipAll';
@@ -6,7 +6,6 @@ import "#styles/sell.css";
 import AppConfig from "#config/AppConfig.json";
 import SellInvoice from '#components/sell/SellInvoice.jsx';
 import MessageBox from '../components/common/MessageBox';
-// import NewsList from '#components/sell/newsList.jsx';
 
 // sell_all_list => 판매 조회 페이지
 
@@ -17,6 +16,7 @@ const sell_all_list = () => {
 	const fetchURL = AppConfig.fetch['mytest'];
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
+	const [selectedRow, setSelectedRow] = useState(null); // 전표 클릭 시 선택한 행
 
 	// 전체 리스트
 	const [allList, setAllList] = useState([]);
@@ -31,7 +31,24 @@ const sell_all_list = () => {
 
 	// '불러온 전표' 모달
 	const [open2, setOpen2] = useState(false);
-	const handleOpen2 = () => setOpen2(true);
+	// 전표 버튼 클릭 핸들러
+	const handleOpen2 = (rowData) => {
+		if (!rowData || !rowData.order_status) {
+			return;
+		  }
+
+		if (rowData.order_status === '결재중') {
+			toaster.push(
+			<Message type="warning" showIcon closable>
+				전표 처리 진행중입니다.
+			</Message>,
+			{ placement: 'topCenter' }
+			);
+			return;
+		}
+		setSelectedRow(rowData);
+		setOpen2(true);
+	};
 	const handleClose2 = () => setOpen2(false);
 
 	// 등록일자_No.과 대표 상품명 입력 설정하기
@@ -128,13 +145,10 @@ const sell_all_list = () => {
 	return (
 		<div>
 			<MessageBox type="success" text="판매조회"/>
-
-			{/* <NewsList /> */}
 			
 			<Tabs 
 				activeKey={activeTab}
 				onSelect={(key) => setActiveTab(key)}
-				className="all_title"
 			>
 				<Tabs.Tab eventKey="1" title={`전체 (${allList.length})`} />
 				<Tabs.Tab eventKey="2" title={`결재중 (${allList.filter(r => r.order_status === '결재중').length})`} />
@@ -150,7 +164,6 @@ const sell_all_list = () => {
 			</Container>
 			) : (
 			<Table 
-				className="all_table"
 				height={500}
 				data={filteredList}	// 탭 상태에 따라 조건 필터한 데이터
 				onRowClick={rowData => {
@@ -158,7 +171,7 @@ const sell_all_list = () => {
 				}}
 			>	
 			
-			<Column width={120} className="text_center">
+			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>등록일자_No.</HeaderCell>
 				<Cell>
 					{(rowData) => (
@@ -172,38 +185,38 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 			
-			<Column width={130} className="text_center">
+			<Column width={120} className="text_center">
 				<HeaderCell style={styles}>주문번호</HeaderCell>
 				<Cell>{(rowData) => rowData.order_id}</Cell>
 			</Column>
 
-			<Column width={100} className="text_center">
+			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>출하지시일</HeaderCell>
 				<Cell>{(rowData) => rowData.shipment_order_date}</Cell>
 			</Column>
 
-			<Column width={100}>
+			<Column width={170}>
 				<HeaderCell className="text_center" style={styles}>거래처명</HeaderCell>
 				<Cell className="text_left">{(rowData) => rowData.client_name}</Cell>
 			</Column>
 
-			<Column width={250}>
+			<Column width={240}>
 				<HeaderCell className="text_center" style={styles}>품목명</HeaderCell>
 				<Cell className="text_left">{(rowData) => rowData.item_display}</Cell>
 			</Column>
 
-			<Column width={100}>
+			<Column width={170}>
 				<HeaderCell className="text_center" style={styles}>금액 합계</HeaderCell>
 				<Cell style={{ textAlign: 'right' }}>{(rowData) => new Intl.NumberFormat().format(rowData.total_sum)}</Cell>
 				{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
 			</Column>
 
-			<Column width={150} className="text_center">
+			<Column width={200} className="text_center">
 				<HeaderCell style={styles}>거래유형</HeaderCell>
 				<Cell>{(rowData) => rowData.transaction_type}</Cell>
 			</Column>
 
-			<Column width={150} className="text_center">
+			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>출하창고명</HeaderCell>
 				<Cell>{(rowData) => rowData.storage_name}</Cell>
 			</Column>
@@ -213,7 +226,7 @@ const sell_all_list = () => {
 				<Cell />
 			</Column> */}
 
-			<Column width={100} className="text_center">
+			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>출하여부</HeaderCell>
 				<Cell>
 					{(rowData) => {
@@ -226,7 +239,7 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 			
-			<Column width={100} className="text_center">
+			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>거래명세서</HeaderCell>
 				<Cell>
 				{(rowData) => (
@@ -249,10 +262,21 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 
-			<Column width={100} className="text_center">
+			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>불러온 전표</HeaderCell>
-				<Cell>
-					<Button color="green" appearance="ghost" size="xs" onClick={handleOpen2}>조회</Button>
+				<Cell dataKey="order_id">
+					{rowData => (
+						<Button
+						color="green"
+						appearance="ghost"
+						size="xs"
+						onClick={() => {
+							handleOpen2(rowData);
+						  }}
+						>
+						조회
+						</Button>
+					)}
 				</Cell>
 			</Column>
 			</Table>

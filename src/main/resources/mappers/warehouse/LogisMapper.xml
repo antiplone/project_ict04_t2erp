@@ -201,7 +201,7 @@
 			oit.item_code, ot.order_id, et.e_id, dt.d_code
 	</select>
 	
-	<!-- 판매 전체 목록 조회 --> <!-- 나중에 바꿔야됨 -->
+	<!-- 판매 전체 목록 조회 -->
 	<select id="logisSalesList" resultType="com.spring.erp_ordit.dto.warehouse.LogisSalesDTO">
 		SELECT
 				ot.order_id,

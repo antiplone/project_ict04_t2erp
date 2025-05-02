@@ -297,3 +297,7 @@ ul.rs-dropdown-menu {
 	justify-content : center;
 	align-items : center !important;
 }
+
+.position_center{
+	top:70px;
+}

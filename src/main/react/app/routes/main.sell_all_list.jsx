@@ -32,10 +32,12 @@ const sell_all_list = () => {
 	// '불러온 전표' 모달
 	const [open2, setOpen2] = useState(false);
 	// 전표 버튼 클릭 핸들러
-	const handleOpen2 = () => {
-		if (!selectedRow) return;
+	const handleOpen2 = (rowData) => {
+		if (!rowData || !rowData.order_status) {
+			return;
+		  }
 
-		if (selectedRow.order_status === '결재중') {
+		if (rowData.order_status === '결재중') {
 			toaster.push(
 			<Message type="warning" showIcon closable>
 				전표 처리 진행중입니다.
@@ -44,7 +46,7 @@ const sell_all_list = () => {
 			);
 			return;
 		}
-
+		setSelectedRow(rowData);
 		setOpen2(true);
 	};
 	const handleClose2 = () => setOpen2(false);
@@ -264,17 +266,16 @@ const sell_all_list = () => {
 				<HeaderCell style={styles}>불러온 전표</HeaderCell>
 				<Cell dataKey="order_id">
 					{rowData => (
-					<Button
+						<Button
 						color="green"
 						appearance="ghost"
 						size="xs"
 						onClick={() => {
-						setSelectedRow(rowData); // 어떤 row인지 저장
-						handleOpen2(); // 전표 핸들러 실행
-						}}
-					>
+							handleOpen2(rowData);
+						  }}
+						>
 						조회
-					</Button>
+						</Button>
 					)}
 				</Cell>
 			</Column>

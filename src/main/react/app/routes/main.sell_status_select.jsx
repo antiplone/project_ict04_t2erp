@@ -368,7 +368,7 @@ const sell_status_select = () => {
 							</div>
 								<hr />
 
-							<div className="addTabel">
+							<div>
 								{/* 로딩 중일 때 */}
 								<>
 									{isLoading ? (
@@ -388,60 +388,60 @@ const sell_status_select = () => {
 											// 검색 결과가 있으면 해당 데이터 보여주고, 없으면 전체 목록 보여주기
 									>	
 
-										<Column width={120} className="text_center">
+										<Column width={192} className="text_center">
 											<HeaderCell style={styles}>등록일자_No.</HeaderCell>
 											<Cell>{(rowData) => `${rowData.order_date}_${rowData.date_no}`}</Cell>
 										</Column>
 										
-										<Column width={130} className="text_center">
+										<Column width={170} className="text_center">
 											<HeaderCell style={styles}>주문번호</HeaderCell>
 											<Cell className="text_left">{(rowData) => rowData.order_id}</Cell>
 										</Column>
 
-										<Column width={150}>
+										<Column width={192}>
 											<HeaderCell className="text_center" style={styles}>거래처명</HeaderCell>
 											<Cell className="text_left">{(rowData) => rowData.client_name}</Cell>
 										</Column>
 
-										<Column width={250}>
+										<Column width={192}>
 											<HeaderCell className="text_center" style={styles}>품목명</HeaderCell>
 											<Cell className="text_left">{(rowData) => rowData.item_display}</Cell>
 										</Column>
 
-										<Column width={100} className="text_center">
+										<Column width={192} className="text_center">
 											<HeaderCell style={styles}>수량</HeaderCell>
 											<Cell>{(rowData) => rowData.quantity}</Cell>
 										</Column>
 
-										<Column width={150}>
+										<Column width={192}>
 											<HeaderCell className="text_center" style={styles}>단가</HeaderCell>
 											<Cell style={{ textAlign: 'right' }}>
 												{(rowData) => new Intl.NumberFormat().format(rowData.price)}
 											</Cell>
 										</Column>
 
-										<Column width={150}>
+										<Column width={192}>
 											<HeaderCell className="text_center" style={styles}>공급가액</HeaderCell>
 											<Cell style={{ textAlign: 'right' }}>
 												{(rowData) => new Intl.NumberFormat().format(rowData.supply)}
 											</Cell>
 										</Column>
 
-										<Column width={150}>
+										<Column width={192}>
 											<HeaderCell className="text_center" style={styles}>부가세</HeaderCell>
 											<Cell style={{ textAlign: 'right' }}>
 												{(rowData) => new Intl.NumberFormat().format(rowData.vat)}
 											</Cell>
 										</Column>
 
-										<Column width={150}>
+										<Column width={192}>
 											<HeaderCell className="text_center" style={styles}>금액합계</HeaderCell>
 											<Cell style={{ textAlign: 'right' }}>
 												{(rowData) => new Intl.NumberFormat().format(rowData.total)}
 											</Cell>
 										</Column>
 										
-										<Column width={150}>
+										<Column width={192}>
 											<HeaderCell className="text_center" style={styles}>출하여부</HeaderCell>
 											<Cell className="text_center">
 												{(rowData) => {

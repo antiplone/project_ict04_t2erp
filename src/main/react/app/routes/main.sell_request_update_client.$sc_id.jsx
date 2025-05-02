@@ -303,7 +303,8 @@ const Textarea = React.forwardRef((props, ref) => (
                 </Message>
             </div>
 
-        <FlexboxGrid style={{ marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
+            <div className="req_from">
+              <FlexboxGrid style={{ marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
                 <FlexboxGrid.Item 
                     colspan={20} 
                     style={{
@@ -360,30 +361,30 @@ const Textarea = React.forwardRef((props, ref) => (
                             
                           </Form.Group>
         
-                            <Form.Group>
-                                <Form.ControlLabel>이메일</Form.ControlLabel>
-                                <Grid fluid>
-                                    <Row gutter={16} align="middle">
-                                    <Col xs={11}>
-                                        <Form.Control
-                                        name="sc_email_front"
-                                        value={clientAdd.sc_email_front}
-                                        onChange={(value) => changeValue(value, "sc_email_front")}
-                                        />
-                                    </Col>
-                                    <Col xs={2} style={{ textAlign: "center", lineHeight: "38px" }}>
-                                        @
-                                    </Col>
-                                    <Col xs={11}>
-                                        <Form.Control
-                                        name="sc_email_back"
-                                        value={clientAdd.sc_email_back}
-                                        onChange={(value) => changeValue(value, "sc_email_back")}
-                                        />
-                                    </Col>
-                                    </Row>
-                                </Grid>
-                            </Form.Group>
+                          <Form.Group>
+                              <Form.ControlLabel>이메일</Form.ControlLabel>
+                              <Grid fluid>
+                                  <Row gutter={16} align="middle">
+                                  <Col xs={11}>
+                                      <Form.Control
+                                      name="sc_email_front"
+                                      value={clientAdd.sc_email_front}
+                                      onChange={(value) => changeValue(value, "sc_email_front")}
+                                      />
+                                  </Col>
+                                  <Col xs={2} style={{ textAlign: "center", lineHeight: "38px" }}>
+                                      @
+                                  </Col>
+                                  <Col xs={11}>
+                                      <Form.Control
+                                      name="sc_email_back"
+                                      value={clientAdd.sc_email_back}
+                                      onChange={(value) => changeValue(value, "sc_email_back")}
+                                      />
+                                  </Col>
+                                  </Row>
+                              </Grid>
+                          </Form.Group>
                         </Col>
         
                         <Col xs={12}>
@@ -484,9 +485,10 @@ const Textarea = React.forwardRef((props, ref) => (
                     </Grid>
                   </Form>
                   )}
-                </Panel>
-              </FlexboxGrid.Item>
-            </FlexboxGrid>
+                  </Panel>
+                </FlexboxGrid.Item>
+              </FlexboxGrid>
+              </div>
             </div>
           );
         };

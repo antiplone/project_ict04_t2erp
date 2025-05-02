@@ -6,7 +6,6 @@ import "#styles/sell.css";
 import AppConfig from "#config/AppConfig.json";
 import SellInvoice from '#components/sell/SellInvoice.jsx';
 import MessageBox from '../components/common/MessageBox';
-// import NewsList from '#components/sell/newsList.jsx';
 
 // sell_all_list => 판매 조회 페이지
 
@@ -128,13 +127,10 @@ const sell_all_list = () => {
 	return (
 		<div>
 			<MessageBox type="success" text="판매조회"/>
-
-			{/* <NewsList /> */}
 			
 			<Tabs 
 				activeKey={activeTab}
 				onSelect={(key) => setActiveTab(key)}
-				className="all_title"
 			>
 				<Tabs.Tab eventKey="1" title={`전체 (${allList.length})`} />
 				<Tabs.Tab eventKey="2" title={`결재중 (${allList.filter(r => r.order_status === '결재중').length})`} />
@@ -150,7 +146,6 @@ const sell_all_list = () => {
 			</Container>
 			) : (
 			<Table 
-				className="all_table"
 				height={500}
 				data={filteredList}	// 탭 상태에 따라 조건 필터한 데이터
 				onRowClick={rowData => {
@@ -158,7 +153,7 @@ const sell_all_list = () => {
 				}}
 			>	
 			
-			<Column width={120} className="text_center">
+			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>등록일자_No.</HeaderCell>
 				<Cell>
 					{(rowData) => (
@@ -172,38 +167,38 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 			
-			<Column width={130} className="text_center">
+			<Column width={120} className="text_center">
 				<HeaderCell style={styles}>주문번호</HeaderCell>
 				<Cell>{(rowData) => rowData.order_id}</Cell>
 			</Column>
 
-			<Column width={100} className="text_center">
+			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>출하지시일</HeaderCell>
 				<Cell>{(rowData) => rowData.shipment_order_date}</Cell>
 			</Column>
 
-			<Column width={100}>
+			<Column width={170}>
 				<HeaderCell className="text_center" style={styles}>거래처명</HeaderCell>
 				<Cell className="text_left">{(rowData) => rowData.client_name}</Cell>
 			</Column>
 
-			<Column width={250}>
+			<Column width={240}>
 				<HeaderCell className="text_center" style={styles}>품목명</HeaderCell>
 				<Cell className="text_left">{(rowData) => rowData.item_display}</Cell>
 			</Column>
 
-			<Column width={100}>
+			<Column width={170}>
 				<HeaderCell className="text_center" style={styles}>금액 합계</HeaderCell>
 				<Cell style={{ textAlign: 'right' }}>{(rowData) => new Intl.NumberFormat().format(rowData.total_sum)}</Cell>
 				{/* new Intl.NumberFormat().format : 천 단위로 콤마(,) 넣기 */}
 			</Column>
 
-			<Column width={150} className="text_center">
+			<Column width={200} className="text_center">
 				<HeaderCell style={styles}>거래유형</HeaderCell>
 				<Cell>{(rowData) => rowData.transaction_type}</Cell>
 			</Column>
 
-			<Column width={150} className="text_center">
+			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>출하창고명</HeaderCell>
 				<Cell>{(rowData) => rowData.storage_name}</Cell>
 			</Column>
@@ -213,7 +208,7 @@ const sell_all_list = () => {
 				<Cell />
 			</Column> */}
 
-			<Column width={100} className="text_center">
+			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>출하여부</HeaderCell>
 				<Cell>
 					{(rowData) => {
@@ -226,7 +221,7 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 			
-			<Column width={100} className="text_center">
+			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>거래명세서</HeaderCell>
 				<Cell>
 				{(rowData) => (
@@ -249,7 +244,7 @@ const sell_all_list = () => {
 				</Cell>
 			</Column>
 
-			<Column width={100} className="text_center">
+			<Column width={170} className="text_center">
 				<HeaderCell style={styles}>불러온 전표</HeaderCell>
 				<Cell>
 					<Button color="green" appearance="ghost" size="xs" onClick={handleOpen2}>조회</Button>

@@ -8,7 +8,7 @@ import { Link } from '@remix-run/react';
 import { useDaumPostcodePopup } from 'react-daum-postcode';     // 다음 우편번호 api 커스텀 훅, 다음 우편번호 팝업을 띄우는 기능 제공
 import HrRadio from '#components/hr/HrRadio.jsx';
 import { useToast } from '#components/common/ToastProvider';
-import { BizNumCheckButton } from "#components/hr/HrButton";
+import { CheckButton } from "#components/hr/HrButton";
 
 // textarea용 커스텀 컴포넌트
 const Textarea = React.forwardRef((props, ref) => (
@@ -374,7 +374,7 @@ export default function Basic_client() {
 
                         <Form.Group>
                           <Form.ControlLabel>사업자등록번호 *
-                          <BizNumCheckButton 
+                          <CheckButton 
                             bizNum={form.c_biz_num} 
                             onResult={(isValid) => {
                               setIsBizNumChecked(true);

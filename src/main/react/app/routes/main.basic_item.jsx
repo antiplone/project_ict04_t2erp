@@ -95,6 +95,7 @@ export default function Item() {
       })
       .then((data) => {
         if (data === 1 || data.success === true) {
+          showToast('상품이 등록되었습니다.', 'success')
           handleClose();
           fetchItems();
         }
@@ -141,6 +142,7 @@ export default function Item() {
       })
       .then((data) => {
         if (data === 1 || data.success === true) {
+          showToast('상품이 수정되었습니다.', 'success')
           handleClose();
           fetchItems(); // 수정 후 목록 갱신
         }
@@ -167,7 +169,7 @@ export default function Item() {
       })
       .then((text) => {
         console.log('삭제 성공:', text);
-        alert('상품이 삭제되었습니다.');
+        showToast('상품이 삭제되었습니다.');
         setItems([]);
         fetchItems(); // 삭제 후 목록 갱신
       })

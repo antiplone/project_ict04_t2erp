@@ -8,6 +8,7 @@ import {
 import HrDropdown from '#components/hr/HrDropdown';
 import HrRadio from '#components/hr/HrRadio';
 import { useDaumPostcodePopup } from 'react-daum-postcode';
+import { useToast } from '#components/common/ToastProvider';
 
 const Textarea = React.forwardRef((props, ref) => (
   <Input {...props} as="textarea" ref={ref} />
@@ -32,6 +33,7 @@ const HrEmpCardDetail = () => {
   const [emp, setEmp] = useState({});
   const [deptList, setDeptList] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const { showToast } = useToast();
 
   const open = useDaumPostcodePopup("https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");  // ⭐ 추가
 
@@ -89,7 +91,7 @@ const HrEmpCardDetail = () => {
     })
       .then(res => res.json())
       .then(() => {
-        alert('수정 완료되었습니다.');
+        showToast('인사카드가 수정되었습니다', 'success');
         navigate('/main/hr_emp_card');
       })
       .catch(err => {
@@ -100,13 +102,17 @@ const HrEmpCardDetail = () => {
 
   // 삭제
   const handleDelete = () => {
+
+    const confirmDelete = window.confirm("해당 인사카드를 삭제하시겠습니까?");
+    if (!confirmDelete) return;
+
     fetch(`${hrURL}/hrCardDelete/${e_id}`, {
       method: 'DELETE'
     })
       .then(res => res.text())
       .then(result => {
         if (result) {
-          alert('삭제 완료되었습니다.');
+          showToast('인사카드가 삭제되었습니다.', 'success');
           navigate('/main/hr_emp_card');
         } else {
           alert('삭제 실패');

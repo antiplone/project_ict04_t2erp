@@ -110,7 +110,7 @@ const HrEmpCardPage = () => {
       .then(res => res.json())
       .then(result => {
         if (result === 1 || result.success) {
-          alert('등록 완료');
+          showToast('인사카드가 등록되었습니다', 'success');
           setForm({
             e_name: '', e_tel: '', e_position: '', e_status: '', e_email: '',
             e_birth: '', e_entry: '', e_zone_code: '', e_base_address: '', e_detail_address: '', e_photo: '',

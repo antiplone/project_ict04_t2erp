@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { HrTable } from '#components/hr/HrTable';
 import HrButton from '#components/hr/HrButton';
 import HrModal from '#components/hr/HrModal';
-import { Input, Grid, Col, Button, Message } from 'rsuite';
+import { Input, Grid, Col, Message } from 'rsuite';
 import ErrorText from '#components/hr/ErrorText';
+import { useToast } from '#components/common/ToastProvider';
+import { CheckButton } from "#components/hr/HrButton";
 import "#components/common/css/common.css";
 
 const initialFormData = {
@@ -23,6 +25,9 @@ export default function Hr_department() {
   const [errors, setErrors] = useState({});
   const [isEditMode, setIsEditMode] = useState(false);
   const [hrDeptData, setHrDeptData] = useState(initialFormData);
+  const [isCodeChecked, setIsCodeChecked] = useState(false);
+  const [isCodeValid, setIsCodeValid] = useState(false);
+  const { showToast } = useToast();
 
   const fetchHrDeptList = () => {
     fetch('http://localhost:8081/hrDept/hrDeptList')
@@ -61,6 +66,11 @@ export default function Hr_department() {
   const handleRegister = () => {
     if (!validate()) return;
 
+    if (!isCodeChecked || !isCodeValid) {
+      showToast("부서코드 중복확인을 먼저 해주세요.", "warning");
+      return;
+    }
+
     const newDept = {
       d_code: hrDeptData.d_code,
       d_name: hrDeptData.d_name,
@@ -79,6 +89,7 @@ export default function Hr_department() {
       })
       .then((data) => {
         if (data === 1 || data.success === true) {
+          showToast('부서가 등록되었습니다.', { status: 'success' });
           handleClose();
           fetchHrDeptList();
         }
@@ -154,14 +165,35 @@ export default function Hr_department() {
       >
         <Grid fluid>
           <Col xs={24}>
-            <label>부서 코드 *</label>
-            <Input
-              value={hrDeptData.d_code}
-              onChange={(val) => setHrDeptData({ ...hrDeptData, d_code: val })}
-              disabled={isEditMode}
-            />
-            <ErrorText message={errors.d_code} />
-          </Col>
+          <label>
+            부서 코드 *
+            {!isEditMode && (
+              <CheckButton
+                value={hrDeptData.d_code}
+                checkUrl={`${hrURL}/checkDeptCode`} // 백엔드에서 체크하는 API
+                onResult={(isValid) => {
+                  setIsCodeChecked(true);
+                  setIsCodeValid(isValid);
+                  if (!isValid) {
+                    showToast("이미 사용 중인 부서 코드입니다.", "warning");
+                    setHrDeptData(prev => ({ ...prev, d_code: "" }));
+                  } else {
+                    showToast("사용 가능한 부서 코드입니다.", "success");
+                  }
+                }}
+              />
+            )}
+          </label>
+          <Input
+            value={hrDeptData.d_code}
+            onChange={(val) => {
+              setHrDeptData({ ...hrDeptData, d_code: val });
+              setIsCodeChecked(false);  // 값이 바뀌면 다시 확인하게 함
+            }}
+            disabled={isEditMode}
+          />
+          <ErrorText message={errors.d_code} />
+        </Col>
           <Col xs={24}>
             <label>부서명 *</label>
             <Input

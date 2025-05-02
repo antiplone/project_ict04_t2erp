@@ -290,39 +290,17 @@ const StockItemsList = () => {
 						</Column>
 					</Table>
 					
-					
-
-					{/*<Pagination
-					prev="이전"
-					next="다음"
-					first="첫 페이지"
-					last="마지막 페이지"
-					ellipsis="..."
-					boundaryLinks
-					maxButtons={5}
-					size="md"
-					layout={['total', '-', 'limit', '|', 'pager', 'skip']}
-					total={`${stockListWithRowNum.length}개`}
-					limit={limit}
-					limitOptions={[10, 30, 50]}
-					activePage={currentPage}
-					onChangePage={setPage}
-					onChangeLimit={handleChangeLimit}
-					style={{ justifyContent: 'center' }}
-					className='logis_pagination'
-				/>*/}
-
 					<br />
-					<div style={{ display: 'flex', margin: '10px' }}>
+					<div style={{ display: 'flex', margin: '10px'}}>
 						{/* Email Modal */}
-						<div width={50} height={50} style={{ marginRight: '20px' }}>
+						<div width={50} height={50} style={{ marginRight: '20px'}}>
 							<Button appearance="primary" onClick={handleOpenModal}>
 								이메일 보내기
 							</Button>
 						</div>
 
 						{/* EmailFormModal Component */}
-						<EmailFormModal open={modalOpen} onClose={() => handleCloseModal(false)} />
+						<EmailFormModal open={modalOpen} onClose={() => handleCloseModal(false)}/>
 					</div>
 				</div>
 			</Container>

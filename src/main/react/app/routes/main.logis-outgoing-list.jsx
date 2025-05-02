@@ -42,7 +42,7 @@ const OutgoingList = () => {
 	const [isChartModalOpen, setChartModalOpen] = useState(false);
 	
     const fetchSales = async () => {
-        setLoading(true);
+        /*setLoading(true);*/
         try {
 			const res = await fetch(`${fetchURL}/logissales/logisSalesList`, { // 스프링부트에 요청한다.
 			method: "GET"
@@ -61,11 +61,10 @@ const OutgoingList = () => {
 		fetchSales();  // 초기 데이터를 가져옵니다.
 	}, []);
 
-	const salesListWithRowNum = useMemo(() =>
-		salesList.map((sales, index) => ({
+	const salesListWithRowNum = salesList.map((sales, index) => ({
 			...sales,
 			row_num: index + 1,
-	})), [salesList]);
+	}));
 
 	// 각 주문에 대한 아이템 데이터 가져오기
 	useEffect(() => {
@@ -96,7 +95,10 @@ const OutgoingList = () => {
 			setLoading(false);
 			};
 			fetchItemsForSales(); // 아이템 데이터 가져오기
-		}
+		} else {
+		// ❗ salesList가 비어 있어도 로딩 상태 종료
+		setLoading(false);
+	}
 	}, [salesList]); // salesList 변경될 때마다 실행 (length로 조건 걸기)
 
 	// 날짜 선택
@@ -116,7 +118,7 @@ const OutgoingList = () => {
 
     /* 검색 조건*/
 	const handleSearch = async () => {
-		setLoading(true);
+		/*setLoading(true);*/
 
 		let startDate = '';
 		let endDate = '';

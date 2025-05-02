@@ -38,10 +38,10 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
     : record.filter(item => item.co_work_date === selectedDate);
 
   // localStorage에서 position 불러오기
-  useEffect((adminPositions) => {
+  useEffect(() => {
     const pos = localStorage.getItem("e_position")?.trim();
     setPosition(pos);
-  }, [adminPositions]);
+  }, []);
 
   useEffect(() => {
     // 전체 근태 리스트
@@ -72,18 +72,6 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
         setMyData([]);
         setIsLoading(false);
       });
-
-    // // 지각 조회
-    // fetch(`${attURL}/lateCommuteAdmin`)
-    //   .then((res) => {
-    //     if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
-    //     return res.json();
-    //   })
-    //   .then((data) => setLateData(data))
-    //   .catch((err) => {
-    //     console.error("불러오기 실패:", err);
-    //     setLateData([]);
-    //   });
   }, [attURL, refresh]);
 
   useEffect(() => {
@@ -107,21 +95,23 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
   }
 
   const attColumns = [
-    { label: "사원명", dataKey: "e_name", width: 100 },
-    { label: "오늘날짜", dataKey: "co_work_date", width: 100 },
-    { label: "출근시간", dataKey: "co_start_time", width: 100 },
-    { label: "퇴근시간", dataKey: "co_end_time", width: 100 },
-    { label: "근무시간", dataKey: "co_total_work_time", width: 100 },
-    { label: "상태", dataKey: "co_status", width: 120 },
-    { label: "상태비고", dataKey: "co_status_note", width: 240 },
+    { label: "사원명", dataKey: "e_name", width: 110 },
+    { label: "오늘날짜", dataKey: "co_work_date", width: 120 },
+    { label: "출근시간", dataKey: "co_start_time", width: 120 },
+    { label: "퇴근시간", dataKey: "co_end_time", width: 110 },
+    { label: "근무시간", dataKey: "co_total_work_time", width: 110 },
+    { label: "상태", dataKey: "co_status", width: 140 },
+    { label: "상태비고", dataKey: "co_status_note", width: 815 },
   ];
 
   return (
     <>
+    <div style={{ display: "flex", gap: 40, alignItems: "flex-start" }}>
+      <div style={{ flexGrow: 1 }}>
       {adminPositions.includes(position?.trim()) ? (
         <>
           {/* 관리자용 탭 + 날짜 필터 */}
-          <div style={{ display: "flex", justifyContent: "space-between", minWidth: 910, marginBottom: 16 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
             <Tabs activeKey={activeKey} onSelect={setActiveKey} appearance="pills">
               <Tabs.Tab eventKey="1" title="전체 출퇴근 조회" />
               <Tabs.Tab eventKey="2" title="내 출퇴근 조회" />
@@ -145,14 +135,14 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
           </div>
 
           {activeKey === "1" && (
-            <Table height={500} data={filteredRecord} cellBordered style={{ minWidth: 930 }}>
+            <Table height={500} data={filteredRecord} cellBordered>
               {attColumns.map((col) => (
                 <Column key={col.dataKey} width={col.width} className="text_center">
                   <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
                   <Cell dataKey={col.dataKey} />
                 </Column>
               ))}
-              <Column width={70} fixed="right" className="text_center">
+              <Column width={90} fixed="right" className="text_center" style={{ lineHeight: "23px" }}>
                 <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>작업</HeaderCell>
                 <Cell style={{ padding: '6px' }}>
                   {rowData => (
@@ -283,6 +273,8 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
           />
         </>
       )}
+      </div>
+    </div>
     </>
   );
 }

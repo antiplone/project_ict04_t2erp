@@ -24,7 +24,7 @@ export default function SchedulePage() {
 
   return (
     <Container>
-      <MessageBox text="공휴일 일정" />
+      <MessageBox text="일정 관리" />
 
         {/* 로딩 중일 때 */}
         {isLoading ? (

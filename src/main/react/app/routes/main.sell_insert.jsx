@@ -61,7 +61,20 @@ const Sellinsert = () => {
 	const [currentEditId, setCurrentEditId] = useState(null);
 	
 	// 입력한 내역 저장
-	const [sellAdd, setSellAdd] = useState([]);
+	const [sellAdd, setSellAdd] = useState([
+		{
+		  id: 1,
+		  item_code: '',
+		  item_name: '',
+		  item_standard: '',
+		  quantity: 0,
+		  price: 0,
+		  supply: 0,
+		  vat: 0,
+		  total: 0,
+		  status: 'EDIT'
+		}
+	  ]);
 
 	// 백엔드로 전달하기 위해 출하창고, 거래유형 저장
 	const [shipmentOrderDate, setShipmentOrderDate] = useState(null);

@@ -23,7 +23,6 @@
     max-width: 1200px;
 }
 
-
 /* 물품검색 버튼 */
 .search_btn{
     margin-top: 30px;
@@ -35,8 +34,6 @@
   width: 200px;
 	margin-bottom: 5px;
 }
-
-
 
 /* sell_all_list.jsx */
 /* 표 헤더 폰트 설정 */
@@ -101,12 +98,8 @@
 .updateLabel {
     text-align: left !important;
     display: block;       /* 중요! */
-    /* width: 120px !important;          또는 원하는 너비 지정 */
     margin-bottom: 4px;   /* 아래 여백 있으면 보기 좋음 */
 }
-/* .updateBox_price {
-    margin-top: 20px !important;
-} */
 
 .inputBox {
     display: flex;
@@ -324,15 +317,23 @@
     text-align: left;
   }
   
-  /* 숫자 값은 오른쪽 정렬 */
-  .invoice-table-total td:nth-child(2),
-  .invoice-table-total td:nth-child(4),
-  .invoice-table-total td:nth-child(6),
-  .invoice-table-total td:nth-child(8),
-  .invoice-table-total td:nth-child(10) {
-    text-align: right;
-  }
-  
-  .invoice-table-total .bold {
-    font-weight: bold;
-  }
+/* 숫자 값은 오른쪽 정렬 */
+.invoice-table-total td:nth-child(2),
+.invoice-table-total td:nth-child(4),
+.invoice-table-total td:nth-child(6),
+.invoice-table-total td:nth-child(8),
+.invoice-table-total td:nth-child(10) {
+  text-align: right;
+}
+
+.invoice-table-total .bold {
+  font-weight: bold;
+}
+
+/* sell_request_client_insert.jsx - 거래처 등록 요청 */
+.req_from {
+  display: flex !important;
+  justify-content: center !important;  /* 가로 가운데 정렬 */
+  align-items: center !important;      /* 세로 가운데 정렬 */
+  margin-top: 40px;
+}

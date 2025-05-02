@@ -6,6 +6,8 @@ import "#styles/common.css";
 import readingGlasses from "#images/common/readingGlasses.png";
 import MessageBox from '#components/common/MessageBox';
 import { useToast } from '#components/common/ToastProvider';//
+
+import InchargeSearchModal from "#components/logis/InchargeSearchModal.jsx";
 import ClientSearchModal from "#components/logis/ClientSearchModal.jsx";
 import StorageSearchModal from "#components/logis/StorageSearchModal.jsx";
 {/* 판매 추이 차트 */}
@@ -22,6 +24,12 @@ const OrderIncomeList = () => {
   
 	/* 차트 보기 모달 버튼 */
 	const [isChartModalOpen, setChartModalOpen] = useState(false);
+	
+	// 담당자 모달  
+	const [selectedIncharge, setSelectedIncharge] = useState(null);
+	const [selectedInchargeName, setSelectedInchargeName] = useState(null);
+	const [isInchargeModalOpen, setInchargeModalOpen] = useState(false);
+	
 	
 	// 거래처 모달  
     const [selectedClient, setSelectedClient] = useState(null);
@@ -45,9 +53,7 @@ const OrderIncomeList = () => {
             console.error("logisOrderList : ", error);
             setOrderList([]);
             showToast("데이터를 가져오는 중 오류가 발생했습니다.", "error");
-        } finally {
-            setLoading(false);
-        }
+        } 
     };
 
     // // fetch()를 통해 서버에게 데이터를 요청
@@ -64,7 +70,6 @@ const OrderIncomeList = () => {
 	useEffect(() => {
 		if (orderList.length > 0) {
 			const fetchItemsForOrders = async () => {
-	            setLoading(true); // 로딩 시작
 				const updatedOrders = await Promise.all(
 					orderList.map(async (order) => {
 						if (order.itemDataList) return order; // 이미 있으면 skip
@@ -89,7 +94,6 @@ const OrderIncomeList = () => {
 			
 			setLoading(false);
 			};
-
 			fetchItemsForOrders(); // 아이템 데이터 가져오기
 		}
 	}, [orderList]); // orderList가 변경될 때마다 실행 (length로 조건 걸기)
@@ -105,6 +109,7 @@ const OrderIncomeList = () => {
 		start_date: '',
 		end_date: '',
 		client_code: '',
+		e_id: '',
 		storage_code: '',
 	});
 
@@ -123,6 +128,7 @@ const OrderIncomeList = () => {
 		const updatedParams = {
 			start_date: startDate,
 			end_date: endDate,
+			e_id: selectedIncharge || '',
 			client_code: selectedClient || '',
 			storage_code: selectedStorage || ''
 		};
@@ -152,6 +158,8 @@ const OrderIncomeList = () => {
 		setOrderDate(null);				// OrderDate도 초기화
 	    setSelectedClient('');			// client 선택값 초기화
 	    setSelectedClientName('');		// client 이름 선택값 초기화
+	    setSelectedIncharge('');		// 담당자 초기화
+	    setSelectedInchargeName('');	// 담당자 이름 초기화
 	    setSelectedStorage('');			// 창고 초기화
 	    setSelectedStorageName('');		// 창고명 초기화
 
@@ -159,6 +167,7 @@ const OrderIncomeList = () => {
 			start_date: '',
 			end_date: '',
 			client_code: '',
+	        e_id: '',
 			storage_code: '',
 		});
 	};
@@ -178,7 +187,7 @@ const OrderIncomeList = () => {
     return (
         <div>
         	<MessageBox type="success" text="입고 관리"/>
-            <Container style={{margin: '0 auto', maxWidth : '1480px'}}>
+            <Container style={{margin: '0 auto', maxWidth : '1920px'}}>
 				<div className='main_table'>
 					<div className="inputBox">
 						<div className="input">
@@ -193,6 +202,22 @@ const OrderIncomeList = () => {
 							</InputGroup>
 						</div>
 
+           				<div className="input">
+							<InputGroup className="inputModal">
+								<InputGroup.Addon style={{ width: 80 }}>담당자</InputGroup.Addon>
+								<Input value={selectedIncharge || ""} readOnly onClick={() => setInchargeModalOpen(true)} />
+								<InputGroup.Button tabIndex={-1}>
+									<img
+										src={readingGlasses}
+										alt="돋보기"
+										width={20}
+										height={20}
+									/>
+								</InputGroup.Button>
+							</InputGroup>
+							<Input value={selectedInchargeName || ""} readOnly className="inputModalSide" />
+						</div>
+            
 						<div className="input">
 							<InputGroup className="inputModal">
 								<InputGroup.Addon style={{ width: 80 }} className='text_center'>거래처</InputGroup.Addon>
@@ -226,6 +251,7 @@ const OrderIncomeList = () => {
 						</div>
 						
 						<ClientSearchModal handleOpen={isClientModalOpen} handleColse={() => setClientModalOpen(false)} onClientSelect={(code, name) => { setSelectedClient(code); setSelectedClientName(name); }} />
+						<InchargeSearchModal handleOpen={isInchargeModalOpen} handleColse={() => setInchargeModalOpen(false)} onInchargeSelect={(id, name) => { setSelectedIncharge(id); setSelectedInchargeName(name); }} />
 						<StorageSearchModal handleOpen={isStorageModalOpen} handleColse={() => setStorageModalOpen(false)} onStorageSelect={(code, name) => { setSelectedStorage(code); setSelectedStorageName(name); }} />
 					</div>
 
@@ -239,40 +265,40 @@ const OrderIncomeList = () => {
 						</Button>
 					</div>
 					
-					<Divider style={{width : '1480px'}} />
+					<Divider />
 					{loading ? (
 						<div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 							<Loader size="md" content="데이터를 불러오는 중입니다..." />
 						</div>
 						) : (
-						<Table width={1470} height={400} data={orderListWithRowNum} className="text_center" loading={loading}>
+						<Table width={1920} height={400} data={orderListWithRowNum} className="text_center" loading={loading}>
 	
-							<Column width={100} align="center" fixed>
+							<Column width={120} align="center" fixed>
 								<HeaderCell className='text_center'>번호</HeaderCell>
 								<Cell dataKey="row_num" />
 							</Column>
 	
-							<Column width={100} align="center" fixed>
+							<Column width={180} align="center" fixed>
 								<HeaderCell className='text_center'>주문고유번호</HeaderCell>
 								<Cell dataKey="order_id" />
 							</Column>
 							
-							<Column width={100} align="center" fixed>
+							<Column width={180} align="center" fixed>
 								<HeaderCell className='text_center'>담당팀</HeaderCell>
 								<Cell dataKey="d_name" />
 							</Column>
 							
-							<Column width={100} align="center" fixed>
+							<Column width={180} align="center" fixed>
 								<HeaderCell className='text_center'>담당자</HeaderCell>
 								<Cell dataKey="e_name" />
 							</Column>
 	
-							<Column width={170}>
+							<Column width={200}>
 								<HeaderCell className='text_center'>입고일자</HeaderCell>
 								<Cell dataKey="delivery_date" />
 							</Column>
 	
-							<Column width={300}>
+							<Column width={400}>
 								<HeaderCell className="text_center">아이템 비고</HeaderCell>
 								<Cell dataKey="item_name">
 									{rowData => 
@@ -281,7 +307,7 @@ const OrderIncomeList = () => {
 								</Cell>
 							</Column>
 							
-							<Column width={150}>
+							<Column width={280}>
 								<HeaderCell className="text_center">주문상세</HeaderCell>
 								<Cell dataKey="item_name" style={{ padding: '6px' }}>
 	                                {rowData => {
@@ -299,12 +325,7 @@ const OrderIncomeList = () => {
 								<Cell dataKey="client_name" />
 							</Column>
 	
-							{/* <Column width={120}>
-	                            <HeaderCell>발주일</HeaderCell>
-	                            <Cell dataKey="order_date" />
-	                        </Column> */}
-	
-							<Column width={240}>
+							<Column width={200}>
 								<HeaderCell className='text_center'>입고창고</HeaderCell>
 								<Cell dataKey="storage_name" />
 							</Column>
@@ -312,15 +333,12 @@ const OrderIncomeList = () => {
 					)}
 					<div style={{ display: 'flex', margin : '10px' }}>
 						
-						
 						{/* ChartModal 버튼 */}
-
 						<Button appearance="primary" onClick={() => setChartModalOpen(true)}>
 							차트 보기
 						</Button>
 
 						{/* ChartModal Component */}
-
 						<DBChartModal
 							open={isChartModalOpen}
 							onClose={() => setChartModalOpen(false)}

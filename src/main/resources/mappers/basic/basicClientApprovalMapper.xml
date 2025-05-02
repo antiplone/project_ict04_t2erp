@@ -13,7 +13,7 @@
 	   FROM request_client_tbl r
        LEFT JOIN request_client_approval_tbl a
 	     ON r.sc_id = a.sa_request_id
-	  ORDER BY r.sc_date DESC
+	  ORDER BY a.sa_approval_id DESC
 </select>
 
 <!-- 거래처 요청 상세 -->

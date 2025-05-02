@@ -150,7 +150,6 @@ export default function Login() {
 							<Button type='submit' appearance="primary" loading={isLoading} block>
 								로그인
 							</Button>
-							<a href="#">비밀번호를 잊으셨나요?</a>
 						</VStack>
 					</Form>
 

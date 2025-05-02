@@ -19,7 +19,7 @@ const HrButton = ({ hrBtn, onClick }) => {
 
 export default HrButton;
 
-export function BizNumCheckButton({ bizNum, onResult }) {
+export function CheckButton({ bizNum, onResult }) {
   const { showToast } = useToast();
 
   const handleCheck = async () => {

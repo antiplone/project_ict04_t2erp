@@ -248,7 +248,9 @@ const SellRequestClient = () => {
   }
 
   return (
-    <FlexboxGrid style={{ marginTop: 30, marginLeft: 20, marginBottom: 50 }}>
+
+    <div className="req_from">
+    <FlexboxGrid>
         <FlexboxGrid.Item 
             colspan={20} 
             style={{
@@ -419,6 +421,7 @@ const SellRequestClient = () => {
         </Panel>
       </FlexboxGrid.Item>
     </FlexboxGrid>
+    </div>
   );
 };
 

@@ -26,6 +26,7 @@ def is_valid_date(date_string):
         return False
 
 # 기간 선택이 가능한 주문건수 조회 함수
+#def get_order_count(start_date=None, end_date=None):
 def get_order_count(start_date=None, end_date=None):
     try:
         # 시작일과 종료일이 주어지지 않으면 이번 달의 첫날과 마지막 날을 기본값으로 설정

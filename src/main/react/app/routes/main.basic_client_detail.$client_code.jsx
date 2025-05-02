@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Message, Form, Divider, ButtonToolbar, Button, FlexboxGrid, Panel, Grid, Row, Col, Input } from 'rsuite';
 import { useParams, useNavigate } from "react-router-dom";
+import { useToast } from '#components/common/ToastProvider';
+import { useDaumPostcodePopup } from 'react-daum-postcode';
 import AppConfig from "#config/AppConfig.json";
 import HrRadio from "#components/hr/HrRadio.jsx";
+
 
 const Textarea = React.forwardRef((props, ref) => (
   <Input {...props} as="textarea" ref={ref} />
@@ -10,22 +13,50 @@ const Textarea = React.forwardRef((props, ref) => (
 Textarea.displayName = "Textarea";
 
 const BasicClientDetail = () => {
+  const fetchURL = AppConfig.fetch['mytest'];
+  const basicURL = `${fetchURL.protocol}${fetchURL.url}/basic`;
+
   const navigate = useNavigate();
   const { client_code } = useParams();
+  const { showToast } = useToast();
   const [client, setClient] = useState({});
 
-  const fetchURL = AppConfig.fetch['mytest'];
+  const open = useDaumPostcodePopup("https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");
+
+  const handleClick = () => {
+    open({
+      onComplete: (data) => {
+        let baseAddress = data.address;
+        let extraAddress = "";
+
+        if (data.addressType === "R") {
+          if (data.bname !== "") extraAddress += data.bname;
+          if (data.buildingName !== "") {
+            extraAddress += extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+          }
+          baseAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
+        }
+
+        setClient((prev) => ({
+          ...prev,
+          c_zone_code: data.zonecode,
+          c_base_address: baseAddress,
+          c_detail_address: ""
+        }));
+      }
+    });
+  };
 
   useEffect(() => {
     if (!client_code) return;
-    fetch(`${fetchURL.protocol}${fetchURL.url}/basic/basic_client_detail/${client_code}`)
+    fetch(`${basicURL}/basic_client_detail/${client_code}`)
       .then(res => res.json())
       .then(data => setClient(data))
       .catch(err => console.error("데이터 조회 실패:", err));
   }, [client_code]);
 
   const handleUpdate = () => {
-    fetch(`http://localhost:8081/basic/clientUpdate/${client_code}`, {
+    fetch(`${basicURL}/clientUpdate/${client_code}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -35,7 +66,7 @@ const BasicClientDetail = () => {
       .then(res => res.text())
       .then(result => {
         if (result === "success" || result === "1") {
-          alert("수정되었습니다.");
+          showToast("거래처 정보가 수정되었습니다.", "success");
           navigate('/main/basic_client'); // 목록으로 이동
         } else {
           alert("수정 실패");
@@ -48,14 +79,17 @@ const BasicClientDetail = () => {
   };
 
   const handleDelete = () => {
-    fetch(`http://localhost:8081/basic/clientDelete/${client_code}`, {
+    const confirmDelete = window.confirm("해당 거래처를 삭제하시겠습니까?");
+    if (!confirmDelete) return;
+
+    fetch(`${basicURL}/clientDelete/${client_code}`, {
       method: 'DELETE'
     })
       .then(res => res.text())
       .then(result => {
         console.log("삭제 응답값:", result);
         if (result === "success" || result === "ok") {
-          alert("삭제되었습니다.");
+          showToast("삭제되었습니다.", "success");
           navigate('/main/basic_client');
         } else {
           alert("삭제 실패: " + result);
@@ -110,7 +144,16 @@ const BasicClientDetail = () => {
 
                   <Col xs={12}>
                     <Form.Group>
-                      <Form.ControlLabel>주소</Form.ControlLabel>
+                      <Form.ControlLabel>주소
+                      <Button
+                        appearance="ghost"
+                        size="xs"
+                        style={{ marginLeft: 10 }}
+                        onClick={handleClick}
+                      >
+                        우편번호 검색
+                      </Button>
+                      </Form.ControlLabel>
                       <Form.Control name="c_zone_code" value={client.c_zone_code || ''} onChange={(val) => handleChange('c_zone_code', val)} style={{ marginBottom: '8px' }} />
                       <Form.Control name="c_base_address" value={client.c_base_address || ''} onChange={(val) => handleChange('c_base_address', val)} style={{ marginBottom: '8px' }} />
                       <Form.Control name="c_detail_address" value={client.c_detail_address || ''} onChange={(val) => handleChange('c_detail_address', val)} />

@@ -44,13 +44,14 @@ const sell_search_item = () => {
 
 	const styles = {
         backgroundColor: '#f8f9fa',
+		width: '100%'
     };
 
 	return (
 		<div> 
 			<MessageBox type="warning" text="판매 물품 검색"/>
 
-			<Tabs defaultActiveKey="1" className="search_title">
+			<Tabs defaultActiveKey="1">
 				<Tabs.Tab eventKey="1" title="전체" />
 			</Tabs>
 
@@ -70,7 +71,7 @@ const sell_search_item = () => {
 				</div>
 			) : (
 			<Table 
-				className="search_table"
+			style={{ width: '100%' }}
 				height={400}
 				margin='0 auto'
 				data={searchResultList === null
@@ -79,36 +80,36 @@ const sell_search_item = () => {
 				// 검색 결과 값이 있으면 해당 데이터 보여주고, 없으면 전체 목록 보여주기
 			>	
 			
-			<Column width={100} className="text_center">
+			<Column width={320} className="text_center">
 				<HeaderCell style={styles}>품목코드</HeaderCell>
 				<Cell>{(rowData) => rowData.item_code}</Cell>
 			</Column>
 
-			<Column width={150}>
+			<Column width={320}>
 				<HeaderCell  style={styles} className="text_center">품목명</HeaderCell>
 				<Cell className="text_left">{(rowData) => rowData.item_name}</Cell>
 			</Column>
 
-			<Column width={250}>
+			<Column width={320}>
 				<HeaderCell style={styles} className="text_center">규격</HeaderCell>
 				<Cell className="text_left">{(rowData) => rowData.item_standard}</Cell>
 			</Column>
 
-			<Column width={150} className="text_center">
+			<Column width={320} className="text_center">
 				<HeaderCell style={styles}>창고명</HeaderCell>
 				<Cell>{(rowData) => rowData.storage_name}</Cell>
 			</Column>
 
-			<Column width={100} className="text_center">
+			<Column width={320} className="text_center">
 				<HeaderCell style={styles}>창고수량</HeaderCell>
 				<Cell>{(rowData) => rowData.stock_amount}</Cell>
 			</Column>
 
-			<Column width={200} className="text_center">
+			<Column width={320} className="text_center">
 				<HeaderCell style={styles}>등록일자</HeaderCell>
 				<Cell>{(rowData) => rowData.item_reg_date}</Cell>
 			</Column>
-			
+
 			</Table> 
 			 )
 			)}

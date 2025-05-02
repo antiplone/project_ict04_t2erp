@@ -296,7 +296,7 @@ const Sellinsert = () => {
 			<Form layout="horizontal">
 
 			{/* 입력 상위 칸 */}
-			<div className="add_final">
+			<div>
 				<div className="form_div">
 					<div className="add_div">
 						<InputGroup className="insert_input">
@@ -434,13 +434,13 @@ const Sellinsert = () => {
 					</ButtonToolbar>
 				</div>
 
-					<hr />
+				<hr style={{ width: '100%' }} />
 
 						{/* 입력 하위 칸 */}
-					<div className="addTabel">
+					<div>
 						<Table height={400} data={sellAdd}>
 							
-							<Column width={150}>
+							<Column width={192}>
 								<HeaderCell className="text_center" style={styles}>물품코드</HeaderCell>
 								<EditableCell
 									className="text_left"
@@ -455,7 +455,7 @@ const Sellinsert = () => {
 								</EditableCell>
 							</Column>
 
-							<Column width={150}>
+							<Column width={192}>
 								<HeaderCell className="text_center" style={styles}>물품명</HeaderCell>
 								<EditableCell
 									className="text_left"
@@ -469,7 +469,7 @@ const Sellinsert = () => {
 								/>
 							</Column>
 
-							<Column width={150}>
+							<Column width={192}>
 								<HeaderCell className="text_center" style={styles}>규격</HeaderCell>
 								<EditableCell
 									className="text_left"
@@ -483,12 +483,12 @@ const Sellinsert = () => {
 								/>
 							</Column>
 						
-							<Column width={100}>
+							<Column width={192}>
 								<HeaderCell className="text_center" style={styles}>재고</HeaderCell>
 								<EditableCell className="text_center" dataKey="stock_amount" />
 							</Column>
 
-							<Column width={100}>
+							<Column width={192}>
 								<HeaderCell className="text_center" style={styles}>수량</HeaderCell>
 								<EditableNumberCell
 									className="text_center" 
@@ -499,7 +499,7 @@ const Sellinsert = () => {
 								/>
 							</Column>
 
-							<Column width={150}>
+							<Column width={192}>
 								<HeaderCell className="text_center" style={styles}>단가</HeaderCell>
 								<EditableNumberCell
 									style={{ textAlign: 'right' }}
@@ -510,21 +510,21 @@ const Sellinsert = () => {
 								/>
 							</Column>
 
-							<Column width={150}>
+							<Column width={192}>
 								<HeaderCell className="text_center" style={styles}>공급가액</HeaderCell>
 								<Cell style={{ textAlign: 'right' }}>
 									{supplyData => new Intl.NumberFormat().format(supplyData.supply)}
 								</Cell>
 							</Column>
 
-							<Column width={150}>
+							<Column width={192}>
 								<HeaderCell className="text_center" style={styles}>부가세</HeaderCell>
 								<Cell style={{ textAlign: 'right' }}>
 									{vatData => new Intl.NumberFormat().format(vatData.vat)}
 								</Cell>
 							</Column>
 
-							<Column width={150}>
+							<Column width={192}>
 								<HeaderCell className="text_center" style={styles}>총액</HeaderCell>
 								<Cell style={{ textAlign: 'right' }}>
 									{totalData => new Intl.NumberFormat().format(totalData.total)}
@@ -532,7 +532,7 @@ const Sellinsert = () => {
 							</Column>
 
 
-							<Column width={150}>
+							<Column width={192}>
 								<HeaderCell className="text_center" style={styles}>삭제</HeaderCell>
 								<Cell>
 									{rowData => (

@@ -73,7 +73,6 @@ const SellRequestClientList = () => {
 			<Tabs 
 				activeKey={activeTab}
 				onSelect={(key) => setActiveTab(key)}
-				className="all_title"
 			>
 				<Tabs.Tab eventKey="1" title={`전체 (${reqClient.length})`} />
 				<Tabs.Tab eventKey="2" title={`진행중 (${reqClient.filter(r => r.sa_approval_status === '진행중').length})`} />
@@ -93,7 +92,6 @@ const SellRequestClientList = () => {
 				{(activeTab === "1" || activeTab === "2" || activeTab === "3") && (
 				<Table
 					height={400}
-					width={1200}
 					margin='0 auto'
 					data={filteredList}
 					onRowClick={rowData => {
@@ -101,48 +99,48 @@ const SellRequestClientList = () => {
 					}}
 				>
 
-					<Column width={70} className="text_center">
+					<Column width={150} className="text_center">
 						<HeaderCell style={styles}>순번</HeaderCell>
 						<Cell>{(rowData) => rowData.rownum}</Cell>
 					</Column>
 					
-					<Column width={100} className="text_center">
+					<Column width={213} className="text_center">
 						<HeaderCell style={styles}>승인상태</HeaderCell>
 						<Cell>{(rowData) => rowData.sa_approval_status}</Cell>
 					</Column>
 
 
-					<Column width={120} className="text_center">
+					<Column width={213} className="text_center">
 						<HeaderCell style={styles}>거래처명</HeaderCell>
 						<Cell>{(rowData) => rowData.sc_client_name}</Cell>
 					</Column>
 
-					<Column width={120} className="text_center">
+					<Column width={213} className="text_center">
 						<HeaderCell style={styles}>대표자명</HeaderCell>
 						<Cell>{(rowData) => rowData.sc_ceo}</Cell>
 					</Column>
 
-					<Column width={150} className="text_center">
+					<Column width={213} className="text_center">
 						<HeaderCell style={styles}>사업자등록번호</HeaderCell>
 						<Cell>{(rowData) => rowData.sc_biz_num}</Cell>
 					</Column>
 
-					<Column width={170} className="text_center">
+					<Column width={278} className="text_center">
 						<HeaderCell style={styles}>이메일</HeaderCell>
 						<Cell>{(rowData) => rowData.sc_email}</Cell>
 					</Column>
 
-					<Column width={170} className="text_center">
+					<Column width={213} className="text_center">
 						<HeaderCell style={styles}>연락처</HeaderCell>
 						<Cell>{(rowData) => rowData.sc_tel}</Cell>
 					</Column>
 
-					<Column width={170} className="text_center">
+					<Column width={213} className="text_center">
 						<HeaderCell style={styles}>등록일</HeaderCell>
 						<Cell>{(rowData) => rowData.sc_date}</Cell>
 					</Column>
 
-					<Column width={70} className="text_center">
+					<Column width={213} className="text_center">
 						<HeaderCell style={styles}>상세보기</HeaderCell>
 						<Cell>
 							{(rowData) => (

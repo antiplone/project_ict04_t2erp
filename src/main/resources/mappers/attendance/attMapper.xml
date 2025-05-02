@@ -23,6 +23,7 @@
 		FROM attendance_view a
 		LEFT JOIN vacation_view v
 		  ON a.v_code = v.v_code
+	ORDER BY a_code DESC
 	</select>
     <!-- 근태항목 등록 -->
 	<insert id="insertAttItems" parameterType="com.spring.erp_ordit.dto.attendance.AttItemsDTO">

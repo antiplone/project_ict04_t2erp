@@ -55,7 +55,7 @@ export default function CommuteRequestModal({ open, onClose, rowData, attURL, on
   
 
   return (
-    <Modal open={open} onClose={onClose} size="sm">
+    <Modal open={open} onClose={onClose} size="sm" backdrop={false}>
       <Modal.Header>
         <Modal.Title>근무 기록 정정요청</Modal.Title>
       </Modal.Header>

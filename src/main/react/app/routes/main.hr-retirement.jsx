@@ -40,7 +40,7 @@ export default function HrRetirement() {
     { label: "퇴직신청상태", dataKey: "re_apply_status", width: 100 },
     { label: "인수인계 여부", dataKey: "re_succession_yn", width: 100 },
     { label: "승인상태", dataKey: "re_approval_status", width: 80 },
-    { label: "반려사유", dataKey: "re_reject_reason", width: 190 },
+    { label: "반려 사유", dataKey: "re_reject_reason", width: 190 },
     { label: "결재 사유", dataKey: "re_note", width: 210 },
   ];
 

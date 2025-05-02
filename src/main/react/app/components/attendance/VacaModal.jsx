@@ -10,6 +10,7 @@ import {
   DateRangePicker,
 } from "rsuite";
 import AppConfig from "#config/AppConfig.json";
+import { useToast } from '#components/common/ToastProvider';
 
 const { StringType, ArrayType } = Schema.Types;
 
@@ -36,16 +37,17 @@ const model = Schema.Model({
   v_note: StringType().maxLength(100, "100자 이내로 작성해주세요"),
 });
 
-const VacaModal = ({ open, onClose }) => {
+const VacaModal = ({ open, onClose, onReloading }) => {
   const fetchURL = AppConfig.fetch['mytest'];
   const attURL = `${fetchURL.protocol}${fetchURL.url}/attendance`;
 
+  const { showToast } = useToast();
   const [formError, setFormError] = useState({});
   const [vaca, setVaca] = useState({
     v_code: "",
     v_name: "",
-    v_period: "",
-    v_use: "",
+    v_period: [],
+    v_use: "Y",
     v_note: "",
   });
 
@@ -63,6 +65,7 @@ const VacaModal = ({ open, onClose }) => {
 
     const payload = {
       ...vaca,
+      v_code: parseInt(vaca.v_code, 10),
       v_start: formatDate(startDate),
       v_end: formatDate(endDate),
     };
@@ -74,12 +77,13 @@ const VacaModal = ({ open, onClose }) => {
     });
   
     if (res.status === 201) {
-      showToast("등록에 성공했습니다.", "success");
+      showToast("휴가등록에 성공했습니다.", "success");
       onClose();
-      // onReloading();    // 테이블 리로딩
-      window.location.reload();
+      setTimeout(() => {
+        onReloading(); // props로 받은 함수 실행!
+      }, 300);
     } else {
-      showToast("등록 실패.", "error");
+      showToast("휴가등록에 실패했습니다.", "error");
     }
   };
 
@@ -97,9 +101,9 @@ const VacaModal = ({ open, onClose }) => {
   }, [open]);
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} backdrop={false}>
       <Modal.Header>
-        <Modal.Title>휴가항목 등록</Modal.Title>
+        <Modal.Title>휴가항목등록</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form model={model} formValue={vaca} onChange={vacaChange} fluid>

@@ -1,9 +1,12 @@
+import AppConfig from "#config/AppConfig.json";
 import React, { useState, useEffect } from 'react';
 import { HrTable } from '#components/hr/HrTable';
 import HrButton from '#components/hr/HrButton';
 import HrModal from '#components/hr/HrModal';
-import { Input, Grid, Col, Button, Message } from 'rsuite';
+import { Input, Grid, Col, Message } from 'rsuite';
 import ErrorText from '#components/hr/ErrorText';
+import { useToast } from '#components/common/ToastProvider';
+import { CheckButton } from "#components/hr/HrButton";
 import "#components/common/css/common.css";
 
 const initialFormData = {
@@ -11,16 +14,20 @@ const initialFormData = {
   d_name: '',
   d_tel: '',
   d_manager: '',
-  d_address: '',
 };
 
 export default function Hr_department() {
+  const fetchURL = AppConfig.fetch['mytest'];
+  const hrURL = `${fetchURL.protocol}${fetchURL.url}/hrDept`;
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [message, setMessage] = useState('');
   const [errors, setErrors] = useState({});
   const [isEditMode, setIsEditMode] = useState(false);
   const [hrDeptData, setHrDeptData] = useState(initialFormData);
+  const [isCodeChecked, setIsCodeChecked] = useState(false);
+  const [isCodeValid, setIsCodeValid] = useState(false);
+  const { showToast } = useToast();
 
   const fetchHrDeptList = () => {
     fetch('http://localhost:8081/hrDept/hrDeptList')
@@ -51,7 +58,6 @@ export default function Hr_department() {
     if (!hrDeptData.d_code.trim()) newErrors.d_code = "부서코드는 필수 항목입니다.";
     if (!hrDeptData.d_name.trim()) newErrors.d_name = "부서명은 필수 항목입니다.";
     if (!hrDeptData.d_tel.trim()) newErrors.d_tel = "전화번호는 필수 항목입니다.";
-    if (!hrDeptData.d_address) newErrors.d_address = "주소는 필수 항목입니다.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -60,15 +66,19 @@ export default function Hr_department() {
   const handleRegister = () => {
     if (!validate()) return;
 
+    if (!isCodeChecked || !isCodeValid) {
+      showToast("부서코드 중복확인을 먼저 해주세요.", "warning");
+      return;
+    }
+
     const newDept = {
       d_code: hrDeptData.d_code,
       d_name: hrDeptData.d_name,
       d_tel: hrDeptData.d_tel,
-      d_address: hrDeptData.d_address,
       d_manager: hrDeptData.d_manager,
     };
 
-    fetch('http://localhost:8081/hrDept/hrDeptInsert', {
+    fetch(`${hrURL}/hrDeptInsert`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newDept),
@@ -79,6 +89,7 @@ export default function Hr_department() {
       })
       .then((data) => {
         if (data === 1 || data.success === true) {
+          showToast('부서가 등록되었습니다.', { status: 'success' });
           handleClose();
           fetchHrDeptList();
         }
@@ -89,7 +100,7 @@ export default function Hr_department() {
   const handleUpdate = () => {
     if (!validate()) return;
 
-    fetch(`http://localhost:8081/hrDept/hrDeptUpdate/${hrDeptData.d_code}`, {
+    fetch(`${hrURL}/hrDeptUpdate/${hrDeptData.d_code}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(hrDeptData)
@@ -106,7 +117,7 @@ export default function Hr_department() {
   };
 
   const handleDelete = (d_code) => {
-    fetch(`http://localhost:8081/hrDept/hrDeptDelete/${d_code}`, {
+    fetch(`${hrURL}/hrDeptDelete/${d_code}`, {
       method: 'DELETE'
     })
       .then((res) => {
@@ -117,18 +128,17 @@ export default function Hr_department() {
   };
 
   const columns = [
-    { label: '부서 코드', dataKey: 'd_code', width: 210 },
-    { label: '부서명', dataKey: 'd_name', width: 210 },
-    { label: '전화번호', dataKey: 'd_tel', width: 250 },
-    { label: '부서장', dataKey: 'd_manager', width: 210 },
-    { label: '주소', dataKey: 'd_address', width: 320 },
+    { label: '부서 코드', dataKey: 'd_code', width: 430 },
+    { label: '부서명', dataKey: 'd_name', width: 430 },
+    { label: '전화번호', dataKey: 'd_tel', width: 440 },
+    { label: '부서장', dataKey: 'd_manager', width: 430 },
   ];
 
   return (
     <div style={{ width: '100%' }}>
       <Message type="success" className="main_title">부서 관리</Message>
 
-      <div style={{ maxWidth: '1450px' }}>
+      <div className="remove-outer-border">
         <HrTable
           columns={columns}
           items={items}
@@ -139,7 +149,7 @@ export default function Hr_department() {
           }}
           onDeleteClick={(rowData) => handleDelete(rowData.d_code)}
         />
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
           <HrButton hrBtn="부서 등록" onClick={handleOpen} />
         </div>
       </div>
@@ -155,14 +165,35 @@ export default function Hr_department() {
       >
         <Grid fluid>
           <Col xs={24}>
-            <label>부서 코드 *</label>
-            <Input
-              value={hrDeptData.d_code}
-              onChange={(val) => setHrDeptData({ ...hrDeptData, d_code: val })}
-              disabled={isEditMode}
-            />
-            <ErrorText message={errors.d_code} />
-          </Col>
+          <label>
+            부서 코드 *
+            {!isEditMode && (
+              <CheckButton
+                value={hrDeptData.d_code}
+                checkUrl={`${hrURL}/checkDeptCode`} // 백엔드에서 체크하는 API
+                onResult={(isValid) => {
+                  setIsCodeChecked(true);
+                  setIsCodeValid(isValid);
+                  if (!isValid) {
+                    showToast("이미 사용 중인 부서 코드입니다.", "warning");
+                    setHrDeptData(prev => ({ ...prev, d_code: "" }));
+                  } else {
+                    showToast("사용 가능한 부서 코드입니다.", "success");
+                  }
+                }}
+              />
+            )}
+          </label>
+          <Input
+            value={hrDeptData.d_code}
+            onChange={(val) => {
+              setHrDeptData({ ...hrDeptData, d_code: val });
+              setIsCodeChecked(false);  // 값이 바뀌면 다시 확인하게 함
+            }}
+            disabled={isEditMode}
+          />
+          <ErrorText message={errors.d_code} />
+        </Col>
           <Col xs={24}>
             <label>부서명 *</label>
             <Input
@@ -178,14 +209,6 @@ export default function Hr_department() {
               onChange={(val) => setHrDeptData({ ...hrDeptData, d_tel: val })}
             />
             <ErrorText message={errors.d_tel} />
-          </Col>
-          <Col xs={24}>
-            <label>주소 *</label>
-            <Input
-              value={hrDeptData.d_address}
-              onChange={(val) => setHrDeptData({ ...hrDeptData, d_address: val })}
-            />
-            <ErrorText message={errors.d_address} />
           </Col>
           <Col xs={24}>
             <label>부서장</label>

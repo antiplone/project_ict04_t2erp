@@ -149,14 +149,7 @@ export default function BuySelectTabCheck() {
                     <HeaderCell className='text_center'>입고현황</HeaderCell>
                     <Cell dataKey="income_confirm" />
                 </Column>
-                
-                <Column width={100} className='text_center'>
-                    <HeaderCell className='text_center'>불러온전표</HeaderCell>
-                    <Cell>
-                        <Button color="yellow" appearance="ghost" size="xs" onClick={handleOpen2}>조회</Button>
-                    </Cell>
-                </Column>
-           
+
                 <Column width={100} className='text_center'>
                     <HeaderCell className='text_center'>상세조회</HeaderCell>
                     <Cell>
@@ -167,6 +160,13 @@ export default function BuySelectTabCheck() {
                                 </Button>
                             </Link>
                         )}
+                    </Cell>
+                </Column>
+
+                <Column width={100} className='text_center'>
+                    <HeaderCell className='text_center'>불러온전표</HeaderCell>
+                    <Cell>
+                        <Button color="yellow" appearance="ghost" size="xs" onClick={handleOpen2}>조회</Button>
                     </Cell>
                 </Column>
             </Table>

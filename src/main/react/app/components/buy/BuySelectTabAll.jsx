@@ -157,6 +157,19 @@ export default function BuySelectTabAll() {
                 </Column>
 
                 <Column width={150} className='text_center'>
+                    <HeaderCell className='text_center'>상세조회</HeaderCell>
+                    <Cell>
+                        {buyOrderAllList => (
+                            <Link to={`/main/buy-select-detail/${buyOrderAllList.order_id}`}>
+                                <Button color="green" appearance='ghost' size="xs">
+                                    조회
+                                </Button>
+                            </Link>
+                        )}
+                    </Cell>
+                </Column>
+
+                <Column width={150} className='text_center'>
                     <HeaderCell className='text_center'>불러온전표</HeaderCell>
                     <Cell>
                         {rowData => (
@@ -168,19 +181,6 @@ export default function BuySelectTabAll() {
                             >
                                 조회
                             </Button>
-                        )}
-                    </Cell>
-                </Column>
-
-                <Column width={150} className='text_center'>
-                    <HeaderCell className='text_center'>상세조회</HeaderCell>
-                    <Cell>
-                        {buyOrderAllList => (
-                            <Link to={`/main/buy-select-detail/${buyOrderAllList.order_id}`}>
-                                <Button color="green" appearance='ghost' size="xs">
-                                    조회
-                                </Button>
-                            </Link>
                         )}
                     </Cell>
                 </Column>

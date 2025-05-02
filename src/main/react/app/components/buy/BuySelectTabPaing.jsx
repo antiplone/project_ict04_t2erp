@@ -155,6 +155,19 @@ export default function BuySelectTabPaing() {
                 </Column>
 
                 <Column width={150} className='text_center'>
+                    <HeaderCell className='text_center'>상세조회</HeaderCell>
+                    <Cell>
+                        {buyOrderPayingList => (
+                            <Link to={`/main/buy-select-detail/${buyOrderPayingList.order_id}`}>
+                                <Button color="green" appearance='ghost' size="xs">
+                                    조회
+                                </Button>
+                            </Link>
+                        )}
+                    </Cell>
+                </Column>
+
+                <Column width={150} className='text_center'>
                     <HeaderCell className='text_center'>불러온전표</HeaderCell>
                     <Cell>
                         {rowData => (
@@ -166,19 +179,6 @@ export default function BuySelectTabPaing() {
                             >
                                 조회
                             </Button>
-                        )}
-                    </Cell>
-                </Column>
-
-                <Column width={150} className='text_center'>
-                    <HeaderCell className='text_center'>상세조회</HeaderCell>
-                    <Cell>
-                        {buyOrderPayingList => (
-                            <Link to={`/main/buy-select-detail/${buyOrderPayingList.order_id}`}>
-                                <Button color="green" appearance='ghost' size="xs">
-                                    조회
-                                </Button>
-                            </Link>
                         )}
                     </Cell>
                 </Column>

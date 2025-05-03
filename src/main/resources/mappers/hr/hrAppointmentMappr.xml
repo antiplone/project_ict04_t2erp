@@ -16,13 +16,14 @@
       a.new_position,
       a.old_department,
       d.d_name AS new_department,
+      d.d_code AS d_code,
       a.appoint_note,
       a.appoint_date,
       e.e_tel		<!-- 문자발송할 전화번호 -->
     FROM appointment_tbl a
     LEFT JOIN department_tbl d ON a.new_department = d.d_code
     LEFT JOIN employee_tbl e ON a.e_id = e.e_id
-    ORDER BY a.appoint_id
+    ORDER BY a.appoint_date ASC, a.appoint_id ASC
 </select>
 
 <!-- 인사발령 등록 -->
@@ -53,7 +54,7 @@
 <!-- 부서만 업데이트 -->
 <update id="updateDepartmentOnly" parameterType="com.spring.erp_ordit.dto.hr.HrAppointmentDTO">
     UPDATE employee_tbl
-    SET d_code = #{new_department}
+    SET d_code = #{d_code}
     WHERE e_id = #{e_id}
 </update>
 

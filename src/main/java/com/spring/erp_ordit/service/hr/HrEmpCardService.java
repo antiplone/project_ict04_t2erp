@@ -18,7 +18,7 @@ public class HrEmpCardService {
 	// 인사카드 목록
 	@Transactional
 	public List<HrEmpCardDTO> hrEmpCardList() {
-		System.out.println("<< HrEmpCardService - hrEmpCardList >>");
+		// System.out.println("<< HrEmpCardService - hrEmpCardList >>");
 		
 		return cardMapper.hrEmpCardList();
 	}
@@ -26,7 +26,7 @@ public class HrEmpCardService {
 	// 인사카드 등록
 	@Transactional
 	public int hrEmpCardInsert(HrEmpCardDTO dto) {
-		System.out.println("<< HrEmpCardService - hrEmpCardInsert >>");
+		// System.out.println("<< HrEmpCardService - hrEmpCardInsert >>");
 		
 		return cardMapper.hrEmpCardInsert(dto);
 	}
@@ -34,7 +34,7 @@ public class HrEmpCardService {
 	// 인사카드 상세
 	@Transactional(readOnly=true)
 	public HrEmpCardDTO hrEmpCardDetail(int e_id) {
-		System.out.println("<< HrEmpCardService - hrEmpCardDetail >>");
+		// System.out.println("<< HrEmpCardService - hrEmpCardDetail >>");
 	
 		return cardMapper.hrEmpCardDetail(e_id);
 	}
@@ -42,7 +42,7 @@ public class HrEmpCardService {
 	// 인사카드 수정
 	@Transactional
 	public int hrEmpCardUpdate(int e_id, HrEmpCardDTO dto) {	// BoardDTO 리턴: 상세페이지로 리턴하기 위해
-		System.out.println("<< HrEmpCardService - hrEmpCardUpdate >>");
+		// System.out.println("<< HrEmpCardService - hrEmpCardUpdate >>");
 	
 		return cardMapper.hrEmpCardUpdate(dto);
 	}
@@ -50,7 +50,7 @@ public class HrEmpCardService {
 	// 인사카드 삭제
 	@Transactional
 	public String hrEmpCardDelete(int e_id) {
-		System.out.println("<< HrEmpCardService - hrEmpCardDelete >>");
+		// System.out.println("<< HrEmpCardService - hrEmpCardDelete >>");
 	
 		cardMapper.hrEmpCardDelete(e_id);
 		return "ok";		

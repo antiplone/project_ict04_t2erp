@@ -13,6 +13,7 @@
 	   FROM request_client_tbl r
        LEFT JOIN request_client_approval_tbl a
 	     ON r.sc_id = a.sa_request_id
+	  WHERE r.sc_show = 'Y' 
 	  ORDER BY a.sa_approval_id DESC
 </select>
 

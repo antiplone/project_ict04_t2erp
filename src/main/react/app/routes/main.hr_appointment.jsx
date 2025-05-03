@@ -97,7 +97,7 @@ export default function HrEmpAppointment() {
 
   const requests = employees.map((emp) => {
     // 부서명을 부서코드로 변환
-  const foundDept = departmentList.find(dep => dep.label === emp.new_department);
+  const foundDept = departmentList.find(dep => dep.value === emp.new_department);
   const deptCode = foundDept ? foundDept.value : '';  // 부서코드
 
   const appointData = {
@@ -107,13 +107,11 @@ export default function HrEmpAppointment() {
     old_position: emp.old_position,
     new_position: emp.new_position,
     old_department: emp.old_department,
-    new_department: emp.new_department,     // 부서명
+    new_department: deptCode,
+    d_code: deptCode,             // 인사카드에 업데이트
     appoint_note: emp.appoint_note,
     appoint_date: emp.appoint_date,
-    d_code: deptCode
   };
-  
-    console.log('appointData:', appointData);
   
     return fetch(`${fetchURL.protocol}${fetchURL.url}/hrAppoint/hrAppointInsert`, {
       method: 'POST',
@@ -194,7 +192,12 @@ export default function HrEmpAppointment() {
       const empList = await res.json();
   
       for (const appointId of selectedIds) {
-        const emp = empList.find(emp => emp.e_id === appointId);
+        // 발령 내역에서 appoint_id로 대상 찾기
+        const targetAppoint = confirmedAppointments.find(item => item.appoint_id === appointId);
+        if (!targetAppoint) continue;
+  
+        // 해당 발령건의 e_id로 전화번호 찾기
+        const emp = empList.find(emp => emp.e_id === targetAppoint.e_id);
         if (!emp) continue;
   
         const cleanPhoneNumber = emp.e_tel?.replace(/-/g, '');

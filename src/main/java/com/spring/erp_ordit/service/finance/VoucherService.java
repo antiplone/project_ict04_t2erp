@@ -64,4 +64,12 @@ public class VoucherService {
 
 		return voucherMapper.listTransaction();
 	}
+
+	public Map<String, Object> get(int id) {
+		Map<String, Object> entity;
+
+		entity = voucherMapper.getVoucher(id);
+
+		return entity;
+	}
 }

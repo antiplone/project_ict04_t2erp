@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Outlet, useLocation } from "@remix-run/react";
+import { useLocation } from "@remix-run/react";
 import { Container, Button, Message, Modal, Placeholder, Loader } from "rsuite";
 
 import VoucherTable from "#components/finance/VoucherTable"
@@ -27,12 +27,12 @@ export const links = () => [
 export default function FinanceVoucher() {
 
 	let location = useLocation();
-	console.log(location.pathname);
+//	console.log(location.pathname);
 
 	const dataState = useState([]);
 	const [allList, setAllList] = dataState;
 	const [open, setOpen] = useState(false);
-	const rowState = useState([]);
+	const rowState = useState({});
 	const [rowData] = rowState;
 
 	const getNumberedList = (data) => {
@@ -81,7 +81,7 @@ export default function FinanceVoucher() {
 			});
 		});
 
-		console.log("result :", result);
+//		console.log("result :", result);
 
 		return result;
 	};

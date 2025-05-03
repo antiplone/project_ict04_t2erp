@@ -204,12 +204,12 @@ export const HrAppointListTable = ({ items, columns, selectedIds, onSelect }) =>
                 onClick={(e) => e.stopPropagation()}
               >
                 <Checkbox
-                  checked={selectedIds.includes(rowData.e_id)}
+                  checked={selectedIds.includes(rowData.appoint_id)}
                   onChange={(value, checked) => {
                     if (checked) {
-                      onSelect([rowData.e_id]);
+                      onSelect([...selectedIds, rowData.appoint_id]);
                     } else {
-                      onSelect([]);
+                      onSelect(selectedIds.filter(id => id !== rowData.appoint_id));
                     }
                   }}
                 />

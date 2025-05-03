@@ -18,7 +18,7 @@ public class BasicClientApprovalServiceImpl {
 	// 거래처 요청 목록
 	@Transactional
 	public List<BasicClientApprovalDTO> basicClientApprovalList() {
-		System.out.println("<< BasicClientApprovalServiceImpl -  basicClientApprovalList >>");
+		// System.out.println("<< BasicClientApprovalServiceImpl -  basicClientApprovalList >>");
 		
 		return basicMapper.basicClientApprovalList();
 	}
@@ -26,7 +26,7 @@ public class BasicClientApprovalServiceImpl {
 	// 거래처 요청 상세
 	@Transactional
 	public BasicClientApprovalDTO basicClientApprovalDetail(int sc_id) {
-		System.out.println("<< BasicClientApprovalServiceImpl -  basicClienApprovaltDetail >>");
+		// System.out.println("<< BasicClientApprovalServiceImpl -  basicClienApprovaltDetail >>");
 		
 		return basicMapper.basicClientApprovalDetail(sc_id);
 	}
@@ -34,7 +34,7 @@ public class BasicClientApprovalServiceImpl {
 	// 거래처 수정
 	@Transactional
 	public int basicClientApprovalUpdate(int sc_id, BasicClientApprovalDTO dto) {
-		System.out.println("<< BasicClientApprovalServiceImpl -  basicClientApprovalUpdate >>");
+		// System.out.println("<< BasicClientApprovalServiceImpl -  basicClientApprovalUpdate >>");
 		
 		// 진행중을 선택해도 승인 처리되는 것 방지
 		if (!dto.getSa_approval_status().equals("승인") && !dto.getSa_approval_status().equals("반려")) {		// 승인도 반려도 아닐 경우 처리할 수 없음

@@ -19,9 +19,9 @@ const { Column, HeaderCell, Cell } = Table;
 const Component = ({ opener, dataState, rowState }) => {
 
 	const loadTaskstt = useState(false);
-	const [ loadTask, setLoadTask ] = loadTaskstt;
-	const [ data ] = dataState;
-	const [ , setVoucher ] = rowState;
+	const [loadTask, setLoadTask] = loadTaskstt;
+	const [data] = dataState;
+	const [, setVoucher] = rowState;
 	let rowLoading = [];
 
 	if (data.length > 0) {
@@ -30,7 +30,7 @@ const Component = ({ opener, dataState, rowState }) => {
 
 			d.loadingState = useState(false);
 			rowLoading.push(d.loadingState[0]);
-//			console.log("d.isLoading", d.isLoading);
+			//			console.log("d.isLoading", d.isLoading);
 		}
 	}
 
@@ -84,13 +84,13 @@ const Component = ({ opener, dataState, rowState }) => {
 		<Cell {...props} style={{ padding: 0 }}>
 			<div style={{ lineHeight: '46px' }}>
 				{rowData.order_status === "결재중" && !rowData.loadingState[0]
-				?
-				<Checkbox
-					value={rowData[dataKey]}
-					inline
-					onChange={onChange}
-					checked={checkedKeys.some(item => item === rowData[dataKey])}
-				/> : null}
+					?
+					<Checkbox
+						value={rowData[dataKey]}
+						inline
+						onChange={onChange}
+						checked={checkedKeys.some(item => item === rowData[dataKey])}
+					/> : null}
 			</div>
 		</Cell>
 	);
@@ -139,12 +139,47 @@ const Component = ({ opener, dataState, rowState }) => {
 		setCheckedRows(rows);
 	};
 
-	const createVoucher = ( data ) => {
+	const showVoucher = (rowData) => {
+		console.log(rowData);
 
-		if (data instanceof Array) { console.log("배열");
-			
+		opener(true);
+
+		const fetchURL = AppConfig.fetch['mytest'];
+		fetch(`${fetchURL.protocol}${fetchURL.url}/voucher/get/${rowData.order_id}`, {
+			method: "GET",
+			mode: "cors",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+		})
+			.then(res => {
+
+				if (res.ok) {
+
+					const entity = res.json();
+					entity.then(res => {
+
+						console.log("res :", res);
+						rowData.v_assigner = res.v_assigner;
+						setVoucher(rowData);
+					});
+				}
+				else {
+					alert("전표 처리를 해주세요.");
+				}
+			});
+
+	};
+
+	const createVoucher = (data) => {
+
+		if (data instanceof Array) {
+			console.log("배열");
+
 		}
-		else { console.log("객체");
+		else {
+			console.log("객체");
 
 		}
 
@@ -184,7 +219,7 @@ const Component = ({ opener, dataState, rowState }) => {
 			}
 		}
 
-	}, [ loadTask, ...rowLoading ]);
+	}, [loadTask, ...rowLoading]);
 
 	return (
 		<Container>
@@ -206,7 +241,7 @@ const Component = ({ opener, dataState, rowState }) => {
 									indeterminate={indeterminate}
 									onChange={handleCheckAll}
 								/>
-							: null}
+								: null}
 						</div>
 					</HeaderCell>
 					<CheckCell dataKey="order_id" checkedKeys={checkedKeys} onChange={handleCheck} />
@@ -219,10 +254,7 @@ const Component = ({ opener, dataState, rowState }) => {
 							<Button
 								appearance="link"
 								style={{ padding: 0 }}
-								onClick={() => {
-									setVoucher(rowData);
-									opener(true)
-								}}
+								onClick={() => showVoucher(rowData)}
 							>
 								{`${rowData.voucher_no}`}
 							</Button>
@@ -274,7 +306,7 @@ const Component = ({ opener, dataState, rowState }) => {
 									console.log(rowData);
 									setLoadTask(true);
 									rowData.loadingState[1](true);
-									createVoucher( rowData );
+									createVoucher(rowData);
 								}}
 							>
 								처리
@@ -296,7 +328,7 @@ const Component = ({ opener, dataState, rowState }) => {
 //						console.log("checkedRows :", checkedRows);
 
 						setLoadTask(true);
-						createVoucher( checkedRows );
+						createVoucher(checkedRows);
 
 					}}
 				>

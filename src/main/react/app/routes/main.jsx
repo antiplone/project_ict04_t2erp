@@ -1,7 +1,7 @@
 /* eslint-disable react/react-in-jsx-scope */
-import React, { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "@remix-run/react";
-import { Container, Content } from "rsuite";
+import { Container } from "rsuite";
 
 import AppConfig from "#config/AppConfig.json"
 
@@ -54,20 +54,23 @@ export default function Main() {
 	const nav = useNavigate();
 	const pathname = location.pathname;   // 현재 URL 경로를 문자열로 가져와(=location.pathname) pathname 객체에 가져온 값을 저장한다.
 
+	const empInfo = useState("");
+	const [ myInfo ] = empInfo;
+
 	useEffect(() => {
 
 		if (localStorage.length < 1) // 세션이 없으면, 로그인으로
 			nav("/", { replace: true });
 		else {
 
-			console.log(localStorage.getItem("e_auth_id")); // 세션정보출력
+//			console.log(localStorage.getItem("e_auth_id")); // 세션정보출력
 
 			if (localStorage.getItem("e_auth_id") == null) { // 임시적 처리, 비동기를 더 생각해봐야
 				localStorage.clear();
 				nav("/", { replace: true });
 			}
 		}
-	}, []);
+	}, [ myInfo ]);
 
 	const isMain = pathname === "/main";
 
@@ -75,7 +78,7 @@ export default function Main() {
 		<Container style={{ display: "block", width: "1920px", margin: "0 auto" }}>
 
 			<Container>
-				<HeaderMenu />
+				<HeaderMenu empInfo={empInfo} />
 				{isMain ? <Management /> : <Outlet />}	{/* URL이 메인이면 근태, 아니라면 그 외 */}
 				<Chatbot width={150} height={150} style={{ padding: '6px' }} />
 			</Container>

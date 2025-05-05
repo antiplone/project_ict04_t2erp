@@ -26,4 +26,5 @@ public class HrAppointmentDTO {
     private String appoint_note;       // 비고
     private Date appoint_date;         // 발령일자
     private String e_tel;			   // 사원 전화번호
+    private String d_code;			   // 부서 코드
 }

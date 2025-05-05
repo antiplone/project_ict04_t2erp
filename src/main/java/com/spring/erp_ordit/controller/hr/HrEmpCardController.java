@@ -35,7 +35,7 @@ public class HrEmpCardController {
 	// 인사카드 목록 GetMapping -> http://localhost:8081/hrCard/hrCardList
 		@GetMapping("/hrCardList")
 		public ResponseEntity<?> hrEmpCardList(){
-			System.out.println("<< HrController - hrEmployeeCardList >>");
+			// System.out.println("<< HrController - hrEmployeeCardList >>");
 		
 			return new ResponseEntity<>(service.hrEmpCardList(), HttpStatus.OK);
 		}
@@ -43,7 +43,7 @@ public class HrEmpCardController {
 	// 인사카드 등록 PostMapping => http://localhost:8081/hrCard/hrCardInsert
 	@PostMapping("/hrCardInsert")
 	public ResponseEntity<?> hrEmpCardInsert(@RequestBody HrEmpCardDTO empCard) { 
-		System.out.println("<<< HrController- hrEmpCardInsert >>>");
+		// System.out.println("<<< HrController- hrEmpCardInsert >>>");
 		
 		return new ResponseEntity<>(service.hrEmpCardInsert(empCard), HttpStatus.CREATED);
 	}
@@ -51,7 +51,7 @@ public class HrEmpCardController {
 	// 인사카드 상세 GetMapping -> http://localhost:8081/hrCard/hrCardDetail/{e_id}
 	@GetMapping("/hrCardDetail/{e_id}")
 	public ResponseEntity<?> hrEmpCardDetail(@PathVariable int e_id){
-		System.out.println("<< HrController - basicItemDetail >>");
+		// System.out.println("<< HrController - basicItemDetail >>");
 	
 		return new ResponseEntity<>(service.hrEmpCardDetail(e_id), HttpStatus.OK);
 	}
@@ -59,7 +59,7 @@ public class HrEmpCardController {
 	// 인사카드 수정 @PutMapping -> http://localhost:8081/hrCard/hrCardUpdate/{e_id}
 	@PutMapping("/hrCardUpdate/{e_id}")
 	public ResponseEntity<?> hrEmpCardUpdate(@PathVariable int e_id, @RequestBody HrEmpCardDTO empCard) {
-		System.out.println("<< HrController - hrEmpCardUpdate >>");
+		// System.out.println("<< HrController - hrEmpCardUpdate >>");
 		
 		return new ResponseEntity<>(service.hrEmpCardUpdate(e_id, empCard), HttpStatus.OK);
 	}

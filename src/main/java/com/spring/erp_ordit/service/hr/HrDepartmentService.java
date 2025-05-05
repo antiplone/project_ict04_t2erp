@@ -18,7 +18,7 @@ public class HrDepartmentService {
 	// 부서 목록
 	@Transactional
 	public List<HrDepartmentDTO> hrDeptList() {
-		System.out.println("<< HrDepartmentService - hrDeptList >>");
+		// System.out.println("<< HrDepartmentService - hrDeptList >>");
 		
 		return hrDeptMapper.hrDeptList();
 	}
@@ -26,7 +26,7 @@ public class HrDepartmentService {
 	// 부서 등록
 	@Transactional
 	public int hrDeptInsert(HrDepartmentDTO dto) {
-		System.out.println("<< HrDepartmentService - hrDeptList >>");
+		// System.out.println("<< HrDepartmentService - hrDeptList >>");
 		
 		return hrDeptMapper.hrDeptInsert(dto);	// 마이바티스 i, u, d 리턴타입 int(1: 성공, 0: 실패)
 	}
@@ -34,7 +34,7 @@ public class HrDepartmentService {
 	// 부서 수정
 	@Transactional
 	public int hrDeptUpdate(String d_code, HrDepartmentDTO dto) {
-		System.out.println("<< HrDepartmentService - hrDeptUpdate >>");
+		// System.out.println("<< HrDepartmentService - hrDeptUpdate >>");
 		
 		return hrDeptMapper.hrDeptUpdate(dto);
 	}
@@ -42,7 +42,7 @@ public class HrDepartmentService {
 	// 부서 삭제
 	@Transactional
 	public String hrDeptDelete(String d_code) {
-		System.out.println("<< HrDepartmentService - hrDeptDelete >>");
+		// System.out.println("<< HrDepartmentService - hrDeptDelete >>");
 	
 		hrDeptMapper.hrDeptDelete(d_code);
 		return "ok";		

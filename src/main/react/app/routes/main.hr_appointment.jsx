@@ -5,6 +5,7 @@ import HrAppointEditTable from "#components/hr/HrAppoint";
 import MessageBox from "#components/common/MessageBox.jsx";
 import { HrAppointListTable } from "#components/hr/HrTable.jsx";
 import HrModal from "#components/hr/HrModal.jsx";
+import { formatDate } from "#components/hr/HrDate";
 
 export default function HrEmpAppointment() {
   const fetchURL = AppConfig.fetch["mytest"];
@@ -233,7 +234,12 @@ export default function HrEmpAppointment() {
     { label: "이전 부서", dataKey: "old_department", width: 150 },
     { label: "발령 부서", dataKey: "new_department", width: 150 },
     { label: "비고", dataKey: "appoint_note", width: 250 },
-    { label: "발령일자", dataKey: "appoint_date", width: 200 }
+    {
+      label: "발령일자",
+      dataKey: "appoint_date",
+      width: 200,
+      renderCell: (rowData) => formatDate(rowData.appoint_date)
+    }
   ];
 
   return (

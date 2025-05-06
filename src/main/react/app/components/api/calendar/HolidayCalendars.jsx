@@ -10,8 +10,15 @@ import TodaySchedule from "./TodaySchedule";
 const API_KEY = "AIzaSyBmlkUkawpzTaA1PqQutLzv_nQ5ZioqIXk"; // 본인 Google API 키
 const CALENDAR_ID = "ko.south_korea#holiday@group.v.calendar.google.com"; // 한국 공휴일 캘린더
 
-
-export default function Calendar() {
+// 쉬지 않는 공휴일 수동 리스트
+const nonHolidayOffDates = [
+  "2025-04-05", // 식목일
+  "2025-05-01", // 노동절
+  "2025-05-08", // 어버이날
+  "2025-05-15", // 스승의 날
+];
+  
+export default function HolidayCalendars() {
   const fetchURL = AppConfig.fetch['mytest'];
   const calendarURL = `${fetchURL.protocol}${fetchURL.url}/api/calendar`;
 
@@ -43,7 +50,13 @@ export default function Calendar() {
 
     const map = new Map();
     for (const e of all) {
-      const key = `${e.start}-${e.title}`; // 날짜 + 제목 기준으로 유일하게
+      // const key = `${e.start}-${e.title}`; // 날짜 + 제목 기준으로 유일하게
+      
+      const dateKey = typeof e.start === 'string'
+        ? e.start
+        : e.start.toISOString().slice(0, 10);
+        const key = `${dateKey}-${e.title}-${e.source}`;
+      
       if (!map.has(key)) {
         map.set(key, e);
       }
@@ -75,12 +88,15 @@ export default function Calendar() {
     try {
       const res = await fetch(`${calendarURL}/getAllEvents`);
       const data = await res.json();
-      console.log("📥 raw data from server:", data);
+      // console.log("📥 raw data from server:", data);
 
-      const events = (data || []).filter(item => item && item.calTitle).map(item => {
+      const events = (data || [])
+        .filter(item => item && item.calTitle)
+        .filter(item => item.isHoliday !== "Y")  // db에 있는 공휴일 포함x
+        .map(item => {
         const start = new Date(item.calStartDate);
         const end = new Date(item.calEndDate);
-        console.log("✅ parsed:", { start, end });
+        // console.log("✅ parsed:", { start, end });
         return {
           title: item.calTitle,
           start,
@@ -89,23 +105,10 @@ export default function Calendar() {
           description: item.calDescription,
           location: item.calLocation,
           eventType: item.calEventType,
+          source: "db",
         };
       });
-      console.log("✅ final userEvents to show:", events);
-      // const events = (data || [])
-      //   .filter(item => item && item.calTitle)
-      //   .map(item => ({
-      //     title: item.calTitle,
-      //     start: new Date(item.calStartDate),
-      //     end: new Date(item.calEndDate),
-      //     allDay: item.calAllDay === 'Y',
-      //     description: item.calDescription,
-      //     location: item.calLocation,
-      //     eventType: item.calEventType,
-      //     creacteAt: item.calCreatedAt,
-      //     updateAt: item.calUpdatedAt,
-      //   }));
-      // console.log("▶ 일정 리스트: ", events);
+      // console.log("🎯 서버에서 받은 데이터", data);
       setUserEvents(events);
     } catch (error) {
       console.error("⛔ 사용자 일정 불러오기 실패:", error);
@@ -122,13 +125,6 @@ export default function Calendar() {
     setTodaySche(todayStr);
   }, []);
 
-  // 쉬지 않는 공휴일 수동 리스트
-  const nonHolidayOffDates = [
-    "2025-04-05", // 식목일
-    "2025-05-01", // 노동절
-    "2025-05-08", // 어버이날
-    "2025-05-15", // 스승의 날
-  ];
 
   // 버튼으로 월별 이동이 가능한 함수
   const clickMove = (type) => {
@@ -139,12 +135,13 @@ export default function Calendar() {
     setCalendarDate(new Date(calendarApi.getDate()));
   };
 
-  // 공휴일 및 사용자 일정 불러오기
+  // 공휴일 및 사용자 일정 불러오기(api)
   useEffect(() => {
     async function fetchHolidays() {
       try {
-        const yearStart = `${calendarDate.getFullYear()}-01-01T00:00:00Z`;
-        const yearEnd = `${calendarDate.getFullYear()}-12-31T23:59:59Z`;
+        const year = calendarDate.getFullYear();
+        const yearStart = `${year}-01-01T00:00:00Z`;
+        const yearEnd = `${year}-12-31T23:59:59Z`;
         const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(CALENDAR_ID)}/events?key=${API_KEY}&timeMin=${yearStart}&timeMax=${yearEnd}&singleEvents=true&orderBy=startTime`;
         const res = await fetch(url);
         const data = await res.json();
@@ -157,15 +154,12 @@ export default function Calendar() {
             endDate.setDate(endDate.getDate() - 1);
             end = endDate.toISOString().slice(0, 10);
           }
-          let fixedTitle = item.summary;
-          if (fixedTitle.startsWith("쉬는 날 ")) {
-            fixedTitle = fixedTitle.replace("쉬는 날 ", "");
-          }
           return {
-            title: fixedTitle,
+            title: item.summary.replace("쉬는 날 ", ""),
             start,
             end,
             allDay: true,
+            source: "google",
           };
         });
 
@@ -174,8 +168,13 @@ export default function Calendar() {
         console.error("⛔ 공휴일 불러오기 실패:", err);
       }
     }
-    fetchUserEvents();
+    fetchHolidays();
+    // fetchUserEvents();  // db
   }, [calendarDate]);
+  
+  useEffect(() => {
+    fetchUserEvents();  // db
+  }, []);
 
   // 날짜 클릭 → todaySche 세팅
   const dateClick = (info) => {
@@ -255,9 +254,14 @@ export default function Calendar() {
             const eventDate = arg.event.startStr.slice(0, 10); // YYYY-MM-DD
             const isNoHoliday = nonHolidayOffDates.includes(eventDate); // 쉬지 않는 공휴일이면 true
           
+            const isFromGoogle = arg.event.extendedProps.source === "google";
+            const color = isFromGoogle
+              ? (isNoHoliday ? "#555" : "red") // 공휴일이면 빨강, 쉬지 않으면 검정
+              : "#000";                        // DB일정은 검정
+
             return (
               <div style={{
-                color: isNoHoliday ? "#555" : "red", // 쉬지 않으면 검정, 쉬면 빨강
+                color: color,
                 fontSize: "10px",
                 fontWeight: "bold",
                 paddingTop: "2px",
@@ -297,7 +301,7 @@ export default function Calendar() {
 
       {/* 오른쪽 일정 카드 영역 */}
       <div style={{ width: "400px", flexShrink: 0, marginTop: 38 }}>
-        <TodaySchedule userEvents={userEvents} todaySche={todaySche} onAdd={fetchUserEvents} />
+        <TodaySchedule userEvents={userEvents} todaySche={todaySche} onAdd={fetchUserEvents} holidays={holidays}/>
       </div>
     </div>
 

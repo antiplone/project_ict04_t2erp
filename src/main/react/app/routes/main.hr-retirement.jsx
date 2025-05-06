@@ -29,7 +29,7 @@ export default function HrRetirement() {
   // 테이블에 들어갈 항목들의 제목을 미리 정해둔다.
   const retiColumns = [
     { label: "사원번호", dataKey: "e_id", width: 70 },
-    { label: "사원명", dataKey: "e_name", width: 80 },
+    { label: "사원명", dataKey: "e_name", width: 90 },
     { label: "부서", dataKey: "d_name", width: 90 },
     { label: "직위", dataKey: "e_position", width: 50 },
     { label: "퇴사유형", dataKey: "re_type", width: 80 },
@@ -40,8 +40,9 @@ export default function HrRetirement() {
     { label: "퇴직신청상태", dataKey: "re_apply_status", width: 100 },
     { label: "인수인계 여부", dataKey: "re_succession_yn", width: 100 },
     { label: "승인상태", dataKey: "re_approval_status", width: 80 },
-    { label: "반려 사유", dataKey: "re_reject_reason", width: 190 },
-    { label: "결재 사유", dataKey: "re_note", width: 210 },
+    { label: "퇴직신청사유", dataKey: "re_request_reason", width: 200 },
+    { label: "반려 사유", dataKey: "re_reject_reason", width: 200 },
+    { label: "결재 사유", dataKey: "re_note", width: 200 },
   ];
 
   return (

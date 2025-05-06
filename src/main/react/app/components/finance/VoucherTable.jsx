@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Image, Table, Popover, Whisper, Checkbox, Dropdown, Button, IconButton, ButtonToolbar } from 'rsuite';
+import { Container, Image, Message, Table, Popover, Whisper, Checkbox, Dropdown, Button, IconButton, ButtonToolbar, toaster } from 'rsuite';
 
 import "#styles/common.css";
 
@@ -20,7 +20,7 @@ const Component = ({ opener, dataState, rowState }) => {
 
 	const loadTaskstt = useState(false);
 	const [loadTask, setLoadTask] = loadTaskstt;
-	const [data] = dataState;
+	const [data, setData] = dataState;
 	const [, setVoucher] = rowState;
 	let rowLoading = [];
 
@@ -30,7 +30,7 @@ const Component = ({ opener, dataState, rowState }) => {
 
 			d.loadingState = useState(false);
 			rowLoading.push(d.loadingState[0]);
-			//			console.log("d.isLoading", d.isLoading);
+//			console.log("d.isLoading", d.isLoading);
 		}
 	}
 
@@ -139,8 +139,60 @@ const Component = ({ opener, dataState, rowState }) => {
 		setCheckedRows(rows);
 	};
 
+	const getNumberedList = (data) => {
+		let result = [];
+		let groupedByDate = {};
+
+		// 날짜별로 그룹핑
+		data.forEach(item => {
+
+			if (!groupedByDate[item.order_date]) {
+				groupedByDate[item.order_date] = [];
+			}
+			groupedByDate[item.order_date].push(item);
+		});
+
+		// 날짜별로 처리
+		Object.keys(groupedByDate).forEach(date => {
+			// groupedByDate : 날짜별로 데이터를 묶어둔 객체
+			// ex: { '2025-04-10': [item1, item2, ...], '2025-04-11': [item3, ...] }
+			let orders = groupedByDate[date];	// 해당 날짜(date)의 전체 주문 데이터 배열
+			let seenOrderIds = new Set();	// 중복된 주문(order_id)을 한 번만 처리하기 위해 사용
+			let count = 1;
+
+			orders.forEach(item => {
+
+				if (seenOrderIds.has(item.order_id)) return;	 // 이미 처리한 주문번호(order_id)는 무시
+				seenOrderIds.add(item.order_id);
+
+				// 같은 order_id의 품목 모으기
+				const sameOrderItems = orders.filter(x => x.order_id === item.order_id);
+				// 주문번호와 item 주문번호가 같은 걸 배열로 만들기
+				const firstItemName = sameOrderItems[0].item_name;
+				const displayName = sameOrderItems.length > 1
+					? `${firstItemName} 외 ${sameOrderItems.length - 1}건`
+					: firstItemName;
+
+				// 한 줄만 push
+				result.push({
+					...item,
+					voucher_no: item.order_date + '_' + count,
+					item_display: displayName,
+					items: sameOrderItems,
+					assigner: localStorage.getItem('e_name')
+				});
+
+				count++;
+			});
+		});
+
+//		console.log("result :", result);
+
+		return result;
+	};
+
 	const showVoucher = (rowData) => {
-		console.log(rowData);
+//		console.log(rowData);
 
 		opener(true);
 
@@ -160,13 +212,21 @@ const Component = ({ opener, dataState, rowState }) => {
 					const entity = res.json();
 					entity.then(res => {
 
-						console.log("res :", res);
+//						console.log("res :", res);
 						rowData.v_assigner = res.v_assigner;
+						rowData.v_assign_date = res.v_assign_date;
 						setVoucher(rowData);
 					});
 				}
 				else {
-					alert("전표 처리를 해주세요.");
+					opener(false);
+					setVoucher({});
+					toaster.push(
+						<Message showIcon type="error" closable>
+							전표처리를 해주세요.
+						</Message>,
+						{ duration: 3000 }
+					);
 				}
 			});
 
@@ -174,13 +234,25 @@ const Component = ({ opener, dataState, rowState }) => {
 
 	const createVoucher = (data) => {
 
+		let currentDate = new Date();
+		const localeDate = currentDate.toLocaleDateString (
+			"sv-SE",
+			{
+				timeZone: "Asia/Seoul",
+				year: "numeric",
+				month: "2-digit",
+				day: "2-digit"
+			}
+		);
 		if (data instanceof Array) {
-			console.log("배열");
-
+//			console.log("배열");
+			for (const r of data) {
+				r.assign_date = localeDate;
+			}
 		}
 		else {
-			console.log("객체");
-
+//			console.log("객체");
+			data.assign_date = localeDate;
 		}
 
 		const fetchURL = AppConfig.fetch['mytest'];
@@ -195,18 +267,28 @@ const Component = ({ opener, dataState, rowState }) => {
 		})
 			.then(res => {
 
-//					const entity = res.json();
+//				const entity = res.json();
 
 				if (res.ok) {
-					console.log("예예예옝");
-/*						entity.then(res => {
 
-							console.log(1, res);
-							const numbered = getNumberedList(res);
-							setAllList(numbered);
-						});
-*/					}
-			});
+					const entity = res.json();
+					entity.then(res => {
+
+//						console.log(1, res);
+						const numbered = getNumberedList(res);
+						setData(numbered);
+					});
+				}
+				window.location.reload();
+				// 로딩끄기
+/*				if (data instanceof Array) {
+					for (const l in rowLoading) {
+						data[l].loadingState[1](false);
+					}
+				}
+				else data.loadingState[1](false);
+				setLoadTask(false);
+*/			});
 	};
 
 	useEffect(() => {
@@ -247,23 +329,24 @@ const Component = ({ opener, dataState, rowState }) => {
 					<CheckCell dataKey="order_id" checkedKeys={checkedKeys} onChange={handleCheck} />
 				</Column>
 
-				<Column width={140}>
+				<Column width={140} align="center">
 					<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>전표번호</HeaderCell>
 					<Cell>
 						{(rowData) => (
-							<Button
+							rowData.order_status === "승인" ? <Button
 								appearance="link"
 								style={{ padding: 0 }}
 								onClick={() => showVoucher(rowData)}
 							>
 								{`${rowData.voucher_no}`}
 							</Button>
+							: rowData.voucher_no
 						)}
 					</Cell>
 					{/*<NameCell dataKey="name" />*/}
 				</Column>
 
-				<Column width={200}>
+				<Column width={200} align="center">
 					<HeaderCell style={{ fontSize: "medium", fontWeight: "bold" }}>거래유형</HeaderCell>
 					<Cell>{rowData => rowData.t_class}</Cell>
 					{/*<NameCell dataKey="name" />*/}

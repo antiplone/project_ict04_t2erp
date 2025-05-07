@@ -76,7 +76,7 @@
 		LEFT JOIN
 				department_tbl AS dt ON dt.d_code = et.d_code
 		WHERE
-		    ot.delivery_date = DATE(NOW())
+		    ot.delivery_date = DATE(DATE_ADD(NOW(), INTERVAL 16 HOUR))
 		    AND ot.order_type = 2
 	       	AND ot.order_show = 'Y'
 		GROUP BY order_id
@@ -146,9 +146,9 @@
 		inner join
 		    item_tbl it on oit.item_id = it.item_id
 		inner join
-		    warehouse_tbl wt on wt.storage_code
+		    warehouse_tbl wt on wt.storage_code = ot.storage_code
 		inner join
-		    client_tbl ct on ct.client_code
+		    client_tbl ct on ct.client_code = ot.client_code
 		where
 		    ot.order_id = #{order_id}
 		AND 
@@ -178,6 +178,7 @@
 			ot.order_date,
 			ot.delivery_date,
 			ct.client_name,
+			wt.storage_code,
 			wt.storage_name
 		FROM 
 			order_item_tbl oit
@@ -238,7 +239,7 @@
 		LEFT JOIN
 				department_tbl AS dt ON dt.d_code = et.d_code
 		WHERE
-		    ot.shipment_order_date = DATE(NOW())
+		    ot.shipment_order_date = DATE(DATE_ADD(NOW(), INTERVAL 16 HOUR))
 		    AND ot.order_type = 1
 	       	AND ot.order_show = 'Y'
 		GROUP BY order_id
@@ -385,7 +386,6 @@
 	
 	<!--재고 관련 -->
 	<!-- 전체 재고 조회 -->
- 
     <select id="logisStockList" parameterType="com.spring.erp_ordit.dto.warehouse.LogisStockDTO">
 		SELECT
 			it.item_code AS 'item_code',
@@ -419,7 +419,7 @@
 		UPDATE
 			stock_tbl
 		SET 
-			stock_amount = stock_amount + #{stock_amount}, last_date = DATE(NOW())
+			stock_amount = stock_amount + #{stock_amount}, last_date = DATE(DATE_ADD(NOW(), INTERVAL 16 HOUR))
 		WHERE
 			item_code = #{item_code}
 		AND
@@ -432,7 +432,7 @@
 		UPDATE
 			stock_tbl
 		SET 
-			stock_amount = stock_amount - #{stock_amount}, last_date = DATE(NOW())
+			stock_amount = stock_amount - #{stock_amount}, last_date = DATE(DATE_ADD(NOW(), INTERVAL 16 HOUR))
 		WHERE
 			item_code = #{item_code}
 		AND

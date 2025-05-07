@@ -21,6 +21,7 @@ const nonHolidayOffDates = [
 export default function HolidayCalendars() {
   const fetchURL = AppConfig.fetch['mytest'];
   const calendarURL = `${fetchURL.protocol}${fetchURL.url}/api/calendar`;
+  const storedID = Number(localStorage.getItem("e_id"));
 
   // 캘린더의 상태 관리
   const calendarRef = useRef();   // FullCalendar 컴포넌트를 직접 조작할 수 있도록 참조를 저장하는 변수
@@ -44,6 +45,28 @@ export default function HolidayCalendars() {
     eventType: ""
   });
 
+  // '종일'이라면 종료시간도 오늘 날짜로 설정
+  const onChanges = (field, value) => {
+    setNewEvent(prev => {
+      if (field === "allDay") {
+        if (value) {
+          return {
+            ...prev,
+            allDay: true,
+            endTime: prev.startTime // 종일이면 종료시간 = 시작시간
+          };
+        } else {
+          return {
+            ...prev,
+            allDay: false,
+            endTime: ""   // 시간 선택 가능하도록 비워두기
+          };
+        }
+      }
+      return { ...prev, [field]: value };
+    });
+  };
+  
   // 공휴일 API + 사용자 DB로 가져오기 때문에, 중복 제거 
   const mergedEvents = useMemo(() => {
     const all = [...holidays, ...userEvents];
@@ -90,17 +113,24 @@ export default function HolidayCalendars() {
       const data = await res.json();
       // console.log("📥 raw data from server:", data);
 
+      // 한국 시간으로 보정
+      const toKST = (dateStr) => {
+        const date = new Date(dateStr);
+        const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000); // KST 보정
+        return kst.toISOString().slice(0, 19).replace("T", " ");
+      }
+
       const events = (data || [])
         .filter(item => item && item.calTitle)
         .filter(item => item.isHoliday !== "Y")  // db에 있는 공휴일 포함x
         .map(item => {
-        const start = new Date(item.calStartDate);
-        const end = new Date(item.calEndDate);
         // console.log("✅ parsed:", { start, end });
         return {
+          cal_event_id: item.calEventId,
+          id: item.calEventId,
           title: item.calTitle,
-          start,
-          end,
+          start: toKST(item.calStartDate),
+          end: toKST(item.calEndDate),
           allDay: item.calAllDay === 'Y',
           description: item.calDescription,
           location: item.calLocation,
@@ -124,8 +154,7 @@ export default function HolidayCalendars() {
     const todayStr = `${year}-${month}-${day}`;
     setTodaySche(todayStr);
   }, []);
-
-
+  
   // 버튼으로 월별 이동이 가능한 함수
   const clickMove = (type) => {
     const calendarApi = calendarRef.current.getApi();
@@ -169,7 +198,6 @@ export default function HolidayCalendars() {
       }
     }
     fetchHolidays();
-    // fetchUserEvents();  // db
   }, [calendarDate]);
   
   useEffect(() => {
@@ -184,9 +212,12 @@ export default function HolidayCalendars() {
   // 일정 추가
   const addEvent = async () => {
     if (!newEvent.title.trim()) return;
-    const startDateTime = newEvent.startTime ? `${newEventDate}T${newEvent.startTime}:00` : `${newEventDate}T00:00:00`;
-    const endDateTime = newEvent.endTime ? `${newEventDate}T${newEvent.endTime}:00` : `${newEventDate}T00:00:00`;
+  
+    // 종일일 경우 보정하지 않은 문자열 사용 (UTC 00시 → 한국 09시 → 전날로 보이는 문제 방지)
+    const startDateTime = toKST(`${newEventDate}T${newEvent.startTime || "00:00"}`);
+    const endDateTime = toKST(`${newEventDate}T${newEvent.endTime || "23:59"}`);
 
+  
     try {
       const response = await fetch(`${calendarURL}/insertEvent`, {
         method: 'POST',
@@ -199,20 +230,22 @@ export default function HolidayCalendars() {
           calDescription: newEvent.description,
           calLocation: newEvent.location,
           calEventType: newEvent.eventType,
-          eId: 1
+          eId: 0,
         }),
       });
+  
       if (response.ok) {
-        console.log("✅ DB 저장 완료");
+        // console.log("DB 저장 완료");
         await fetchUserEvents();
         setModalOpen(false);
       } else {
-        console.error("⛔ 서버 저장 실패");
+        console.error("서버 저장 실패");
       }
     } catch (error) {
-      console.error("⛔ 오류:", error);
+      console.error("오류:", error);
     }
   };
+  
 
   return (
     <>
@@ -340,7 +373,6 @@ export default function HolidayCalendars() {
                 onChange={value => onChanges("title", value)}
               />
             </Form.Group>
-
 
             <Form.Group>
               <Form.ControlLabel>시작시간 ~ 종료시간</Form.ControlLabel>

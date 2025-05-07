@@ -3,6 +3,8 @@ import { Button } from "rsuite";
 
 import VoucherPrint from "#components/finance/VoucherPrint";
 
+import AppConfig from "#config/AppConfig.json";
+
 // print-js를 전역에서 사용할 수 있도록 변수 선언(초기에는 undefined)
 let printJS;
 
@@ -12,14 +14,17 @@ let printJS;
 // 즉, react-to-print는 기본적으로 Vite + ESM + SSR 조합에 잘 안 맞는 구조
 
 // print-js + SSR-safe dynamic import 으로 프린트 기능 진행
-const SellSlipAll = () => {
+const SellSlipAll = ({ rowState }) => {
+
 	// 인쇄할 DOM 요소에 접근하기 위해 useRef 사용
 	const printRef = useRef();
+	const [rowData, setRowData] = rowState;
 
 	// 클라이언트 사이드 여부를 판단하기 위한 상태값
 	const [isClient, setIsClient] = useState(false);
 
 	useEffect(() => {
+
 		// 오류 방지를 위해 조건문 사용
 		if (typeof window !== 'undefined') {
 			import('print-js').then((module) => {
@@ -27,7 +32,42 @@ const SellSlipAll = () => {
 				setIsClient(true);
 			});
 		}
-	}, []);
+
+		const fetchURL = AppConfig.fetch['mytest'];
+		fetch(`${fetchURL.protocol}${fetchURL.url}/voucher/get/${rowData.order_id}`, {
+			method: "GET",
+			mode: "cors",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
+		})
+			.then(res => {
+
+				if (res.ok) {
+
+					const entity = res.json();
+					entity.then(res => {
+
+//						console.log("res :", res);
+						rowData.voucher_no = res.v_number;
+						rowData.v_assigner = res.v_assigner;
+						rowData.v_assign_date = res.v_assign_date;
+						setRowData(rowData);
+					});
+				}
+				else {
+					opener(false);
+					setRowData({});
+					toaster.push(
+						<Message showIcon type="error" closable>
+							전표처리를 해주세요.
+						</Message>,
+						{ duration: 3000 }
+					);
+				}
+			});
+	}, [rowData]);
 
 	const handlePrint = () => {
 		if (printJS && printRef.current) {
@@ -104,7 +144,7 @@ const SellSlipAll = () => {
 	return (
 		<div>
 
-			<VoucherPrint printRef={printRef} />
+			<VoucherPrint printRef={printRef} rowState={rowState} />
 
 			{isClient && <Button color="pink" appearance="ghost" onClick={handlePrint}>프린트</Button>}
 		</div>

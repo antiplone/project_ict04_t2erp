@@ -17,7 +17,7 @@ const StockItemsList = () => {
 	const fetchURL = rawFetchURL.protocol + rawFetchURL.url;
 	const [logisStockList, setLogisStockList] = useState([]);	// 초기값을 모르므로 빈배열로 logisStockList에 대입
 	const [orderDate, setOrderDate] = useState(null);			// 컬럼 정리 버튼
-	const [lading, setLoading] = useState(true);			// 컬럼 정리 버튼
+	const [loading, setLoading] = useState(true);			// 컬럼 정리 버튼
 
 	const [sortColumn, setSortColumn] = React.useState();
 	const [sortType, setSortType] = React.useState();
@@ -78,6 +78,7 @@ const StockItemsList = () => {
 
 
 	const handleSearch = async () => {
+    	setLoading(true)
 		let startDate = '';
 		let endDate = '';
 
@@ -114,6 +115,7 @@ const StockItemsList = () => {
 			console.error("검색 실패:", err);
 			setLogisStockList([]);
 		}
+    	setLoading(false)
 	};
 	/* 검색 끝*/
 
@@ -161,13 +163,14 @@ const StockItemsList = () => {
 		const apiPath = '/excel/exportStockStatusExcel';
 
 		// 다운로드를 바로 실행
-		window.open(`${fetchURL.protocol}${fetchURL.url}${apiPath}?${new URLSearchParams(params)}`, '_blank');
+		window.open(`${fetchURL}${apiPath}?${new URLSearchParams(params)}`, '_blank');
 	};
 
 	return (
 		<div>
-			<MessageBox type="warning" text="재고 목록" />
+			<MessageBox type="warning" text="재고 관리" />
 			<Container style={{ margin: '0 auto', maxWidth: '1920px' }}>
+			
 				<div className='main_table'>
 					<div className="inputBox">
 						<div className="input">
@@ -230,8 +233,11 @@ const StockItemsList = () => {
 					</div>
 
 					<Divider />
-
-					{/*<Table height={400} data={pagedData} sortColumn={sortColumn} sortType={sortType} onSortColumn={handleSortColumn} className='text_center'>*/}
+					{loading ? (
+					<div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+						<Loader size="md" content="데이터를 불러오는 중입니다..." />
+					</div>
+					) : (
 					<Table width={1920} height={400} data={stockListWithRowNum} sortColumn={sortColumn} sortType={sortType} onSortColumn={handleSortColumn} className='text_center'>
 						<Column width={120} align="center" fixed>
 							<HeaderCell className='text_center'>번호</HeaderCell>
@@ -289,7 +295,7 @@ const StockItemsList = () => {
 							<Cell dataKey="storage_code" className='text_center' />
 						</Column>
 					</Table>
-					
+					)}
 					<br />
 					<div style={{ display: 'flex', margin: '10px'}}>
 						{/* Email Modal */}
@@ -303,6 +309,7 @@ const StockItemsList = () => {
 						<EmailFormModal open={modalOpen} onClose={() => handleCloseModal(false)}/>
 					</div>
 				</div>
+			
 			</Container>
 		</div>
 	)

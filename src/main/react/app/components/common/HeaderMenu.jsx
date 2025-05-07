@@ -25,6 +25,9 @@ const HeaderMenu = ({ empInfo }) => {
 	// 로그인 시 저장해둔 사용자 직위를 가져오고, 관리자급 직위로만 다시 나누기
 	const position = localStorage.getItem("e_position");  // 예: '관리자' 또는 '사원'
 	const adminPositions = ["과장", "부장", "차장", "팀장", "이사", "관리"];
+	const isAdmin = position === "관리";
+	const team_name = localStorage.getItem("d_name");  // 예: '팀별 구분'
+	/*const teamAthoriztion = ["인사팀", "구매팀", "판매팀", "물류팀", "회계팀"];*/
 
 	const [myInfo, setMyInfo] = empInfo;
 
@@ -50,57 +53,74 @@ const HeaderMenu = ({ empInfo }) => {
 			<Navbar style={{ fontSize: "large", backgroundColor: "#22284C" }}>
 				<Nav>
 					<Nav.Item style={{ padding: 0 }} icon={<ToImage style={{ margin: 0 }} src={brand} fbText="Logo" width={60} height={60} />} />
-					<Nav.Menu title="관리운영">
-						<Nav.Item onSelect={() => { navigate("basic_client") }}>거래처등록</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("basic_item") }}>상품등록</Nav.Item>
-					</Nav.Menu>
-					<Nav.Menu title="인사관리">
-						<Nav.Item onSelect={() => { navigate("hr_emp_card") }}>인사카드관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("hr_appointment") }}>인사발령관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("hr_department") }}>부서관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("hr-retirement") }}>퇴직관리</Nav.Item>
-					</Nav.Menu>
-					{adminPositions.includes(position?.trim()) ? (
-						// === : 값과 타입 모두 비교. position이 문자열일 때 .trim()을 적용
-						<Nav.Menu title="근태관리">
-							<Nav.Item onSelect={() => navigate("att-regVacaItems")}>휴가항목등록</Nav.Item>
-							<Nav.Item onSelect={() => navigate("att-regAttItems")}>근태항목등록</Nav.Item>
-							<Nav.Item onSelect={() => navigate("att-schedule")}>일정관리</Nav.Item>
-						</Nav.Menu>
-					) : (
-						<Nav.Menu title="근태관리">
-							<Nav.Item onSelect={() => navigate("att-schedule")}>일정관리</Nav.Item>
+					{(isAdmin || team_name === "인사팀") && (
+						<>
+							<Nav.Menu title="관리운영">
+								<Nav.Item onSelect={() => { navigate("basic_client") }}>거래처등록</Nav.Item>
+								<Nav.Item onSelect={() => { navigate("basic_item") }}>상품등록</Nav.Item>
+							</Nav.Menu>
+
+							<Nav.Menu title="인사관리">
+								<Nav.Item onSelect={() => navigate("hr_emp_card")}>인사카드관리</Nav.Item>
+								<Nav.Item onSelect={() => navigate("hr_appointment")}>인사발령관리</Nav.Item>
+								<Nav.Item onSelect={() => navigate("hr_department")}>부서관리</Nav.Item>
+								<Nav.Item onSelect={() => navigate("hr-retirement")}>퇴직관리</Nav.Item>
+							</Nav.Menu>
+							{adminPositions.includes(position?.trim()) ? (
+								// === : 값과 타입 모두 비교. position이 문자열일 때 .trim()을 적용
+								<Nav.Menu title="근태관리">
+									<Nav.Item onSelect={() => navigate("att-regVacaItems")}>휴가항목등록</Nav.Item>
+									<Nav.Item onSelect={() => navigate("att-regAttItems")}>근태항목등록</Nav.Item>
+									<Nav.Item onSelect={() => navigate("att-schedule")}>일정관리</Nav.Item>
+								</Nav.Menu>
+							) : (
+								<Nav.Menu title="근태관리">
+									<Nav.Item onSelect={() => navigate("att-schedule")}>일정관리</Nav.Item>
+								</Nav.Menu>
+							)}
+						</>
+					)}
+
+					{(isAdmin || team_name === "구매팀") && (
+						<Nav.Menu title="구매관리">
+							<Nav.Item onSelect={() => { navigate("buy-select") }}>구매조회</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("buy-insert") }}>구매입력</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("buy-status-select") }}>구매현황</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("buy-stock-status") }}>입고현황</Nav.Item>
 						</Nav.Menu>
 					)}
-					<Nav.Menu title="구매관리">
-						<Nav.Item onSelect={() => { navigate("buy-select") }}>구매조회</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("buy-insert") }}>구매입력</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("buy-status-select") }}>구매현황</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("buy-stock-status") }}>입고현황</Nav.Item>
-					</Nav.Menu>
-					<Nav.Menu title="판매관리">
-						<Nav.Item onSelect={() => { navigate("sell_search_item") }}>판매물품 검색</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_all_list") }}>판매조회</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_insert") }}>판매입력</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_status_select") }}>판매현황</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("sell_request_client_list") }}>거래처 관리</Nav.Item>
-					</Nav.Menu>
-					<Nav.Menu
-						title="물류관리"
-					>
-						<Nav.Item onSelect={() => { navigate("logis-income-list") }}>입고관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("logis-outgoing-list") }}>출고관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("logis-stock") }}>재고관리</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("logis-warehouse") }}>창고관리</Nav.Item>
-					</Nav.Menu>
-					<Nav.Menu
-						title="기업회계"
-					>
-						<Nav.Item onSelect={() => { navigate("finance_main") }}>회계메인</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("finance_sales_resume") }}>매출매입거래</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("finance_invoice") }}>전자계산서</Nav.Item>
-						<Nav.Item onSelect={() => { navigate("finance_voucher") }}>전표관리</Nav.Item>
-					</Nav.Menu>
+
+					{(isAdmin || team_name === "판매팀") && (
+						<Nav.Menu title="판매관리">
+							<Nav.Item onSelect={() => { navigate("sell_search_item") }}>판매물품 검색</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("sell_all_list") }}>판매조회</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("sell_insert") }}>판매입력</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("sell_status_select") }}>판매현황</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("sell_request_client_list") }}>거래처 관리</Nav.Item>
+						</Nav.Menu>
+					)}
+
+					{(isAdmin || team_name === "물류팀") && (
+						<Nav.Menu
+							title="물류관리"
+						>
+							<Nav.Item onSelect={() => { navigate("logis-income-list") }}>입고관리</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("logis-outgoing-list") }}>출고관리</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("logis-stock") }}>재고관리</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("logis-warehouse") }}>창고관리</Nav.Item>
+						</Nav.Menu>
+					)}
+
+					{(isAdmin || team_name === "회계팀") && (
+						<Nav.Menu
+							title="기업회계"
+						>
+							<Nav.Item onSelect={() => { navigate("finance_main") }}>회계메인</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("finance_sales_resume") }}>매출매입거래</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("finance_invoice") }}>전자계산서</Nav.Item>
+							<Nav.Item onSelect={() => { navigate("finance_voucher") }}>전표관리</Nav.Item>
+						</Nav.Menu>
+					)}
 					<Nav.Menu noCaret title="1:1 채팅" onSelect={() => { navigate("buy-chat") }} />
 				</Nav>
 				<Nav pullRight>

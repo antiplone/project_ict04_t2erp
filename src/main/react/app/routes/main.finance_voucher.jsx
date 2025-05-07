@@ -72,7 +72,7 @@ export default function FinanceVoucher() {
 				// 한 줄만 push
 				result.push({
 					...item,
-					voucher_no: item.order_date + '_' + count,
+					voucher_no: item.order_date + '_' + item.order_id,
 					item_display: displayName,
 					items: sameOrderItems,
 					assigner: localStorage.getItem('e_name')

@@ -58,6 +58,7 @@
 
 /* 등록일자 */
 .allList-date {
+	color: var(--rs-text-link);
     cursor: pointer;
     font-weight: normal;
     transition: font-weight 0.2s;   

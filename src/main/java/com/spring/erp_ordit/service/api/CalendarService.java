@@ -79,7 +79,14 @@ public class CalendarService {
     }
 
     // 일정 삭제
-    public CalendarDTO deleteEvent(int cal_event_id) {
+    public int deleteEvent(int cal_event_id) {
+//    	System.out.println("캘린더 서비스");
         return dao.deleteEvent(cal_event_id);
     }
+    
+	// 일정 수정
+	public int updateEvent(int cal_event_id, CalendarDTO dto) {
+//    	System.out.println("캘린더 서비스");
+	    return dao.updateEvent(dto);
+	}
 }

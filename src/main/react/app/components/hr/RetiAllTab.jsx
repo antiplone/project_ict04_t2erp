@@ -79,6 +79,7 @@ export default function RetiAllTab({ retiData, retiColumns }) {
                   return (
                     <span
                       title={text}
+                      className="text_left"
                       style={{
                         display: "inline-block",
                         width: "100%",

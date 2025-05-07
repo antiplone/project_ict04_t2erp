@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+//import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.spring.erp_ordit.dao.attendance.CommuteMapper;
@@ -24,27 +24,27 @@ public class CommuteService {
 
 	// 전체 근태 리스트
 	public List<CommuteDTO> attendanceList() {
-	    System.out.println("▶ CommuteService - 출퇴근 리스트");
+//	    System.out.println("▶ CommuteService - 출퇴근 리스트");
 	    return dao.selectAttList();
 	}
 	// 내 근태 리스트
 	public List<CommuteDTO> myAttendanceList(int e_id) {
-	    System.out.println("▶ CommuteService - 내 출퇴근 리스트");
-	    CommuteDTO dto = new CommuteDTO();
-	    System.out.println("1건 조회: "+ dto);
+//	    System.out.println("▶ CommuteService - 내 출퇴근 리스트");
+//	    CommuteDTO dto = new CommuteDTO();
+//	    System.out.println("1건 조회: "+ dto);
 	    
 	    return dao.selectMyAttList(e_id);
 	}
 
 	// 오늘자 출퇴근 1건만 조회
 	public CommuteDTO getRecordByDate(int e_id, String date) {
-		System.out.println("▶ CommuteService - 오늘자 출퇴근 1건 조회, e_id: " + e_id + ", date: " + date);
+//		System.out.println("▶ CommuteService - 오늘자 출퇴근 1건 조회, e_id: " + e_id + ", date: " + date);
 		return dao.selectTodayRecord(e_id, date);
 	}
 
 	// 근태관리 - 출근 시간 저장 처리 => 시간 변조를 방지하기 위해 서버 시간 기준으로 출근 처리하는 방식
 	public String insertStartTime(CommuteDTO dto) {
-	    System.out.println("▶ CommuteService - 출근 시간 저장 처리");
+//	    System.out.println("▶ CommuteService - 출근 시간 저장 처리");
 
 	    // 'Asia/Seoul' 시간대 기준으로 현재 날짜와 시간 가져오기
 	    ZonedDateTime seoulNow = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
@@ -76,7 +76,7 @@ public class CommuteService {
 	
 	// 근태관리 - 퇴근 시간 저장 처리 + 자동 근무시간 계산
 	public String updateEndTime(CommuteDTO dto) {
-	    System.out.println("▶ CommuteService - 퇴근 시간 저장 처리");
+//	    System.out.println("▶ CommuteService - 퇴근 시간 저장 처리");
 	    
 	    // 'Asia/Seoul' 시간대 기준으로 현재 날짜와 시간 가져오기
 	    ZonedDateTime seoulNow = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
@@ -132,7 +132,7 @@ public class CommuteService {
 
 	// 출퇴근 수정
 	public int commUpdate(int e_id, CommuteDTO dto) {
-	    System.out.println("▶ CommuteService - 퇴근 시간 저장 처리");
+//	    System.out.println("▶ CommuteService - 퇴근 시간 저장 처리");
 	    return dao.updateCommute(dto);
 	}
 	

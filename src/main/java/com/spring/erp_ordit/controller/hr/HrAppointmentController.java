@@ -24,7 +24,7 @@ public class HrAppointmentController {
 	// 인사발령 현황 목록 GetMapping -> http://localhost:5173/hrAppoint/hrAppointList
 		@GetMapping("/hrAppointList")
 		public ResponseEntity<?> hrAppointList(){
-			System.out.println("<< HrAppointmentController - hrAppointList >>");
+			// System.out.println("<< HrAppointmentController - hrAppointList >>");
 		
 			return new ResponseEntity<>(service.hrAppointList(), HttpStatus.OK);
 		}
@@ -32,7 +32,7 @@ public class HrAppointmentController {
 	// 인사발령 확정(발령 테이블 insert + 인사카드 수정) PostMapping => http://localhost:5173/hrAppoint/hrAppointInsert
 	@PostMapping("/hrAppointInsert")
 	public ResponseEntity<?> hrAppointInsert(@RequestBody HrAppointmentDTO appoint) { 
-		System.out.println("<<< HrAppointmentController - hrAppointInsert >>>");
+		// System.out.println("<<< HrAppointmentController - hrAppointInsert >>>");
 		
 		service.hrAppointConfirm(appoint);
 		return new ResponseEntity<>(HttpStatus.CREATED);

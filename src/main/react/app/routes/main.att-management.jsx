@@ -1,7 +1,6 @@
 /* eslint-disable react/react-in-jsx-scope */
-import React, { useState, useEffect, useMemo } from "react";
-import { Container, Grid, Row, Col, Pagination } from "rsuite";
-import MessageBox from "#components/common/MessageBox";
+import React, { useState, useEffect } from "react";
+import { Container, Grid, Row, Col } from "rsuite";
 import CurrentDateTime from "#components/attendance/CurrentDateTime.jsx";
 import TodayCommuteInfo from "#components/attendance/TodayCommuteInfo";
 import CommuteTable from "#components/attendance/CommuteTable";
@@ -22,10 +21,6 @@ export default function Management() {
   const [commuteList, setCommuteList] = useState([]);
   const [loadingList, setLoadingList] = useState(false);
 
-  // 페이징
-  const [limit, setLimit] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
-
   // 새로고침 토글
   const [refresh, setRefresh] = useState(false);
   const toggleRefresh = () => setRefresh((p) => !p);
@@ -40,46 +35,40 @@ export default function Management() {
       .finally(() => setLoadingList(false));
   }, [e_id, refresh]);
 
-  // 페이징 적용
-  const pagedData = useMemo(() => {
-    const start = (currentPage - 1) * limit;
-    return commuteList.slice(start, start + limit);
-  }, [commuteList, currentPage, limit]);
-
   return (
-    <Container style={{ padding: 20 }}>
+    <Container style={{ padding: 20, display: "flex", flexDirection: "row" }}>
+      <Container style={{ marginRight: 30, width: "240px" }}>
+        <div style={{ marginBottom: 20, display: "flex", flexDirection: "column" }}>
+          <CurrentDateTime />
+          <TodayCommuteInfo
+            e_id={e_id}
+            e_name={e_name}
+            attURL={attURL}
+            onRefresh={toggleRefresh}
+          />
+        </div>
 
-      <Grid fluid>
+        <div style={{ marginTop: 30 }}>
+          <WeatherInfo />
+        </div>
+      </Container>
+      <Container style={{ width: 1920-240 }}>
+        <CommuteTable
+          e_id={e_id}
+          loading={loadingList}
+          attURL={attURL}
+          refresh={refresh}
+        />
+      </Container>
+      {/* <Grid fluid>
         <Row gutter={16}>
-          {/* 왼쪽: 시간 + 버튼 영역 */}
           <Col xs={24} md={8} lg={6}>
-            {/* 세로로 쌓기 */}
-            <div style={{ marginBottom: 20 }}>
-              <CurrentDateTime />
-            </div>
-            <TodayCommuteInfo
-              e_id={e_id}
-              e_name={e_name}
-              attURL={attURL}
-              onRefresh={toggleRefresh}
-            />
-            <div style={{ marginTop: 30 }}>
-              <WeatherInfo />
-            </div>
           </Col>
 
-          {/* 오른쪽: 테이블 + 페이징 */}
           <Col xs={24} md={16} lg={18}>
-            <CommuteTable
-              e_id={e_id}
-              data={pagedData}
-              loading={loadingList}
-              attURL={attURL}
-              refresh={refresh}
-            />
           </Col>
         </Row>
-      </Grid>
+      </Grid> */}
     </Container>
   );
 }

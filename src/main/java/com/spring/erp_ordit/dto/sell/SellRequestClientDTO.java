@@ -32,6 +32,7 @@ public class SellRequestClientDTO {	// 판매_거래처 요청 DTO
 	private String sc_industry;			// 업종
 	private String sa_approval_status;	// 승인 상태
 	private String sc_note; 			// 비고
+	private String sa_approval_comment; // 반려 사유 비고란
 	private Date sc_date;				// 등록일
 	
 

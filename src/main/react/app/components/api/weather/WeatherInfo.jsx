@@ -30,7 +30,7 @@ export default function WeatherInfo() {
         // 오늘 날씨 데이터를 요청 후 응답 받아서 JSON 형태로 변환
         const weatherRes = await fetch(`${weatherURL}/today`);
         const weatherData = await weatherRes.json();
-        console.log("날씨 데이터:", weatherData);
+        // console.log("날씨 데이터:", weatherData);
 
         // 서버가 제대로 응답했는지 확인
         if (weatherData.cod !== 200) {

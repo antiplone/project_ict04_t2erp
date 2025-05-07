@@ -2,6 +2,7 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { useEffect, useState } from "react";
 import { Button } from "rsuite";
+import "#styles/common.css";
 
 export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
   // onRefresh : 새로고침용 콜백함수
@@ -94,7 +95,7 @@ export default function TodayCommuteInfo({ e_id, e_name, attURL, onRefresh }) {
   const hasEnded = !!record?.co_end_time;     // 퇴근 시간 있으면 true
 
   return (
-    <div style={{ marginTop: 20, width: 130 }}>
+    <div style={{ marginTop: 20, width: 130 }} className="text_center">
       <h6>오늘의 출퇴근 정보</h6>
       {/* <div>사원명: {eName}</div> */}
       <div style={{ display: "flex", justifyContent: "space-between" }}>

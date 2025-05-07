@@ -27,10 +27,12 @@ public class VoucherService {
 	@Transactional
 	public List<Map<String, Object>> createVoucher(Object transaction) {
 
+		int isSuccesses = 0;
 		Map<String, Object> entity;
+		
 		if (transaction instanceof List) {
 
-			System.out.println("여러건");
+//			System.out.println("여러건");
 			List<Map<String, Object>> vouchers = (List<Map<String, Object>>)transaction;
 			for (Object vou : vouchers) {
 
@@ -39,28 +41,28 @@ public class VoucherService {
 					System.out.println(k + " : " + v);
 				});
 
-				voucherMapper.insertVoucher(entity);
+				if (entity.get("order_status").toString().equals("결재중")) {
+					isSuccesses = voucherMapper.insertVoucher(entity);
+					if (isSuccesses > 0)
+						voucherMapper.assignStatus((int)entity.get("order_id"));
+				}
 			}
 		}
 		else if (transaction instanceof Map) {
 
-			System.out.println("단건");
+//			System.out.println("단건");
 
 			entity = (Map<String, Object>)transaction;
-			voucherMapper.insertVoucher(entity);
+			if (entity.get("order_status").toString().equals("결재중")) {
+				isSuccesses = voucherMapper.insertVoucher(entity);
+				if (isSuccesses > 0)
+					voucherMapper.assignStatus((int)entity.get("order_id"));
+			}
 
 			System.out.println(entity);
 		}
 
-		// Voucher 저장
-//		Voucher voucher = new Voucher();
-//		voucher.setV_id(request.getV_id());
-//		voucher.setV_number(request.getV_number());
-//		voucher.setV_classification(request.getV_classification());
-//		voucher.setV_amount(request.getV_amount());
-//		voucher.setV_customer(request.getV_customer());
-//		voucher.setV_description(request.getV_description());
-//		voucherMapper.insertVoucher(voucher);
+		if (isSuccesses < 1) return null;
 
 		return voucherMapper.listTransaction();
 	}

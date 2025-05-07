@@ -1,5 +1,6 @@
 package com.spring.erp_ordit.controller.finance;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,13 @@ public class VoucherController {
 	@PostMapping(value = "/signin")
 	public ResponseEntity<?> signin(@RequestBody Object transaction) {
 
-		ResponseEntity<?> entity = ResponseEntity
-									.ok(service.createVoucher(transaction));
+		ResponseEntity<?> entity;
+		List<Map<String, Object>> updated = service.createVoucher(transaction);
+
+		if (updated != null)
+			entity = ResponseEntity
+						.ok(service.createVoucher(transaction));
+		else entity = ResponseEntity.badRequest().build();
 
 		return entity;
 	}

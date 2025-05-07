@@ -33,7 +33,7 @@ export default function FinanceVoucher() {
 	const [allList, setAllList] = dataState;
 	const [open, setOpen] = useState(false);
 	const rowState = useState({});
-	const [rowData] = rowState;
+	const [rowData, setRowData] = rowState;
 
 	const getNumberedList = (data) => {
 		let result = [];
@@ -74,7 +74,8 @@ export default function FinanceVoucher() {
 					...item,
 					voucher_no: item.order_date + '_' + count,
 					item_display: displayName,
-					items: sameOrderItems
+					items: sameOrderItems,
+					assigner: localStorage.getItem('e_name')
 				});
 
 				count++;
@@ -128,12 +129,15 @@ export default function FinanceVoucher() {
 				</Container>
 			: <VoucherTable opener={setOpen} dataState={dataState} rowState={rowState} />}
 
-			<Modal open={open} onClose={() => setOpen(false)}
+			<Modal open={open}
 				style={{
 					position: 'fixed',
 					left: '30%',
 					width: 800
-				}}>
+				}}
+				onClose={() => setOpen(false)}
+				onExited={() => setRowData({})} // 닫는 애니메이션(Transition)이 끝났을때
+			>
 				<Modal.Header>
 					<Modal.Title>전표</Modal.Title>
 				</Modal.Header>

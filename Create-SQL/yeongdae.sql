@@ -8,6 +8,29 @@ CREATE TABLE employee_auth_tbl (
 	CONSTRAINT employee_auth_tbl_ibfk_1 FOREIGN KEY (e_id) REFERENCES employee_tbl (e_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE finance_voucher_tbl ( 
+  v_id INT AUTO_INCREMENT NOT NULL COMMENT '전표ID' ,
+  v_number VARCHAR(20) NOT NULL COMMENT '전표번호' ,
+  v_classification INT NOT NULL DEFAULT 0  COMMENT '거래유형' ,
+  v_order_id INT NULL COMMENT '주문ID' ,
+  v_assigner VARCHAR(60) NOT NULL COMMENT '담당자' ,
+  v_assign_date VARCHAR(30) NOT NULL,
+   PRIMARY KEY (v_id),
+  CONSTRAINT finance_voucher_tbl_ibfk_1 FOREIGN KEY (v_classification) REFERENCES transaction_tbl (t_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT finance_voucher_tbl_ibfk_2 FOREIGN KEY (v_order_id) REFERENCES order_item_tbl (order_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT v_number` UNIQUE (v_number)
+)
+
+CREATE INDEX finance_voucher_tbl_ibfk_1 
+ON finance_voucher_tbl (
+  v_classification ASC
+);
+CREATE INDEX finance_voucher_tbl_ibfk_2 
+ON finance_voucher_tbl (
+  v_order_id ASC
+);
+
+
 CREATE OR REPLACE VIEW transaction_list_view AS
 SELECT 
 	ot.order_id AS order_id, -- 주문 번호

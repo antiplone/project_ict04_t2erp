@@ -32,7 +32,7 @@ const HeaderMenu = ({ empInfo }) => {
 
 //		console.log("세션만료.");
 		localStorage.clear();
-		setMyInfo('');
+		setMyInfo("로그아웃됨");
 	};
 
 	useEffect(() => {

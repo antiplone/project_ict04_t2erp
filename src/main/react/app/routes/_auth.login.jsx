@@ -59,10 +59,10 @@ export async function clientAction({ request }) { // non-GET
 
 				if (res.ok) {
 
-					console.log(res.headers.getSetCookie());
+//					console.log(res.headers.getSetCookie());
 					handleLoading(true);
 					entity = res.json();
-					console.log("Promise 시작:", entity);
+//					console.log("Promise 시작:", entity);
 					entity.then(
 						res => {
 							// 세션처리
@@ -72,7 +72,7 @@ export async function clientAction({ request }) { // non-GET
 							}
 
 							handleAuthData(res);
-							console.log("Promise 완료:", res);
+//							console.log("Promise 완료:", res);
 						}
 					);
 				}
@@ -106,7 +106,7 @@ export default function Login() {
 	const [isLoading, checkLoading] = useState(false);
 	handleLoading = checkLoading;
 
-	console.log(location.pathname);
+//	console.log(location.pathname);
 
 	useEffect(() => {
 		if (authData != null)

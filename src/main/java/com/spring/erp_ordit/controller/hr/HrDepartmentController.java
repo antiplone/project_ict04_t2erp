@@ -27,7 +27,7 @@ public class HrDepartmentController {
 	// 부서 목록 GetMapping -> http://localhost:5173/dept/hrDeptList
 		@GetMapping("/hrDeptList")
 		public ResponseEntity<?> hrDeptList(){
-			System.out.println("<< HrDepartmentController - hrDepList >>");
+			// System.out.println("<< HrDepartmentController - hrDepList >>");
 		
 			return new ResponseEntity<>(service.hrDeptList(), HttpStatus.OK);	// 200
 		}
@@ -35,7 +35,7 @@ public class HrDepartmentController {
 	// 부서 등록 PostMapping => http://localhost:5173/dept/hrDeptInsert
 	@PostMapping("/hrDeptInsert")
 	public ResponseEntity<?> hrDeptInsert(@RequestBody HrDepartmentDTO dept) { 
-		System.out.println("<<< HrDepartmentController - hrDeptInsert >>>");
+		// System.out.println("<<< HrDepartmentController - hrDeptInsert >>>");
 		
 		return new ResponseEntity<>(service.hrDeptInsert(dept), HttpStatus.CREATED);
 	}
@@ -43,7 +43,7 @@ public class HrDepartmentController {
 	// 부서 수정 @PutMapping -> http://localhost:5173/dept/hrDeptUpdate/{d_code}
 	@PutMapping("/hrDeptUpdate/{d_code}")
 	public ResponseEntity<?> hrDeptUpdate(@PathVariable String d_code, @RequestBody HrDepartmentDTO dept) {
-		System.out.println("<< HrDepartmentController - hrDeptUpdate >>");
+		// System.out.println("<< HrDepartmentController - hrDeptUpdate >>");
 		
 		return new ResponseEntity<>(service.hrDeptUpdate(d_code, dept), HttpStatus.OK);	// 200
 	}
@@ -51,7 +51,7 @@ public class HrDepartmentController {
 	// 부서 삭제 @DeleteMapping -> http://localhost:5173/dept/hrDeptDelete/{d_code}
 	@DeleteMapping("/hrDeptDelete/{d_code}")
 	public ResponseEntity<?> hrDeptDelete(@PathVariable String d_code) {
-		System.out.println("<< HrDepartmentController - hrDeptDelete >>");
+		// System.out.println("<< HrDepartmentController - hrDeptDelete >>");
 		
 		return new ResponseEntity<>(service.hrDeptDelete(d_code), HttpStatus.OK);
 	}

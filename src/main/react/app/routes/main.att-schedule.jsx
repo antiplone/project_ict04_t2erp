@@ -5,6 +5,7 @@ import MessageBox from "#components/common/MessageBox";
 import AppConfig from "#config/AppConfig.json";
 // import Calendar from "#components/api/calendar/Calendar";
 import HolidayCalendar from "#components/api/calendar/HolidayCalendar";
+import HolidayCalendars from "#components/api/calendar/HolidayCalendars.jsx";
 
 export function meta() {
   return [
@@ -24,7 +25,7 @@ export default function SchedulePage() {
 
   return (
     <Container>
-      <MessageBox text="공휴일 일정" />
+      <MessageBox text="일정 관리" />
 
         {/* 로딩 중일 때 */}
         {isLoading ? (
@@ -35,7 +36,8 @@ export default function SchedulePage() {
         ) : (
         // 로딩 후 달력 표시
         <div style={{ marginTop: "20px" }}>
-          <HolidayCalendar />
+          {/* <HolidayCalendar /> */}
+          <HolidayCalendars />
         </div>
       )}
     </Container>

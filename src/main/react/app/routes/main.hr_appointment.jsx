@@ -5,6 +5,7 @@ import HrAppointEditTable from "#components/hr/HrAppoint";
 import MessageBox from "#components/common/MessageBox.jsx";
 import { HrAppointListTable } from "#components/hr/HrTable.jsx";
 import HrModal from "#components/hr/HrModal.jsx";
+import { formatDate } from "#components/hr/HrDate";
 
 export default function HrEmpAppointment() {
   const fetchURL = AppConfig.fetch["mytest"];
@@ -97,7 +98,7 @@ export default function HrEmpAppointment() {
 
   const requests = employees.map((emp) => {
     // 부서명을 부서코드로 변환
-  const foundDept = departmentList.find(dep => dep.label === emp.new_department);
+  const foundDept = departmentList.find(dep => dep.value === emp.new_department);
   const deptCode = foundDept ? foundDept.value : '';  // 부서코드
 
   const appointData = {
@@ -107,13 +108,11 @@ export default function HrEmpAppointment() {
     old_position: emp.old_position,
     new_position: emp.new_position,
     old_department: emp.old_department,
-    new_department: emp.new_department,     // 부서명
+    new_department: deptCode,
+    d_code: deptCode,             // 인사카드에 업데이트
     appoint_note: emp.appoint_note,
     appoint_date: emp.appoint_date,
-    d_code: deptCode
   };
-  
-    console.log('appointData:', appointData);
   
     return fetch(`${fetchURL.protocol}${fetchURL.url}/hrAppoint/hrAppointInsert`, {
       method: 'POST',
@@ -194,7 +193,12 @@ export default function HrEmpAppointment() {
       const empList = await res.json();
   
       for (const appointId of selectedIds) {
-        const emp = empList.find(emp => emp.e_id === appointId);
+        // 발령 내역에서 appoint_id로 대상 찾기
+        const targetAppoint = confirmedAppointments.find(item => item.appoint_id === appointId);
+        if (!targetAppoint) continue;
+  
+        // 해당 발령건의 e_id로 전화번호 찾기
+        const emp = empList.find(emp => emp.e_id === targetAppoint.e_id);
         if (!emp) continue;
   
         const cleanPhoneNumber = emp.e_tel?.replace(/-/g, '');
@@ -230,7 +234,12 @@ export default function HrEmpAppointment() {
     { label: "이전 부서", dataKey: "old_department", width: 150 },
     { label: "발령 부서", dataKey: "new_department", width: 150 },
     { label: "비고", dataKey: "appoint_note", width: 250 },
-    { label: "발령일자", dataKey: "appoint_date", width: 200 }
+    {
+      label: "발령일자",
+      dataKey: "appoint_date",
+      width: 200,
+      renderCell: (rowData) => formatDate(rowData.appoint_date)
+    }
   ];
 
   return (

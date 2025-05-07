@@ -89,12 +89,10 @@ const OrderIncomeList = () => {
 				const isChanged = updatedOrders.some((updated, index) =>
 				JSON.stringify(updated.itemDataList) !== JSON.stringify(orderList[index].itemDataList)
 			);
-			
-			if (isChanged) setOrderList(updatedOrders);
-			
-			setLoading(false);
+				if (isChanged) setOrderList(updatedOrders);
 			};
 			fetchItemsForOrders(); // 아이템 데이터 가져오기
+			setLoading(false);
 		}
 	}, [orderList]); // orderList가 변경될 때마다 실행 (length로 조건 걸기)
 
@@ -188,6 +186,7 @@ const OrderIncomeList = () => {
         <div>
         	<MessageBox type="success" text="입고 관리"/>
             <Container style={{margin: '0 auto', maxWidth : '1920px'}}>
+				
 				<div className='main_table'>
 					<div className="inputBox">
 						<div className="input">
@@ -270,61 +269,61 @@ const OrderIncomeList = () => {
 						<div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 							<Loader size="md" content="데이터를 불러오는 중입니다..." />
 						</div>
-						) : (
+					) : (
 						<Table width={1920} height={400} data={orderListWithRowNum} className="text_center" loading={loading}>
-	
+
 							<Column width={120} align="center" fixed>
 								<HeaderCell className='text_center'>번호</HeaderCell>
 								<Cell dataKey="row_num" />
 							</Column>
-	
+
 							<Column width={180} align="center" fixed>
 								<HeaderCell className='text_center'>주문고유번호</HeaderCell>
 								<Cell dataKey="order_id" />
 							</Column>
-							
+
 							<Column width={180} align="center" fixed>
 								<HeaderCell className='text_center'>담당팀</HeaderCell>
 								<Cell dataKey="d_name" />
 							</Column>
-							
+
 							<Column width={180} align="center" fixed>
 								<HeaderCell className='text_center'>담당자</HeaderCell>
 								<Cell dataKey="e_name" />
 							</Column>
-	
+
 							<Column width={200}>
 								<HeaderCell className='text_center'>입고일자</HeaderCell>
 								<Cell dataKey="delivery_date" />
 							</Column>
-	
+
 							<Column width={400}>
 								<HeaderCell className="text_center">아이템 비고</HeaderCell>
 								<Cell dataKey="item_name">
-									{rowData => 
+									{rowData =>
 										<ItemNameCell rowData={rowData} loading={loading}
-									/>}
+										/>}
 								</Cell>
 							</Column>
-							
+
 							<Column width={280}>
 								<HeaderCell className="text_center">주문상세</HeaderCell>
 								<Cell dataKey="item_name" style={{ padding: '6px' }}>
-	                                {rowData => {
-	                                    return (
+									{rowData => {
+										return (
 											<Link to={`/main/logis-order-item-list/${rowData.order_id}`} className="btn btn-primary area_fit wide_fit">
 												아이템 전체 보기
 											</Link>
-	                                    );
-	                                }}
-	                            </Cell>
+										);
+									}}
+								</Cell>
 							</Column>
-	
+
 							<Column width={180}>
 								<HeaderCell className='text_center'>발주처</HeaderCell>
 								<Cell dataKey="client_name" />
 							</Column>
-	
+
 							<Column width={200}>
 								<HeaderCell className='text_center'>입고창고</HeaderCell>
 								<Cell dataKey="storage_name" />
@@ -345,6 +344,7 @@ const OrderIncomeList = () => {
 						/>
 					</div>
 				</div>
+				
              </Container>
         </div>
     );

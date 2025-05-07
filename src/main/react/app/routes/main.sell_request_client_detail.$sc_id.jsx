@@ -237,13 +237,37 @@ const sell_request_client_detail = () => {
                           </Col>
                         </Row>
 
+                        {rowData.sa_approval_status === '반려' && rowData.sa_approval_comment && (
+                          <Row style={{ marginTop: 20 }}>
+                            <Col xs={24}>
+                              <Form.Group>
+                                <Form.ControlLabel>반려 사유</Form.ControlLabel>
+                                <Form.Control
+                                  rows={3}
+                                  name="sa_approval_comment"
+                                  accepter={Textarea}
+                                  value={rowData.sa_approval_comment || ''}
+                                  readOnly
+                                />
+                              </Form.Group>
+                            </Col>
+                          </Row>
+                        )}
+
                         <Row style={{ marginTop: 20 }}>
                           <Col xs={24} style={{ textAlign: "center" }}>
-                                        <ButtonToolbar style={{ display: "inline-block" }}>
-                              <Button style={{ marginRight: 10 }} onClick={() => updateReqClient(rowData.sc_id)} appearance="ghost">수정</Button>
-                              <Button style={{ marginRight: 10, border: '1px solid #22284C', color: '#22284C' }} onClick={() => listReqClient()} appearance="ghost" >목록</Button>
-                              <Button onClick={() => deleteReqClient(rowData.sc_id)} color="red" appearance="ghost">삭제</Button>
-                            </ButtonToolbar>
+                            {rowData.sa_approval_status === '진행중' && (
+                              <ButtonToolbar style={{ display: "inline-block" }}>
+                                <Button style={{ marginRight: 10 }} onClick={() => updateReqClient(rowData.sc_id)} appearance="ghost">수정</Button>
+                                <Button style={{ marginRight: 10, border: '1px solid #22284C', color: '#22284C' }} onClick={() => listReqClient()} appearance="ghost">목록</Button>
+                                <Button onClick={() => deleteReqClient(rowData.sc_id)} color="red" appearance="ghost">삭제</Button>
+                              </ButtonToolbar>
+                            )}
+                            {rowData.sa_approval_status !== '진행중' && (
+                              <ButtonToolbar style={{ display: "inline-block" }}>
+                                <Button style={{ marginRight: 10, border: '1px solid #22284C', color: '#22284C' }} onClick={() => listReqClient()} appearance="ghost">목록</Button>
+                              </ButtonToolbar>
+                            )}
                           </Col>
                         </Row>
                       </Grid>

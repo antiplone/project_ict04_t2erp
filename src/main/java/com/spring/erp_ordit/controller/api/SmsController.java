@@ -37,7 +37,7 @@ public class SmsController {
         message.setText(request.get("text"));
 
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));		// 메세지를 서버로 보낸다
-        System.out.println(response);
+        // System.out.println(response);
 
         return response;
     }	

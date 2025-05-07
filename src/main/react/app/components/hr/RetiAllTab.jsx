@@ -28,7 +28,7 @@ export default function RetiAllTab({ retiData, retiColumns }) {
       rowHeight={48}
     >
       {retiColumns.map((col) => {
-        const isFlexible = ["re_reject_reason", "re_note"].includes(
+        const isFlexible = ["re_request_reason", "re_reject_reason", "re_note"].includes(
           col.dataKey
         );
 
@@ -105,16 +105,14 @@ export default function RetiAllTab({ retiData, retiColumns }) {
         <HeaderCell style={{ backgroundColor: "#f8f9fa" }}>
           처리
         </HeaderCell>
-        <Cell style={{ padding: "6px" }}>
-          {(rowData) => (
+        <Cell style={{ padding: "6px", lineHeight: "30px" }}>
+        {(rowData) => (
             <Btn
               text="검토"
               color="green"
-              style={{ width: 60 }}
+              style={{ width: "60px" }}
               onClick={() =>
-                navigate(
-                  `/main/hr-retirement-detail/${rowData.e_id}`
-                )
+                navigate(`/main/hr-retirement-detail/${rowData.e_id}`)
               }
             />
           )}

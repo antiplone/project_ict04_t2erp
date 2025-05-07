@@ -9,6 +9,7 @@ import { useDaumPostcodePopup } from 'react-daum-postcode';     // 다음 우편
 import HrRadio from '#components/hr/HrRadio.jsx';
 import { useToast } from '#components/common/ToastProvider';
 import { CheckButton } from "#components/hr/HrButton";
+import { formatDate } from "#components/hr/HrDate";
 
 // textarea용 커스텀 컴포넌트
 const Textarea = React.forwardRef((props, ref) => (
@@ -186,7 +187,12 @@ export default function Basic_client() {
     { label: "이메일", dataKey: "c_email", width: 310 },
     { label: "거래처 연락처", dataKey: "c_tel", width: 230 },
     { label: "사용 상태", dataKey: "c_status", width: 165 },
-    { label: "등록일", dataKey: "c_reg_date", width: 220 }
+    {
+      label: "등록일",
+      dataKey: "c_reg_date",
+      width: 220,
+      renderCell: (rowData) => formatDate(rowData.c_reg_date)
+    }
   ];
   
   const requestColumns = [
@@ -220,7 +226,7 @@ export default function Basic_client() {
       label: "등록일",
       dataKey: "sc_date",
       width: 160,
-      renderCell: (rowData) => rowData.sc_date.substring(0, 10)   // .substring(0.10) 앞 10글자만 잘라서 보여주기
+      renderCell: (rowData) => formatDate(rowData.sc_date)
     },
     {
       label: "승인상태",

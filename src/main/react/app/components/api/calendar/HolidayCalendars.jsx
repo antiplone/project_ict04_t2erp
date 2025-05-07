@@ -47,14 +47,12 @@ export default function HolidayCalendars() {
 
   // '종일'이라면 종료시간도 오늘 날짜로 설정
   const onChanges = (field, value) => {
-    const checked = e.target.checked;
-
     setNewEvent(prev => {
       if (field === "allDay") {
         if (value) {
           return {
             ...prev,
-            allDay: checked,
+            allDay: true,
             endTime: prev.startTime // 종일이면 종료시간 = 시작시간
           };
         } else {
@@ -68,7 +66,7 @@ export default function HolidayCalendars() {
       return { ...prev, [field]: value };
     });
   };
-
+  
   // 공휴일 API + 사용자 DB로 가져오기 때문에, 중복 제거 
   const mergedEvents = useMemo(() => {
     const all = [...holidays, ...userEvents];
@@ -117,15 +115,16 @@ export default function HolidayCalendars() {
 
       // 한국 시간으로 보정
       const toKST = (dateStr) => {
-        const d = new Date(dateStr);
-        d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-        return d;
-      };
+        const date = new Date(dateStr);
+        const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000); // KST 보정
+        return kst.toISOString().slice(0, 19).replace("T", " ");
+      }
 
       const events = (data || [])
         .filter(item => item && item.calTitle)
         .filter(item => item.isHoliday !== "Y")  // db에 있는 공휴일 포함x
         .map(item => {
+        // console.log("✅ parsed:", { start, end });
         return {
           cal_event_id: item.calEventId,
           id: item.calEventId,
@@ -213,17 +212,12 @@ export default function HolidayCalendars() {
   // 일정 추가
   const addEvent = async () => {
     if (!newEvent.title.trim()) return;
+  
+    // 종일일 경우 보정하지 않은 문자열 사용 (UTC 00시 → 한국 09시 → 전날로 보이는 문제 방지)
+    const startDateTime = toKST(`${newEventDate}T${newEvent.startTime || "00:00"}`);
+    const endDateTime = toKST(`${newEventDate}T${newEvent.endTime || "23:59"}`);
 
-    const startDateTime = newEvent.startTime
-    ? `${newEventDate}T${newEvent.startTime}:00`
-    : `${newEventDate}T00:00:00`;
-
-  const endDateTime = newEvent.allDay
-    ? startDateTime
-    : (newEvent.endTime
-        ? `${newEventDate}T${newEvent.endTime}:00`
-        : `${newEventDate}T00:00:00`);
-
+  
     try {
       const response = await fetch(`${calendarURL}/insertEvent`, {
         method: 'POST',
@@ -236,11 +230,12 @@ export default function HolidayCalendars() {
           calDescription: newEvent.description,
           calLocation: newEvent.location,
           calEventType: newEvent.eventType,
-          eId: storedID
+          eId: 0,
         }),
       });
+  
       if (response.ok) {
-        console.log("✅ DB 저장 완료");
+        // console.log("DB 저장 완료");
         await fetchUserEvents();
         setModalOpen(false);
       } else {
@@ -250,6 +245,7 @@ export default function HolidayCalendars() {
       console.error("오류:", error);
     }
   };
+  
 
   return (
     <>

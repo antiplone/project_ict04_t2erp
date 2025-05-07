@@ -4,12 +4,13 @@ import { Button, Checkbox, Table } from 'rsuite';
 
 const { Column, HeaderCell, Cell } = Table;
 
-export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActionButtons }) => {
+export const HrTable = ({ items, columns, onEditClick, onDeleteClick, renderActionButtons, renderEmpty }) => {
   return (
     <Table
       height={400}
       virtualized={false}
       data={items}
+      renderEmpty={renderEmpty}
       cellBordered
     >
       {columns.map((col, index) => {

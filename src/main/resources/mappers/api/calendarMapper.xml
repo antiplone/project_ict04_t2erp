@@ -30,6 +30,7 @@
 			cal_start_date,
 			cal_end_date,
 			cal_all_day,
+			cal_description,
 			cal_location,
 			cal_event_type,
 			e_id,
@@ -40,6 +41,7 @@
 			#{calStartDate},
 			#{calEndDate},
 			#{calAllDay},
+			#{calDescription},
 			#{calLocation},
 			#{calEventType},
 			#{eId},
@@ -52,4 +54,17 @@
 		DELETE FROM calendar_event_tbl
 		WHERE cal_event_id = #{calEventId}
 	</delete>
+	
+    <!-- 일정 수정 -->
+    <update id="updateEvent" parameterType="com.spring.erp_ordit.dto.api.CalendarDTO">
+        UPDATE calendar_event_tbl
+			   SET cal_title = #{calTitle}
+			     , cal_start_date = #{calStartDate}
+			     , cal_end_date = #{calEndDate}
+			     , cal_all_day = #{calAllDay}
+			     , cal_description = #{calDescription}
+			     , cal_location = #{calLocation}
+			     , cal_event_type = #{calEventType}
+			 WHERE cal_event_id = #{calEventId}
+    </update>
 </mapper>

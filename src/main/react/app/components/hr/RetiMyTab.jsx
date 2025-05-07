@@ -72,6 +72,7 @@ export default function RetiMyTab({ retiColumns, retiData }) {
                       speaker={<Tooltip>{text}</Tooltip>}
                     >
                       <div
+                        className="text_left"
                         style={{
                           whiteSpace: "nowrap",
                           overflow: "hidden",

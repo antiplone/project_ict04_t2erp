@@ -236,9 +236,7 @@ const OutgoingList = () => {
 	                        </InputGroup>
 	                        <Input value={selectedClientName || ""} readOnly className="inputModalSide" />
 	                    </div>
-					</div>
 					
-					<div className="inputBox">
 						<div className="input">
 							<InputGroup className="inputModal">
 								<InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>

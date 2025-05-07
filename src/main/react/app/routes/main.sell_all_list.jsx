@@ -16,7 +16,7 @@ const sell_all_list = () => {
 	const fetchURL = AppConfig.fetch['mytest'];
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(true);	// 로딩중일때
-	const [selectedRow, setSelectedRow] = useState(null); // 전표 클릭 시 선택한 행
+	const [selectedRow, setSelectedRow] = useState({}); // 전표 클릭 시 선택한 행
 
 	// 전체 리스트
 	const [allList, setAllList] = useState([]);
@@ -98,6 +98,7 @@ const sell_all_list = () => {
 					...item,
 					date_no: count,
 					item_display: displayName,
+					items: sameOrderItems,
 					total_sum: totalSum // 총 금액 합계
 				});
 		
@@ -120,7 +121,7 @@ const sell_all_list = () => {
 			setAllList(numbered);
 			setIsLoading(false);
 		});
-	}, []);
+	}, [allList, selectedRow]);
 	  
 	// 상세 클릭 시 order_id 넘겨주며 페이지 이동
 	const allListDetail = (order_id) => {
@@ -316,7 +317,7 @@ const sell_all_list = () => {
 				</Modal.Header>
 
 				<Modal.Body>
-					<SellSlipAll />
+					<SellSlipAll rowState={[selectedRow, setSelectedRow]}/>
 				</Modal.Body>
 
 				<Modal.Footer>

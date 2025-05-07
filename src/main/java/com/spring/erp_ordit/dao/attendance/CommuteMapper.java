@@ -1,5 +1,6 @@
 package com.spring.erp_ordit.dao.attendance;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -26,4 +27,7 @@ public interface CommuteMapper {
 
 	// 출퇴근 수정
 	public int updateCommute(CommuteDTO dto);
+	
+	// 퇴근 누락자 조회용
+	public List<CommuteDTO> selectMissingCheckouts(Date co_work_date);
 }

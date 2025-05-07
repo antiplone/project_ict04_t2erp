@@ -115,14 +115,17 @@ const HrEmpCardPage = () => {
 
   // 인사카드 등록
   const handleRegister = () => {
-  const requiredFields = ['e_name', 'e_tel', 'e_birth', 'e_email', 'e_position', 'd_code', 'e_status', 'e_salary_account_bank', 'e_salary_account_num', 'e_salary_account_owner'];
-  const hasEmptyRequiredField = requiredFields.some(field => !form[field]);
+  const requiredFields = ['e_name', 'e_tel', 'e_birth', 'e_position', 'd_code', 'e_status', 'e_salary_account_bank', 'e_salary_account_num', 'e_salary_account_owner'];
+  const hasEmptyRequiredField =
+    requiredFields.some(field => !form[field]) ||
+    !form.e_email_front || !form.e_email_back;
   const finalForm = {
     ...form,
     e_email: form.e_email_front && form.e_email_back
       ? `${form.e_email_front}@${form.e_email_back}`
       : ''
   };
+  
 
   if (hasEmptyRequiredField) {
     showToast('필수 항목을 모두 입력해주세요.', 'error');

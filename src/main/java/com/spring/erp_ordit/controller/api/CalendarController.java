@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,9 +55,24 @@ public class CalendarController {
         return ResponseEntity.ok(list);
     }
     
-    // 일정 삭제  http://localhost:8081/api/calendar/getAllEvents
+    // 일정 삭제  http://localhost:8081/api/calendar/deleteEvent/20
     @DeleteMapping("/deleteEvent/{cal_event_id}")
     public ResponseEntity<?> deleteEvent(@PathVariable int cal_event_id) {
-        return new ResponseEntity<>(service.deleteEvent(cal_event_id), HttpStatus.CREATED);
+//    	System.out.println("캘린더 컨트롤러");
+	    int result = service.deleteEvent(cal_event_id);
+	    if (result > 0) {
+	        return new ResponseEntity<>("1", HttpStatus.OK);  // 삭제 성공
+	    } else {
+	        return new ResponseEntity<>("0", HttpStatus.NOT_FOUND);  // 삭제 실패
+	    }
     }
+    
+	// 일정 수정(Put) ⇒ http://localhost:8081/api/calendar/updateEvent/20
+	@PutMapping("/updateEvent/{cal_event_id}")
+	public ResponseEntity<?> updateEvent(@PathVariable int cal_event_id, @RequestBody CalendarDTO dto) {
+//    	System.out.println("캘린더 컨트롤러");
+//		System.out.println("ID: " + cal_event_id);
+//		System.out.println("DTO: " + dto);
+		return new ResponseEntity<>(service.updateEvent(cal_event_id, dto), HttpStatus.OK);
+	}
 }

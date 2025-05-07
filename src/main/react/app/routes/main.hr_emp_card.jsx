@@ -4,7 +4,8 @@ import {
   Tabs, Input, ButtonToolbar, Button, Panel,
   Grid, Row, Col, Form, Divider, FlexboxGrid, Uploader,
   Loader,
-  Placeholder
+  Placeholder,
+  DatePicker
 } from 'rsuite';
 import { HrTable } from '#components/hr/HrTable';
 import HrDropdown from '#components/hr/HrDropdown';
@@ -21,17 +22,37 @@ const HrEmpCardPage = () => {
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState('1');
   const [items, setItems] = useState([]);
-  const [form, setForm] = useState({
-    e_name: '', e_tel: '', e_position: '', e_status: '', e_email: '',
-    e_birth: '', e_entry: '', e_zone_code: '', e_base_address: '', e_detail_address: '', e_photo: '',
-    e_salary_account_bank: '', e_salary_account_num: '', e_salary_account_owner: '',
-    e_note: '', d_code: ''
-  });
   const [deptList, setDeptList] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [uploaderKey, setUploaderKey] = useState(0);
   const [loading, setLoading] = useState(false);
+  const filteredItems = items.filter(item => {
+    if (activeTab === "1") return true;  // 전체
+    if (activeTab === "2") return ["재직", "수습", "인턴", "파견"].includes(item.e_status);
+    if (activeTab === "3") return ["휴직", "병가", "출산휴가"].includes(item.e_status);
+    if (activeTab === "4") return ["퇴직", "정년", "해고"].includes(item.e_status);
+    if (activeTab === "5") return ["교육", "대기", "보류"].includes(item.e_status);
+    return false;
+  });
+  
+
+  const [form, setForm] = useState({
+    e_name: '', 
+    e_tel: '', 
+    e_position: '', 
+    e_status: '',
+    e_email_front: '', e_email_back: '',
+    e_birth: '', 
+    e_entry: '', 
+    e_zone_code: '', 
+    e_base_address: '', 
+    e_detail_address: '', 
+    e_photo: '',
+    e_salary_account_bank: '', e_salary_account_num: '', e_salary_account_owner: '',
+    e_note: '', 
+    d_code: ''
+  });
 
   useEffect(() => {
     setLoading(true);
@@ -96,6 +117,12 @@ const HrEmpCardPage = () => {
   const handleRegister = () => {
   const requiredFields = ['e_name', 'e_tel', 'e_birth', 'e_email', 'e_position', 'd_code', 'e_status', 'e_salary_account_bank', 'e_salary_account_num', 'e_salary_account_owner'];
   const hasEmptyRequiredField = requiredFields.some(field => !form[field]);
+  const finalForm = {
+    ...form,
+    e_email: form.e_email_front && form.e_email_back
+      ? `${form.e_email_front}@${form.e_email_back}`
+      : ''
+  };
 
   if (hasEmptyRequiredField) {
     showToast('필수 항목을 모두 입력해주세요.', 'error');
@@ -105,14 +132,15 @@ const HrEmpCardPage = () => {
     fetch(`${hrURL}/hrCardInsert`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form)
+      body: JSON.stringify(finalForm)
     })
       .then(res => res.json())
       .then(result => {
         if (result === 1 || result.success) {
           showToast('인사카드가 등록되었습니다', 'success');
           setForm({
-            e_name: '', e_tel: '', e_position: '', e_status: '', e_email: '',
+            e_name: '', e_tel: '', e_position: '', e_status: '',
+            e_email_front: '', e_email_back: '',
             e_birth: '', e_entry: '', e_zone_code: '', e_base_address: '', e_detail_address: '', e_photo: '',
             e_salary_account_bank: '', e_salary_account_num: '', e_salary_account_owner: '',
             e_note: '', d_code: ''
@@ -131,7 +159,7 @@ const HrEmpCardPage = () => {
     { label: '이름', dataKey: 'e_name', width: 235 },
     { label: '이메일', dataKey: 'e_email', width: 355 },
     { label: '부서', dataKey: 'd_name', width: 235 },
-    { label: '직위', dataKey: 'e_position', width: 225 },
+    { label: '직급', dataKey: 'e_position', width: 225 },
     { label: '재직 상태', dataKey: 'e_status', width: 225 },
     { label: '등록일', dataKey: 'e_reg_date', width: 255 },
   ];
@@ -139,8 +167,17 @@ const HrEmpCardPage = () => {
   return (
     <div>
       <MessageBox text="인사카드 관리" />
-      <Tabs activeKey={activeTab} onSelect={setActiveTab}>
-        <Tabs.Tab eventKey="1" title="인사카드 목록">
+
+        <Tabs activeKey={activeTab} onSelect={setActiveTab} style={{ marginBottom: '30px' }}>
+          <Tabs.Tab eventKey="1" title={`전체 (${items.length})`} />
+          <Tabs.Tab eventKey="2" title={`재직 (${items.filter(r => ["재직", "수습", "인턴", "파견"].includes(r.e_status)).length})`} />
+          <Tabs.Tab eventKey="3" title={`휴직 (${items.filter(r => ["휴직", "병가", "출산휴가"].includes(r.e_status)).length})`} />
+          <Tabs.Tab eventKey="4" title={`퇴직 (${items.filter(r => ["퇴직", "정년", "해고"].includes(r.e_status)).length})`} />
+          <Tabs.Tab eventKey="5" title={`기타 (${items.filter(r => ["교육", "대기", "보류"].includes(r.e_status)).length})`} />
+          <Tabs.Tab eventKey="6" title="인사카드 등록" />
+        </Tabs>
+
+        {["1", "2", "3", "4", "5"].includes(activeTab) && (
           <div style={{ minHeight: 400, position: 'relative' }}>
             {loading ? (
               <>
@@ -150,7 +187,12 @@ const HrEmpCardPage = () => {
             ) : (
               <HrTable
                 columns={columns}
-                items={items}
+                items={filteredItems}
+                renderEmpty={() => (
+                  <div style={{ padding: 20, textAlign: 'center', color: '#999' }}>
+                    해당 조건의 사원이 없습니다.
+                  </div>
+                )}
                 renderActionButtons={(rowData) => (
                   <Link to={`/main/hr_emp_card_detail/${rowData.e_id}`}>
                     <Button appearance='ghost' size='xs' color='green'>
@@ -161,10 +203,10 @@ const HrEmpCardPage = () => {
               />
             )}
           </div>  
-        </Tabs.Tab>
+        )}
 
-        <Tabs.Tab eventKey="2" title="인사카드 등록">
-          <FlexboxGrid style={{ marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
+        {activeTab === "6" && (
+          <FlexboxGrid style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
             <FlexboxGrid.Item colspan={20} style={{ maxWidth: 800 }}>
               <Panel header={<h4>📁 사원 정보 입력</h4>} bordered>
                 <Form fluid>
@@ -232,9 +274,43 @@ const HrEmpCardPage = () => {
                         </Form.Group>
                         <Form.Group><Form.ControlLabel>사원 이름 *</Form.ControlLabel><Form.Control value={form.e_name} onChange={val => setForm({ ...form, e_name: val })} /></Form.Group>
                         <Form.Group><Form.ControlLabel>전화번호 *</Form.ControlLabel><Form.Control value={form.e_tel} onChange={val => setForm({ ...form, e_tel: val })} /></Form.Group>
-                        <Form.Group><Form.ControlLabel>생년월일 *</Form.ControlLabel><Form.Control type="date" value={form.e_birth} onChange={val => setForm({ ...form, e_birth: val })} /></Form.Group>
-                        <Form.Group><Form.ControlLabel>이메일 *</Form.ControlLabel><Form.Control value={form.e_email} onChange={val => setForm({ ...form, e_email: val })} /></Form.Group>
-                        <Form.Group><Form.ControlLabel>직위 *</Form.ControlLabel>
+                        <Form.Group>
+                          <Form.ControlLabel>생년월일 *</Form.ControlLabel>
+                          <DatePicker
+                            oneTap
+                            format="yyyy-MM-dd"
+                            value={form.e_birth ? new Date(form.e_birth) : null}
+                            onChange={(val) => {
+                              const iso = val?.toISOString().split('T')[0] || '';
+                              setForm({ ...form, e_birth: iso });
+                            }}
+                            placeholder="생년월일 선택"
+                            style={{ width: '100%' }}
+                          />
+                        </Form.Group>
+                        <Form.Group>
+                          <Form.ControlLabel>이메일 *</Form.ControlLabel>
+                          <Grid fluid>
+                            <Row gutter={16} align="middle">
+                              <Col xs={11}>
+                                <Form.Control
+                                  name="e_email_front"
+                                  value={form.e_email_front}
+                                  onChange={(val) => setForm({ ...form, e_email_front: val })}
+                                />
+                              </Col>
+                              <Col xs={2} style={{ textAlign: "center", lineHeight: "38px" }}>@</Col>
+                              <Col xs={11}>
+                                <Form.Control
+                                  name="e_email_back"
+                                  value={form.e_email_back}
+                                  onChange={(val) => setForm({ ...form, e_email_back: val })}
+                                />
+                              </Col>
+                            </Row>
+                          </Grid>
+                        </Form.Group>
+                        <Form.Group><Form.ControlLabel>직급 *</Form.ControlLabel>
                           <HrDropdown title={form.e_position || '선택'} items={['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무']} onSelect={val => setForm({ ...form, e_position: val })} /></Form.Group>
                         <Form.Group><Form.ControlLabel>부서 *</Form.ControlLabel>
                           <HrDropdown title={deptList.find(d => d.value === form.d_code)?.label || '선택'} items={deptList} onSelect={val => setForm({ ...form, d_code: val })} /></Form.Group>
@@ -295,8 +371,7 @@ const HrEmpCardPage = () => {
               </Panel>
             </FlexboxGrid.Item>
           </FlexboxGrid>
-        </Tabs.Tab>
-      </Tabs>
+        )}
     </div>
   );
 };

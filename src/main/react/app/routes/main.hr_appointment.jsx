@@ -83,7 +83,7 @@ export default function HrEmpAppointment() {
         alert(`사번 ${emp.e_id || '(미입력)'}: 부서 이동인 경우 발령 부서는 필수입니다.`);
         return;
       }
-      if (appointTypeArr.includes('직위 변경') && !emp.new_position) {
+      if (appointTypeArr.includes('직급 변경') && !emp.new_position) {
         alert(`사번 ${emp.e_id || '(미입력)'}: 직급 변경인 경우 발령 직급은 필수입니다.`);
         return;
       }

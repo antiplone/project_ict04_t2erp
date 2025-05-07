@@ -31,7 +31,7 @@ export async function clientLoader({ request/* or params */ }) {
 	const urls = request.url.split('/'); // url전체 경로를 '/'기준으로 나눠서 배열로 저장
 	//	const navigate = useNavigate();
 	const pageName = urls[urls.length - 1]; // 현재 페이지명
-	console.log("현재 페이지는", pageName);
+//	console.log("현재 페이지는", pageName);
 
 	//	console.log(localStorage.getItem("e_auth_id"));
 

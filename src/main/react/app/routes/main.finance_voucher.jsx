@@ -143,7 +143,7 @@ export default function FinanceVoucher() {
 				</Modal.Header>
 
 				<Modal.Body>
-					<VoucherPrint target={rowData} />
+					<VoucherPrint rowState={rowState} />
 				</Modal.Body>
 
 				<Modal.Footer>

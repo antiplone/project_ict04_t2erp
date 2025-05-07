@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from "@remix-run/react";
 import { Button, Container, DateRangePicker, Input, InputGroup, Divider, Loader } from 'rsuite';
 import { Table, Column, HeaderCell, Cell } from 'rsuite-table';
@@ -18,6 +18,8 @@ const OutgoingList = () => {
 	const rawFetchURL = Appconfig.fetch["mytest"];
 	const fetchURL = rawFetchURL.protocol + rawFetchURL.url;
 	
+	const hasFetchedRef = useRef(false); // 데이터를 이미 불러왔는지 체크
+
 	const [loading, setLoading] = useState(true); // 로딩 상태를 true로 초기화
 	const [salesList, setSalesList] = useState([]); // 초기값을 모르므로 빈배열로 OutgoingList에 대입
 	const [salesDate, setSalesDate] = useState(null);
@@ -42,7 +44,7 @@ const OutgoingList = () => {
 	const [isChartModalOpen, setChartModalOpen] = useState(false);
 	
     const fetchSales = async () => {
-        /*setLoading(true);*/
+        setLoading(true);
         try {
 			const res = await fetch(`${fetchURL}/logissales/logisSalesList`, { // 스프링부트에 요청한다.
 			method: "GET"
@@ -68,6 +70,11 @@ const OutgoingList = () => {
 
 	// 각 주문에 대한 아이템 데이터 가져오기
 	useEffect(() => {
+		if (salesList.length === 0 || hasFetchedRef.current) return;
+		/*if (salesList.length === 0 && !loading) {
+			return <div style={{ height: '400px' }}><p>입고 예정 목록이 없습니다.</p></div>;
+		}*/
+		
 		if (salesList.length > 0) {
 			const fetchItemsForSales = async () => {
 				const updatedSales = await Promise.all(
@@ -89,20 +96,18 @@ const OutgoingList = () => {
 				const isChanged = updatedSales.some((updated, index) =>
 				JSON.stringify(updated.itemDataList) !== JSON.stringify(salesList[index].itemDataList)
 			);
-
-			if (isChanged) setSalesList(updatedSales);
-			
-			setLoading(false);
+				if (isChanged) setSalesList(updatedSales);
 			};
 			fetchItemsForSales(); // 아이템 데이터 가져오기
-		} else {
-		// ❗ salesList가 비어 있어도 로딩 상태 종료
-		setLoading(false);
-	}
+			setLoading(false);
+		}
+		
+		
 	}, [salesList]); // salesList 변경될 때마다 실행 (length로 조건 걸기)
 
 	// 날짜 선택
 	const handleDateChange = (value) => {
+		setLoading(false);
 		console.log("선택된 날짜 범위:", value); // [startDate, endDate]
 		setSalesDate(value);
 	};
@@ -118,8 +123,7 @@ const OutgoingList = () => {
 
     /* 검색 조건*/
 	const handleSearch = async () => {
-		/*setLoading(true);*/
-
+		setLoading(true);
 		let startDate = '';
 		let endDate = '';
 
@@ -147,7 +151,8 @@ const OutgoingList = () => {
 			const res = await fetch(`${fetchURL}/logissales/logisSalesSearch?${query}`);
 			const result = await res.json();
 			setSalesList(result.length ? result : []);
-			if (result.length === 0) showToast("선택한 조건에 해당하는 판매정보가 없습니다.", "info");
+			if (result.length === 0) showToast("선택한 조건에 해당하는 판매정보가 없습니다.", "info")
+			setLoading(false);
 		} catch (err) {
 			console.error("검색 실패:", err);
 			setSalesList([]);
@@ -180,7 +185,7 @@ const OutgoingList = () => {
 		const items = useMemo(() => rowData.itemDataList || [], [rowData.itemDataList]);
 		const firstItem = items.length > 0 ? items[0].item_name : "";
 		const totalCount = items.length - 1 > 0 ? `외 ${items.length - 1} 건` : "";
-
+		setLoading(false)
 		return (
 			<div>
 				{firstItem} {items.length > 0 ? `${totalCount}` : ""}
@@ -195,7 +200,7 @@ const OutgoingList = () => {
 					<div className="inputBox">
 						<div className="input">
 							<InputGroup className="input_date_type" style={{ width: 350 }}>
-								<InputGroup.Addon style={{ width: 80 }} className='text_center'>발주일자</InputGroup.Addon>
+								<InputGroup.Addon style={{ width: 80 }} className='text_center'>출고일자</InputGroup.Addon>
 								<DateRangePicker
 									value={salesDate}
 									onChange={handleDateChange}
@@ -236,12 +241,10 @@ const OutgoingList = () => {
 	                        </InputGroup>
 	                        <Input value={selectedClientName || ""} readOnly className="inputModalSide" />
 	                    </div>
-					</div>
 					
-					<div className="inputBox">
 						<div className="input">
 							<InputGroup className="inputModal">
-								<InputGroup.Addon style={{ width: 80 }}>입고창고</InputGroup.Addon>
+								<InputGroup.Addon style={{ width: 80 }}>출고창고</InputGroup.Addon>
 								<Input value={selectedStorage || ""} readOnly onClick={() => setStorageModalOpen(true)} />
 								<InputGroup.Addon>
 									<img

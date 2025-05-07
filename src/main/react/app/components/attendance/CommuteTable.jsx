@@ -139,7 +139,10 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
               {attColumns.map((col) => (
                 <Column key={col.dataKey} width={col.width} className="text_center">
                   <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
-                  <Cell dataKey={col.dataKey} />
+                  <Cell 
+                    dataKey={col.dataKey} 
+                    style={col.dataKey === "co_status_note" ? { textAlign: "left", paddingLeft: "20px" } : {}} 
+                  />
                 </Column>
               ))}
               <Column width={90} fixed="right" className="text_center" style={{ lineHeight: "23px" }}>
@@ -158,7 +161,10 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
               {attColumns.map((col) => (
                 <Column key={col.dataKey} width={col.width} className="text_center">
                   <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
-                  <Cell dataKey={col.dataKey} />
+                  <Cell 
+                    dataKey={col.dataKey} 
+                    style={col.dataKey === "co_status_note" ? { textAlign: "left", paddingLeft: "20px" } : {}} 
+                  />
                 </Column>
               ))}
               {/* <Column width={70} fixed="right" className="text_center">
@@ -217,7 +223,10 @@ export default function CommuteTable({ loading, attURL, refresh, e_id }) {
               {attColumns.map((col) => (
                 <Column key={col.dataKey} width={col.width} className="text_center">
                   <HeaderCell style={{ backgroundColor: '#f8f9fa' }}>{col.label}</HeaderCell>
-                  <Cell dataKey={col.dataKey} />
+                  <Cell 
+                    dataKey={col.dataKey} 
+                    style={col.dataKey === "co_status_note" ? { textAlign: "left", paddingLeft: "20px" } : {}} 
+                  />
                 </Column>
               ))}
               {/* <Column width={70} fixed="right" className="text_center">

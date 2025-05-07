@@ -19,7 +19,7 @@ public class HrAppointmentScheduler {
 	// 특정 메서드를 정해진 시간에 자동 실행, cron 언제 실행할지를 표현 (초 분 시 일 월 요일 순)
     @Scheduled(cron = "* * 6 ? * MON-FRI")  // 평일 오전 6시에 실행(?는 무시, -는 범위 일과 요일을 동시에 지정할 수 없기 때문에 일은 무시)
     public void applyTodayAppointment() {
-        System.out.println("<< 스케줄러 실행: 오늘자 인사발령 자동 반영 >>");
+        // System.out.println("<< 스케줄러 실행: 오늘자 인사발령 자동 반영 >>");
 
         LocalDate today = LocalDate.now();	// 오늘 날짜를 구함
         List<HrAppointmentDTO> appointList = hrAppointMapper.hrAppointList();	// 모든 발령이력을 리스트에 저장

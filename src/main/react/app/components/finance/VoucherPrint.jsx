@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Container, Placeholder, Loader } from "rsuite";
 
 import "#styles/voucher.css";
@@ -8,8 +8,10 @@ import "#styles/voucher.css";
 let formatter = new Intl.NumberFormat(/*'ko-KR', { style: 'currency', currency: 'KRW' }*/);
 
 
-const Component = ({ printRef, target }) => {
-	let accTotal = 0;
+const Component = ({ printRef, rowState }) => {
+
+	const [rowData, setRowData] = rowState;
+	let [accTotal, setAccTotal] = useState(rowData.total_sum !== undefined ? rowData.total_sum : 0);
 
 	const VoucherLoader = () => {
 		return (
@@ -26,11 +28,11 @@ const Component = ({ printRef, target }) => {
 			<div className="journal-container" ref={printRef}>
 				<h2 className="journal-title">전표</h2>
 				<div className="journal-header">
-					<span>고객사: {target.client_name}</span>
-					<span className="journal-writer">작성자: {target.v_assigner}</span>
+					<span>고객사: {rowData.client_name}</span>
+					<span className="journal-writer">작성자: {rowData.v_assigner}</span>
 				</div>
 				<div className="journal-header">
-					<span>전표번호 : {target.voucher_no}</span>
+					<span>전표번호 : {rowData.voucher_no}</span>
 				</div>
 				<table className="journal-table">
 					<thead>
@@ -42,7 +44,7 @@ const Component = ({ printRef, target }) => {
 						</tr>
 					</thead>
 					<tbody>
-						{target.items.length > 1 ? target.items.map((row, idx) => (
+						{rowData.items.length > 1 ? rowData.items.map((row, idx) => (
 							<tr key={idx}>
 								<td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{row.t_type}</td>
 								<td style={{ verticalAlign: 'middle' }}>
@@ -56,26 +58,26 @@ const Component = ({ printRef, target }) => {
 							</tr>
 						)) :
 							<tr>
-								<td>{target.t_type}</td>
+								<td>{rowData.t_type}</td>
 								<td>
-									{target.item_name + ' : ' + target.item_standard}
+									{rowData.item_name + ' : ' + rowData.item_standard}
 									{/*row.적요.map((line, i) => (
 									<div key={i}>{line}</div>
 								))*/}
 								</td>
-								<td className="journal-right">{target.order_type === 2 ? formatter.format(target.total) : null}</td>
-								<td className="journal-right">{target.order_type === 1 ? formatter.format(target.total) : null}</td>
+								<td className="journal-right">{rowData.order_type === 2 ? formatter.format(rowData.total) : null}</td>
+								<td className="journal-right">{rowData.order_type === 1 ? formatter.format(rowData.total) : null}</td>
 							</tr>
 						}
 						<tr>
 							<td style={{ backgroundColor: '#ebebeb' }} className="journal-sum" colSpan={2}>합계</td>
-							<td className="journal-sum journal-right">{target.order_type === 2 ? formatter.format(accTotal) : null}</td>
-							<td className="journal-sum journal-right">{target.order_type === 1 ? formatter.format(accTotal) : null}</td>
+							<td className="journal-sum journal-right">{rowData.order_type === 2 ? formatter.format(accTotal) : null}</td>
+							<td className="journal-sum journal-right">{rowData.order_type === 1 ? formatter.format(accTotal) : null}</td>
 						</tr>
 					</tbody>
 				</table>
 				<div style={{ fontWeight: 'bold' }} className="journal-footer">
-					{target.v_assign_date} <span style={{ color: '#9a0000' }}>승인</span>
+					{rowData.v_assign_date} <span style={{ color: '#9a0000' }}>승인</span>
 				</div>
 				{/*<div className="journal-page">[ 1 / 1 ]</div>*/}
 			</div>
@@ -84,22 +86,22 @@ const Component = ({ printRef, target }) => {
 
 	useEffect(() => {
 
-		if (target.voucher_no !== undefined) {
+		if (rowData.voucher_no !== undefined) {
 
-			target.items.forEach(value => { accTotal += value.total });
-			accTotal = target.items.length > 1 ? accTotal : target.total;
+			rowData.items.forEach(value => { accTotal += value.total });
+			accTotal = rowData.items.length > 1 ? accTotal : rowData.total;
+			setAccTotal(accTotal);
 
+			console.log("accTotal :", accTotal);
 
-//			console.log("accTotal :", accTotal);
-
-//			console.log(target);
+//			console.log(rowData);
 		}
 
 
-	}, [target]);
+	}, [rowData]);
 
 	return (
-		target.voucher_no !== undefined ? <VoucherForm /> : <VoucherLoader />
+		rowData.voucher_no !== undefined ? <VoucherForm accTotal={accTotal} /> : <VoucherLoader />
 	);
 }
 

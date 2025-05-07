@@ -11,5 +11,7 @@ public interface CalendarMapper {
 
     public List<CalendarDTO> selectAllEvents();
     
-    public CalendarDTO deleteEvent(int cal_event_id);		// 일정 삭제
+    public int deleteEvent(int cal_event_id);		// 일정 삭제
+
+	public int updateEvent(CalendarDTO dto);	// 일정 수정
 }

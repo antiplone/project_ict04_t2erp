@@ -21,6 +21,8 @@ export default function BuySelect() {
 
     const fetchURL = AppConfig.fetch["mytest"];
 
+	const rowState = useState({});
+	const [rowData] = rowState;
     const [statusCounts, setStatusCounts] = useState({ total: 0, paying: 0, approved: 0 });
 
     const [loading, setLoading] = useState(true); // 페이지 로딩중
@@ -38,7 +40,7 @@ export default function BuySelect() {
                 //console.error("진행상태별 건수 조회 실패:", err);
                 setLoading(false);  // 실패해도 로딩 종료 처리
             });
-    }, []);
+    }, [rowData]);
 
     return (
         <>
@@ -55,13 +57,13 @@ export default function BuySelect() {
 
                 <Tabs.Tab eventKey="1" title={`전체 (${statusCounts.total})`}>
                     <Container>
-                        <BuySelectTabAll />
+                        <BuySelectTabAll rowState={rowState} />
                     </Container>
                 </Tabs.Tab>
 
                 <Tabs.Tab eventKey="2" title={`결재중 (${statusCounts.paying})`}>
                     <Container>
-                        <BuySelectTabPaing />
+                        <BuySelectTabPaing rowState={rowState} />
                     </Container>
                 </Tabs.Tab>
                 {/* 판매팀 구매요청 프로세스 보류로 인해 주석처리
@@ -73,7 +75,7 @@ export default function BuySelect() {
  */}
                 <Tabs.Tab eventKey="3" title={`승인 (${statusCounts.approved})`}>
                     <Container>
-                        <BuySelectTabCheck />
+                        <BuySelectTabCheck rowState={rowState} />
                     </Container>
                 </Tabs.Tab>
             </Tabs>

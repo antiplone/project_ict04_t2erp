@@ -48,7 +48,7 @@ const Component = ({ printRef, rowState }) => {
 							<tr key={idx}>
 								<td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{row.t_type}</td>
 								<td style={{ verticalAlign: 'middle' }}>
-									{row.item_name + ' : ' + row.item_standard}
+									{row.item_standard !== undefined ? row.item_name + ' : ' + row.item_standard : row.item_name}
 									{/*row.적요.map((line, i) => (
 									<div key={i}>{line}</div>
 								))*/}
@@ -60,7 +60,7 @@ const Component = ({ printRef, rowState }) => {
 							<tr>
 								<td>{rowData.t_type}</td>
 								<td>
-									{rowData.item_name + ' : ' + rowData.item_standard}
+									{rowData.item_standard !== undefined ? rowData.item_name + ' : ' + rowData.item_standard : rowData.item_name}
 									{/*row.적요.map((line, i) => (
 									<div key={i}>{line}</div>
 								))*/}
@@ -92,7 +92,7 @@ const Component = ({ printRef, rowState }) => {
 			accTotal = rowData.items.length > 1 ? accTotal : rowData.total;
 			setAccTotal(accTotal);
 
-			console.log("accTotal :", accTotal);
+//			console.log("accTotal :", accTotal);
 
 //			console.log(rowData);
 		}
@@ -101,7 +101,7 @@ const Component = ({ printRef, rowState }) => {
 	}, [rowData]);
 
 	return (
-		rowData.voucher_no !== undefined ? <VoucherForm accTotal={accTotal} /> : <VoucherLoader />
+		rowData.voucher_no !== undefined ? <VoucherForm /> : <VoucherLoader />
 	);
 }
 

@@ -115,7 +115,7 @@ const HeaderMenu = ({ empInfo }) => {
 						<Nav.Menu
 							title="기업회계"
 						>
-							<Nav.Item onSelect={() => { navigate("finance_main") }}>회계메인</Nav.Item>
+							{/*<Nav.Item onSelect={() => { navigate("finance_main") }}>회계메인</Nav.Item>*/}
 							<Nav.Item onSelect={() => { navigate("finance_sales_resume") }}>매출매입거래</Nav.Item>
 							<Nav.Item onSelect={() => { navigate("finance_invoice") }}>전자계산서</Nav.Item>
 							<Nav.Item onSelect={() => { navigate("finance_voucher") }}>전표관리</Nav.Item>

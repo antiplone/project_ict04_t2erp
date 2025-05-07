@@ -60,7 +60,7 @@ public class EmpAuthController {
 //									.header(null, null)
 					.body(auth);
 
-			System.out.println("entity: " + entity);
+//			System.out.println("entity: " + entity);
 		} else {
 			entity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}

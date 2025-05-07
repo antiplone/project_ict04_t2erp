@@ -28,7 +28,7 @@ public class BasicClientController {
     // 거래처 목록 http://localhost:8081/basic/client
 	@GetMapping("/client")
 	public ResponseEntity<?> findAll() {
-		System.out.println("<< ClientController - clientlist >>");
+		// System.out.println("<< ClientController - clientlist >>");
 		
 		return new ResponseEntity<>(service.clientList(), HttpStatus.OK);
 	}
@@ -36,7 +36,7 @@ public class BasicClientController {
 	// 거래처 등록 http://localhost:8081/basic/clientInsert
 	@PostMapping("/clientInsert")
 	public ResponseEntity<?> basicInsertClient(@RequestBody BasicClientDTO client) { 
-		System.out.println("<<< ClientController - basicInsertClient >>>");
+		// System.out.println("<<< ClientController - basicInsertClient >>>");
 		
 		return new ResponseEntity<>(service.basicInsertClient(client), HttpStatus.CREATED);
 	}
@@ -44,7 +44,7 @@ public class BasicClientController {
 	// 거래처 상세 http://localhost:8081/basic/clientDetail/{client_code}
 	@GetMapping("/basic_client_detail/{client_code}")
 	public ResponseEntity<?> basicClientDetail(@PathVariable int client_code){
-		System.out.println("<< ClientController - basicClientDetail >>");
+		// System.out.println("<< ClientController - basicClientDetail >>");
 	
 		return new ResponseEntity<>(service.basicClientDetail(client_code), HttpStatus.OK);
 	}
@@ -52,7 +52,7 @@ public class BasicClientController {
 	// 거래처 수정 @PutMapping -> http://localhost:8081/basic/clientUpdate/{client_code}
 	@PutMapping("/clientUpdate/{client_code}")
 	public ResponseEntity<?> basicClientUpdate(@PathVariable int client_code, @RequestBody BasicClientDTO client) {
-		System.out.println("<< ClientController - basicClientUpdate >>");
+		// System.out.println("<< ClientController - basicClientUpdate >>");
 		
 		return new ResponseEntity<>(service.basicClientUpdate(client_code, client), HttpStatus.OK);	// 200
 	}
@@ -60,7 +60,7 @@ public class BasicClientController {
 	// 거래처 삭제 http://localhost:8081/basic/clientDelete/{client_code}
 	@DeleteMapping("/clientDelete/{client_code}")
 	public ResponseEntity<?> basicClientDelete(@PathVariable int client_code) {
-		System.out.println("<< ClientController - basicClientDelete >>");
+		// System.out.println("<< ClientController - basicClientDelete >>");
 		
 		return new ResponseEntity<>(service.basicClientDelete(client_code), HttpStatus.OK);
 	}
@@ -68,7 +68,7 @@ public class BasicClientController {
 	// 거래처 중복 확인 http://localhost:8081/basic/bizNumCheck/{c_biz_num}
 	@GetMapping("/bizNumCheck/{c_biz_num}")
 	public ResponseEntity<?> basicBizNumCheck(@PathVariable String c_biz_num) {
-	    System.out.println("<< BasicClientController - basicBizNumCheck >>");
+	    // System.out.println("<< BasicClientController - basicBizNumCheck >>");
 
 	    return new ResponseEntity<>(service.basicBizNumCheck(c_biz_num), HttpStatus.OK);
 	}

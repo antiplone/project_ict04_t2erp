@@ -13,7 +13,7 @@ import { Image, Breadcrumb, Header, Nav, Navbar, Loader } from "rsuite";
 
 import ToImage from "#components/res/ToImage";
 
-const HeaderMenu = () => {
+const HeaderMenu = ({ empInfo }) => {
 
 	const location = useLocation();
 	let crumbs = location.pathname.split('/');
@@ -26,48 +26,21 @@ const HeaderMenu = () => {
 	const position = localStorage.getItem("e_position");  // 예: '관리자' 또는 '사원'
 	const adminPositions = ["과장", "부장", "차장", "팀장", "이사", "관리"];
 
-	const [myInfo, setMyInfo] = useState("");
+	const [myInfo, setMyInfo] = empInfo;
+
+	const handleLogout = () => {
+
+//		console.log("세션만료.");
+		localStorage.clear();
+		setMyInfo("로그아웃됨");
+	};
 
 	useEffect(() => {
 
-		if (myInfo === "") {
+		if (history.length > 0)
+			setMyInfo(localStorage.getItem('e_name') + ' ' + localStorage.getItem('e_position') + '님');
 
-			const fetchURL = AppConfig.fetch['mytest'];
-			fetch(`${fetchURL.protocol}${fetchURL.url}/hrCard/hrCardDetail/${localStorage.getItem('e_id')}`, {
-				method: "GET",
-				mode: "cors",
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				}
-			})
-				.then((res) => {
-
-					if (res.ok) {
-
-						let entity = res.json();
-						entity.then(
-							res => {
-
-								localStorage.setItem('e_name', res.e_name);
-								localStorage.setItem('e_position', res.e_position);
-								setMyInfo(localStorage.getItem('e_name') + ' ' + localStorage.getItem('e_position') + '님');
-								console.log("Promise 완료:", res);
-							}
-						);
-					}
-				})
-				.finally(() => { // 통신실패시 예외처리
-
-				});
-		}
 	}, [myInfo]);
-
-	const handleLogout = () => {
-		localStorage.clear();
-		console.log("세션만료.");
-		navigate("/", { replace: true });
-	};
 
 	if (crumbs.length > 0)
 		prevPage = crumbs.shift();
@@ -88,16 +61,16 @@ const HeaderMenu = () => {
 						<Nav.Item onSelect={() => { navigate("hr-retirement") }}>퇴직관리</Nav.Item>
 					</Nav.Menu>
 					{adminPositions.includes(position?.trim()) ? (
-					// === : 값과 타입 모두 비교. position이 문자열일 때 .trim()을 적용
-					<Nav.Menu title="근태관리">
-						<Nav.Item onSelect={() => navigate("att-regVacaItems")}>휴가항목등록</Nav.Item>
-						<Nav.Item onSelect={() => navigate("att-regAttItems")}>근태항목등록</Nav.Item>
-						<Nav.Item onSelect={() => navigate("att-schedule")}>일정관리</Nav.Item>
-					</Nav.Menu>
-					):(
-					<Nav.Menu title="근태관리">
-						<Nav.Item onSelect={() => navigate("att-schedule")}>일정관리</Nav.Item>
-					</Nav.Menu>
+						// === : 값과 타입 모두 비교. position이 문자열일 때 .trim()을 적용
+						<Nav.Menu title="근태관리">
+							<Nav.Item onSelect={() => navigate("att-regVacaItems")}>휴가항목등록</Nav.Item>
+							<Nav.Item onSelect={() => navigate("att-regAttItems")}>근태항목등록</Nav.Item>
+							<Nav.Item onSelect={() => navigate("att-schedule")}>일정관리</Nav.Item>
+						</Nav.Menu>
+					) : (
+						<Nav.Menu title="근태관리">
+							<Nav.Item onSelect={() => navigate("att-schedule")}>일정관리</Nav.Item>
+						</Nav.Menu>
 					)}
 					<Nav.Menu title="구매관리">
 						<Nav.Item onSelect={() => { navigate("buy-select") }}>구매조회</Nav.Item>

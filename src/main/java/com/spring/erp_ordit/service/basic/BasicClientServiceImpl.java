@@ -18,7 +18,7 @@ public class BasicClientServiceImpl {
 	// 거래처 목록
 	@Transactional
 	public List<BasicClientDTO> clientList() {
-		System.out.println("<< BasicClientServiceImpl -  clientList >>");
+		// System.out.println("<< BasicClientServiceImpl -  clientList >>");
 		
 		return basicMapper.clientList();
 	}
@@ -26,7 +26,7 @@ public class BasicClientServiceImpl {
 	// 게시글 등록
 	@Transactional
 	public int basicInsertClient(BasicClientDTO dto) {
-		System.out.println("<< BasicClientServiceImpl -  basicInsertClient >>");
+		// System.out.println("<< BasicClientServiceImpl -  basicInsertClient >>");
 		
 		return basicMapper.basicInsertClient(dto);
 	}
@@ -34,7 +34,7 @@ public class BasicClientServiceImpl {
 	// 거래처 상세
 	@Transactional
 	public BasicClientDTO basicClientDetail(int client_code) {
-		System.out.println("<< BasicClientServiceImpl -  basicClientDetail >>");
+		// System.out.println("<< BasicClientServiceImpl -  basicClientDetail >>");
 		
 		return basicMapper.basicClientDetail(client_code);
 	}
@@ -42,7 +42,7 @@ public class BasicClientServiceImpl {
 	// 거래처 수정
 	@Transactional
 	public int basicClientUpdate(int client_code, BasicClientDTO dto) {
-		System.out.println("<< BasicClientServiceImpl -  basicClientDetail >>");
+		// System.out.println("<< BasicClientServiceImpl -  basicClientDetail >>");
 		
 		return basicMapper.basicClientUpdate(dto);
 	}
@@ -50,7 +50,7 @@ public class BasicClientServiceImpl {
 	// 거래처 삭제
 	@Transactional
 	public String basicClientDelete(int client_code) {
-		System.out.println("<< BasicClientServiceImpl -  basicClientDelete >>");
+		// System.out.println("<< BasicClientServiceImpl -  basicClientDelete >>");
 		
 		basicMapper.basicClientDelete(client_code);
 		return "ok";		
@@ -59,7 +59,7 @@ public class BasicClientServiceImpl {
 	// 거래처 중복 확인
 	@Transactional
 	public int basicBizNumCheck(String c_biz_num) {
-		System.out.println("<< BasicClientServiceImpl -  basicClientDetail >>");
+		// System.out.println("<< BasicClientServiceImpl -  basicClientDetail >>");
 		
 		return basicMapper.basicBizNumCheck(c_biz_num);
 	}

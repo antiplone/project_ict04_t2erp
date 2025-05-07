@@ -1,92 +1,85 @@
 package com.spring.erp_ordit.service.api;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.net.URL;
 import java.util.List;
-import java.util.Map;
-import java.net.URL;		// 수기로 작성
 
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.erp_ordit.dao.api.CalendarMapper;
 import com.spring.erp_ordit.dto.api.CalendarDTO;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CalendarService {
 
-    // year -> List<CalendarDTO>
-    private final Map<String, List<CalendarDTO>> holidayCache = new HashMap<>();
-    
-	// 외부 공공데이터 API를 호출하고 JSON → DTO로 변환하는 로직 담당.
-    public List<CalendarDTO> getAllEvents(String year, String month) {
-//        List<CalendarDTO> events = new ArrayList<>();
-//        
-//        try {
-//            String apiKey = "en8u4mrxbi9oHDPiHl90ti%2BeTiJuyMitAcZ%2FTLGDOygBSC9nS7%2Bg4piESuCaXe%2FCN%2Fd7Y0U2hA7gztwCfOrPLA%3D%3D";	// 인코딩 Key
-//            String urlStr = String.format(
-//                "https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo?solYear=%s&solMonth=%s&_type=json&ServiceKey=%s",
-//                year, String.format("%02d", Integer.parseInt(month)), apiKey);
-//
-//            ObjectMapper mapper = new ObjectMapper();
-//            JsonNode root = mapper.readTree(new URL(urlStr));
-//            JsonNode items = root.path("response").path("body").path("items").path("item");
-//
-//            if (items.isArray()) {
-//                for (JsonNode item : items) {
-//                    String dateName = item.path("dateName").asText();
-//                    String locdate = item.path("locdate").asText();
-//                    String formattedDate = locdate.replaceAll("(\\d{4})(\\d{2})(\\d{2})", "$1-$2-$3");
-//                    events.add(new CalendarDTO(dateName, formattedDate, true));
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    return events;
-        String key = year;
+    private final CalendarMapper dao;
 
-        // ✅ 캐시가 있다면 반환
-        if (holidayCache.containsKey(key)) {
-            return holidayCache.get(key).stream()
-                .filter(dto -> dto.getStart().startsWith(year + "-" + String.format("%02d", Integer.parseInt(month))))
-                .toList();
-        }
+    private static final String API_KEY = "AIzaSyBmlkUkawpzTaA1PqQutLzv_nQ5ZioqIXk";
+    private static final String CALENDAR_ID = "ko.south_korea#holiday@group.v.calendar.google.com";	// 한국 공휴일 캘린더 ID
 
-        // ✅ 없다면 1년치 한 번에 API로 호출
-        List<CalendarDTO> fullYearEvents = new ArrayList<>();
+    // 2025년 공휴일을 Google API에서 가져와 DB 저장
+    public int insertAllHolidaysFromGoogle() {
+        int insertedCount = 0;
+        try {
+            String urlStr = String.format(
+                "https://www.googleapis.com/calendar/v3/calendars/%s/events?key=%s&timeMin=2025-01-01T00:00:00Z&timeMax=2025-12-31T23:59:59Z&singleEvents=true&orderBy=startTime",
+                java.net.URLEncoder.encode(CALENDAR_ID, "UTF-8"), API_KEY
+            );
 
-        for (int m = 1; m <= 12; m++) {
-            try {
-                String apiKey = "en8u4mrxbi9oHDPiHl90ti%2BeTiJuyMitAcZ%2FTLGDOygBSC9nS7%2Bg4piESuCaXe%2FCN%2Fd7Y0U2hA7gztwCfOrPLA%3D%3D";
-                String urlStr = String.format(
-                    "https://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getHoliDeInfo?solYear=%s&solMonth=%02d&_type=json&ServiceKey=%s",
-                    year, m, apiKey
-                );
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(new URL(urlStr));
+            JsonNode items = root.path("items");
 
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode root = mapper.readTree(new URL(urlStr));
-                JsonNode items = root.path("response").path("body").path("items").path("item");
+            if (items.isArray()) {
+                for (JsonNode item : items) {
+                    String title = item.path("summary").asText();
+                    String start = item.path("start").path("date").asText();
+                    String end = item.path("end").path("date").asText();
 
-                if (items.isArray()) {
-                    for (JsonNode item : items) {
-                        String dateName = item.path("dateName").asText();
-                        String locdate = item.path("locdate").asText();
-                        String formattedDate = locdate.replaceAll("(\\d{4})(\\d{2})(\\d{2})", "$1-$2-$3");
-                        fullYearEvents.add(new CalendarDTO(dateName, formattedDate, true));
+                    // end 날짜는 하루 빼서 저장
+                    if (end != null && !end.equals(start)) {
+                        java.time.LocalDate endDate = java.time.LocalDate.parse(end);
+                        endDate = endDate.minusDays(1);
+                        end = endDate.toString();
                     }
+
+                    CalendarDTO dto = CalendarDTO.builder()
+                        .calTitle(title)
+                        .calStartDate(start)
+                        .calEndDate(end)
+                        .calAllDay("Y")
+                        .calDescription(null)
+                        .calLocation(null)
+                        .calEventType("휴일")
+                        .eId(1) // 관리자 ID 1
+                        .build();
+
+                    insertedCount += dao.insertEvent(dto);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return insertedCount;
+    }
 
-        // ✅ 캐시 저장
-        holidayCache.put(year, fullYearEvents);
+    // 일정 저장
+    public int insertEvent(CalendarDTO dto) {
+        return dao.insertEvent(dto);
+    }
+    
+	// 일정 조회
+    public List<CalendarDTO> getAllEvents() {
+        return dao.selectAllEvents();
+    }
 
-        // 요청한 월만 필터링
-        return fullYearEvents.stream()
-            .filter(dto -> dto.getStart().startsWith(year + "-" + String.format("%02d", Integer.parseInt(month))))
-            .toList();
+    // 일정 삭제
+    public CalendarDTO deleteEvent(int cal_event_id) {
+        return dao.deleteEvent(cal_event_id);
     }
 }

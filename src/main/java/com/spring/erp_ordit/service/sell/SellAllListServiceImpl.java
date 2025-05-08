@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.erp_ordit.dao.buy.BuyItemMapper;
 import com.spring.erp_ordit.dao.sell.SellAllListMapper;
+import com.spring.erp_ordit.dao.sell.SellItemMapper;
 import com.spring.erp_ordit.dto.sell.SellAllListDTO;
 import com.spring.erp_ordit.dto.sell.SellInvocieDTO;
 import com.spring.erp_ordit.dto.sell.SellOrderDTO;
@@ -18,11 +20,13 @@ public class SellAllListServiceImpl implements SellAllListService {
 	@Autowired
 	private SellAllListMapper Mapper;
 	
+	@Autowired
+	private SellItemMapper sellItemMapper;
+	
 	// 판매 입력 - 등록
 	@Override
 	@Transactional
 	public int sellInsert(SellOrderDTO dto) {
-//	System.out.println("서비스 - sellInsert");
 	
 	// 1. order_tbl에 insert
 	int orderResult = Mapper.sell_orderInsert(dto);
@@ -34,19 +38,32 @@ public class SellAllListServiceImpl implements SellAllListService {
 	else {
 		// 2. order_tbl에 입력된 order_id 값 가져오기
 		int order_id = dto.getOrder_id();
-		
+//		System.out.println("서비스 - order_id : " + order_id);
 		int itemResult = 0;
 		// 3. order_item_tbl에 insert
 		for (SellOrderItemDTO item : dto.getOrderItemList()) {
 			item.setOrder_id(order_id);
 			
-			itemResult += Mapper.sell_itemInsert(item);  // insert 성공 시마다 +1
-			
-			if (itemResult == 0) {
-				return 0;
-			}
-			else {
-				Mapper.sell_approvalInsert(order_id);
+			// item_code로 item_id 조회하여 자동 설정 => 못찾으면 예외 발생하고 @Transactional에 의해 롤백됨. => @Transactional으로 롤백 안하면 데이터가 부분만 저장되는 비정상 상태가 됨.
+			if (item.getItem_id() == null && 
+				item.getItem_code() != null && 
+				!item.getItem_code().toString().trim().isEmpty()) {
+				
+				Long item_id = sellItemMapper.findItemIdByCode(item.getItem_code().toString());
+				if (item_id == null) {
+					throw new RuntimeException("해당 item_code의 item_id를 찾을 수 없습니다: " + item.getItem_code());
+				}
+				item.setItem_id(item_id);
+//				System.out.println("서비스 - item_id : " + item_id);
+				
+				itemResult += Mapper.sell_itemInsert(item);  // insert 성공 시마다 +1
+				
+				if (itemResult == 0) {
+					return 0;
+				}
+				else {
+					Mapper.sell_approvalInsert(order_id);
+				}
 			}
 		}
 //		System.out.println("서비스 - itemResult: " + itemResult);
@@ -118,7 +135,21 @@ public class SellAllListServiceImpl implements SellAllListService {
 	        
 	        // 새로운 아이템 추가 시
 	        if (item.getOrder_item_id() == null || item.getOrder_item_id().equals(0)) {
-	            itemOpResult = Mapper.sell_itemInsert(item);
+	            
+	        	// item_code로 item_id 조회하여 자동 설정 => 못찾으면 예외 발생하고 @Transactional에 의해 롤백됨. => @Transactional으로 롤백 안하면 데이터가 부분만 저장되는 비정상 상태가 됨.
+				if (item.getItem_id() == null && 
+					item.getItem_code() != null && 
+					!item.getItem_code().toString().trim().isEmpty()) {
+					
+					Long item_id = sellItemMapper.findItemIdByCode(item.getItem_code().toString());
+					if (item_id == null) {
+						throw new RuntimeException("해당 item_code의 item_id를 찾을 수 없습니다: " + item.getItem_code());
+					}
+					item.setItem_id(item_id);
+					System.out.println("서비스 - item_id : " + item_id);
+				}
+	        	
+	        	itemOpResult = Mapper.sell_itemInsert(item);
 	        } else {	// 기존 아이템 수정 시
 	            itemOpResult = Mapper.updateAllList_item(item);
 	        }

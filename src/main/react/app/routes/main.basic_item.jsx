@@ -241,11 +241,11 @@ export default function Item() {
         <Grid fluid>
           <Col xs={24}>
             <label>상품명 *</label>
-            <Input value={itemName} onChange={setItemName} />
+            <Input value={itemName} onChange={setItemName} style={{ marginBottom: 20 }} />
           </Col>
           <Col xs={24}>
             <label>물품 규격 *</label>
-            <Input value={itemStandard} onChange={setItemStandard} />
+            <Input value={itemStandard} onChange={setItemStandard} style={{ marginBottom: 20 }}/>
           </Col>
           <Col xs={24}>
             <label>사용 구분 *</label>

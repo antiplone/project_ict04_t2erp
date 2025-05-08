@@ -27,6 +27,7 @@ export default function TodaySchedule({ userEvents, todaySche, onAdd }) {
   const storedID = Number(localStorage.getItem("e_id"));
   const storedName = localStorage.getItem("e_name");
   const storedPosition = localStorage.getItem("e_position");
+	const adminPositions = ["과장", "부장", "차장", "팀장", "이사", "관리"];
 
   const formRef = useRef();  // 폼 레퍼런스 선언
 
@@ -95,7 +96,7 @@ export default function TodaySchedule({ userEvents, todaySche, onAdd }) {
         setIsModalOpen(false);
       } else showToast("일정 등록 실패", "error");
     } catch (error) {
-      console.error("⛔ 일정 등록 오류:", error);
+      console.error("일정 등록 오류:", error);
     }
   };
 
@@ -207,8 +208,12 @@ export default function TodaySchedule({ userEvents, todaySche, onAdd }) {
     <>
       <Card style={{ width: "100%", minHeight: "300px", padding: 20 }}>
         <div className="today_schedule_title">
-          <h6>오늘 일정 ({todaySche || "날짜 선택"})</h6>
+          <h6>오늘의 일정 ({todaySche || "날짜 선택"})</h6>
+          
+          {/* 관리자급 직위 이상만 추가가 가능함 */}
+          {adminPositions.includes(storedPosition?.trim()) ? (
           <Btn text="일정 추가" onClick={() => setIsModalOpen(true)} />
+          ) : null}
         </div>
 
         {dayFilter.length === 0 ? (
@@ -223,6 +228,9 @@ export default function TodaySchedule({ userEvents, todaySche, onAdd }) {
                   <li key={idx} style={{ marginBottom: 10 }}>
                     <span style={{ display: "flex", justifyContent: "space-between" }}>
                       <strong style={{ color: titleColor }}>• {event.title}</strong>
+                      
+                      {/* 관리자급 직위 이상만 수정/삭제 가능함 */}
+							        {adminPositions.includes(storedPosition?.trim()) ? (
                       <span>
                         <Btn text="수정" style={{ marginRight: 5 }} onClick={() => {
                           setEditData({
@@ -241,6 +249,7 @@ export default function TodaySchedule({ userEvents, todaySche, onAdd }) {
                           />
                         <Btn text="삭제" color="red" onClick={() => deleteSchedule(event.id)}/>
                       </span>
+                    ) : null}
                     </span>
                     <span style={{ fontSize: 13 }}>
                       {event.allDay ? "종일" : `${formatTime(event.start)} ~ ${formatTime(event.end)}`}
@@ -295,8 +304,7 @@ export default function TodaySchedule({ userEvents, todaySche, onAdd }) {
             <Form.Group><Form.Control name="cal_location" placeholder="장소 입력" /></Form.Group>
             <Form.Group><Form.Control name="cal_event_type" placeholder="유형 (ex. 휴가)" /></Form.Group>
             <Form.Group><Form.Control name="cal_description" placeholder="설명 입력" /></Form.Group>
-
-            <Btn text="등록" appearance="primary" size="sm" style={{ backgroundColor: "rgb(34, 40, 76)" }} onClick={scheduleSave} />
+            <Btn text="등록" appearance="primary" size="sm" style={{ backgroundColor: "rgb(34, 40, 76)" }} onClick={scheduleSave}/>
           </Form>
         </Modal.Body>
       </Modal>

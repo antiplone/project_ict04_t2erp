@@ -109,7 +109,7 @@ const BasicClientDetail = () => {
     <div>
       <Message type="info" className="main_title">거래처 상세정보</Message>
 
-      <FlexboxGrid style={{ marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
+      <FlexboxGrid style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
         <FlexboxGrid.Item colspan={20} style={{ maxWidth: 700, width: "100%" }}>
           <Panel header={<h4>📄 거래처 상세 조회</h4>} bordered style={{ background: "#fff" }}>
             <Form fluid>
@@ -170,7 +170,7 @@ const BasicClientDetail = () => {
                     </Form.Group>
 
                     <Form.Group>
-                      <Form.ControlLabel>상태 *</Form.ControlLabel>
+                      <Form.ControlLabel>사용 상태 *</Form.ControlLabel>
                       <HrRadio
                         value={client.c_status === 'Y' ? '사용중' : '사용안함'}   // Y/N → 라벨로 변환
                         onChange={(val) =>

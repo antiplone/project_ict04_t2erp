@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { HrTable } from '#components/hr/HrTable';  // 테이블 컴포넌트
 import HrButton from '#components/hr/HrButton'; // 버튼 컴포넌트
 import HrModal from '#components/hr/HrModal'; // 모달 컴포넌트
-import { Input, Grid, Col, RadioGroup, Radio, Message, Loader, Placeholder } from 'rsuite'; // UI 컴포넌트
+import { Input, Grid, Col, RadioGroup, Radio, Message, Loader, Placeholder, Tabs } from 'rsuite'; // UI 컴포넌트
 import MessageBox from '#components/common/MessageBox.jsx';
 import { useToast } from '#components/common/ToastProvider';
 
@@ -21,6 +21,14 @@ export default function Item() {
   const [regDate, setRegDate] = useState(''); // 등록일 저장
   const { showToast } = useToast();
   const [loading, setLoading] = useState(false);  // 로딩중
+  const [activeTab, setActiveTab] = useState('1');  // 1: 전체, 2: 사용중(Y), 3: 사용안함(N)
+  const filteredItems = items.filter(item => {
+    if (activeTab === '1') return true;
+    if (activeTab === '2') return item.item_status === 'Y';
+    if (activeTab === '3') return item.item_status === 'N';
+    return false;
+  });
+
 
   // 모달 열기
   const handleOpen = () => {
@@ -191,6 +199,12 @@ export default function Item() {
     <div style={{ width: '100%' }}>
       <MessageBox text="기초등록 - 상품 등록" />
 
+      <Tabs activeKey={activeTab} onSelect={setActiveTab} style={{ marginBottom: '20px' }}>
+        <Tabs.Tab eventKey="1" title={`전체 (${items.length})`} />
+        <Tabs.Tab eventKey="2" title={`사용중 (${items.filter(i => i.item_status === 'Y').length})`} />
+        <Tabs.Tab eventKey="3" title={`미사용 (${items.filter(i => i.item_status === 'N').length})`} />
+      </Tabs>
+
       <div>
         {/* 테이블 렌더링 */}
         {loading ? (
@@ -199,7 +213,7 @@ export default function Item() {
             <Loader center content="불러오는 중..." />
           </>
         ) : (
-        <HrTable columns={columns} items={items} onEditClick={handleEditClick} onDeleteClick={handleDeleteClick}/> 
+        <HrTable columns={columns} items={filteredItems} onEditClick={handleEditClick} onDeleteClick={handleDeleteClick}/> 
         )}
 
         {/* 상품 등록 버튼 */}

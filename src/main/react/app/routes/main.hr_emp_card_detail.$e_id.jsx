@@ -30,10 +30,13 @@ const HrEmpCardDetail = () => {
   const { e_id } = useParams();
   const navigate = useNavigate();
   const toaster = useToaster();
-  const [emp, setEmp] = useState({});
   const [deptList, setDeptList] = useState([]);
   const [uploading, setUploading] = useState(false);
   const { showToast } = useToast();
+  const [emp, setEmp] = useState({
+    e_email_front: '',
+    e_email_back: ''
+  });
 
   const open = useDaumPostcodePopup("https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");  // ⭐ 추가
 
@@ -59,7 +62,12 @@ const HrEmpCardDetail = () => {
     fetch(`${hrURL}/hrCardDetail/${e_id}`)
       .then(res => res.json())
       .then(data => {
-        setEmp(data);
+        const [emailFront = '', emailBack = ''] = data.e_email?.split('@') || [];
+        setEmp({
+          ...data,
+          e_email_front: emailFront,
+          e_email_back: emailBack
+        });
       })
       .catch(err => console.error("사원 조회 실패:", err));
   }, [e_id]);
@@ -84,10 +92,17 @@ const HrEmpCardDetail = () => {
 
   // 수정
   const handleUpdate = () => {
+    const finalEmp = {
+      ...emp,
+      e_email: emp.e_email_front && emp.e_email_back
+        ? `${emp.e_email_front}@${emp.e_email_back}`
+        : ''
+    };
+  
     fetch(`${hrURL}/hrCardUpdate/${e_id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(emp)
+      body: JSON.stringify(finalEmp)
     })
       .then(res => res.json())
       .then(() => {
@@ -124,7 +139,7 @@ const HrEmpCardDetail = () => {
     <div>
       <Message type="info" className="main_title">사원 상세정보</Message>
 
-      <FlexboxGrid style={{ marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
+      <FlexboxGrid style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
         <FlexboxGrid.Item colspan={20} style={{ maxWidth: 800, width: '100%' }}>
           <Panel header={<h4>👤 사원 상세 조회</h4>} bordered style={{ background: '#fff' }}>
             <Form fluid>
@@ -198,12 +213,30 @@ const HrEmpCardDetail = () => {
                     </Form.Group>
                     <Form.Group>
                       <Form.ControlLabel>이메일</Form.ControlLabel>
-                      <Form.Control name="e_email" value={emp.e_email || ''} onChange={(val) => handleChange('e_email', val)} />
+                      <Grid fluid>
+                        <Row gutter={16} align="middle">
+                          <Col xs={11}>
+                            <Form.Control
+                              name="e_email_front"
+                              value={emp.e_email_front || ''}
+                              onChange={(val) => handleChange('e_email_front', val)}
+                            />
+                          </Col>
+                          <Col xs={2} style={{ textAlign: "center", lineHeight: "38px" }}>@</Col>
+                          <Col xs={11}>
+                            <Form.Control
+                              name="e_email_back"
+                              value={emp.e_email_back || ''}
+                              onChange={(val) => handleChange('e_email_back', val)}
+                            />
+                          </Col>
+                        </Row>
+                      </Grid>
                     </Form.Group>
                     <Form.Group>
-                      <Form.ControlLabel>직위</Form.ControlLabel>
+                      <Form.ControlLabel>직급</Form.ControlLabel>
                       <HrDropdown
-                        title={emp.e_position || '직위 선택'}
+                        title={emp.e_position || '직급 선택'}
                         items={['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무']}
                         onSelect={(val) => handleChange('e_position', val)}
                       />

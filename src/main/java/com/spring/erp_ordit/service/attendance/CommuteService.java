@@ -121,7 +121,6 @@ public class CommuteService {
             dto.setCo_status("정상");
         }
 
-
         int result = dao.updateEndTime(dto);
         System.out.println("업데이트된 행 수: " + result);
         System.out.println("▶ update 조건 확인: " + dto.getE_id() + " / " + dto.getCo_work_date());
@@ -135,38 +134,4 @@ public class CommuteService {
 //	    System.out.println("▶ CommuteService - 퇴근 시간 저장 처리");
 	    return dao.updateCommute(dto);
 	}
-	
-//	// ✅ 퇴근 안 한 사람 6시에 자동 퇴근처리
-//    @Scheduled(cron = "0 0 6 * * ?") // 매일 6시
-//    public void autoCloseIncompleteCommutes() {
-//        System.out.println("▶ CommuteService - 퇴근 자동 처리 스케줄러 실행");
-//
-//        List<CommuteDTO> incompleteList = dao.noCompleteCommute();
-//
-//        for (CommuteDTO commute : incompleteList) {
-//            LocalTime forcedEnd = LocalTime.of(6, 0); // 06:00:00
-//            LocalTime start = commute.getCo_start_time().toLocalTime();
-//
-//            long workedSeconds = Duration.between(start, forcedEnd).getSeconds();
-//            if (workedSeconds <= 0) {
-//                // 출근이 6시 이후였던 경우 (예외처리)
-//                workedSeconds = 0;
-//            }
-//
-//            Time totalTime = Time.valueOf(LocalTime.ofSecondOfDay(workedSeconds));
-//
-//            commute.setCo_end_time(Time.valueOf(forcedEnd));
-//            commute.setCo_total_work_time(totalTime);
-//
-//            if (workedSeconds == 0) {
-//                commute.setCo_status("결근");
-//            } else {
-//                commute.setCo_status("비정상 퇴근");
-//            }
-//
-//            commute.setCo_status_note("자동 퇴근 처리");
-//
-//            dao.autoUpdateCommute(commute);
-//        }
-//    }
 }

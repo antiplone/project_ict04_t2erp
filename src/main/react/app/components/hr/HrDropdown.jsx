@@ -2,13 +2,15 @@ import React from 'react';
 import { Dropdown } from 'rsuite';
 import PropTypes from 'prop-types';
 
-export default function HrDropdown({ title, items, onSelect, style, menuStyle, toggleStyle = {} }) {
+export default function HrDropdown({ title, items, onSelect, style, menuStyle, disabled = false }) {
   return (
     <Dropdown 
       title={title} 
       onSelect={onSelect} 
       style={style} 
-      menuStyle={menuStyle}>
+      menuStyle={menuStyle}
+      disabled={disabled}
+      >
       {items.map((item, idx) => (
         <Dropdown.Item key={idx} eventKey={item.value || item}>
           {item.label || item}
@@ -24,5 +26,5 @@ HrDropdown.propTypes = {                // value props를 사용하고 있는데
   onSelect: PropTypes.func.isRequired,
   style: PropTypes.object,
   menuStyle: PropTypes.object,
-  toggleStyle: PropTypes.object,
+  disabled: PropTypes.bool
 };

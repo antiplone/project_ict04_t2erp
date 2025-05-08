@@ -1,5 +1,17 @@
-{"properties": [{
-  "name": "logging.level.com.atoz_develop.mybatissample.repository",
-  "type": "java.lang.String",
-  "description": "A description for 'logging.level.com.atoz_develop.mybatissample.repository'"
-}]}
+{"properties": [
+  {
+    "name": "logging.level.com.atoz_develop.mybatissample.repository",
+    "type": "java.lang.String",
+    "description": "A description for 'logging.level.com.atoz_develop.mybatissample.repository'"
+  },
+  {
+    "name": "jwt.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'jwt.secret'"
+  },
+  {
+    "name": "jwt.expiration",
+    "type": "java.lang.long",
+    "description": "A description for 'jwt.expiration'"
+  }
+]}

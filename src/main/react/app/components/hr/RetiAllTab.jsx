@@ -111,7 +111,6 @@ export default function RetiAllTab({ retiData, retiColumns }) {
             <Btn
               text="검토"
               color="green"
-              style={{ width: "60px" }}
               onClick={() =>
                 navigate(`/main/hr-retirement-detail/${rowData.e_id}`)
               }

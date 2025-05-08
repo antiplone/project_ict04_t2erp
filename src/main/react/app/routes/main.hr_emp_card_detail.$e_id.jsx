@@ -239,6 +239,7 @@ const HrEmpCardDetail = () => {
                         title={emp.e_position || '직급 선택'}
                         items={['사원', '대리', '과장', '차장', '부장', '이사', '상무', '전무']}
                         onSelect={(val) => handleChange('e_position', val)}
+                        disabled={true}
                       />
                     </Form.Group>
                     <Form.Group>
@@ -247,6 +248,7 @@ const HrEmpCardDetail = () => {
                         title={deptList.find(d => d.value === emp.d_code)?.label || '부서 선택'}
                         items={deptList}
                         onSelect={(val) => handleChange('d_code', val)}
+                        disabled={true}
                       />
                     </Form.Group>
                     

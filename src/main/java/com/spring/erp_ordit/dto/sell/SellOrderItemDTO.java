@@ -17,9 +17,10 @@ public class SellOrderItemDTO {	// 판매입력 _ 아이템 정보 DTO
 	
 	private int order_id; 				// 고유 주문번호
 	private Integer order_item_id; 		// 아이템 테이블의 고유 주문번호 *Integer로 하면 '0'말고도 null값 여부 확인 가능
+	private Long item_id; 			// 아이템 아이디
 	private int order_type; 			// 판매팀 구매 입력 1, 구매팀 구매 입력 2
 	private String item_standard; 		// 규격
-	private int item_code; 				// 물품 코드
+	private Integer item_code; 				// 물품 코드
 	private int quantity; 				// 수량
     private BigDecimal price; 			// 단가
     private BigDecimal supply; 			//공급가액

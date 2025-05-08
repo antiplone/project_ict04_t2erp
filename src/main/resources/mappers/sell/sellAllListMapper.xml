@@ -31,7 +31,7 @@
 	<!-- 판매 조회, 판매 현황 - 전체 리스트 -->
     <select id="sellAllList" resultType="com.spring.erp_ordit.dto.sell.SellAllListDTO">
       SELECT * FROM sell_allList_view
-      ORDER BY order_date DESC
+      ORDER BY order_date DESC, order_id ASC
     </select>
     
     <!-- 판매 현황 - 검색 후 나오는 전체 리스트 -->

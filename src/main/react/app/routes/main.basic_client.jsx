@@ -32,7 +32,8 @@ export default function Basic_client() {
     client_name: '',
     c_ceo: '',
     c_biz_num: '',
-    c_email: '',
+    c_email_front: '',
+    c_email_back: '',
     c_tel: '',
     c_zone_code: '',
     c_base_address: '',
@@ -48,8 +49,13 @@ export default function Basic_client() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const initialTab = params.get('tab') || '1';
-
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const [activeTab, setActiveTab] = useState("1"); // 1: 전체, 2: 사용중, 3: 사용안함
+  const filteredClients = clients.filter(client => {
+    if (activeTab === "1") return true; // 전체
+    if (activeTab === "2") return client.c_status === "Y"; // 사용중
+    if (activeTab === "3") return client.c_status === "N"; // 사용안함
+    return false;
+  });
 
   // 다음 우편번호 api
   const open = useDaumPostcodePopup("https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js");     // open() 함수 만들어줌
@@ -115,7 +121,7 @@ export default function Basic_client() {
   
     if (emptyFields.length > 0) {
       const fieldNames = emptyFields.map(f => f.label).join(", ");
-      alert(`다음 항목을 입력해주세요: ${fieldNames}`);
+      showToast(`다음 항목을 입력해주세요: ${fieldNames}`);
       return;
     }
 
@@ -335,7 +341,14 @@ export default function Basic_client() {
       <MessageBox type="info" text="기초 등록 - 거래처 관리" />
 
       <Tabs activeKey={activeTab} onSelect={setActiveTab} style={{ marginBottom: '30px' }}>   {/* setActiveTab 등록 성공시 거래처 목록으로 탭 전환 */}
-        <Tabs.Tab eventKey="1" title="거래처 목록">
+        <Tabs.Tab eventKey="1" title={`전체 (${clients.length})`} />
+        <Tabs.Tab eventKey="2" title={`사용중 (${clients.filter(c => c.c_status === "Y").length})`} />
+        <Tabs.Tab eventKey="3" title={`미사용 (${clients.filter(c => c.c_status === "N").length})`} />
+        <Tabs.Tab eventKey="4" title="거래처 등록" />
+        <Tabs.Tab eventKey="5" title={`거래처 요청 (${visibleRequests.length})`} />
+      </Tabs>
+
+      {["1", "2", "3"].includes(activeTab) && (
         <div style={{ minHeight: 400, position: 'relative' }}>
           {loading ? (
             <>
@@ -345,21 +358,19 @@ export default function Basic_client() {
           ) : (
             <HrTable
               columns={columns}
-              items={clients}
+              items={filteredClients}   // 꼭 filteredClients 써야 함
               renderActionButtons={(rowData) => (
                 <Link to={`/main/basic_client_detail/${rowData.client_code}`}>
-                  <Button appearance='ghost' size='xs' color='green'>
-                    조회
-                  </Button>
+                  <Button appearance='ghost' size='xs' color='green'>조회</Button>
                 </Link>
               )}
             />
           )}
-        </div>  
-        </Tabs.Tab>
+        </div>
+      )}
 
-        <Tabs.Tab eventKey="2" title="거래처 등록">
-          <FlexboxGrid style={{ marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
+        {activeTab === '4' && (
+          <FlexboxGrid style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginLeft: 10, marginBottom: 50 }}>
             <FlexboxGrid.Item colspan={20} style={{ maxWidth: 700, width: "100%" }}>
               <Panel header={<h4>📄 거래처 등록</h4>} bordered style={{ background: "#fff" }}>
                 <Form fluid>
@@ -503,12 +514,11 @@ export default function Basic_client() {
               </Panel>
             </FlexboxGrid.Item>
           </FlexboxGrid>
-        </Tabs.Tab>
+        )}
 
 
-        <Tabs.Tab eventKey="3" title="거래처 요청">
-          <div
-          >
+        {activeTab === '5' && (
+          <div>
             <HrTable
               columns={requestColumns}
               items={mergedData}
@@ -529,10 +539,8 @@ export default function Basic_client() {
                 </div>
               )}
             />
-
           </div>
-        </Tabs.Tab>
-      </Tabs>
+        )}
     </div>
   );
 }

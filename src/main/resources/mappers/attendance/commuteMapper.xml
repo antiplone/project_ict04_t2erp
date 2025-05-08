@@ -63,6 +63,7 @@
 				 SET co_end_time = #{co_end_time}
 					   , co_total_work_time = #{co_total_work_time}
 				 	   , co_status = #{co_status}
+				 	   , co_status_note = #{co_status_note}
 		 WHERE co_work_date = #{co_work_date}
 			   AND e_id = #{e_id}
 	</update>
@@ -76,4 +77,13 @@
 		 WHERE co_work_date = #{co_work_date}
 			   AND e_id = #{e_id}
 	</update>
+	
+	<!-- 퇴근 미기록 사원 조회 (출근은 했고 퇴근은 안 한 경우) -->
+	<select id="selectMissingCheckouts" resultType="com.spring.erp_ordit.dto.attendance.CommuteDTO">
+	    SELECT *
+	    FROM commute_tbl
+	    WHERE co_work_date = #{co_work_date}
+	        AND co_start_time IS NOT NULL
+	        AND co_end_time IS NULL
+	</select>
 </mapper>

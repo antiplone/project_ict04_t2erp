@@ -43,11 +43,4 @@
 	 WHERE d_code=#{d_code}
 </delete>
 
-<!-- 부서 중복 확인 -->
-<select id="hrDeptCodeCheck" resultType="int">
-	SELECT COUNT(*)
-	  FROM department_tbl
-	 WHERE d_code = #{d_code}
-</select>
-
 </mapper>

@@ -4,6 +4,8 @@ import { Button, Container, Loader, Table } from 'rsuite';
 import Appconfig from "#config/AppConfig.json";
 import "#components/common/css/common.css";
 import MessageBox from '../components/common/MessageBox';
+import { useToast } from '#components/common/ToastProvider';
+
 
 const OrderItemList = () => {
 	const fetchURL = Appconfig.fetch['mytest']
@@ -12,6 +14,7 @@ const OrderItemList = () => {
     const [orderItemList, setOrderItemList] = useState([]); // 초기값을 모르므로 빈배열로 orderItemList에 대입
     const [orderAmounts, setOrderAmounts] = useState({}); // 주문 수량 저장
 	const [selectedItems, setSelectedItems] = useState(new Set()); // 선택한 품목들 저장
+    const { showToast } = useToast(); 
 
     // // fetch()를 통해 서버에게 데이터를 요청
     useEffect(() => { // 통신 시작 하겠다.
@@ -58,7 +61,7 @@ const OrderItemList = () => {
                     : item
             )
         );
-        alert(`품목 ${item_code}의 주문 수량이 변경되었습니다!`);
+        showToast(`품목 ${item_code}의 주문 수량이 변경되었습니다!`);
     };
 
     // 전체 선택 버튼 관련
@@ -77,7 +80,7 @@ const OrderItemList = () => {
 		});
 
 		if (itemsToSubmit.length === 0) {
-			alert("입고 확정할 새 품목이 없습니다.");
+			showToast("입고 확정할 새 품목이 없습니다.");
 			return;
 		}
 
@@ -123,14 +126,14 @@ const OrderItemList = () => {
 					body: JSON.stringify({})
 				}).then(response => {
 					if (!response.ok) {
-						alert(`품목 ${item_code} 전송 중 오류 발생.`);
+						showToast(`품목 ${item_code} 전송 중 오류 발생.`);
 					}
 				}).catch(error => {
 					console.error(`Error submitting ${item_code}:`, error);
 				});
 			})
 		).then(() => {
-			alert("선택된 품목들이 성공적으로 입고 확정되었습니다!");
+			showToast("선택된 품목들이 성공적으로 입고 확정되었습니다!");
 			setSelectedItems(new Set());
 
 			// 데이터 갱신
@@ -141,11 +144,11 @@ const OrderItemList = () => {
 				})
 				.catch(err => {
 					console.error("Error fetching updated data:", err);
-					alert("데이터 갱신 실패");
+					showToast("데이터 갱신 실패");
 				});
 		}).catch(err => {
 			console.error("Error in Promise.all:", err);
-			alert("네트워크 오류 발생");
+			showToast("네트워크 오류 발생");
 		})
 	}
     

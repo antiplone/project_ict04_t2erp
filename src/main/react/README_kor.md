@@ -143,3 +143,18 @@ Version: 4.12.3
         <artifactId>sdk</artifactId>
         <version>4.3.2</version>
     </dependency>
+    
+    
+### python 가상환경 설정 ###
+## 01.python 가상 환경 만들기
+python -m venv 폴더명 
+## 02.python 가상 환경 활성화
+.\폴더명\Scripts\activate 
+## 03.python 가상 환경 확인
+(폴더명) D:\DEV\workspace_ict04_final_personal\20250415\project_ict04_t2erp\python-backend>
+## 04.pip 최신화
+pip3 install --upgrade pip
+## 05.패키지 또는 라이브러리 설치
+pip install 패키지명.확장자 또는 라이브러리==버전
+## 06.비활성화
+deactivate 

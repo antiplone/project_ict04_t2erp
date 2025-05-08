@@ -5,10 +5,13 @@ import Appconfig from "#config/AppConfig.json";
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 import "#components/common/css/common.css";
 import "#components/common/css/warehouseform.css";
+import { useToast } from '#components/common/ToastProvider';
 
 const WarehousSave = () => {
 	const fetchURL = Appconfig.fetch['mytest']
 	const navigate = useNavigate();
+	const { showToast } = useToast();
+	
 	const [storage, setStorage] = useState({
       storage_name: "",
       storage_zone_code: "",
@@ -46,7 +49,7 @@ const WarehousSave = () => {
       // 입력값 검증: 하나라도 비어 있으면 알람 띄우기
 		if (Object.values(storage).some(value => !value.trim())) {
 			console.log("storage : ", storage)
-			alert("모든 필드를 입력해주세요.");
+			showToast("모든 필드를 입력해주세요.");
 			return;
 		}
 
@@ -60,10 +63,10 @@ const WarehousSave = () => {
          });
 
          if (response.status === 201) {
-			alert("창고 등록에 성공했습니다.");
+			showToast("창고 등록에 성공했습니다.");
             navigate("/main/logis-warehouse");
          } else {
-            alert("창고 등록에 실패했습니다.");
+            showToast("창고 등록에 실패했습니다.");
          }
       } catch (error) {
          console.error("등록 실패:", error);

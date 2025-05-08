@@ -5,7 +5,7 @@ import Appconfig from "#config/AppConfig.json";
 import "#styles/common.css";
 import readingGlasses from "#images/common/readingGlasses.png";
 import MessageBox from '#components/common/MessageBox';
-import { useToast } from '#components/common/ToastProvider';//
+import { useToast } from '#components/common/ToastProvider';
 
 import InchargeSearchModal from "#components/logis/InchargeSearchModal.jsx";
 import ClientSearchModal from "#components/logis/ClientSearchModal.jsx";
@@ -92,7 +92,6 @@ const OrderIncomeList = () => {
 				if (isChanged) setOrderList(updatedOrders);
 			};
 			fetchItemsForOrders(); // 아이템 데이터 가져오기
-			setLoading(false);
 		}
 	}, [orderList]); // orderList가 변경될 때마다 실행 (length로 조건 걸기)
 
@@ -175,7 +174,7 @@ const OrderIncomeList = () => {
 		const items = useMemo(() => rowData.itemDataList || [], [rowData.itemDataList]);
 		const firstItem = items.length > 0 ? items[0].item_name : "";
 		const totalCount = items.length - 1 > 0 ? `외 ${items.length - 1} 건` : "";
-
+		setLoading(false);
 		return (
 			<div>
 				{firstItem} {items.length > 0 ? `${totalCount}` : ""}

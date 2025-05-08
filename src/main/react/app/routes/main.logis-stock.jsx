@@ -9,6 +9,7 @@ import EmailFormModal from "#components/email/EmailFormModal.jsx";
 import StorageSearchModal from "#components/logis/StorageSearchModal.jsx";
 import readingGlasses from "#images/common/readingGlasses.png";
 import MessageBox from '#components/common/MessageBox';
+import { useToast } from '#components/common/ToastProvider';
 
 
 
@@ -18,6 +19,7 @@ const StockItemsList = () => {
 	const [logisStockList, setLogisStockList] = useState([]);	// 초기값을 모르므로 빈배열로 logisStockList에 대입
 	const [orderDate, setOrderDate] = useState(null);			// 컬럼 정리 버튼
 	const [loading, setLoading] = useState(true);			// 컬럼 정리 버튼
+	const { showToast } = useToast();
 
 	const [sortColumn, setSortColumn] = React.useState();
 	const [sortType, setSortType] = React.useState();
@@ -108,7 +110,7 @@ const StockItemsList = () => {
 			const validatedResult = Array.isArray(result) ? result : [];
 			setLogisStockList(validatedResult);
 			if (validatedResult.length === 0) {
-				alert("선택한 조건에 해당하는 구매정보가 없습니다.");
+				showToast("선택한 조건에 해당하는 구매정보가 없습니다.");
 			}
 
 		} catch (err) {

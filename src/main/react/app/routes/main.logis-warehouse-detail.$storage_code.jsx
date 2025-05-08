@@ -5,11 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import Appconfig from "#config/AppConfig.json";
 import "#components/common/css/common.css";
 import MessageBox from '#components/common/MessageBox';
+import { useToast } from '#components/common/ToastProvider';
 
 const StorageDetail = () => {
 	const rawURL = Appconfig.fetch['mytest']
 	const fetchURL = rawURL.protocol + rawURL.url
 	const { storage_code } = useParams();
+	const { showToast } = useToast();
 
 	const navigator = useNavigate();
 
@@ -45,15 +47,15 @@ const StorageDetail = () => {
 		.then((res) => res.text())
 		.then((res) => {
 			if (res === '삭제완료') {
-				alert(`${storage_code}번 창고가 삭제되었습니다.`)
+				showToast(`${storage_code}번 창고가 삭제되었습니다.`)
 				navigator('/main/logis-warehouse'); // 창고 목록으로 이동
 			} else {
-				alert('삭제 실패') // catch로 변경해도 된다.
+				showToast('삭제 실패') // catch로 변경해도 된다.
 			}
 		})
 		.catch(err => {
 			console.error('삭제 요청 중 오류 발생:', err);
-			alert('서버 오류로 삭제에 실패했습니다.');
+			showToast('서버 오류로 삭제에 실패했습니다.');
 		});
 	}
 

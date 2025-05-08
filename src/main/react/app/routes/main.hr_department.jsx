@@ -6,7 +6,6 @@ import HrModal from '#components/hr/HrModal';
 import { Input, Grid, Col, Message } from 'rsuite';
 import ErrorText from '#components/hr/ErrorText';
 import { useToast } from '#components/common/ToastProvider';
-import { CheckButton } from "#components/hr/HrButton";
 import "#components/common/css/common.css";
 
 const initialFormData = {
@@ -54,22 +53,25 @@ export default function Hr_department() {
   };
 
   const validate = () => {
-    const newErrors = {};
-    if (!hrDeptData.d_code.trim()) newErrors.d_code = "부서코드는 필수 항목입니다.";
-    if (!hrDeptData.d_name.trim()) newErrors.d_name = "부서명은 필수 항목입니다.";
-    if (!hrDeptData.d_tel.trim()) newErrors.d_tel = "전화번호는 필수 항목입니다.";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const requiredFields = [
+      { key: "d_code", label: "부서 코드" },
+      { key: "d_name", label: "부서명" },
+      { key: "d_tel", label: "전화번호" },
+    ];
+  
+    const emptyFields = requiredFields.filter(field => !hrDeptData[field.key]?.trim());
+  
+    if (emptyFields.length > 0) {
+      const fieldNames = emptyFields.map(f => f.label).join(", ");
+      showToast(`다음 항목을 입력해주세요: ${fieldNames}`, "warning");
+      return false;
+    }
+  
+    return true;
   };
-
+  
   const handleRegister = () => {
     if (!validate()) return;
-
-    if (!isCodeChecked || !isCodeValid) {
-      showToast("부서코드 중복확인을 먼저 해주세요.", "warning");
-      return;
-    }
 
     const newDept = {
       d_code: hrDeptData.d_code,
@@ -89,7 +91,7 @@ export default function Hr_department() {
       })
       .then((data) => {
         if (data === 1 || data.success === true) {
-          showToast('부서가 등록되었습니다.', { status: 'success' });
+          showToast('부서가 등록되었습니다.', 'success');
           handleClose();
           fetchHrDeptList();
         }
@@ -117,14 +119,24 @@ export default function Hr_department() {
   };
 
   const handleDelete = (d_code) => {
+    const confirmDelete = window.confirm("해당 부서를 삭제하시겠습니까?");
+    if (!confirmDelete) return;
+
     fetch(`${hrURL}/hrDeptDelete/${d_code}`, {
       method: 'DELETE'
     })
-      .then((res) => {
-        if (!res.ok) throw new Error('삭제 실패');
-        fetchHrDeptList();
-      })
-      .catch((err) => setMessage('삭제 중 오류 발생: ' + err.message));
+    .then((res) => {
+      if (!res.ok) throw new Error('삭제 실패');
+      return res.text();
+    })
+    .then(() => {
+      showToast('부서가 삭제되었습니다.', 'success');
+      fetchHrDeptList();
+    })
+    .catch((err) => {
+      console.error('삭제 중 오류:', err);
+      alert('삭제 중 오류가 발생했습니다.');
+    });
   };
 
   const columns = [
@@ -165,25 +177,7 @@ export default function Hr_department() {
       >
         <Grid fluid>
           <Col xs={24}>
-          <label>
-            부서 코드 *
-            {!isEditMode && (
-              <CheckButton
-                value={hrDeptData.d_code}
-                checkUrl={`${hrURL}/checkDeptCode`} // 백엔드에서 체크하는 API
-                onResult={(isValid) => {
-                  setIsCodeChecked(true);
-                  setIsCodeValid(isValid);
-                  if (!isValid) {
-                    showToast("이미 사용 중인 부서 코드입니다.", "warning");
-                    setHrDeptData(prev => ({ ...prev, d_code: "" }));
-                  } else {
-                    showToast("사용 가능한 부서 코드입니다.", "success");
-                  }
-                }}
-              />
-            )}
-          </label>
+          <label>부서 코드 *</label>
           <Input
             value={hrDeptData.d_code}
             onChange={(val) => {
@@ -191,6 +185,7 @@ export default function Hr_department() {
               setIsCodeChecked(false);  // 값이 바뀌면 다시 확인하게 함
             }}
             disabled={isEditMode}
+            style={{ marginBottom: 20 }}
           />
           <ErrorText message={errors.d_code} />
         </Col>
@@ -199,6 +194,7 @@ export default function Hr_department() {
             <Input
               value={hrDeptData.d_name}
               onChange={(val) => setHrDeptData({ ...hrDeptData, d_name: val })}
+              style={{ marginBottom: 20 }}
             />
             <ErrorText message={errors.d_name} />
           </Col>
@@ -207,6 +203,7 @@ export default function Hr_department() {
             <Input
               value={hrDeptData.d_tel}
               onChange={(val) => setHrDeptData({ ...hrDeptData, d_tel: val })}
+              style={{ marginBottom: 20 }}
             />
             <ErrorText message={errors.d_tel} />
           </Col>
@@ -215,6 +212,7 @@ export default function Hr_department() {
             <Input
               value={hrDeptData.d_manager}
               onChange={(val) => setHrDeptData({ ...hrDeptData, d_manager: val })}
+              style={{ marginBottom: 10 }}
             />
           </Col>
         </Grid>

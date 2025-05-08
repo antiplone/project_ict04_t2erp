@@ -18,7 +18,7 @@
     <!-- 아이템 정보 -->
     <insert id="sell_itemInsert" parameterType="com.spring.erp_ordit.dto.sell.SellOrderItemDTO">
     	INSERT INTO order_item_tbl (order_id, order_type, item_id, item_code, quantity, price, supply, vat, total)
-		VALUES (#{order_id}, 1, #{item_code}-1000, #{item_code}, #{quantity}, #{price}, #{supply}, #{vat}, #{total})
+		VALUES (#{order_id}, 1, #{item_id}, #{item_code}, #{quantity}, #{price}, #{supply}, #{vat}, #{total})
     </insert>
     
     <!-- 결재 테이블 등록 -->
@@ -77,7 +77,7 @@
     <!-- 아이템 정보 -->
     <update id="updateAllList_item" parameterType="com.spring.erp_ordit.dto.sell.SellOrderItemDTO">
 		UPDATE order_item_tbl
-	 	   SET item_id=#{item_code}-1000, item_code=#{item_code}, quantity=#{quantity}, price=#{price}, supply=#{supply}, vat=#{vat}, total=#{total}
+	 	   SET item_id=#{item_id}, item_code=#{item_code}, quantity=#{quantity}, price=#{price}, supply=#{supply}, vat=#{vat}, total=#{total}
 		 WHERE order_id = #{order_id}
 	       AND order_item_id = #{order_item_id}
 	</update>

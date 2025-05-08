@@ -5,6 +5,7 @@ import Appconfig from "#config/AppConfig.json";
 import { useDaumPostcodePopup } from 'react-daum-postcode';
 import '#components/common/css/warehouseform.css';
 import "#components/common/css/common.css";
+import { useToast } from '#components/common/ToastProvider';
 
 const StorageUpdate = () => {
 	const rawURL = Appconfig.fetch['mytest']
@@ -13,6 +14,7 @@ const StorageUpdate = () => {
     const propsParam = useParams();
     const storage_code = propsParam.storage_code;
     const navigator = useNavigate(); // 밑에서 사용함
+	const { showToast } = useToast();
 
     console.log("storage_code : ", storage_code)
 
@@ -57,7 +59,7 @@ const StorageUpdate = () => {
 
     const changeValue = (value, event) => {
         if (!event || !event.target) {
-            alert("입력이 불가합니다.")
+            showToast("입력이 불가합니다.")
             return; // 방어 코드 추가
         }
 
@@ -74,7 +76,7 @@ const StorageUpdate = () => {
         if (e && e.preventDefault) e.preventDefault(); // e가 없을 경우 방어 코드 추가
 
         if (!storage.storage_name || !storage.storage_zone_code || !storage.storage_base_address || !storage.storage_detail_address) {
-            alert("모든 필수 정보를 입력해주세요.");
+            showToast("모든 필수 정보를 입력해주세요.");
             return;
         }
         
@@ -92,10 +94,10 @@ const StorageUpdate = () => {
         }).then(res => {
             console.log('정상', res);
             if(res !== null) {
-				alert('창고 정보 수정에 성공하였습니다.');
+				showToast('창고 정보 수정에 성공하였습니다.');
 				navigator(`/main/logis-warehouse-detail/${storage_code}`);
 			}
-            else alert('창고 정보 수정에 실패하였습니다.');
+            else showToast('창고 정보 수정에 실패하였습니다.');
         }).catch(error => {
             console.log('실패', error);
         });

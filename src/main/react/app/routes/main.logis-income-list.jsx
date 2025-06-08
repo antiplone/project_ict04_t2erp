@@ -53,7 +53,9 @@ const OrderIncomeList = () => {
             console.error("logisOrderList : ", error);
             setOrderList([]);
             showToast("데이터를 가져오는 중 오류가 발생했습니다.", "error");
-        } 
+        } finally {
+    		setLoading(false); // 무조건 로딩 상태 해제
+  		}
     };
 
     // // fetch()를 통해 서버에게 데이터를 요청
@@ -90,9 +92,9 @@ const OrderIncomeList = () => {
 				JSON.stringify(updated.itemDataList) !== JSON.stringify(orderList[index].itemDataList)
 			);
 				if (isChanged) setOrderList(updatedOrders);
+				setLoading(false);
 			};
 			fetchItemsForOrders(); // 아이템 데이터 가져오기
-			setLoading(false);
 		}
 	}, [orderList]); // orderList가 변경될 때마다 실행 (length로 조건 걸기)
 
@@ -182,6 +184,11 @@ const OrderIncomeList = () => {
 			</div>
 		);
 	};
+
+	console.log("🧾 로딩 상태:", loading);
+	console.log("📦 데이터 수 (orderListWithRowNum):", orderListWithRowNum.length);
+	console.log("📦 orderList:", orderList);
+
     return (
         <div>
         	<MessageBox type="success" text="입고 관리"/>
@@ -268,6 +275,10 @@ const OrderIncomeList = () => {
 					{loading ? (
 						<div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 							<Loader size="md" content="데이터를 불러오는 중입니다..." />
+						</div>
+					) : orderListWithRowNum.length === 0 ? (
+						<div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+						<p style={{ fontSize: '16px', color: '#999' }}>입고정보가 없습니다.</p>
 						</div>
 					) : (
 						<Table width={1920} height={400} data={orderListWithRowNum} className="text_center" loading={loading}>

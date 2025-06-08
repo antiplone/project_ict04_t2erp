@@ -92,9 +92,9 @@ const OrderIncomeList = () => {
 				JSON.stringify(updated.itemDataList) !== JSON.stringify(orderList[index].itemDataList)
 			);
 				if (isChanged) setOrderList(updatedOrders);
-				setLoading(false);
 			};
 			fetchItemsForOrders(); // 아이템 데이터 가져오기
+			setLoading(false);
 		}
 	}, [orderList]); // orderList가 변경될 때마다 실행 (length로 조건 걸기)
 
@@ -184,10 +184,6 @@ const OrderIncomeList = () => {
 			</div>
 		);
 	};
-
-	console.log("🧾 로딩 상태:", loading);
-	console.log("📦 데이터 수 (orderListWithRowNum):", orderListWithRowNum.length);
-	console.log("📦 orderList:", orderList);
 
     return (
         <div>

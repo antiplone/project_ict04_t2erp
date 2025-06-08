@@ -55,7 +55,9 @@ const OutgoingList = () => {
 			console.error("logisSalesList : ", error);
             setSalesList([]);
             showToast("데이터를 가져오는 중 오류가 발생했습니다.", "error");
-        } 
+        } finally {
+    		setLoading(false); // 무조건 로딩 상태 해제
+  		}
     };
 	
 	// // fetch()를 통해 서버에게 데이터를 요청
@@ -278,6 +280,10 @@ const OutgoingList = () => {
 						<div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 							<Loader size="md" content="데이터를 불러오는 중입니다..." />
 						</div>
+						) : salesListWithRowNum.length === 0 ? (
+							<div style={{ height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+								<p style={{ fontSize: '16px', color: '#999' }}>출고정보가 없습니다.</p>
+							</div>
 						) : (
 						<Table width={1920} height={400} data={salesListWithRowNum} className="text_center" loading={loading}>
 							<Column width={120} align="center" fixed>

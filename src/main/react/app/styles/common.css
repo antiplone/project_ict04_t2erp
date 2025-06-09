@@ -205,6 +205,10 @@ main.rs-content {
 }
 
 /*input 크기 */
+.stock_table .input {
+    display: flex;
+}
+
 .input_width{
 	width: 30px;
 }

@@ -171,7 +171,7 @@ const StockItemsList = () => {
 			<MessageBox type="warning" text="재고 관리" />
 			<Container style={{ margin: '0 auto', maxWidth: '1920px' }}>
 			
-				<div className='main_table'>
+				<div className='main_table stock_table'>
 					<div className="inputBox">
 						<div className="input">
 							<InputGroup className="input_date_type" style={{ width: 350 }}>

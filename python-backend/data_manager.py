@@ -9,32 +9,32 @@ class DataManager:
         self.data_dir = data_dir
         self._ensure_data_directory()
 
-        # File paths
+        # 파일 경로 설정
         self.knowledge_base_path = os.path.join(data_dir, "knowledge_base.json")
         self.model_weights_path = os.path.join(data_dir, "model_weights.h5")
         self.training_data_path = os.path.join(data_dir, "training_data.json")
         self.interaction_history_path = os.path.join(data_dir, "interaction_history.json")
         self.error_log_path = os.path.join(data_dir, "error_log.json")
 
-        # Initialize data structures
+        # 데이터 구조 초기화
         self.interaction_history = self._load_interaction_history()
         self.training_data = self._load_training_data()
         self.error_log = self._load_error_log()
 
     def _ensure_data_directory(self):
-        """Create data directory if it doesn't exist"""
+        """데이터 저장용 디렉토리를 생성합니다 (없으면 생성)."""
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir)
 
     def _load_error_log(self):
-        """Load error log from file"""
+        """오류 로그 파일을 불러옵니다."""
         if os.path.exists(self.error_log_path):
             with open(self.error_log_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
         return []
 
     def log_error(self, error_type, message, details):
-        """Log an error to the error log"""
+        """오류 정보를 로그에 기록합니다."""
         error_entry = {
             "timestamp": datetime.now().isoformat(),
             "type": error_type,
@@ -48,7 +48,7 @@ class DataManager:
             json.dump(self.error_log, f, ensure_ascii=False, indent=2)
 
     def save_knowledge_base(self, knowledge_base):
-        """Save the knowledge base to a JSON file"""
+        """knowledge base를  JSON file로 저장합니다."""
         try:
             with open(self.knowledge_base_path, 'w', encoding='utf-8') as f:
                 json.dump(knowledge_base, f, ensure_ascii=False, indent=2)
@@ -56,7 +56,7 @@ class DataManager:
             self.log_error("save_knowledge_base", str(e), {"knowledge_base": knowledge_base})
 
     def load_knowledge_base(self):
-        """Load the knowledge base from a JSON file"""
+        """JSON 파일에서 knowledge base를 불러옵니다."""
         try:
             if os.path.exists(self.knowledge_base_path):
                 with open(self.knowledge_base_path, 'r', encoding='utf-8') as f:
@@ -67,14 +67,14 @@ class DataManager:
             return None
 
     def save_model_weights(self, model):
-        """Save the model weights"""
+        """모델 가중치를 파일로 저장합니다."""
         try:
             model.save_weights(self.model_weights_path)
         except Exception as e:
             self.log_error("save_model_weights", str(e), {})
 
     def load_model_weights(self, model):
-        """Load the model weights"""
+        """저장된 모델 가중치를 불러옵니다."""
         try:
             if os.path.exists(self.model_weights_path):
                 model.load_weights(self.model_weights_path)
@@ -82,7 +82,7 @@ class DataManager:
             self.log_error("load_model_weights", str(e), {})
 
     def _load_training_data(self):
-        """Load training data from file"""
+        """학습 데이터를 파일에서 불러옵니다."""
         try:
             if os.path.exists(self.training_data_path):
                 with open(self.training_data_path, 'r', encoding='utf-8') as f:
@@ -93,7 +93,7 @@ class DataManager:
             return {"texts": [], "labels": []}
 
     def save_training_data(self, texts, labels):
-        """Save training data to file"""
+        """학습 데이터를 파일에 저장합니다."""
         try:
             self.training_data["texts"].extend(texts)
             self.training_data["labels"].extend(labels)
@@ -104,7 +104,7 @@ class DataManager:
             self.log_error("save_training_data", str(e), {"texts": texts, "labels": labels})
 
     def _load_interaction_history(self):
-        """Load interaction history from file"""
+        """대화 기록을 파일에서 불러옵니다."""
         try:
             if os.path.exists(self.interaction_history_path):
                 with open(self.interaction_history_path, 'r', encoding='utf-8') as f:
@@ -115,7 +115,7 @@ class DataManager:
             return []
 
     def save_interaction(self, question, response, metadata=None):
-        """Save a new interaction to history"""
+        """대화(질문/응답/부가정보)를 기록에 저장합니다."""
         try:
             interaction = {
                 "timestamp": datetime.now().isoformat(),
@@ -126,7 +126,7 @@ class DataManager:
             
             self.interaction_history.append(interaction)
             
-            # Save to file
+            # 파일로 저장
             with open(self.interaction_history_path, 'w', encoding='utf-8') as f:
                 json.dump(self.interaction_history, f, ensure_ascii=False, indent=2)
         except Exception as e:
@@ -147,7 +147,7 @@ class DataManager:
             return []
 
     def export_training_data(self, format="json"):
-        """Export training data in specified format"""
+        """json tyoe으로 학습 데이터를 내보냅니다."""
         try:
             if format == "json":
                 return json.dumps(self.training_data, ensure_ascii=False, indent=2)
@@ -158,7 +158,7 @@ class DataManager:
                     output.append([text, label])
                 return output
             else:
-                raise ValueError(f"Unsupported format: {format}")
+                raise ValueError(f"지원하지 않는 형식입니다:  {format}")
         except Exception as e:
             self.log_error("export_training_data", str(e), {"format": format})
             return None 
